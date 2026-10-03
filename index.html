@@ -1254,6 +1254,35 @@ function showToast(msg){
 
 /* ---- 공유 / 초대 ---- */
 function shareUrl(){ return location.origin + location.pathname + '#invite-' + CREDITS.shareCode; }
+var KAKAO_JS_KEY = 'bd6e016153561dea8de15e57b4f39b15';
+var _kakaoSdkPromise = null;
+function loadKakaoSdk(){
+  if (_kakaoSdkPromise) return _kakaoSdkPromise;
+  _kakaoSdkPromise = new Promise(function(resolve, reject){
+    if (window.Kakao){
+      try{ if (!window.Kakao.isInitialized()) window.Kakao.init(KAKAO_JS_KEY); resolve(window.Kakao); }catch(e){ reject(e); }
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
+    s.onload = function(){
+      try{ window.Kakao.init(KAKAO_JS_KEY); resolve(window.Kakao); }catch(e){ reject(e); }
+    };
+    s.onerror = function(){ reject(new Error('KAKAO_SDK_LOAD_FAIL')); };
+    document.head.appendChild(s);
+  });
+  return _kakaoSdkPromise;
+}
+function kakaoShare(text, url, buttonTitle){
+  return loadKakaoSdk().then(function(Kakao){
+    Kakao.Share.sendDefault({
+      objectType: 'text',
+      text: text,
+      link: { mobileWebUrl: url, webUrl: url },
+      buttonTitle: buttonTitle || '사주바라 열어보기'
+    });
+  });
+}
 function copyToClipboard(text){
   if (navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(text).catch(function(){ fallbackCopy(text); });
@@ -1277,6 +1306,7 @@ function maybeAwardShareBonus(){
 function doShare(){
   var url = shareUrl();
   var text = (STATE.mySaju&&STATE.mySaju.name? STATE.mySaju.name+'님이 ':'')+'사주바라에서 사주풀이·오늘의 운세·궁합을 확인해보세요! 링크로 들어오면 무료 크레딧을 드려요 🦫';
+  kakaoShare(text, url).then(maybeAwardShareBonus).catch(function(){
   if (navigator.share){
     navigator.share({ title:'사주바라', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
   } else {
@@ -1284,6 +1314,7 @@ function doShare(){
     showToast('초대 링크가 복사됐어요. 카카오톡에 붙여넣어 공유해보세요!');
     maybeAwardShareBonus();
   }
+  });
 }
 
 /* ---- 크레딧 시트(모달) ---- */
@@ -2611,6 +2642,7 @@ function compatDetailHtml(resA, resB, compat){
 function doShareCompat(resA, resB, total){
   var url = shareUrl();
   var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+' 궁합 점수는 '+total+'점! 사주바라에서 우리 궁합도 확인해보세요 💕';
+  kakaoShare(text, url).then(maybeAwardShareBonus).catch(function(){
   if (navigator.share){
     navigator.share({ title:'사주바라 궁합', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
   } else {
@@ -2618,6 +2650,7 @@ function doShareCompat(resA, resB, total){
     showToast('궁합 결과 공유 텍스트가 복사됐어요. 카카오톡에 붙여넣어 보내보세요!');
     maybeAwardShareBonus();
   }
+  });
 }
 
 /* ---- 마이룸: 내가 확인한 궁합 상대 로컬 저장(추후 마이룸 화면에서 사용) ---- */
