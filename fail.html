@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>결제 실패 · SAZUBARA</title>
+<style>
+  html,body{margin:0; height:100%;}
+  body{
+    font-family:'Noto Sans KR',sans-serif; display:flex; align-items:center; justify-content:center;
+    height:100vh; background:#eef1f7; color:#1b2033; text-align:center; padding:24px; box-sizing:border-box;
+  }
+  .box{max-width:320px;}
+  .ic{font-size:2rem; margin-bottom:12px;}
+  a{color:#9c6b1f; text-decoration:none; font-weight:700;}
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="ic">😥</div>
+    <p id="msg">결제가 취소되었거나 실패했어요.</p>
+    <p><a href="/">홈으로 돌아가기</a></p>
+  </div>
+  <script>
+    var params = new URLSearchParams(location.search);
+    var message = params.get('message');
+    if (message) document.getElementById('msg').textContent = message;
+  </script>
+</body>
+</html>

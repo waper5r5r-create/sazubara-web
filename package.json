@@ -1,0 +1,9 @@
+{
+  "name": "sazubara-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SAZUBARA - 사주팔자 분석 / 오늘의 운세 / 궁합보기 (독립 웹 배포판)",
+  "engines": {
+    "node": ">=18"
+  }
+}
