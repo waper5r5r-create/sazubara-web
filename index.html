@@ -410,7 +410,14 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
   border-radius:14px; border:1px dashed var(--border-strong); background:var(--surface-2);
   color:var(--accent); font-weight:700; font-size:.88rem; cursor:pointer;
 }
-.chat-log{display:flex; flex-direction:column; gap:10px; max-height:46vh; overflow-y:auto; padding:2px;}
+/* 채팅 시트: 헤더·빠른질문·입력창은 항상 고정하고, 대화 로그만 그 안에서 스크롤되게 함 —
+   그냥 .sheet(전체가 스크롤되는 범용 레이아웃)를 쓰면 대화가 길어질수록 입력창이 화면 밖으로
+   밀려나는 문제가 있어서 이 화면만 따로 고정 레이아웃을 쓴다. */
+.sheet.chat-sheet{ height:86vh; overflow:hidden; }
+.chat-head-id{display:flex; align-items:center; gap:8px; min-width:0;}
+.chat-head-av{width:30px; height:30px; border-radius:50%; overflow:hidden; flex:none; display:flex; background:var(--surface-2);}
+.chat-head-av svg, .chat-head-av img{width:100%; height:100%; display:block; object-fit:cover;}
+.chat-log{display:flex; flex-direction:column; gap:10px; flex:1; min-height:0; overflow-y:auto; padding:2px;}
 .chat-msg{display:block; max-width:84%; font-size:.86rem; line-height:1.5; padding:9px 13px; border-radius:14px; min-width:0; overflow-wrap:anywhere; word-break:break-word; white-space:pre-line;}
 .chat-msg.bot{align-self:flex-start; background:var(--surface-2); color:var(--fg); border-bottom-left-radius:4px;}
 .chat-msg.user{align-self:flex-end; background:var(--accent); color:var(--accent-ink); border-bottom-right-radius:4px;}
@@ -418,7 +425,7 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .chat-dots{display:inline-block; margin-left:2px; animation:chatblink 1.1s infinite;}
 @keyframes chatblink{0%,100%{opacity:.3;}50%{opacity:1;}}
 .chat-ai-badge{font-size:.62rem; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:2px 7px; vertical-align:2px; letter-spacing:.02em;}
-.chat-input-row{display:flex; gap:8px; align-items:center;}
+.chat-input-row{display:flex; gap:8px; align-items:center; flex:none;}
 .chat-input-row input{
   flex:1; min-width:0; border:1px solid var(--border-strong); border-radius:999px; background:var(--surface-2);
   color:var(--fg); padding:11px 16px; font-size:.88rem; font-family:var(--font-body);
@@ -427,7 +434,7 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
   flex:none; width:42px; height:42px; border-radius:50%; border:none; background:var(--accent);
   color:var(--accent-ink); font-size:1rem; cursor:pointer;
 }
-.chat-quick-row{display:flex; gap:6px; overflow-x:auto; padding-bottom:2px;}
+.chat-quick-row{display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; flex:none;}
 .chat-quick-row button{
   flex:none; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--fg);
   border-radius:999px; padding:7px 13px; font-size:.78rem; cursor:pointer; white-space:nowrap;
@@ -2055,7 +2062,7 @@ function renderTodayView(){
       '<button type="button" data-val="year">올해</button>'+
     '</div>'+
     '<div id="today-period-body"></div>'+
-    '<button type="button" class="chat-fab" id="btn-open-chat">💬 운세 챗봇에게 물어보기</button>';
+    '<button type="button" class="chat-fab" id="btn-open-chat">💬 '+esc(currentPersona().name)+'에게 물어보기</button>';
   wireSeg($('#today-period-seg'), function(val){ renderTodayPeriod(val); });
   renderTodayPeriod('day');
   $('#btn-open-chat').addEventListener('click', openChatSheet);
@@ -2112,7 +2119,7 @@ var CHAT_QUICK = ['오늘 운세','재물운','연애운','건강운','이번 �
 var CHAT_BUSY = false;
 var CHAT_AI_DISABLED = false; /* not_granted 등으로 한번 거절되면 이 화면 동안은 키워드 모드로 고정 */
 function chatGreeting(){
-  return '안녕, 나는 오늘의 운세를 속삭여주는 챗봇이야 🌙 재물운·연애운·건강운이나 "이번 주 어때?" 같은 질문을 편하게 물어봐.';
+  return '안녕 🌙 재물운·연애운·건강운이나 "이번 주 어때?" 같은 질문을 편하게 물어봐.';
 }
 function openChatSheet(){
   if (!STATE.mySaju){ showToast('먼저 사주풀이 탭에서 내 사주를 등록해주세요.'); switchTab('saju'); return; }
@@ -2145,13 +2152,17 @@ function renderChatSheet(){
   var p = currentPersona();
   root.innerHTML =
     '<div class="sheet-backdrop" id="chat-backdrop">'+
-      '<div class="sheet" onclick="event.stopPropagation()">'+
+      '<div class="sheet chat-sheet" onclick="event.stopPropagation()">'+
         '<div class="sheet-handle"></div>'+
-        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+
-          '<span class="av-mini2" style="margin-right:5px;">'+personaAvatarHtml(p.id)+'</span>'+p.name+' 운세 챗봇'+
-          (SAMPLE_NS && !CHAT_AI_DISABLED ? ' <span class="chat-ai-badge">AI</span>' : '')+
-        '</p>'+
-          '<button type="button" class="sheet-close" id="chat-close">✕</button></div>'+
+        '<div class="sheet-head">'+
+          '<div class="chat-head-id">'+
+            '<span class="chat-head-av">'+personaAvatarHtml(p.id)+'</span>'+
+            '<p class="section-title" style="font-size:1rem; margin:0;">'+esc(p.name)+
+              (SAMPLE_NS && !CHAT_AI_DISABLED ? ' <span class="chat-ai-badge">AI</span>' : '')+
+            '</p>'+
+          '</div>'+
+          '<button type="button" class="sheet-close" id="chat-close">✕</button>'+
+        '</div>'+
         '<div class="chat-log" id="chat-log">'+CHAT_LOG.map(chatMsgHtml).join('')+'</div>'+
         '<div class="chat-quick-row">'+CHAT_QUICK.map(function(q){ return '<button type="button" data-q="'+esc(q)+'">'+esc(q)+'</button>'; }).join('')+'</div>'+
         '<form class="chat-input-row" id="chat-form">'+
@@ -2246,7 +2257,7 @@ var CHAT_SMALLTALK = {
     '어서 와. 재물운·연애운·건강운 중에 뭐가 제일 궁금해?'
   ]},
   who: { pat:/(너\s*누구|넌\s*누구|정체|뭐\s*하는\s*애)/, replies:[
-    '나는 네 사주를 바탕으로 오늘의 흐름을 읽어주는 챗봇이야. 궁금한 영역 있으면 물어봐.',
+    '나는 네 사주를 바탕으로 오늘의 흐름을 읽어주는 풀이자야. 궁금한 영역 있으면 물어봐.',
     '오늘의 운세를 속삭여주는 역할이야. 재물·연애·건강·직장·인간관계, 뭐든 좋아.'
   ]},
   thanks: { pat:/(고마워|감사|땡큐|thx|thanks)/i, replies:[
