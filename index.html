@@ -318,6 +318,11 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
   display:inline-flex; align-items:center; gap:3px; font-size:.64rem; font-weight:700; padding:2px 7px; border-radius:999px;
   background:var(--surface-3); color:var(--fg-muted); margin-top:2px;
 }
+.myroom-shinsal{display:inline-flex; gap:4px; flex-wrap:wrap; justify-content:center; margin-top:2px;}
+.myroom-shinsal .chip{
+  display:inline-flex; align-items:center; gap:2px; font-size:.62rem; font-weight:700; padding:2px 7px; border-radius:999px;
+  background:var(--sal-soft,var(--surface-3)); color:var(--sal-color,var(--accent));
+}
 .myroom-rank{
   position:absolute; top:7px; right:8px; font-size:.72rem; font-weight:800; color:#fff;
   background:var(--tier-color,var(--accent)); border-radius:999px; min-width:20px; height:20px; padding:0 5px;
@@ -899,16 +904,17 @@ var PERIOD_BRIEF = {
     love:'상대의 이야기를 편안하게 들어주는 날이라 관계가 한층 깊어지기 좋은 타이밍이에요. 먼저 다가가기보다 곁에서 챙겨주는 쪽으로 마음을 표현해보세요.'
   }
 };
-function openPeriodBrief(relKey, label, zhi){
+function openPeriodBrief(relKey, label, zhi, ssKey){
   var b = PERIOD_BRIEF[relKey];
   if (!b) return;
   var za = ZHI_ANIMAL[zhi];
+  var titleLabel = (ssKey && FORTUNE_TEXT[ssKey]) ? FORTUNE_TEXT[ssKey].label : RELTYPE_LABEL[relKey];
   var root = $('#brief-sheet-root');
   root.innerHTML =
     '<div class="sheet-backdrop" id="brief-backdrop">'+
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
         '<div class="sheet-handle"></div>'+
-        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(label?esc(label)+' · ':'')+RELTYPE_LABEL[relKey]+'</p>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(label?esc(label)+' · ':'')+titleLabel+'</p>'+
           '<button type="button" class="sheet-close" id="brief-close">✕</button></div>'+
         (za ? '<p class="section-desc" style="color:var(--fg-muted); margin-top:-4px;">'+za.emoji+' '+za.animal+'의 날 · '+za.flavor+'</p>' : '')+
         '<div class="detail-block"><p class="ttl" style="color:var(--good);">✅ 좋은 점</p><p class="section-desc">'+b.good+'</p></div>'+
@@ -1233,7 +1239,10 @@ var GOODNESS = { inseong:2, siksang:2, jaeseong:1, bigyeop:0, gwanseong:-1 };
 function dayRelationData(my, dateObj){
   var g = todayGanZhi(dateObj);
   var relKey = dailyFortuneRelation(my.dayGanWx, g.wxGan);
-  return { date:dateObj, gan:g.gan, zhi:g.zhi, ganKr:g.ganKr, zhiKr:g.zhiKr, wxGan:g.wxGan, relKey:relKey, score:GOODNESS[relKey] };
+  /* relKey는 PERIOD_BRIEF/PERIOD_TEXT 본문 콘텐츠를 고르는 5종 구조 키로 그대로 두고,
+     ssKey(10종 십성)는 화면에 보이는 라벨만 더 정밀하게 바꿔서 보여주는 용도. */
+  var ssKey = dailyShishenKey(my.day.gan, my.dayGanWx, g.gan, g.wxGan);
+  return { date:dateObj, gan:g.gan, zhi:g.zhi, ganKr:g.ganKr, zhiKr:g.zhiKr, wxGan:g.wxGan, relKey:relKey, ssKey:ssKey, score:GOODNESS[relKey] };
 }
 
 /* ---- 오늘 우리 둘의 합(데일리 커플운) : 두 사람 각각의 오늘 일진 관계를 평균내어 그날의 케미를 산출 ---- */
@@ -1302,14 +1311,19 @@ var SHINSAL_TEXT = {
     caution:'생각이 깊어지는 만큼 혼자 고립되기 쉬우니, 몰입한 뒤에는 의식적으로 사람들 속으로 돌아오는 시간을 마련해두세요.'}
 };
 
-function coupleTodayInfo(dayGanWxA, dayGanWxB){
+/* dayGanA/dayGanB(일간 한자)는 선택 인자 — 풀 사주 결과가 있을 때만(궁합 화면) 넘겨서
+   10종 십성 라벨(ssA/ssB)까지 정확히 뽑아낸다. 마이룸처럼 오행만 저장된 경우엔 생략되고
+   케미 등급(tier)만 그대로 계산된다. */
+function coupleTodayInfo(dayGanWxA, dayGanWxB, dayGanA, dayGanB){
   var today = todayGanZhi();
   var relA = dailyFortuneRelation(dayGanWxA, today.wxGan);
   var relB = dailyFortuneRelation(dayGanWxB, today.wxGan);
+  var ssA = dayGanA ? dailyShishenKey(dayGanA, dayGanWxA, today.gan, today.wxGan) : null;
+  var ssB = dayGanB ? dailyShishenKey(dayGanB, dayGanWxB, today.gan, today.wxGan) : null;
   var avg = (GOODNESS[relA] + GOODNESS[relB]) / 2;
   var tier = COUPLE_TODAY_TIER[COUPLE_TODAY_TIER.length-1];
   for (var i=0;i<COUPLE_TODAY_TIER.length;i++){ if (avg >= COUPLE_TODAY_TIER[i].min){ tier = COUPLE_TODAY_TIER[i]; break; } }
-  return { relA:relA, relB:relB, avg:avg, tier:tier, today:today };
+  return { relA:relA, relB:relB, ssA:ssA, ssB:ssB, avg:avg, tier:tier, today:today };
 }
 
 function weekRangeDates(base){
@@ -1699,6 +1713,16 @@ function attemptInviteRedeem(opts){
       saveCredits();
     }
   }).catch(function(){ /* 다음 사주 입력/제출 때 다시 시도됨 */ });
+}
+/* 내가 초대한 친구 쪽 마이룸에 "나를 초대한 친구" 카드가 뜨려면, 그 친구가 내 사주를 알아야 한다.
+   invite_redemptions에는 초대받은 쪽 사주만 저장되므로, 내가 사주를 입력/수정할 때마다
+   내 기기의 현재 사주를 devices.saju_opts에 올려서 항상 최신으로 유지해둔다. */
+function saveMySajuToServer(opts){
+  if (!CREDITS.shareCode) return;
+  fetch('/api/device/save-saju', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ deviceId: CREDITS.shareCode, sajuOpts: opts })
+  }).catch(function(){ /* 실패해도 조용히 넘어감 - 다음 사주 제출 때 다시 시도됨 */ });
 }
 function openCreditSheet(){ pullCreditLedger(); renderCreditSheet(); }
 function closeCreditSheet(){ $('#credit-sheet-root').innerHTML=''; }
@@ -2190,7 +2214,7 @@ function renderTodayView(){
   $('#btn-open-chat').addEventListener('click', openChatSheet);
   $('#today-period-body').addEventListener('click', function(e){
     var el = e.target.closest('[data-relkey]');
-    if (el) openPeriodBrief(el.dataset.relkey, el.dataset.label, el.dataset.zhi);
+    if (el) openPeriodBrief(el.dataset.relkey, el.dataset.label, el.dataset.zhi, el.dataset.sskey);
   });
 }
 
@@ -2488,11 +2512,11 @@ function weekFortuneHtml(my){
     var isToday = r.date.toDateString()===todayStr;
     var color = r.score>0 ? 'var(--good)' : (r.score<0 ? 'var(--bad)' : 'var(--fg-muted)');
     var dLabel = (r.date.getMonth()+1)+'월 '+r.date.getDate()+'일 ('+dowKr[i]+')';
-    return '<div class="period-week-row pw-clickable" data-relkey="'+r.relKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
+    return '<div class="period-week-row pw-clickable" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
       '<span class="dow">'+dowKr[i]+'</span>'+
       '<span class="dt">'+(r.date.getMonth()+1)+'/'+r.date.getDate()+'</span>'+
       '<span class="lbl2">'+r.ganKr+r.zhiKr+'일</span>'+
-      '<span style="color:'+color+';font-weight:700;font-size:.78rem;">'+RELTYPE_LABEL[r.relKey]+'</span>'+
+      '<span style="color:'+color+';font-weight:700;font-size:.78rem;">'+FORTUNE_TEXT[r.ssKey].label+'</span>'+
       '<span class="pw-chev">›</span>'+
     '</div>';
   }).join('');
@@ -2515,10 +2539,10 @@ function monthFortuneHtml(my){
   function listHtml(list){
     return list.map(function(r){
       var dLabel = (r.date.getMonth()+1)+'월 '+r.date.getDate()+'일';
-      return '<div class="period-week-row pw-clickable" data-relkey="'+r.relKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
+      return '<div class="period-week-row pw-clickable" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
         '<span class="dt" style="width:40px;">'+(r.date.getMonth()+1)+'/'+r.date.getDate()+'</span>'+
         '<span class="lbl2">'+r.ganKr+r.zhiKr+'일</span>'+
-        '<span style="font-size:.76rem;color:var(--fg-muted);">'+RELTYPE_LABEL[r.relKey]+'</span>'+
+        '<span style="font-size:.76rem;color:var(--fg-muted);">'+FORTUNE_TEXT[r.ssKey].label+'</span>'+
         '<span class="pw-chev">›</span></div>';
     }).join('');
   }
@@ -2540,7 +2564,7 @@ function yearFortuneHtml(my){
   var cellsHtml = rows.map(function(r, i){
     var bg = r.score>0 ? 'var(--good)' : (r.score<0 ? 'var(--bad)' : 'var(--surface-3)');
     var fg = r.score===0 ? 'var(--fg-muted)' : '#fff';
-    return '<div class="month-cell pw-clickable" style="background:'+bg+';color:'+fg+';" data-relkey="'+r.relKey+'" data-label="'+(i+1)+'월" data-zhi="'+r.zhi+'">'+(i+1)+'월</div>';
+    return '<div class="month-cell pw-clickable" style="background:'+bg+';color:'+fg+';" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+(i+1)+'월" data-zhi="'+r.zhi+'">'+(i+1)+'월</div>';
   }).join('');
   return '<div class="card">'+
       '<p class="eyebrow">올해 운세</p>'+
@@ -2693,10 +2717,28 @@ function myroomPairDotsHtml(wxA, wxB, genderA, genderB){
   var b = WUXING_INFO[wxB] || WUXING_INFO['목'];
   return '<span class="pairdots"><span class="pd" style="background:var('+a.var+')"></span><span class="pd pd2" style="background:var('+b.var+')"></span></span>';
 }
+/* 마이룸 카드에 보여줄 신살 - 나/상대방 중 한쪽이라도 가진 것을 합쳐(중복 제거) 작은 칩으로 */
+function myroomShinsalKeys(entry){
+  var a = entry.shinsalA || [], b = entry.shinsalB || [];
+  var seen = {}, out = [];
+  a.concat(b).forEach(function(k){ if (!seen[k]){ seen[k]=true; out.push(k); } });
+  return out;
+}
+function myroomShinsalChipsHtml(entry){
+  var keys = myroomShinsalKeys(entry);
+  if (!keys.length) return '';
+  return '<span class="myroom-shinsal">'+keys.map(function(k){
+    var s = SHINSAL_TEXT[k];
+    return '<span class="chip" style="--sal-color:'+s.color+'; --sal-soft:'+s.soft+';">'+s.icon+' '+s.label+'</span>';
+  }).join('')+'</span>';
+}
 var RANK_MEDAL = ['🥇','🥈','🥉'];
 function myroomCardHtml(entry, rank){
   var tier = myroomTier(entry.score);
-  var ownerTag = entry.ownerName ? '<span class="owner-tag">'+esc(entry.ownerName)+'님의 룸</span>' : '';
+  /* fromInviter: 내가 초대받아서 가입했을 때, 나를 초대해준 사람 쪽에서 자동으로 뜨는 카드.
+     entry.ownerName(공개 갤러리의 "소유자" 표시)과 같은 자리를 쓰지만 의미가 다르므로 겹치지 않게 처리. */
+  var ownerTag = entry.ownerName ? '<span class="owner-tag">'+esc(entry.ownerName)+'님의 룸</span>' :
+    (entry.fromInviter ? '<span class="owner-tag">나를 초대함</span>' : '');
   var sparkle = (tier.key==='legend') ? '<span class="myroom-sparkle">✨</span>' : '';
   var rankBadge = (rank!=null && rank<=3 && !ownerTag) ? '<span class="myroom-rank">'+RANK_MEDAL[rank-1]+'</span>' :
     (rank!=null && rank<=3) ? '<span class="myroom-rank" style="top:26px;">'+RANK_MEDAL[rank-1]+'</span>' : '';
@@ -2713,6 +2755,7 @@ function myroomCardHtml(entry, rank){
       '<span class="sc">궁합 '+entry.score+'점</span>'+
       '<span class="myroom-badge">'+tier.icon+' '+tier.label+'</span>'+
       chemiBadge+
+      myroomShinsalChipsHtml(entry)+
     '</div>';
 }
 /* score 기준 상위 3개의 랭크를 ownerId+id 키로 매핑 (표시 순서와 무관하게 항상 궁합점수 기준) */
@@ -2776,6 +2819,11 @@ function openMyroomDetail(entry){
             '</span>'+
             autoParas(chemi.tier.text)+
             '<div id="chemi-detail-slot"></div>'+
+          '</div>' : '')+
+        (myroomShinsalKeys(entry).length ?
+          '<div class="detail-block"><p class="ttl">신살(神殺)</p>'+
+            '<p class="section-desc" style="margin-bottom:4px;"><b>나</b></p><div class="shinsal-badges">'+shinsalBadgeRowHtml(entry.shinsalA)+'</div>'+
+            '<p class="section-desc" style="margin:8px 0 4px;"><b>'+esc(entry.nameB||'상대방')+'</b></p><div class="shinsal-badges">'+shinsalBadgeRowHtml(entry.shinsalB)+'</div>'+
           '</div>' : '')+
         (ZHI_REL_MARRIAGE_TEXT[entry.zhiRel] ? '<div class="detail-block"><p class="ttl">'+ICO_RING+' 결혼운</p>'+autoParas(ZHI_REL_MARRIAGE_TEXT[entry.zhiRel])+'</div>' : '')+
         (GAN_REL_TALK_TEXT[entry.ganRel] ? '<div class="detail-block"><p class="ttl">💬 대화 스타일</p>'+autoParas(GAN_REL_TALK_TEXT[entry.ganRel])+'</div>' : '')+
@@ -2950,25 +2998,47 @@ function renderMyRoomLocal(root){
   wireMyroomCardClicks($('.myroom-grid', root), displayList);
   wireMyroomDexBtn();
 }
+/* 마이룸은 두 방향을 모두 모아서 보여준다:
+   1) 내가 초대해서 실제로 등록한 친구 (/api/invite/list) — row.invitee_saju를 그대로 받아온다.
+   2) 나를 초대해준 친구 (/api/invite/received) — 그 친구가 /api/device/save-saju 로 올려둔
+      자기 사주(row.inviter_saju)를 받아온다. 아직 한 번도 올리지 않은 초대자는 서버가 알아서 걸러서 내려준다.
+   두 목록을 합쳐 최신순으로 섞어 보여주고, fromInviter 플래그로 카드에 "나를 초대함" 표시만 다르게 단다. */
 function fetchInviteMyRoom(){
-  fetch('/api/invite/list?device_id='+encodeURIComponent(CREDITS.shareCode))
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      var rows = (data && data.ok && data.rows) ? data.rows : [];
-      INVITE_MYROOM_CACHE = rows.map(function(row){
-        var resB;
-        try{ resB = computeSaju(row.invitee_saju); }catch(e){ return null; }
-        var compat = computeCompat(STATE.mySaju, resB);
-        return {
-          id:'invite-'+row.invitee_device_id, nameB:row.invitee_name||resB.name||'상대방',
-          dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx,
-          zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:compat.scores.total,
-          at:row.created_at ? new Date(row.created_at).getTime() : Date.now()
-        };
-      }).filter(Boolean);
-    })
-    .catch(function(){ INVITE_MYROOM_CACHE = []; })
-    .then(function(){ renderMyRoom(); });
+  var sentP = fetch('/api/invite/list?device_id='+encodeURIComponent(CREDITS.shareCode))
+    .then(function(r){ return r.json(); }).catch(function(){ return null; });
+  var receivedP = fetch('/api/invite/received?device_id='+encodeURIComponent(CREDITS.shareCode))
+    .then(function(r){ return r.json(); }).catch(function(){ return null; });
+  Promise.all([sentP, receivedP]).then(function(results){
+    var sentData = results[0], receivedData = results[1];
+    var sentRows = (sentData && sentData.ok && sentData.rows) ? sentData.rows : [];
+    var receivedRows = (receivedData && receivedData.ok && receivedData.rows) ? receivedData.rows : [];
+    var sentList = sentRows.map(function(row){
+      var resB;
+      try{ resB = computeSaju(row.invitee_saju); }catch(e){ return null; }
+      var compat = computeCompat(STATE.mySaju, resB);
+      return {
+        id:'invite-'+row.invitee_device_id, nameB:row.invitee_name||resB.name||'상대방',
+        dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx,
+        shinsalA:STATE.mySaju.shinsal||[], shinsalB:resB.shinsal||[],
+        zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:compat.scores.total,
+        at:row.created_at ? new Date(row.created_at).getTime() : Date.now()
+      };
+    }).filter(Boolean);
+    var receivedList = receivedRows.map(function(row){
+      var resB;
+      try{ resB = computeSaju(row.inviter_saju); }catch(e){ return null; }
+      var compat = computeCompat(STATE.mySaju, resB);
+      return {
+        id:'invited-by-'+row.inviter_device_id, nameB:resB.name||'초대한 친구', fromInviter:true,
+        dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx,
+        shinsalA:STATE.mySaju.shinsal||[], shinsalB:resB.shinsal||[],
+        zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:compat.scores.total,
+        at:row.created_at ? new Date(row.created_at).getTime() : Date.now()
+      };
+    }).filter(Boolean);
+    INVITE_MYROOM_CACHE = sentList.concat(receivedList).sort(function(a,b){ return (b.at||0)-(a.at||0); });
+  }).catch(function(){ INVITE_MYROOM_CACHE = []; })
+  .then(function(){ renderMyRoom(); });
 }
 function renderMyRoomCloud(root){
   var docs = MYROOM_CLOUD_DOCS || [];
@@ -3050,22 +3120,23 @@ function scoreLabel(key){
   return {total:'종합', personality:'성격', love:'애정운', values:'가치관', money:'재물운'}[key];
 }
 
+/* 신살 키 배열 -> 배지 한 줄 HTML (궁합 화면, 마이룸 상세 모두에서 재사용) */
+function shinsalBadgeRowHtml(keys){
+  if (!keys || !keys.length) return '<span class="section-desc" style="color:var(--fg-faint);">해당 없음</span>';
+  return keys.map(function(k){
+    var s = SHINSAL_TEXT[k];
+    return '<span class="shinsal-badge" style="--sal-color:'+s.color+'; --sal-soft:'+s.soft+';">'+s.icon+' '+s.label+'</span>';
+  }).join(' ');
+}
 function shinsalCompatHtml(resA, resB){
   var nmA = resA.name || '나', nmB = resB.name || '상대방';
-  function badgeRow(keys){
-    if (!keys || !keys.length) return '<span class="section-desc" style="color:var(--fg-faint);">해당 없음</span>';
-    return keys.map(function(k){
-      var s = SHINSAL_TEXT[k];
-      return '<span class="shinsal-badge" style="--sal-color:'+s.color+'; --sal-soft:'+s.soft+';">'+s.icon+' '+s.label+'</span>';
-    }).join(' ');
-  }
   var shared = (resA.shinsal||[]).filter(function(k){ return (resB.shinsal||[]).indexOf(k)>=0; });
   var sharedHtml = shared.length ?
     '<p class="section-desc" style="margin-top:8px;">둘 다 <b>'+shared.map(function(k){ return SHINSAL_TEXT[k].label; }).join(', ')+'</b>을 타고났어요. 같은 기운을 공유하는 만큼 서로를 더 깊이 이해할 수 있는 지점이에요.</p>' : '';
   return '<div class="card">'+
     '<p class="section-title" style="font-size:.98rem;">신살(神殺) 궁합</p>'+
-    '<div class="detail-block"><p class="ttl">'+esc(nmA)+'</p><div class="shinsal-badges">'+badgeRow(resA.shinsal)+'</div></div>'+
-    '<div class="detail-block"><p class="ttl">'+esc(nmB)+'</p><div class="shinsal-badges">'+badgeRow(resB.shinsal)+'</div></div>'+
+    '<div class="detail-block"><p class="ttl">'+esc(nmA)+'</p><div class="shinsal-badges">'+shinsalBadgeRowHtml(resA.shinsal)+'</div></div>'+
+    '<div class="detail-block"><p class="ttl">'+esc(nmB)+'</p><div class="shinsal-badges">'+shinsalBadgeRowHtml(resB.shinsal)+'</div></div>'+
     sharedHtml +
     '<p class="disclaimer">각자의 일지를 기준으로 계산한 도화살·역마살·화개살 보유 여부입니다.</p>'+
   '</div>';
@@ -3126,7 +3197,7 @@ function renderCompatResult(resA, resB, compat){
 function renderCoupleTodayCard(resA, resB){
   var body = $('#couple-today-card');
   if (!body) return;
-  var info = coupleTodayInfo(resA.dayGanWx, resB.dayGanWx);
+  var info = coupleTodayInfo(resA.dayGanWx, resB.dayGanWx, resA.day.gan, resB.day.gan);
   var t = info.today;
   var nmA = resA.name || '나', nmB = resB.name || '상대방';
   body.style.setProperty('--tier-color', info.tier.color);
@@ -3141,8 +3212,8 @@ function renderCoupleTodayCard(resA, resB){
     '</div>'+
     autoParas(info.tier.text)+
     '<div class="couple-today-each">'+
-      '<span><b>'+esc(nmA)+'</b> · '+RELTYPE_LABEL[info.relA]+'</span>'+
-      '<span><b>'+esc(nmB)+'</b> · '+RELTYPE_LABEL[info.relB]+'</span>'+
+      '<span><b>'+esc(nmA)+'</b> · '+(info.ssA?FORTUNE_TEXT[info.ssA].label:RELTYPE_LABEL[info.relA])+'</span>'+
+      '<span><b>'+esc(nmB)+'</b> · '+(info.ssB?FORTUNE_TEXT[info.ssB].label:RELTYPE_LABEL[info.relB])+'</span>'+
     '</div>'+
     '<p class="disclaimer">매일 바뀌는 일진과 두 사람의 일간 관계를 바탕으로 한 참고용 콘텐츠로, 날짜가 바뀌면 자동으로 새로 계산돼요.</p>';
 }
@@ -3225,6 +3296,7 @@ function saveMyRoomEntry(resA, resB, compat, total){
   var entry = {
     id:id, nameB:resB.name||'상대방', dayGanWxA:resA.dayGanWx, dayGanWxB:resB.dayGanWx,
     genderA:resA.gender, genderB:resB.gender,
+    shinsalA:resA.shinsal||[], shinsalB:resB.shinsal||[],
     zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:total, at:Date.now()
   };
   try{
@@ -3316,6 +3388,7 @@ function initSajuForm(){
         INVITE_MYROOM_CACHE = null; /* 내 사주가 바뀌었으니 마이룸 궁합도 다시 계산해야 함 */
         renderMyRoom();
         attemptInviteRedeem(opts);
+        saveMySajuToServer(opts);
       });
     }catch(err){
       var el = document.createElement('p');
@@ -3383,6 +3456,9 @@ function init(){
         $('#f-correction').checked = !!o.useCorrection;
       }catch(e){}
     }
+    /* 이 기능이 생기기 전부터 쓰던 사람도, 다시 방문하면 한 번은 서버에 자기 사주를 올려서
+       나를 초대한 사람 쪽 마이룸에도 카드가 뜰 수 있게 한다(그 전까진 사주를 다시 제출해야만 반영됨). */
+    if (STATE.lastForm) saveMySajuToServer(STATE.lastForm);
   }
 
   var startTab = (location.hash||'').replace('#','');
