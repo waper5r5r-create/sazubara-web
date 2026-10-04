@@ -222,6 +222,51 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 }
 .myroom-sparkle{position:absolute; top:6px; right:8px; font-size:.95rem; animation:myroomTwinkle 1.6s ease-in-out infinite;}
 @keyframes myroomTwinkle{0%,100%{opacity:.4; transform:scale(.9);}50%{opacity:1; transform:scale(1.15);}}
+/* ---- 마이룸 카드 프레임(꾸미기, 크레딧 소비) ---- */
+.myroom-card[data-frame]::after{
+  content:''; position:absolute; inset:0; border-radius:16px; pointer-events:none;
+  border:2px solid var(--frame-color,transparent); box-shadow:0 0 0 3px var(--frame-soft,transparent), 0 0 16px var(--frame-soft,transparent);
+}
+.myroom-card[data-frame="holo"]::after{
+  border-color:rgba(255,255,255,.55);
+  background:linear-gradient(115deg, rgba(255,120,180,0) 0%, rgba(255,210,120,.35) 18%, rgba(140,220,255,.35) 36%, rgba(190,140,255,.35) 54%, rgba(255,120,180,0) 72%);
+  background-size:220% 220%;
+  animation:myroomHolo 3.2s linear infinite;
+  box-shadow:0 0 0 2px rgba(255,255,255,.4), 0 0 18px rgba(200,180,255,.35);
+}
+@keyframes myroomHolo{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+@media (prefers-reduced-motion: reduce){ .myroom-card[data-frame="holo"]::after{ animation:none; } }
+.frame-picker{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+.frame-swatch{
+  position:relative; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 4px 8px;
+  border-radius:12px; border:1.5px solid var(--border); background:var(--surface-2); cursor:pointer; min-width:0;
+}
+.frame-swatch.active{border-color:var(--accent); background:var(--accent-soft);}
+.frame-swatch .ring{width:26px; height:26px; border-radius:50%; flex:none; border:2.5px solid var(--sw-color,var(--accent));}
+.frame-swatch .ring.holo{border-color:rgba(255,255,255,.7); background:linear-gradient(115deg,#ff9ed6,#ffd27a,#8cdcff,#be8cff);}
+.frame-swatch .lbl{font-size:.66rem; font-weight:700; color:var(--fg-muted); text-align:center;}
+.frame-swatch .pr{font-size:.62rem; color:var(--fg-faint);}
+.frame-swatch .pr.owned{color:var(--good);}
+.frame-swatch.none-swatch .ring{border-style:dashed; border-color:var(--border-strong);}
+/* ---- 마이룸 도감(수집 앨범) ---- */
+.myroom-dex-btn{
+  display:inline-flex; align-items:center; gap:4px; border:1px solid var(--border-strong); background:var(--surface-2);
+  color:var(--fg); border-radius:999px; padding:5px 11px; font-size:.72rem; font-weight:700; cursor:pointer; flex:none;
+}
+.dex-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.dex-cell{
+  position:relative; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center;
+  padding:16px 10px; border-radius:14px; background:var(--surface-2); border:1.5px solid var(--border);
+}
+.dex-cell.got{border-color:var(--tier-color,var(--accent)); background:var(--tier-soft,var(--surface-2));}
+.dex-cell .ic{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:#fff; background:var(--tier-color,var(--fg-faint)); flex:none;}
+.dex-cell.locked .ic{background:var(--surface-3); color:var(--fg-faint); filter:grayscale(1);}
+.dex-cell.locked{opacity:.55;}
+.dex-cell .lbl{font-weight:700; font-size:.82rem;}
+.dex-cell .ct{font-size:.7rem; color:var(--fg-muted); font-variant-numeric:tabular-nums;}
+.dex-progress{display:flex; flex-direction:column; gap:6px;}
+.dex-progress .bar{height:8px; border-radius:999px; background:var(--surface-3); overflow:hidden;}
+.dex-progress .bar .fill{height:100%; background:var(--accent); border-radius:999px;}
 
 /* ---- 결과 공개(reveal) 연출 ---- */
 .reveal-overlay{
@@ -366,7 +411,7 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
   color:var(--accent); font-weight:700; font-size:.88rem; cursor:pointer;
 }
 .chat-log{display:flex; flex-direction:column; gap:10px; max-height:46vh; overflow-y:auto; padding:2px;}
-.chat-msg{display:block; max-width:84%; font-size:.86rem; line-height:1.5; padding:9px 13px; border-radius:14px; min-width:0; overflow-wrap:anywhere; word-break:break-word;}
+.chat-msg{display:block; max-width:84%; font-size:.86rem; line-height:1.5; padding:9px 13px; border-radius:14px; min-width:0; overflow-wrap:anywhere; word-break:break-word; white-space:pre-line;}
 .chat-msg.bot{align-self:flex-start; background:var(--surface-2); color:var(--fg); border-bottom-left-radius:4px;}
 .chat-msg.user{align-self:flex-end; background:var(--accent); color:var(--accent-ink); border-bottom-right-radius:4px;}
 .chat-msg.pending{color:var(--fg-muted); font-style:italic;}
@@ -427,6 +472,16 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .detail-block .ttl{margin-bottom:-2px;}
 .detail-block .ttl{font-weight:700; font-size:.88rem; color:var(--accent);}
 .situation-block{background:var(--surface-2); border-radius:14px; padding:12px 14px; margin-top:8px;}
+/* ---------- 오늘의 케미 자세히 보기(일일 반복 크레딧 소비) ---------- */
+.chemi-detail-btn{
+  width:100%; margin-top:4px; padding:11px 14px; border-radius:12px; border:1px dashed var(--accent);
+  background:var(--accent-soft); color:var(--accent); font-size:.82rem; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.chemi-detail-btn .pr{font-weight:700; opacity:.9;}
+.chemi-detail-body{display:flex; flex-direction:column; gap:4px; margin-top:6px;}
+.chemi-detail-body .sub-ttl{font-weight:700; font-size:.8rem; color:var(--fg-muted); margin-top:6px;}
+.chemi-detail-body .section-desc{margin-bottom:2px;}
 </style>
 <style>
 /* 독립 웹 배포용 베이스 리셋 (claude.ai Artifact 스켈레톤이 제공하던 부분을 대신함) */
@@ -1118,6 +1173,35 @@ var COUPLE_TODAY_TIER = [
   { min:-99, key:'tough', label:'서로 배려가 필요한 날', short:'배려 필요', icon:ICO_CLOUD, color:'#b39ddb', soft:'rgba(179,157,219,.16)',
     text:'둘 다 몸과 마음의 여유가 줄어들기 쉬운 날이에요. 오늘 다툼이 생긴다면 평소보다 더 크게 번질 수 있으니, 의견이 부딪히는 순간 "오늘은 일단 넘어가고 내일 다시 얘기하자"처럼 한 템포 쉬어가는 것이 관계를 지키는 데 더 도움이 됩니다.' }
 ];
+/* 오늘의 케미 상세(유료, 매일 리셋) — 등급별로 "오늘 대화 포인트 / 오늘 조심할 점 / 오늘 추천 행동" 3가지를 더 깊이 풀어준다.
+   무료 한 줄 요약과 겹치지 않는 실전 팁 위주라서, 같은 카드를 매일 다시 찾아와도 볼 가치가 있게 구성했다. */
+var COUPLE_TODAY_DETAIL = {
+  fire: {
+    talk:'오늘은 망설였던 이야기를 꺼내기 가장 좋은 날이에요. 데이트·여행 계획처럼 설레는 주제는 물론, 평소라면 조심스러웠던 서로의 마음이나 앞으로의 이야기도 생각보다 쉽게 오갈 수 있습니다.',
+    avoid:'기분 좋은 흐름에 휩쓸려 돈이 많이 드는 약속이나 중요한 결정을 즉흥적으로 해버리지 않도록 주의하세요. 들뜬 김에 내뱉은 말이 나중에 부담스러운 약속으로 남을 수 있는 날입니다.',
+    action:'오늘 하루 중 한 번은 먼저 연락하거나 작은 선물, 메시지를 건네보세요. 평소보다 훨씬 크게, 좋게 받아들여질 가능성이 높은 날이에요.'
+  },
+  good: {
+    talk:'큰 이벤트가 아니어도 함께 밥 한 끼 하거나 짧게 안부를 전하는 것만으로도 관계가 한 뼘 가까워지는 날이에요. 평소 하고 싶었던 작은 제안을 건네보기 좋은 타이밍입니다.',
+    avoid:'무리해서 분위기를 끌어올리려 하기보다는, 있는 그대로 편안하게 흘러가도록 두는 편이 좋아요. 과한 이벤트나 서프라이즈는 오히려 상대를 부담스럽게 할 수 있습니다.',
+    action:'오늘 대화 중 상대가 꺼낸 사소한 이야기를 한 번 더 물어봐 주세요. "그거 어떻게 됐어?" 한마디가 평소보다 더 깊은 공감으로 이어지는 날이에요.'
+  },
+  neutral: {
+    talk:'특별한 이슈 없이 무난하게 흘러가는 날이라, 일상적인 이야기나 요즘 서로의 관심사를 나누기에 좋습니다. 깊은 대화보다는 편안한 스몰토크가 더 자연스러운 하루예요.',
+    avoid:'타고난 합보다 서로 얼마나 신경 쓰느냐가 하루 분위기를 좌우하는 날이에요. "오늘은 무난하니 괜찮겠지"하고 소홀히 하면 평범한 하루가 심심한 하루로 바뀔 수 있습니다.',
+    action:'평소보다 한 번 더 안부를 묻거나, 사소한 배려(먼저 연락하기, 좋아하는 음료 챙겨주기 등)를 건네보세요. 작은 정성이 유독 잘 전해지는 날이에요.'
+  },
+  caution: {
+    talk:'오늘은 가볍고 편한 주제 위주로 대화를 이어가는 것이 좋아요. 유머나 공통 관심사처럼 부담 없는 이야기가 분위기를 부드럽게 만들어줍니다.',
+    avoid:'둘 중 한쪽, 혹은 둘 다 평소보다 예민해지기 쉬운 날이에요. 중요한 결정, 돈 문제, 미래에 대한 진지한 이야기는 오늘은 잠시 미뤄두는 것을 추천합니다.',
+    action:'말보다 행동으로 챙겨주는 편이 더 잘 통하는 날이에요. 긴 대화를 시도하기보다, 조용히 옆에 있어주거나 작은 호의를 베푸는 쪽을 택해보세요.'
+  },
+  tough: {
+    talk:'오늘 의견이 부딪히는 순간이 온다면, "오늘은 일단 넘어가고 내일 다시 얘기하자"처럼 한 템포 쉬어가는 말이 관계를 지키는 데 큰 도움이 됩니다.',
+    avoid:'둘 다 몸과 마음의 여유가 줄어들기 쉬운 날이라, 평소라면 넘어갔을 말에도 다툼이 크게 번질 수 있어요. 오늘만큼은 민감한 주제나 해묵은 이야기는 꺼내지 않는 것이 좋습니다.',
+    action:'서로에게 무언가를 바라기보다, 각자 컨디션을 먼저 회복하는 하루로 보내보세요. 무리해서 함께 시간을 보내기보다 가볍게 안부만 전하는 정도가 딱 맞는 날이에요.'
+  }
+};
 function coupleTodayInfo(dayGanWxA, dayGanWxB){
   var today = todayGanZhi();
   var relA = dailyFortuneRelation(dayGanWxA, today.wxGan);
@@ -2036,9 +2120,25 @@ function openChatSheet(){
   renderChatSheet();
 }
 function closeChatSheet(){ $('#chat-sheet-root').innerHTML = ''; }
+/* 챗봇 답변(특히 AI 응답)에 섞여나올 수 있는 마크다운 표기를 일반 텍스트로 정리.
+   채팅 말풍선은 마크다운 렌더러가 아니라서, 별표/해시/대시 기호가 그대로 노출되면 "텍스트가 깨진" 것처럼 보인다. */
+function stripMd(s){
+  return String(s==null?'':s)
+    .replace(/\r\n/g,'\n')
+    .replace(/^#{1,6}\s+/gm,'')          /* # 헤딩 기호 */
+    .replace(/\*\*(.+?)\*\*/g,'$1')      /* **굵게** */
+    .replace(/__(.+?)__/g,'$1')          /* __굵게__ */
+    .replace(/(?<!\*)\*(?!\*)([^*\n]+)\*(?!\*)/g,'$1') /* *기울임* */
+    .replace(/`([^`]+)`/g,'$1')          /* `코드` */
+    .replace(/^\s*[-*+]\s+/gm,'· ')      /* - 목록 → · 목록 */
+    .replace(/^\s*\d+\.\s+/gm,'')        /* 1. 번호 목록 */
+    .replace(/\n{3,}/g,'\n\n')           /* 과도한 빈 줄 정리 */
+    .trim();
+}
 function chatMsgHtml(m){
   var cls = 'chat-msg '+m.role+(m.pending?' pending':'');
-  return '<div class="'+cls+'">'+esc(m.text)+(m.pending?'<span class="chat-dots">·&nbsp;·&nbsp;·</span>':'')+'</div>';
+  var text = m.role==='bot' && !m.pending ? stripMd(m.text) : m.text;
+  return '<div class="'+cls+'">'+esc(text)+(m.pending?'<span class="chat-dots">·&nbsp;·&nbsp;·</span>':'')+'</div>';
 }
 function renderChatSheet(){
   var root = $('#chat-sheet-root');
@@ -2120,30 +2220,89 @@ function chatContextSummary(){
   return '이름: '+(my.name||'익명')+' / 일간 오행: '+my.dayGanWx+' / 신강신약: '+(my.strength||'-')+
     ' / 오늘 총운 요약: '+ft.label+' / 이번주 전반 분위기: '+PERIOD_TEXT[wk.key].week;
 }
+function pickRand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+/* 여러 후보 문구 중 비어있지 않은 것만 걸러 랜덤으로 하나 고른다 — 같은 질문을 반복해도 매번 다른 조합이 나오게 함 */
+function pickVariant(cands){
+  var ok = cands.filter(function(s){ return s && String(s).trim(); });
+  return ok.length ? pickRand(ok) : '';
+}
+function currentTimeOfDay(){
+  var h = new Date().getHours();
+  if (h < 11) return 'morning';
+  if (h < 18) return 'afternoon';
+  return 'evening';
+}
+var CHAT_OPENERS = ['음, 한번 볼게.','그 부분이 궁금하구나.','좋아, 바로 짚어줄게.','', '', ''];
+var CHAT_CLOSERS = ['', '', '', '더 궁금한 거 있으면 또 물어봐.', '오늘 하루 참고만 가볍게 해줘.'];
+var CHAT_FALLBACKS_SUFFIX = [
+  '조금 더 구체적으로 "재물운", "연애운", "건강운", "직장운", "인간관계", "이번 주는 어때?" 처럼 물어봐 주면 더 자세히 답해줄게.',
+  '"재물운"이나 "연애운"처럼 궁금한 영역을 콕 집어 물어보면 더 깊이 있게 풀어줄 수 있어.',
+  '어느 쪽이 궁금한지 알려주면 좋겠어 — 재물·연애·건강·직장·인간관계 중에 골라서 물어봐도 좋아.'
+];
+var CHAT_SMALLTALK = {
+  greet: { pat:/^(안녕|하이|헬로|hi|hello|뭐해|뭐 해)[\s!?.]*$/i, replies:[
+    '안녕! 오늘 하루 궁금한 거 있으면 편하게 물어봐.',
+    '왔구나. 오늘 운세 궁금해서 온 거지? 뭐부터 볼까.',
+    '어서 와. 재물운·연애운·건강운 중에 뭐가 제일 궁금해?'
+  ]},
+  who: { pat:/(너\s*누구|넌\s*누구|정체|뭐\s*하는\s*애)/, replies:[
+    '나는 네 사주를 바탕으로 오늘의 흐름을 읽어주는 챗봇이야. 궁금한 영역 있으면 물어봐.',
+    '오늘의 운세를 속삭여주는 역할이야. 재물·연애·건강·직장·인간관계, 뭐든 좋아.'
+  ]},
+  thanks: { pat:/(고마워|감사|땡큐|thx|thanks)/i, replies:[
+    '도움이 됐다니 다행이야. 또 궁금한 거 생기면 언제든 와.',
+    '별말씀을, 오늘 하루도 잘 풀리길 바라.'
+  ]},
+  compliment: { pat:/(용해|신기|똑똑|대단)/, replies:[
+    '하하, 과찬이야. 더 알고 싶은 거 있으면 편하게 물어봐.'
+  ]}
+};
 function chatBotReply(text){
   var my = STATE.mySaju;
   var today = todayGanZhi();
   var relKey = dailyFortuneRelation(my.dayGanWx, today.wxGan);
   var ft = FORTUNE_TEXT[relKey];
-  if (/재물|돈|투자|지출/.test(text)) return ICO_COIN+' '+ft.money;
-  if (/연애|애정|사랑|썸|이성/.test(text)) return ICO_HEART2+' '+ft.love;
-  if (/건강|몸|컨디션|피곤/.test(text)) return ICO_PULSE+' '+ft.health;
-  if (/직장|일|업무|커리어/.test(text)) return (WUXING_WORRY_TIP[my.dayGanWx] && WUXING_WORRY_TIP[my.dayGanWx]['직장']) || ft.total;
-  if (/인간관계|친구|사람/.test(text)) return (WUXING_WORRY_TIP[my.dayGanWx] && WUXING_WORRY_TIP[my.dayGanWx]['인간관계']) || ft.total;
+  var tb = TIME_BLOCK_TEXT[relKey];
+  var tip = WUXING_WORRY_TIP[my.dayGanWx] || {};
+  var tod = currentTimeOfDay();
+
+  for (var k in CHAT_SMALLTALK){
+    if (CHAT_SMALLTALK[k].pat.test(text)) return pickRand(CHAT_SMALLTALK[k].replies);
+  }
+
+  var opener = pickRand(CHAT_OPENERS);
+  var closer = pickRand(CHAT_CLOSERS);
+  function wrap(label, body){
+    return (opener? opener+' ' : '')+label+' '+body+(closer? '\n\n'+closer : '');
+  }
+  /* 채팅 말풍선은 순수 텍스트(esc 처리)로 렌더되므로 SVG 아이콘 마크업이 아니라
+     짧은 한글 라벨을 붙인다 — ICO_* 상수를 그대로 넣으면 이스케이프된 SVG 코드가
+     그대로 글자로 보이는 버그가 생긴다. */
+
+  if (/재물|돈|투자|지출/.test(text)) return wrap('[재물운]', pickVariant([ft.money, tip['재물'], tb && tb[tod]]));
+  if (/연애|애정|사랑|썸|이성/.test(text)) return wrap('[애정운]', pickVariant([ft.love, tip['연애']]));
+  if (/건강|몸|컨디션|피곤/.test(text)) return wrap('[건강운]', pickVariant([ft.health, tip['건강']]));
+  if (/직장|일|업무|커리어/.test(text)) return wrap('[직장운]', pickVariant([tip['직장'], ft.total, tb && tb[tod]]));
+  if (/인간관계|친구|사람/.test(text)) return wrap('[관계운]', pickVariant([tip['인간관계'], ft.total]));
+  if (/공부|학업|시험|자격증/.test(text)) return wrap('[공부운]', pickVariant([tip['직장'], ft.total]));
+  if (/여행|이동|이사/.test(text)) return wrap('[이동운]', pickVariant([ft.total, tb && tb[tod]]));
+  if (/아침/.test(text) && tb) return wrap('[아침]', tb.morning);
+  if (/오후/.test(text) && tb) return wrap('[오후]', tb.afternoon);
+  if (/저녁|밤/.test(text) && tb) return wrap('[저녁]', tb.evening);
   if (/이번\s*주|주간|weekly/i.test(text)){
     var wk = dominantRelKey(weeklyFortuneData(my));
-    return ICO_CALENDAR+' '+PERIOD_TEXT[wk.key].week;
+    return wrap('[이번 주]', PERIOD_TEXT[wk.key].week);
   }
   if (/이번\s*달|월간|monthly/i.test(text)){
     var mo = dominantRelKey(monthlyFortuneData(my));
-    return ICO_CALENDAR+' '+PERIOD_TEXT[mo.key].month;
+    return wrap('[이번 달]', PERIOD_TEXT[mo.key].month);
   }
   if (/올해|연간|yearly/i.test(text)){
     var yr = dominantRelKey(yearlyFortuneData(my));
-    return ICO_CALENDAR+' '+PERIOD_TEXT[yr.key].year;
+    return wrap('[올해]', PERIOD_TEXT[yr.key].year);
   }
-  if (/오늘|지금|today/i.test(text)) return '🌙 '+ft.total;
-  return '🌙 '+ft.total+' 조금 더 구체적으로 "재물운", "연애운", "건강운", "이번 주는 어때?" 처럼 물어봐 주시면 더 자세히 답해드릴게요.';
+  if (/오늘|지금|today/i.test(text)) return wrap('[오늘]', pickVariant([ft.total, tb && tb[tod]]));
+  return wrap('[오늘]', ft.total)+'\n\n'+pickRand(CHAT_FALLBACKS_SUFFIX);
 }
 
 function dayFortuneHtml(my){
@@ -2358,6 +2517,32 @@ function myroomTier(score){
   for (var i=0;i<MYROOM_TIERS.length;i++){ if (score >= MYROOM_TIERS[i].min) return MYROOM_TIERS[i]; }
   return MYROOM_TIERS[MYROOM_TIERS.length-1];
 }
+/* 마이룸 카드 꾸미기(프레임) — 카드 하나하나마다 따로 구매하는 반복 가능한 크레딧 소비처 */
+var FRAME_DEFS = [
+  { key:'rose',   label:'로즈',     cost:3, color:'#ff8fa8', soft:'rgba(255,143,168,.28)' },
+  { key:'gold',   label:'골드',     cost:3, color:'#e0ad55', soft:'rgba(224,173,85,.28)' },
+  { key:'aurora', label:'오로라',   cost:4, color:'#7dd3c0', soft:'rgba(125,211,192,.28)' },
+  { key:'holo',   label:'홀로그래픽', cost:6, color:null,    soft:null }
+];
+function frameDef(key){ return FRAME_DEFS.find(function(f){ return f.key===key; }) || null; }
+function frameStyleVars(frameKey){
+  var f = frameDef(frameKey);
+  if (!f || !f.color) return '';
+  return '--frame-color:'+f.color+'; --frame-soft:'+f.soft+';';
+}
+/* 프레임 적용 상태는 카드 id 기준으로 따로 저장 — 로컬 궁합기록이든(마이룸) 초대로 받은 카드든(배포판) 동일하게 동작 */
+var MYROOM_FRAMES_KEY = 'mysaju_frames_v1';
+function loadMyRoomFrames(){
+  try{ var raw = localStorage.getItem(MYROOM_FRAMES_KEY); return raw ? JSON.parse(raw) : {}; }catch(e){ return {}; }
+}
+function getMyRoomFrame(id){ return loadMyRoomFrames()[id] || ''; }
+function setMyRoomFrame(id, frameKey){
+  try{
+    var m = loadMyRoomFrames();
+    if (frameKey) m[id] = frameKey; else delete m[id];
+    localStorage.setItem(MYROOM_FRAMES_KEY, JSON.stringify(m));
+  }catch(e){}
+}
 function loadMyRoomList(){
   try{
     var raw = localStorage.getItem(MYROOM_KEY);
@@ -2384,7 +2569,9 @@ function myroomCardHtml(entry, rank){
     (rank!=null && rank<=3) ? '<span class="myroom-rank" style="top:26px;">'+RANK_MEDAL[rank-1]+'</span>' : '';
   var chemi = (entry.dayGanWxA && entry.dayGanWxB) ? coupleTodayInfo(entry.dayGanWxA, entry.dayGanWxB) : null;
   var chemiBadge = chemi ? '<span class="myroom-chemi" style="color:'+chemi.tier.color+';">'+chemi.tier.icon+' 오늘 '+chemi.tier.short+'</span>' : '';
-  return '<div class="myroom-card" tabindex="0" role="button" aria-label="'+esc(entry.nameB||'상대방')+'님과의 궁합 자세히 보기" style="--tier-color:'+tier.color+'; --tier-soft:'+tier.soft+';">'+
+  var curFrame = getMyRoomFrame(entry.id);
+  var frameAttr = curFrame ? ' data-frame="'+curFrame+'"' : '';
+  return '<div class="myroom-card" tabindex="0" role="button" aria-label="'+esc(entry.nameB||'상대방')+'님과의 궁합 자세히 보기"'+frameAttr+' style="--tier-color:'+tier.color+'; --tier-soft:'+tier.soft+'; '+frameStyleVars(curFrame)+'">'+
       sparkle+
       rankBadge+
       ownerTag+
@@ -2455,16 +2642,126 @@ function openMyroomDetail(entry){
               '<span class="ic">'+chemi.tier.icon+'</span><span class="lb">'+chemi.tier.label+'</span>'+
             '</span>'+
             autoParas(chemi.tier.text)+
+            '<div id="chemi-detail-slot"></div>'+
           '</div>' : '')+
         (ZHI_REL_MARRIAGE_TEXT[entry.zhiRel] ? '<div class="detail-block"><p class="ttl">'+ICO_RING+' 결혼운</p>'+autoParas(ZHI_REL_MARRIAGE_TEXT[entry.zhiRel])+'</div>' : '')+
         (GAN_REL_TALK_TEXT[entry.ganRel] ? '<div class="detail-block"><p class="ttl">💬 대화 스타일</p>'+autoParas(GAN_REL_TALK_TEXT[entry.ganRel])+'</div>' : '')+
         (dateTxt ? '<p class="disclaimer">'+dateTxt+'</p>' : '')+
+        '<div class="detail-block"><p class="ttl">'+ICO_GEM+' 카드 꾸미기</p>'+frameSwatchesHtml(entry)+'</div>'+
       '</div>'+
     '</div>';
   $('#myroom-detail-backdrop').addEventListener('click', closeMyroomDetail);
   $('#myroom-detail-close').addEventListener('click', closeMyroomDetail);
+  wireFrameSwatches(entry);
+  if (chemi) renderChemiDetailSlot(entry, chemi);
 }
 function closeMyroomDetail(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML=''; }
+/* 오늘의 케미 자세히 보기 — 카드(상대)별 + 날짜별로 잠금 키가 갈려서, 같은 카드도 날이 바뀌면 다시 크레딧을 써야
+   그날의 상세 팁을 볼 수 있다. 매일 자동으로 리셋되는 반복 소비처. */
+function chemiDetailKey(entry){ return 'chemi-'+entry.id+'-'+(new Date()).toDateString(); }
+function renderChemiDetailSlot(entry, chemi){
+  var slot = $('#chemi-detail-slot');
+  if (!slot) return;
+  var key = chemiDetailKey(entry);
+  if (!isUnlocked(key)){
+    slot.innerHTML =
+      '<button type="button" class="chemi-detail-btn" id="btn-chemi-detail">'+
+        '오늘의 케미 자세히 보기 <span class="pr">'+ICO_GEM+' 2</span>'+
+      '</button>'+
+      '<p class="disclaimer" style="margin-top:4px;">오늘 하루에만 적용되는 상세 팁이에요. 날이 바뀌면 다시 확인할 수 있어요.</p>';
+    $('#btn-chemi-detail', slot).addEventListener('click', function(){
+      tryUnlock(key, 2, '오늘의 케미 자세히 보기', function(){
+        slot.innerHTML = chemiDetailHtml(chemi);
+      });
+    });
+    return;
+  }
+  slot.innerHTML = chemiDetailHtml(chemi);
+}
+function chemiDetailHtml(chemi){
+  var d = COUPLE_TODAY_DETAIL[chemi.tier.key];
+  if (!d) return '';
+  return '<div class="chemi-detail-body">'+
+    '<p class="sub-ttl">💬 오늘 대화 포인트</p><p class="section-desc">'+d.talk+'</p>'+
+    '<p class="sub-ttl">⚠ 오늘 조심할 점</p><p class="section-desc">'+d.avoid+'</p>'+
+    '<p class="sub-ttl">✅ 오늘 추천 행동</p><p class="section-desc">'+d.action+'</p>'+
+  '</div>';
+}
+function frameSwatchesHtml(entry){
+  var cur = getMyRoomFrame(entry.id);
+  var noneActive = cur==='' ? ' active' : '';
+  var cells = '<div class="frame-swatch none-swatch'+noneActive+'" data-frame=""><span class="ring"></span><span class="lbl">없음</span><span class="pr">&nbsp;</span></div>';
+  cells += FRAME_DEFS.map(function(f){
+    var owned = isUnlocked('frame-'+entry.id+'-'+f.key);
+    var active = cur===f.key ? ' active' : '';
+    var ringCls = f.key==='holo' ? 'ring holo' : 'ring';
+    var priceHtml = owned ? '<span class="pr owned">보유중</span>' : '<span class="pr">'+ICO_GEM+' '+f.cost+'</span>';
+    return '<div class="frame-swatch'+active+'" data-frame="'+f.key+'" style="--sw-color:'+(f.color||'#fff')+';">'+
+      '<span class="'+ringCls+'"></span><span class="lbl">'+f.label+'</span>'+priceHtml+
+    '</div>';
+  }).join('');
+  return '<div class="frame-picker">'+cells+'</div>'+
+    '<p class="disclaimer">프레임은 한 번 구매하면 이 카드에서 계속 무료로 바꿔 낄 수 있어요. 카드마다 따로 구매해야 해요.</p>';
+}
+function wireFrameSwatches(entry){
+  $all('.frame-swatch', $('#myroom-sheet-root')).forEach(function(el){
+    el.addEventListener('click', function(){
+      var key = el.dataset.frame;
+      if (!key){ setMyRoomFrame(entry.id, ''); openMyroomDetail(entry); renderMyRoom(); return; }
+      var f = frameDef(key);
+      if (!f) return;
+      var unlockKey = 'frame-'+entry.id+'-'+key;
+      tryUnlock(unlockKey, f.cost, f.label+' 프레임 적용', function(){
+        setMyRoomFrame(entry.id, key);
+        openMyroomDetail(entry);
+        renderMyRoom();
+      });
+    });
+  });
+}
+/* ---- 마이룸 도감(수집 앨범): 내가 모은 궁합 카드를 등급별로 모아보는 무료 수집 보상 화면 ---- */
+function myroomDexBtnHtml(){
+  return '<button type="button" class="myroom-dex-btn" id="btn-myroom-dex">'+ICO_SEARCH+' 도감</button>';
+}
+function wireMyroomDexBtn(){
+  var b = $('#btn-myroom-dex');
+  if (b) b.addEventListener('click', openMyroomDex);
+}
+function openMyroomDex(){
+  var list = loadMyRoomList();
+  var counts = {};
+  list.forEach(function(e){ var t = myroomTier(e.score); counts[t.key] = (counts[t.key]||0)+1; });
+  var gotTierCount = MYROOM_TIERS.filter(function(t){ return counts[t.key]>0; }).length;
+  var cellsHtml = MYROOM_TIERS.map(function(t){
+    var n = counts[t.key]||0;
+    var locked = n===0;
+    return '<div class="dex-cell'+(locked?' locked':' got')+'" style="--tier-color:'+t.color+'; --tier-soft:'+t.soft+';">'+
+        '<span class="ic">'+(locked?'?':t.icon)+'</span>'+
+        '<span class="lbl">'+(locked?'???':t.label)+'</span>'+
+        '<span class="ct">'+(locked?'아직 없어요':n+'명 모음')+'</span>'+
+      '</div>';
+  }).join('');
+  var pct = Math.round(gotTierCount/MYROOM_TIERS.length*100);
+  var root = $('#myroom-sheet-root');
+  if (!root) return;
+  root.innerHTML =
+    '<div class="sheet-backdrop" id="myroom-dex-backdrop">'+
+      '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
+        '<div class="sheet-handle"></div>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">인연 도감</p>'+
+          '<button type="button" class="sheet-close" id="myroom-dex-close">✕</button></div>'+
+        '<div class="dex-progress">'+
+          '<p class="section-desc">지금까지 '+gotTierCount+' / '+MYROOM_TIERS.length+'개 등급을 만나봤어요 ('+pct+'%)</p>'+
+          '<div class="bar"><div class="fill" style="width:'+pct+'%;"></div></div>'+
+        '</div>'+
+        '<div class="dex-grid">'+cellsHtml+'</div>'+
+        '<p class="disclaimer">궁합을 확인할 때마다 새로운 등급의 인연을 만날 수 있어요. 더 다양한 상대와 궁합을 확인해서 도감을 채워보세요.</p>'+
+      '</div>'+
+    '</div>';
+  $('#myroom-dex-backdrop').addEventListener('click', function(e){ if (e.target.id==='myroom-dex-backdrop') closeMyroomDex(); });
+  $('#myroom-dex-close').addEventListener('click', closeMyroomDex);
+}
+function closeMyroomDex(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML=''; }
 var MYROOM_CLOUD_DOCS = null; /* db 연동 시 구독된 공개 갤러리 전체 문서 */
 var MYROOM_UNSUB = null;
 function subscribeMyRoomCloud(){
@@ -2512,12 +2809,13 @@ function renderMyRoomLocal(root){
   var displayList = myroomSortedForDisplay(list, STATE.myroomSort);
   root.innerHTML =
     '<div class="myroom-head"><p class="eyebrow">마이룸</p>'+
-      '<div class="myroom-head-right">'+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
+      '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
     '</div>'+
     '<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
     '<p class="disclaimer">내가 초대해서 실제로 사주를 등록한 친구만 모이는 갤러리예요.</p>';
   wireMyroomSortSeg();
   wireMyroomCardClicks($('.myroom-grid', root), displayList);
+  wireMyroomDexBtn();
 }
 function fetchInviteMyRoom(){
   fetch('/api/invite/list?device_id='+encodeURIComponent(CREDITS.shareCode))
@@ -2551,11 +2849,12 @@ function renderMyRoomCloud(root){
   var rankMap = myroomRankMap(docs);
   root.innerHTML =
     '<div class="myroom-head"><p class="eyebrow">모두의 마이룸 <span class="chat-ai-badge">LIVE</span></p>'+
-      '<div class="myroom-head-right">'+myroomSortSegHtml()+'<span class="myroom-count">'+docs.length+'개 모음</span></div>'+
+      '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+docs.length+'개 모음</span></div>'+
     '</div>'+
     '<div class="myroom-grid" id="myroom-grid-cloud"></div>'+
     '<p class="disclaimer">다른 사람들이 확인한 궁합 카드가 실시간으로 함께 모이는 공개 갤러리예요. 나도 궁합을 확인하면 내 카드가 여기 추가돼요.</p>';
   wireMyroomSortSeg();
+  wireMyroomDexBtn();
   var gridEl = $('#myroom-grid-cloud');
   function paint(list){
     if (!gridEl) return;
