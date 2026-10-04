@@ -1598,6 +1598,29 @@ function kakaoShare(text, url, buttonTitle){
     });
   });
 }
+/* 궁합 공유카드(동적으로 생성된 PNG blob)를 카카오 피드 카드의 이미지로 올려서,
+   누르면 바로 사주바라로 랜딩되는 "초대 메시지" 형태로 공유한다.
+   Kakao.Share.uploadImage는 1회성 이미지 업로드 API — 업로드된 imageUrl을 피드 카드에 꽂아 보낸다. */
+function kakaoShareImage(title, text, blob, url, buttonTitle){
+  return loadKakaoSdk().then(function(Kakao){
+    return Kakao.Share.uploadImage({ file: [blob] }).then(function(res){
+      var imageUrl = (res && res.infos && res.infos.original && res.infos.original.url) || KAKAO_SHARE_IMAGE;
+      return Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: title,
+          description: text,
+          imageUrl: imageUrl,
+          link: { mobileWebUrl: url, webUrl: url }
+        },
+        buttons: [{
+          title: buttonTitle || '우리 궁합 확인하기',
+          link: { mobileWebUrl: url, webUrl: url }
+        }]
+      });
+    });
+  });
+}
 function copyToClipboard(text){
   if (navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(text).catch(function(){ fallbackCopy(text); });
@@ -3588,27 +3611,37 @@ function doShareCompat(resA, resB, total, compat){
   var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+' 궁합 점수는 '+total+'점! 사주바라에서 우리 궁합도 확인해보세요 💕';
   if (!document.createElement('canvas').getContext){ fallbackCompatTextShare(text, url); return; }
   buildCompatShareCard(resA, resB, compat, total).then(function(canvas){
-    if (isKakaoInApp()){
-      downloadCanvasImage(canvas, 'sazubara-compat.png');
-      maybeAwardShareBonus();
-      return;
-    }
     canvas.toBlob(function(blob){
       if (!blob){ fallbackCompatTextShare(text, url); return; }
-      var file;
-      try { file = new File([blob], 'sazubara-compat.png', {type:'image/png'}); } catch(e){ file = null; }
-      if (file && navigator.canShare && navigator.canShare({files:[file]})){
-        navigator.share({ files:[file], title:'사주바라 궁합', text:text }).then(maybeAwardShareBonus).catch(function(err){
-          if (err && err.name==='AbortError') return;
-          downloadCanvasImage(canvas, 'sazubara-compat.png');
-          maybeAwardShareBonus();
-        });
-      } else {
-        downloadCanvasImage(canvas, 'sazubara-compat.png');
-        maybeAwardShareBonus();
-      }
+      shareCompatImageBlob(canvas, blob, text, url);
     }, 'image/png', 0.95);
   }).catch(function(){ fallbackCompatTextShare(text, url); });
+}
+/* 기본(=클로드 아티팩트 버전 포함 공용) 공유 방식: Web Share API로 이미지 파일을 바로 공유 시도,
+   안 되면 다운로드. 독립 배포본(build_standalone.py)에서는 이 함수를 감싸서, 카카오톡으로
+   누르면 바로 사주바라로 랜딩되는 "초대 메시지" 형태(이미지가 들어간 카카오 피드 카드)를
+   먼저 시도하고, 그게 실패할 때만 아래 로직으로 떨어지도록 패치한다. */
+function shareCompatImageBlob(canvas, blob, text, url){
+  var fallbackFn = function(){
+  if (isKakaoInApp()){
+    downloadCanvasImage(canvas, 'sazubara-compat.png');
+    maybeAwardShareBonus();
+    return;
+  }
+  var file;
+  try { file = new File([blob], 'sazubara-compat.png', {type:'image/png'}); } catch(e){ file = null; }
+  if (file && navigator.canShare && navigator.canShare({files:[file]})){
+    navigator.share({ files:[file], title:'사주바라 궁합', text:text }).then(maybeAwardShareBonus).catch(function(err){
+      if (err && err.name==='AbortError') return;
+      downloadCanvasImage(canvas, 'sazubara-compat.png');
+      maybeAwardShareBonus();
+    });
+  } else {
+    downloadCanvasImage(canvas, 'sazubara-compat.png');
+    maybeAwardShareBonus();
+  }
+  };
+  kakaoShareImage('사주바라 궁합', text, blob, url).then(maybeAwardShareBonus).catch(fallbackFn);
 }
 
 /* ---- 마이룸: 내가 확인한 궁합 상대 로컬 저장(추후 마이룸 화면에서 사용) ---- */
