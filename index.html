@@ -131,10 +131,24 @@ img{max-width:100%;}
 .dot{width:9px; height:9px; border-radius:50%; display:inline-block; flex:none;}
 /* ---------- 오행 범례/차트 ---------- */
 .wx-chart-row{display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
+.wx-donut-wrap{position:relative; width:92px; height:92px; flex:none;}
+.wx-donut-wrap svg{position:absolute; inset:0;}
+.wx-donut-center{
+  position:absolute; inset:14px; border-radius:50%; background:var(--surface);
+  display:flex; align-items:center; justify-content:center; flex-direction:column; gap:2px;
+}
+.wx-donut-center .gan{font-family:var(--font-display); font-weight:700; font-size:1.1rem; color:var(--fg);}
+.wx-donut-center .lb{display:inline-flex; align-items:center; gap:4px; font-size:.62rem; color:var(--fg-muted);}
 .legend{display:flex; flex-direction:column; gap:7px; flex:1; min-width:140px;}
 .legend-item{display:flex; align-items:center; gap:8px; font-size:.82rem;}
 .legend-item .nm{flex:1; color:var(--fg);}
 .legend-item .ct{color:var(--fg-muted); font-variant-numeric:tabular-nums;}
+.wx-balance-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+.wx-balance-chip{
+  display:inline-flex; align-items:center; gap:6px; font-size:.76rem; font-weight:700; padding:6px 12px; border-radius:999px;
+  background:var(--chip-soft,var(--surface-2)); color:var(--fg);
+}
+.wx-balance-chip.muted{background:var(--surface-2); color:var(--fg-muted); font-weight:600;}
 /* ---------- 게이지/진행바 ---------- */
 .gauge{position:relative; height:10px; border-radius:6px; background:var(--surface-2); overflow:hidden;}
 .gauge > i{position:absolute; inset:0 auto 0 0; background:var(--accent); border-radius:6px;}
@@ -664,19 +678,19 @@ var CITY_LON = {
 };
 
 var WUXING_INFO = {
-  '목':{hanja:'木',var:'--el-wood',trait:'성장과 시작의 기운',
+  '목':{hanja:'木',var:'--el-wood',soft:'rgba(68,163,134,.16)',trait:'성장과 시작의 기운',
     personality:'봄의 새싹처럼 솟아오르는 기운을 타고났습니다. 어질고 유연한 성정 안에 누구보다 뜨거운 추진력을 숨기고 있어, 남들이 재고 따질 때 "일단 가보자"며 먼저 판을 벌이는 쪽입니다. 다만 싹을 틔우는 재주에 비해 뿌리를 깊게 내리는 끈기는 상대적으로 얕아서, 벌여놓은 일들이 흐지부지 시들어버리는 순간이 자주 찾아옵니다. 새 일을 시작하기 전 "이걸 끝까지 밀고 갈 체력이 내게 있는가"를 스스로에게 되물어보세요. 마감일을 눈에 보이는 곳에 적어두고 벌인 일의 개수를 가끔 세어보는 것만으로도, 피어난 싹이 끝내 열매로 여무는 속도가 달라집니다.',
     color:'초록 · 연두', dir:'동쪽', item:'원목 소품, 식물'},
-  '화':{hanja:'火',var:'--el-fire',trait:'확산과 표현의 기운',
+  '화':{hanja:'火',var:'--el-fire',soft:'rgba(177,44,0,.16)',trait:'확산과 표현의 기운',
     personality:'타오르는 불꽃처럼 숨기지 못하는 기운입니다. 밝고 뜨겁게 자신을 드러내는 매력이 있어 모임의 공기를 단숨에 바꾸고, 하고 싶은 말은 삼키지 못하고 그 자리에서 터뜨리는 편이라 "에너지가 넘친다"는 말을 유독 자주 듣습니다. 다만 불꽃이 거세지는 순간 이성보다 감정이 먼저 말을 뱉어내, 뒤늦게 후회로 돌아오는 장면이 반복되기 쉽습니다. 불길이 치솟는 걸 느낄 때는 숫자를 열까지 세거나 잠시 자리를 벗어나보세요. 그 짧은 틈 하나가 큰 손해를 막아줍니다. 중요한 결정이나 메시지는 바로 보내지 말고 하룻밤 묵혀 다시 들여다보는 습관을 들이면, 뜨거움은 고스란히 간직한 채 더 다루기 쉬운 불이 됩니다.',
     color:'빨강 · 주황', dir:'남쪽', item:'조명, 캔들'},
-  '토':{hanja:'土',var:'--el-earth',trait:'중재와 신뢰의 기운',
+  '토':{hanja:'土',var:'--el-earth',soft:'rgba(171,116,0,.16)',trait:'중재와 신뢰의 기운',
     personality:'모든 것을 품어내는 대지의 기운을 지녔습니다. 넓은 포용력으로 다툼이 생기면 자연스레 중재자로 나서고, 사람들이 가장 먼저 속내를 털어놓는 상대가 되곤 합니다. 약속을 지키고 책임을 다하는 모습으로 깊은 신뢰를 얻지만, 땅이 새 지형으로 바뀌는 데는 시간이 걸리듯 변화에 적응하는 속도가 느려 갑작스러운 일정 변경 앞에서 유독 크게 흔들립니다. 변화의 조짐이 보일 때 미리 "플랜 B" 한두 가지를 마음에 심어두면 그 흔들림이 한결 덜해지고, 가끔은 남의 부탁을 거절하는 연습도 스스로를 지키는 데 반드시 필요합니다.',
     color:'노랑 · 갈색', dir:'중앙', item:'도자기 소품'},
-  '금':{hanja:'金',var:'--el-metal',trait:'결단과 의리의 기운',
+  '금':{hanja:'金',var:'--el-metal',soft:'rgba(0,110,154,.16)',trait:'결단과 의리의 기운',
     personality:'벼려진 칼날처럼 맺고 끊음이 분명한 기운입니다. 한번 아니라고 판단하면 좀처럼 마음을 돌리지 않는 단단함이 있고, 의리를 목숨처럼 여겨 "믿을 수 있는 사람"이라는 평가를 받습니다. 다만 그 단단함이 고집으로 굳어지면 상대의 말을 끝까지 듣기도 전에 결론부터 내려버려 관계에 날카로운 틈이 생기기 쉽습니다. 상대의 말을 끝까지 들은 뒤 "그래서 네 생각은 이거구나"라고 한 번 되짚어주는 습관을 들이면, 원칙은 그대로 지키면서도 관계는 훨씬 부드럽게 흘러갑니다.',
     color:'흰색 · 은색', dir:'서쪽', item:'금속 액세서리'},
-  '수':{hanja:'水',var:'--el-water',trait:'지혜와 유연함의 기운',
+  '수':{hanja:'水',var:'--el-water',soft:'rgba(117,82,219,.16)',trait:'지혜와 유연함의 기운',
     personality:'깊은 물처럼 속을 가늠하기 어려운 기운을 지녔습니다. 생각이 깊고 상황을 읽는 눈이 빨라 복잡하게 얽힌 일에서도 한발 물러서 전체를 조망하는 힘이 있습니다. 다만 그 깊음 탓에 속마음을 좀처럼 드러내지 않아 "무슨 생각을 하는지 모르겠다"는 말을 자주 듣고, 혼자 끌어안고 끙끙대다 뒤늦게 한꺼번에 터뜨리는 패턴이 되풀이되기 쉽습니다. 믿을 만한 단 한 사람에게라도 속내를 조금씩 흘려보내는 연습을 하면, 혼자 짊어지던 무게가 가벼워지고 그 물은 더 깊고 다정한 관계로 흘러갑니다.',
     color:'검정 · 남색', dir:'북쪽', item:'유리, 수경식물'}
 };
@@ -2003,15 +2017,39 @@ function pillarHtml(label, p){
   '</div>';
 }
 
-function donutGradient(wxCount, total){
-  var stops = []; var acc = 0;
-  WX_ORDER.forEach(function(wx){
+/* 오행 분포 도넛 - SVG stroke-dasharray 세그먼트 방식.
+   conic-gradient 대신 쓰는 이유: 세그먼트 사이에 실제 여백(2~3px)을 주고 끝을 둥글게(rounded data-end)
+   처리할 수 있어서, 앱 전반의 알약(pill) 모양 UI와 결이 맞고 세그먼트 구분도 더 또렷해짐. */
+function wxDonutSvg(wxCount, total){
+  var CX=46, CY=46, R=37, SW=13;
+  var C = 2*Math.PI*R;
+  var cum = 0;
+  var segs = WX_ORDER.map(function(wx){
     var cnt = wxCount[wx]||0;
-    if (!cnt) return;
-    var start = acc/total*100; acc += cnt; var end = acc/total*100;
-    stops.push('var('+WUXING_INFO[wx].var+') '+start.toFixed(2)+'% '+end.toFixed(2)+'%');
-  });
-  return stops.join(', ');
+    if (!cnt) return '';
+    var frac = cnt/total;
+    var startDeg = cum*360 - 90;
+    cum += frac;
+    var arcLen = frac*C;
+    var gapPx = Math.min(arcLen*0.3, 3);
+    var dash = Math.max(arcLen-gapPx, 0.001);
+    var rest = C-dash;
+    return '<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="var('+WUXING_INFO[wx].var+')" stroke-width="'+SW+'" stroke-linecap="round" '+
+      'stroke-dasharray="'+dash.toFixed(2)+' '+rest.toFixed(2)+'" transform="rotate('+startDeg.toFixed(2)+' '+CX+' '+CY+')"></circle>';
+  }).join('');
+  return '<svg width="92" height="92" viewBox="0 0 92 92" style="flex:none;" aria-hidden="true">'+
+    '<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="var(--surface-2)" stroke-width="'+SW+'"></circle>'+
+    segs+
+  '</svg>';
+}
+/* 가장 강한/빈(0개) 오행 - 동률이면 WX_ORDER 순서(목화토금수)상 먼저 나오는 쪽을 대표로 */
+function dominantWx(wxCount){
+  var best='목', bestN=-1;
+  WX_ORDER.forEach(function(wx){ var c=wxCount[wx]||0; if (c>bestN){ bestN=c; best=wx; } });
+  return { wx:best, count:bestN };
+}
+function emptyWx(wxCount){
+  return WX_ORDER.filter(function(wx){ return !(wxCount[wx]>0); });
 }
 
 function shinsalCardHtml(keys){
@@ -2059,7 +2097,11 @@ function renderSajuResult(result){
     return '<div class="legend-item">'+wxDot(wx)+'<span class="nm">'+wx+' ('+WUXING_INFO[wx].trait+')</span><span class="ct">'+cnt+'개</span></div>';
   }).join('');
 
-  var gradient = donutGradient(result.wxCount, result.totalCount);
+  var donutSvg = wxDonutSvg(result.wxCount, result.totalCount);
+  var dom = dominantWx(result.wxCount);
+  var emptyWxList = emptyWx(result.wxCount);
+  var balanceChips = '<span class="wx-balance-chip" style="--chip-soft:'+WUXING_INFO[dom.wx].soft+';">'+wxDot(dom.wx)+'가장 강한 기운 · '+dom.wx+' '+dom.count+'개</span>'+
+    (emptyWxList.length ? '<span class="wx-balance-chip muted">'+emptyWxList.map(function(wx){ return wx; }).join('·')+' 기운 없음</span>' : '');
 
   var ssRows = [
     ['연주', result.yearSS], ['월주', result.monthSS],
@@ -2087,14 +2129,16 @@ function renderSajuResult(result){
     '<div class="card">'+
       '<p class="section-title" style="font-size:.98rem;">오행 분포</p>'+
       '<div class="wx-chart-row">'+
-        '<div style="width:92px;height:92px;border-radius:50%;flex:none;background:conic-gradient('+gradient+');position:relative;">'+
-          '<div style="position:absolute;inset:14px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-direction:column;">'+
-            '<span style="font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var('+dayInfo.var+')">'+result.dayGanWx+'</span>'+
-            '<span style="font-size:.62rem;color:var(--fg-muted)">일간</span>'+
+        '<div class="wx-donut-wrap">'+
+          donutSvg+
+          '<div class="wx-donut-center">'+
+            '<span class="gan">'+result.dayGanWx+'</span>'+
+            '<span class="lb">'+wxDot(result.dayGanWx)+'일간</span>'+
           '</div>'+
         '</div>'+
         '<div class="legend">'+legendHtml+'</div>'+
       '</div>'+
+      '<div class="wx-balance-row">'+balanceChips+'</div>'+
       '<hr class="sep">'+
       '<p class="section-title" style="font-size:.98rem;">신강 · 신약</p>'+
       '<div class="gauge"><i style="width:'+strengthPct+'%"></i></div>'+
@@ -3182,7 +3226,7 @@ function renderCompatResult(resA, resB, compat){
     '<div class="card" id="compat-dateguide-card"></div>';
   wrap.hidden = false;
 
-  $('#btn-share-compat').addEventListener('click', function(){ doShareCompat(resA, resB, total); });
+  $('#btn-share-compat').addEventListener('click', function(){ doShareCompat(resA, resB, total, compat); });
 
   renderCoupleTodayCard(resA, resB);
 
@@ -3275,10 +3319,255 @@ function compatDetailHtml(resA, resB, compat){
     '<p class="disclaimer">두 사람의 일간과 각 월 대표일의 관계를 바탕으로 한 참고용 콘텐츠입니다.</p>';
 }
 
-function doShareCompat(resA, resB, total){
-  var url = shareUrl();
-  var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+' 궁합 점수는 '+total+'점! 사주바라에서 우리 궁합도 확인해보세요 💕';
-  kakaoShare(text, url).then(maybeAwardShareBonus).catch(function(){
+/* ---------- 궁합 공유카드 (canvas로 그려서 이미지로 내보냄) ---------- */
+var SHARE_ELEMENT_HEX = {'목':'#44a386','화':'#b12c00','토':'#ab7400','금':'#006e9a','수':'#7552db'};
+var ZHI_REL_SHORT = {
+  sanhe:  {tag:'삼합', phrase:'운명처럼 끌리는 인연'},
+  liuhe:  {tag:'육합', phrase:'다정하고 편안한 인연'},
+  same:   {tag:'동주', phrase:'결이 꼭 닮은 인연'},
+  none:   {tag:'평온', phrase:'무던하게 흘러가는 인연'},
+  hai:    {tag:'해살', phrase:'작은 오해가 쌓이기 쉬운 인연'},
+  yuanjin:{tag:'원진', phrase:'묘하게 신경 쓰이는 인연'},
+  xing:   {tag:'형살', phrase:'서로 다른 결이 부딪히는 인연'},
+  chong:  {tag:'충살', phrase:'뜨겁고 위태로운 인연'}
+};
+var GAN_REL_SHORT = {
+  sheng:'내가 상대를 챙기는 케미',
+  shengBack:'상대가 나를 챙겨주는 케미',
+  same:'기질이 닮아 잘 통하는 케미',
+  ke:'내가 리드하는 케미',
+  keBack:'상대에게 끌려가는 케미'
+};
+function wrapCanvasText(ctx, text, maxWidth, maxLines){
+  var tokens = text.split(' ');
+  var lines = [];
+  var current = '';
+  function pushChar(tok){
+    var buf='';
+    for (var i=0;i<tok.length;i++){
+      var t2 = buf+tok[i];
+      if (ctx.measureText(t2).width > maxWidth && buf){ lines.push(buf); buf=tok[i]; }
+      else buf=t2;
+    }
+    return buf;
+  }
+  tokens.forEach(function(tok){
+    var test = current ? current+' '+tok : tok;
+    if (ctx.measureText(test).width <= maxWidth){
+      current = test;
+    } else {
+      if (current) lines.push(current);
+      current = (ctx.measureText(tok).width > maxWidth) ? pushChar(tok) : tok;
+    }
+  });
+  if (current) lines.push(current);
+  if (maxLines && lines.length > maxLines){
+    lines = lines.slice(0, maxLines);
+    var last = lines[maxLines-1];
+    while (ctx.measureText(last+'…').width > maxWidth && last.length>1){ last = last.slice(0,-1); }
+    lines[maxLines-1] = last+'…';
+  }
+  return lines;
+}
+function roundRectPath(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+}
+function drawShareOrnament(ctx, cx, cy){
+  ctx.save();
+  ctx.fillStyle = '#e0ad55';
+  ctx.beginPath(); ctx.arc(cx, cy, 15, 0, Math.PI*2); ctx.fill();
+  ctx.save();
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.beginPath(); ctx.arc(cx+7, cy-4, 13, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+  ctx.globalAlpha = .8;
+  ctx.beginPath(); ctx.arc(cx+34, cy+6, 3, 0, Math.PI*2); ctx.fill();
+  ctx.globalAlpha = .5;
+  ctx.beginPath(); ctx.arc(cx-30, cy+10, 2.2, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+function loadImageAsync(src){
+  return new Promise(function(resolve){
+    if (!src){ resolve(null); return; }
+    var img = new Image();
+    img.onload = function(){ resolve(img); };
+    img.onerror = function(){ resolve(null); };
+    img.src = src;
+  });
+}
+function drawShareAvatar(ctx, img, cx, cy, r, letter){
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.closePath();
+  ctx.fillStyle = '#1e2438'; ctx.fill();
+  ctx.clip();
+  if (img) ctx.drawImage(img, cx-r, cy-r, r*2, r*2);
+  else {
+    ctx.fillStyle = '#e0ad55';
+    ctx.font = '700 '+Math.round(r*0.7)+'px "Noto Serif KR", serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(letter, cx, cy+Math.round(r*0.04));
+  }
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.lineWidth=4; ctx.strokeStyle='#e0ad55'; ctx.stroke();
+}
+function buildCompatShareCard(resA, resB, compat, total){
+  var W=1080, H=1650;
+  var canvas = document.createElement('canvas');
+  canvas.width=W; canvas.height=H;
+  var ctx = canvas.getContext('2d');
+  var fontsReady = (document.fonts && document.fonts.load) ?
+    Promise.all([
+      document.fonts.load('700 40px "Noto Serif KR"'),
+      document.fonts.load('700 100px "Noto Serif KR"'),
+      document.fonts.load('700 34px "Noto Sans KR"'),
+      document.fonts.load('400 26px "Noto Sans KR"')
+    ]).catch(function(){}) : Promise.resolve();
+  return fontsReady.then(function(){
+    return Promise.all([loadImageAsync(CHAR_AVATAR[resA.gender]), loadImageAsync(CHAR_AVATAR[resB.gender])]);
+  }).then(function(imgs){
+    var avA = imgs[0], avB = imgs[1];
+    var rel = ZHI_REL_SHORT[compat.zhiRel] || {tag:'인연', phrase:'서로를 알아가는 사이'};
+
+    roundRectPath(ctx, 0, 0, W, H, 56);
+    ctx.clip();
+
+    var bgGrad = ctx.createRadialGradient(W/2, H*0.28, 40, W/2, H*0.5, H*0.85);
+    bgGrad.addColorStop(0,'#1c2340'); bgGrad.addColorStop(.55,'#121735'); bgGrad.addColorStop(1,'#080b18');
+    ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
+
+    var seed = (total*97 + (resA.name||'A').length*13 + (resB.name||'B').length*7) % 997;
+    function rnd(i){ var x=Math.sin(seed+i*12.9898)*43758.5453; return x-Math.floor(x); }
+    for (var i=0;i<56;i++){
+      var sx=rnd(i)*W, sy=rnd(i+500)*H, sr=.8+rnd(i+900)*1.5;
+      ctx.globalAlpha = .25+rnd(i+200)*.4;
+      ctx.fillStyle = '#e0ad55';
+      ctx.beginPath(); ctx.arc(sx,sy,sr,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    roundRectPath(ctx, 24, 24, W-48, H-48, 40);
+    ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(224,173,85,.3)'; ctx.stroke();
+
+    drawShareOrnament(ctx, W/2, 78);
+
+    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#e0ad55';
+    ctx.font='700 38px "Noto Serif KR", serif';
+    ctx.fillText('사주바라 궁합', W/2, 146);
+    ctx.fillStyle='#a1a8bd';
+    ctx.font='400 23px "Noto Sans KR", sans-serif';
+    ctx.fillText('사주로 보는 우리 궁합', W/2, 188);
+
+    var avR=94, avY=370, gap=168;
+    drawShareAvatar(ctx, avA, W/2-gap, avY, avR, (resA.name||'나').charAt(0));
+    drawShareAvatar(ctx, avB, W/2+gap, avY, avR, (resB.name||'상대').charAt(0));
+    ctx.fillStyle='#eef0f6'; ctx.font='700 36px "Noto Sans KR", sans-serif';
+    ctx.textBaseline='middle';
+    ctx.fillText('✕', W/2, avY);
+
+    ctx.textBaseline='alphabetic';
+    ctx.font='700 32px "Noto Serif KR", serif';
+    ctx.fillText(resA.name||'나', W/2-gap, avY+avR+62);
+    ctx.fillText(resB.name||'상대방', W/2+gap, avY+avR+62);
+
+    function elementChip(cx, cy, wx){
+      var hex = SHARE_ELEMENT_HEX[wx] || '#e0ad55';
+      ctx.font='700 21px "Noto Sans KR", sans-serif';
+      var label = wx ? (wx+' 일간') : '';
+      var tw = ctx.measureText(label).width;
+      var padX=14, dotR=5, h=34;
+      var totalW = padX*2 + dotR*2 + 7 + tw;
+      var x0 = cx - totalW/2;
+      roundRectPath(ctx, x0, cy-h/2, totalW, h, h/2);
+      ctx.fillStyle = hexToRgba(hex, .16);
+      ctx.fill();
+      ctx.beginPath(); ctx.arc(x0+padX+dotR, cy, dotR, 0, Math.PI*2); ctx.fillStyle=hex; ctx.fill();
+      ctx.fillStyle = hex; ctx.textAlign='left'; ctx.textBaseline='middle';
+      ctx.fillText(label, x0+padX+dotR*2+7, cy+1);
+      ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    }
+    elementChip(W/2-gap, avY+avR+108, resA.dayGanWx);
+    elementChip(W/2+gap, avY+avR+108, resB.dayGanWx);
+
+    var ringCx=W/2, ringCy=816, ringR=172, ringW=26;
+    for (var g=3; g>=1; g--){
+      ctx.beginPath(); ctx.arc(ringCx,ringCy,ringR+g*7,0,Math.PI*2);
+      ctx.strokeStyle = 'rgba(224,173,85,'+(.05*g)+')'; ctx.lineWidth = 6; ctx.stroke();
+    }
+    ctx.lineCap='round';
+    ctx.beginPath(); ctx.arc(ringCx,ringCy,ringR,-Math.PI/2,Math.PI*1.5);
+    ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.lineWidth=ringW; ctx.stroke();
+    var frac=Math.max(0.02,Math.min(1,total/100));
+    ctx.beginPath(); ctx.arc(ringCx,ringCy,ringR,-Math.PI/2,-Math.PI/2+Math.PI*2*frac);
+    ctx.strokeStyle='#e0ad55'; ctx.lineWidth=ringW; ctx.stroke();
+
+    ctx.textBaseline='middle';
+    ctx.fillStyle='#eef0f6'; ctx.font='700 92px "Noto Serif KR", serif';
+    ctx.fillText(total+'점', ringCx, ringCy);
+    ctx.fillStyle='#a1a8bd'; ctx.font='400 26px "Noto Sans KR", sans-serif';
+    ctx.fillText('종합 궁합', ringCx, ringCy+70);
+    ctx.textBaseline='alphabetic';
+
+    var ganDesc = GAN_REL_TEXT[compat.ganRel] || '서로를 알아가며 맞춰가는 궁합입니다.';
+    var subKeys = ['personality','love','values','money'];
+    var bestKey = subKeys[0];
+    subKeys.forEach(function(k){ if (compat.scores[k] > compat.scores[bestKey]) bestKey = k; });
+    var bestVal = compat.scores[bestKey];
+
+    ctx.fillStyle='#e0ad55'; ctx.font='700 36px "Noto Serif KR", serif';
+    ctx.fillText(rel.tag+' 궁합 · '+rel.phrase, ringCx, ringCy+ringR+92);
+
+    ctx.fillStyle='#c9b98a'; ctx.font='400 25px "Noto Sans KR", sans-serif';
+    var ganLines = wrapCanvasText(ctx, ganDesc, 760, 3);
+    var ganY0 = ringCy+ringR+150, ganLH = 36;
+    ganLines.forEach(function(line, idx){ ctx.fillText(line, ringCx, ganY0+idx*ganLH); });
+
+    var pillY = ringCy+ringR+150+3*36+40;
+    var pillText = scoreLabel(bestKey)+' 궁합이 가장 좋아요 · '+bestVal+'점';
+    ctx.font='700 25px "Noto Sans KR", sans-serif';
+    var ptw = ctx.measureText(pillText).width;
+    var pillPadX=22, pillH=48, pillW=ptw+pillPadX*2;
+    roundRectPath(ctx, ringCx-pillW/2, pillY-pillH/2, pillW, pillH, pillH/2);
+    ctx.fillStyle = 'rgba(224,173,85,.14)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(224,173,85,.4)'; ctx.lineWidth=1.2; ctx.stroke();
+    ctx.fillStyle='#e0ad55'; ctx.textBaseline='middle';
+    ctx.fillText(pillText, ringCx, pillY+2);
+    ctx.textBaseline='alphabetic';
+
+    var dividerY = pillY + 94;
+    ctx.strokeStyle='rgba(224,173,85,.35)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(W/2-60, dividerY); ctx.lineTo(W/2+60, dividerY); ctx.stroke();
+
+    ctx.fillStyle='#f3e6c8'; ctx.font='700 32px "Noto Serif KR", serif';
+    ctx.fillText('너랑 나는 몇 점일까? 👀', W/2, dividerY+64);
+    ctx.fillStyle='#e0ad55'; ctx.font='700 24px "Noto Sans KR", sans-serif';
+    ctx.fillText('사주바라에서 무료로 확인하기', W/2, dividerY+110);
+    ctx.fillStyle='#767e94'; ctx.font='400 19px "Noto Sans KR", sans-serif';
+    ctx.fillText('sazubara.app', W/2, dividerY+146);
+
+    return canvas;
+  });
+}
+function hexToRgba(hex, a){
+  var h = hex.replace('#','');
+  var r = parseInt(h.substring(0,2),16), g = parseInt(h.substring(2,4),16), b = parseInt(h.substring(4,6),16);
+  return 'rgba('+r+','+g+','+b+','+a+')';
+}
+function downloadCanvasImage(canvas, filename){
+  var a=document.createElement('a');
+  a.href=canvas.toDataURL('image/png');
+  a.download=filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  showToast('궁합 카드 이미지가 저장됐어요! 카카오톡·인스타에 올려보세요 💕');
+}
+function fallbackCompatTextShare(text, url){
   if (navigator.share){
     navigator.share({ title:'사주바라 궁합', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
   } else {
@@ -3286,7 +3575,28 @@ function doShareCompat(resA, resB, total){
     showToast('궁합 결과 공유 텍스트가 복사됐어요. 카카오톡에 붙여넣어 보내보세요!');
     maybeAwardShareBonus();
   }
-  });
+}
+function doShareCompat(resA, resB, total, compat){
+  var url = shareUrl();
+  var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+' 궁합 점수는 '+total+'점! 사주바라에서 우리 궁합도 확인해보세요 💕';
+  if (!document.createElement('canvas').getContext){ fallbackCompatTextShare(text, url); return; }
+  buildCompatShareCard(resA, resB, compat, total).then(function(canvas){
+    canvas.toBlob(function(blob){
+      if (!blob){ fallbackCompatTextShare(text, url); return; }
+      var file;
+      try { file = new File([blob], 'sazubara-compat.png', {type:'image/png'}); } catch(e){ file = null; }
+      if (file && navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({ files:[file], title:'사주바라 궁합', text:text }).then(maybeAwardShareBonus).catch(function(err){
+          if (err && err.name==='AbortError') return;
+          downloadCanvasImage(canvas, 'sazubara-compat.png');
+          maybeAwardShareBonus();
+        });
+      } else {
+        downloadCanvasImage(canvas, 'sazubara-compat.png');
+        maybeAwardShareBonus();
+      }
+    }, 'image/png', 0.95);
+  }).catch(function(){ fallbackCompatTextShare(text, url); });
 }
 
 /* ---- 마이룸: 내가 확인한 궁합 상대 로컬 저장(추후 마이룸 화면에서 사용) ---- */
