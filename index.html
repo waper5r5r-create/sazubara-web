@@ -57,15 +57,20 @@ img{max-width:100%;}
 .app-header .title-col{display:flex; flex-direction:column; gap:1px; min-width:0; flex:1;}
 .app-header .mark{font-family:var(--font-display); font-weight:700; font-size:1.3rem; letter-spacing:.02em; flex:none; line-height:1.2;}
 .brand-mark{display:flex; align-items:center; gap:6px;}
-.brand-ic{width:24px; height:24px; flex:none; display:block;}
-.brand-ic svg{width:100%; height:100%; display:block;}
+.brand-ic{width:24px; height:24px; flex:none; display:block; position:relative;}
+.brand-ic::before{
+  content:''; position:absolute; inset:-7px; border-radius:50%; z-index:-1;
+  background:radial-gradient(circle, rgba(224,173,85,.38), transparent 72%);
+}
+.brand-ic svg{width:100%; height:100%; display:block; position:relative;}
 .app-header .sub{font-size:.74rem; color:var(--fg-muted); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-left:30px;}
 .header-actions{display:flex; align-items:center; gap:8px; flex:none;}
 /* ---------- 콘텐츠 ---------- */
 .content{flex:1; padding:18px 20px 28px; display:flex; flex-direction:column; gap:16px;}
 .view{display:flex; flex-direction:column; gap:16px;}
 .card{
-  background:var(--surface); border:1px solid var(--border); border-radius:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0) 42%), var(--surface);
+  border:1px solid var(--border); border-radius:18px;
   padding:20px 18px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:16px; min-width:0;
 }
 .card.flat{box-shadow:none;}
@@ -96,8 +101,10 @@ img{max-width:100%;}
 .btn-primary{
   width:100%; padding:14px; border-radius:14px; border:none; background:var(--accent); color:var(--accent-ink);
   font-size:1rem; font-weight:700; font-family:var(--font-display); cursor:pointer; letter-spacing:.02em;
+  box-shadow:0 6px 20px rgba(224,173,85,.28); transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
 }
-.btn-primary:active{opacity:.85;}
+.btn-primary:active{opacity:.85; transform:scale(.98); box-shadow:0 2px 8px rgba(224,173,85,.22);}
+.btn-primary:disabled{background:var(--surface-3); color:var(--fg-faint); box-shadow:none; cursor:not-allowed;}
 .btn-secondary{
   width:100%; padding:12px; border-radius:14px; border:1px solid var(--border-strong); background:transparent;
   color:var(--fg); font-size:.9rem; font-weight:600; cursor:pointer;
@@ -230,11 +237,16 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
   background:var(--tier-soft,var(--surface-3)); color:var(--tier-color,var(--accent));
 }
 .myroom-empty{display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; padding:22px 10px; color:var(--fg-muted); font-size:.85rem;}
+.myroom-empty-ill{width:84px; height:84px; border-radius:20px; display:block;}
 .myroom-card .owner-tag{
   position:absolute; top:7px; left:8px; font-size:.6rem; font-weight:700; color:var(--fg-faint);
   background:var(--surface); border-radius:999px; padding:2px 7px; max-width:calc(100% - 16px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
 .myroom-sparkle{position:absolute; top:6px; right:8px; font-size:.95rem; animation:myroomTwinkle 1.6s ease-in-out infinite;}
+.myroom-new{
+  position:absolute; top:7px; left:8px; font-size:.6rem; font-weight:800; letter-spacing:.3px; color:#1c1406;
+  background:var(--accent); border-radius:999px; padding:2px 7px;
+}
 @keyframes myroomTwinkle{0%,100%{opacity:.4; transform:scale(.9);}50%{opacity:1; transform:scale(1.15);}}
 /* ---- 마이룸 카드 프레임(꾸미기, 크레딧 소비) ---- */
 .myroom-card[data-frame]::after{
@@ -281,6 +293,11 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .dex-progress{display:flex; flex-direction:column; gap:6px;}
 .dex-progress .bar{height:8px; border-radius:999px; background:var(--surface-3); overflow:hidden;}
 .dex-progress .bar .fill{height:100%; background:var(--accent); border-radius:999px;}
+.dex-stats-row{display:flex; gap:8px;}
+.dex-stat{flex:1; background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:10px 6px; display:flex; flex-direction:column; align-items:center; gap:2px;}
+.dex-stat .v{font-family:var(--font-display); font-weight:700; font-size:1.15rem; color:var(--accent); font-variant-numeric:tabular-nums;}
+.dex-stat .k{font-size:.68rem; color:var(--fg-muted);}
+.dex-subhead{font-weight:700; font-size:.88rem; margin-top:4px;}
 
 /* ---- 결과 공개(reveal) 연출 ---- */
 .reveal-overlay{
@@ -350,7 +367,7 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 }
 .persona-grid{display:flex; flex-direction:column; gap:10px;}
 .persona-hero{
-  width:100%; aspect-ratio:4/3; border-radius:18px; background-size:cover; background-position:center 15%;
+  width:100%; aspect-ratio:4/3; border-radius:18px; background-size:cover; background-position:center top;
   position:relative; overflow:hidden; margin:2px 0 4px; display:flex; align-items:flex-end;
 }
 .persona-hero::after{
@@ -410,13 +427,20 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .balance-hero .lbl{font-size:.76rem; color:var(--fg-muted);}
 .pack-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
 .pack-card{
-  background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:10px 6px;
+  position:relative; background:var(--surface-2); border:1.5px solid var(--border); border-radius:14px; padding:14px 6px 10px;
   display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; min-width:0;
+  transition:border-color .12s ease, background .12s ease, transform .12s ease;
 }
 .pack-card.pending{opacity:.55; pointer-events:none;}
-.pack-card .amt{font-weight:700; font-size:.9rem;}
-.pack-card .price{font-size:.72rem; color:var(--fg-muted);}
-.demo-note{font-size:.72rem; color:var(--fg-faint); background:var(--surface-3); border-radius:10px; padding:8px 10px;}
+.pack-card:active{transform:scale(.97);}
+.pack-card:hover{border-color:var(--border-strong);}
+.pack-card .amt{font-weight:700; font-size:.92rem; font-variant-numeric:tabular-nums;}
+.pack-card .price{font-size:.72rem; color:var(--fg-muted); font-variant-numeric:tabular-nums;}
+.pack-card .unit{font-size:.64rem; color:var(--fg-faint); font-variant-numeric:tabular-nums;}
+.demo-note{
+  font-size:.72rem; color:var(--fg-muted); background:var(--surface-3); border-radius:10px; padding:9px 11px;
+  border-left:3px solid var(--accent); line-height:1.55;
+}
 .history-row{display:flex; justify-content:space-between; font-size:.8rem; padding:7px 0; border-bottom:1px solid var(--border); gap:8px;}
 .history-row .reason{color:var(--fg-muted); min-width:0;}
 .history-row .delta{flex:none; font-weight:700; font-variant-numeric:tabular-nums;}
@@ -731,6 +755,7 @@ var ICO_SUN = '<svg width="13" height="13" viewBox="0 0 24 24" style="vertical-a
 var ICO_PULSE = '<svg width="15" height="12" viewBox="0 0 28 20" style="vertical-align:-2px" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M1 10h5l2.5-7 4 14 3-10 2 3h9.5"/></svg>';
 var ICO_MOON = '<svg width="13" height="13" viewBox="0 0 24 24" style="vertical-align:-2px" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4 7 7 0 0 0 20 14.5z"/></svg>';
 var ICO_HOUSE_LG = '<svg width="30" height="28" viewBox="0 0 24 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9"/><path d="M9.5 20v-6a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v6"/></svg>';
+var MASCOT_EMPTY_IMG = 'data:image/webp;base64,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';
 var ICO_GEM = '<svg width="13" height="13" viewBox="0 0 24 24" style="vertical-align:-2px" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 9L12 3l7 6-7 12-7-12z"/><path d="M5 9h14M9 9l3 12 3-12M8.3 9L12 3M15.7 9L12 3"/></svg>';
 
 /* ---- 고민 상담 (카테고리 선택형) ---- */
@@ -1598,8 +1623,8 @@ function kakaoShare(text, url, buttonTitle){
     });
   });
 }
-/* 궁합 공유카드(동적으로 생성된 PNG blob)를 카카오 피드 카드의 이미지로 올려서,
-   누르면 바로 사주바라로 랜딩되는 "초대 메시지" 형태로 공유한다.
+/* 궁합/오늘의 운세/사주요약 공유카드(동적으로 생성된 PNG blob)를 카카오 피드 카드의
+   이미지로 올려서, 누르면 바로 사주바라로 랜딩되는 "초대 메시지" 형태로 공유한다.
    Kakao.Share.uploadImage는 1회성 이미지 업로드 API — 업로드된 imageUrl을 피드 카드에 꽂아 보낸다. */
 function kakaoShareImage(title, text, blob, url, buttonTitle){
   return loadKakaoSdk().then(function(Kakao){
@@ -1614,7 +1639,7 @@ function kakaoShareImage(title, text, blob, url, buttonTitle){
           link: { mobileWebUrl: url, webUrl: url }
         },
         buttons: [{
-          title: buttonTitle || '우리 궁합 확인하기',
+          title: buttonTitle || '사주바라에서 확인하기',
           link: { mobileWebUrl: url, webUrl: url }
         }]
       });
@@ -1769,13 +1794,21 @@ function historyRowHtml(h){
     '<span class="delta '+(isPos?'pos':'neg')+'">'+(isPos?'+':'')+h.amount+'</span></div>';
 }
 var CREDIT_PACKS = [ {amt:30, price:'3,900원', krw:3900}, {amt:80, price:'9,900원', krw:9900}, {amt:200, price:'19,900원', krw:19900} ];
+/* price 문자열(예: '3,900원')에서 숫자만 뽑아 개당 단가 표시에 쓴다. CREDIT_PACKS 구조 자체는 건드리지 않는다
+   — build_standalone.py가 이 배열 리터럴을 그대로 매칭해 krw 필드를 추가로 꽂기 때문. */
+function priceWon(priceStr){ return parseInt(String(priceStr).replace(/[^0-9]/g,''),10)||0; }
 function renderCreditSheet(){
   var root = $('#credit-sheet-root');
   var historyHtml = CREDITS.history.length ?
     CREDITS.history.slice(0,10).map(historyRowHtml).join('') :
     '<p class="section-desc">아직 내역이 없어요.</p>';
-  var packHtml = CREDIT_PACKS.map(function(p){
-    return '<div class="pack-card" data-amt="'+p.amt+'"><span class="amt">'+ICO_GEM+' '+p.amt+'</span><span class="price">'+p.price+'</span></div>';
+  var packHtml = CREDIT_PACKS.map(function(p, idx){
+    var unitWon = Math.round(priceWon(p.price)/p.amt);
+    return '<div class="pack-card" data-amt="'+p.amt+'">'+
+        '<span class="amt">'+ICO_GEM+' '+p.amt+'</span>'+
+        '<span class="price">'+p.price+'</span>'+
+        '<span class="unit">개당 '+unitWon+'원</span>'+
+      '</div>';
   }).join('');
 
   root.innerHTML =
@@ -1886,7 +1919,7 @@ var PERSONAS = [
     },
     mid:['흠, 그리고 한 가지 더 짚어보자면,','허허, 과연 그러하구나.']
   },
-  { id:'unni', name:'소윤', tagline:'쿨시크하고 매혹적인 반말 상담가', locked:false, cost:0,
+  { id:'unni', name:'소윤', tagline:'쿨시크하고 매혹적인 점술가', locked:false, cost:0,
     openers:{
       saju:['자, 언니가 네 사주 한번 제대로 뜯어봐줄게.','얘, 너 사주 보니까 은근 매력있는 포인트가 있다?'],
       today:['오늘 너 기운 어떤지 언니가 완전 궁금했어.','자, 오늘의 네 컨디션 한번 볼까?'],
@@ -2179,6 +2212,7 @@ function renderSajuResult(result){
         (ssRows.length? ('<hr class="sep">'+'<p class="section-title" style="font-size:.98rem;">십신으로 보는 각 기둥</p>'+ssHtml) : '')
       )+
       '<p class="disclaimer">본 결과는 정통 명리 이론을 바탕으로 한 참고용 풀이이며, 대운·세운 등 정밀 분석은 전문가 상담을 권장합니다.</p>'+
+      '<button type="button" class="share-btn" id="btn-share-saju-summary">📤 내 사주 요약 공유하기</button>'+
     '</div>'+
 
     shinsalCardHtml(result.shinsal) +
@@ -2204,6 +2238,8 @@ function renderSajuResult(result){
   $all('#worry-chips .chip-btn').forEach(function(btn){
     btn.addEventListener('click', function(){ showWorryCategory(result, btn.dataset.cat); });
   });
+  var shareSajuBtn = $('#btn-share-saju-summary');
+  if (shareSajuBtn) shareSajuBtn.addEventListener('click', function(){ doShareSaju(result); });
 }
 
 function showWorryCategory(my, cat){
@@ -2292,6 +2328,8 @@ function renderTodayPeriod(period){
   if (period==='day'){
     body.innerHTML = dayFortuneHtml(my) + '<div class="card" id="today-timeblock-card"></div>';
     renderTimeBlockSection(my, $('#today-timeblock-card'));
+    var shareBtn = $('#btn-share-today');
+    if (shareBtn) shareBtn.addEventListener('click', function(){ doShareDaily(my); });
     return;
   }
 
@@ -2567,6 +2605,7 @@ function dayFortuneHtml(my){
         '<div class="lucky-chip"><p class="k">행운의 아이템</p><p class="v">'+luckyInfo.item+'</p></div>'+
       '</div>'+
       '<p class="disclaimer">오늘의 운세는 일간 오행과 일진의 상생·상극 관계를 바탕으로 한 참고용 콘텐츠입니다.</p>'+
+      '<button type="button" class="share-btn" id="btn-share-today">📤 오늘의 운세 공유하기</button>'+
     '</div>';
 }
 
@@ -2806,6 +2845,8 @@ function myroomCardHtml(entry, rank){
      entry.ownerName(공개 갤러리의 "소유자" 표시)과 같은 자리를 쓰지만 의미가 다르므로 겹치지 않게 처리. */
   var ownerTag = entry.ownerName ? '<span class="owner-tag">'+esc(entry.ownerName)+'님의 룸</span>' :
     (entry.fromInviter ? '<span class="owner-tag">나를 초대함</span>' : '');
+  var isNew = entry.at && (Date.now()-entry.at < 24*3600*1000);
+  var newBadge = (isNew && !ownerTag) ? '<span class="myroom-new">NEW</span>' : '';
   var sparkle = (tier.key==='legend') ? '<span class="myroom-sparkle">✨</span>' : '';
   var rankBadge = (rank!=null && rank<=3 && !ownerTag) ? '<span class="myroom-rank">'+RANK_MEDAL[rank-1]+'</span>' :
     (rank!=null && rank<=3) ? '<span class="myroom-rank" style="top:26px;">'+RANK_MEDAL[rank-1]+'</span>' : '';
@@ -2817,6 +2858,7 @@ function myroomCardHtml(entry, rank){
       sparkle+
       rankBadge+
       ownerTag+
+      newBadge+
       myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB)+
       '<span class="nm">'+esc(entry.nameB||'상대방')+'</span>'+
       '<span class="sc">궁합 '+entry.score+'점</span>'+
@@ -2975,6 +3017,7 @@ function wireMyroomDexBtn(){
   var b = $('#btn-myroom-dex');
   if (b) b.addEventListener('click', openMyroomDex);
 }
+var SHINSAL_DEX_KEYS = ['dohwa','yeokma','hwagae'];
 function openMyroomDex(){
   var list = loadMyRoomList();
   var counts = {};
@@ -2990,6 +3033,33 @@ function openMyroomDex(){
       '</div>';
   }).join('');
   var pct = Math.round(gotTierCount/MYROOM_TIERS.length*100);
+
+  /* 신살 미니 도감 — 모은 상대들 중 도화살/역마살/화개살을 하나라도 가진 사람을 몇 명 만났는지 */
+  var shinsalCounts = {};
+  list.forEach(function(e){ myroomShinsalKeys(e).forEach(function(k){ shinsalCounts[k] = (shinsalCounts[k]||0)+1; }); });
+  var gotShinsalCount = SHINSAL_DEX_KEYS.filter(function(k){ return shinsalCounts[k]>0; }).length;
+  var shinsalPct = Math.round(gotShinsalCount/SHINSAL_DEX_KEYS.length*100);
+  var shinsalCellsHtml = SHINSAL_DEX_KEYS.map(function(k){
+    var s = SHINSAL_TEXT[k];
+    var n = shinsalCounts[k]||0;
+    var locked = n===0;
+    return '<div class="dex-cell'+(locked?' locked':' got')+'" style="--tier-color:'+s.color+'; --tier-soft:'+s.soft+';">'+
+        '<span class="ic">'+(locked?'?':s.icon)+'</span>'+
+        '<span class="lbl">'+(locked?'???':s.label)+'</span>'+
+        '<span class="ct">'+(locked?'아직 없어요':n+'명 보유')+'</span>'+
+      '</div>';
+  }).join('');
+
+  var scores = list.map(function(e){ return e.score||0; });
+  var avgScore = scores.length ? Math.round(scores.reduce(function(a,b){ return a+b; },0)/scores.length) : 0;
+  var maxScore = scores.length ? Math.max.apply(null, scores) : 0;
+  var statsHtml =
+    '<div class="dex-stats-row">'+
+      '<div class="dex-stat"><span class="v">'+list.length+'</span><span class="k">모은 인연</span></div>'+
+      '<div class="dex-stat"><span class="v">'+avgScore+'점</span><span class="k">평균 궁합</span></div>'+
+      '<div class="dex-stat"><span class="v">'+maxScore+'점</span><span class="k">최고 궁합</span></div>'+
+    '</div>';
+
   var root = $('#myroom-sheet-root');
   if (!root) return;
   root.innerHTML =
@@ -2998,12 +3068,19 @@ function openMyroomDex(){
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">인연 도감</p>'+
           '<button type="button" class="sheet-close" id="myroom-dex-close">✕</button></div>'+
+        statsHtml+
         '<div class="dex-progress">'+
           '<p class="section-desc">지금까지 '+gotTierCount+' / '+MYROOM_TIERS.length+'개 등급을 만나봤어요 ('+pct+'%)</p>'+
           '<div class="bar"><div class="fill" style="width:'+pct+'%;"></div></div>'+
         '</div>'+
         '<div class="dex-grid">'+cellsHtml+'</div>'+
-        '<p class="disclaimer">궁합을 확인할 때마다 새로운 등급의 인연을 만날 수 있어요. 더 다양한 상대와 궁합을 확인해서 도감을 채워보세요.</p>'+
+        '<p class="dex-subhead">신살 도감</p>'+
+        '<div class="dex-progress">'+
+          '<p class="section-desc">지금까지 '+gotShinsalCount+' / '+SHINSAL_DEX_KEYS.length+'개 신살을 가진 인연을 만나봤어요 ('+shinsalPct+'%)</p>'+
+          '<div class="bar"><div class="fill" style="width:'+shinsalPct+'%;"></div></div>'+
+        '</div>'+
+        '<div class="dex-grid">'+shinsalCellsHtml+'</div>'+
+        '<p class="disclaimer">궁합을 확인할 때마다 새로운 등급·신살의 인연을 만날 수 있어요. 더 다양한 상대와 궁합을 확인해서 도감을 채워보세요.</p>'+
       '</div>'+
     '</div>';
   $('#myroom-dex-backdrop').addEventListener('click', function(e){ if (e.target.id==='myroom-dex-backdrop') closeMyroomDex(); });
@@ -3036,7 +3113,7 @@ function renderMyRoomLocal(root){
   if (!STATE.mySaju){
     root.innerHTML =
       '<p class="eyebrow">마이룸</p>'+
-      '<div class="myroom-empty"><span style="color:var(--fg-muted); opacity:.6;">'+ICO_HOUSE_LG+'</span>'+
+      '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
       '<span>먼저 내 사주를 입력하면, 초대한 친구가 등록했을 때 이곳에 카드가 모여요.</span></div>';
     return;
   }
@@ -3049,7 +3126,7 @@ function renderMyRoomLocal(root){
   if (!list.length){
     root.innerHTML =
       '<p class="eyebrow">마이룸</p>'+
-      '<div class="myroom-empty"><span style="color:var(--fg-muted); opacity:.6;">'+ICO_HOUSE_LG+'</span>'+
+      '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
       '<span>친구를 초대해서 상대방이 자기 사주를 등록하면 이곳에 카드가 모여요.</span></div>';
     return;
   }
@@ -3112,7 +3189,7 @@ function renderMyRoomCloud(root){
   if (!docs.length){
     root.innerHTML =
       '<p class="eyebrow">모두의 마이룸 <span class="chat-ai-badge">LIVE</span></p>'+
-      '<div class="myroom-empty"><span style="color:var(--fg-muted); opacity:.6;">'+ICO_HOUSE_LG+'</span>'+
+      '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
       '<span>궁합을 확인하면 이곳에 모두가 볼 수 있는 카드가 쌓여요. 첫 카드의 주인공이 되어보세요!</span></div>';
     return;
   }
@@ -3440,6 +3517,74 @@ function drawShareAvatar(ctx, img, cx, cy, r, letter){
   ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
   ctx.lineWidth=4; ctx.strokeStyle='#e0ad55'; ctx.stroke();
 }
+/* 오행 색 점 + "목 일간"/"목 일진" 같은 라벨이 든 알약(pill) 칩 — 궁합/오늘운세/사주요약 카드 공용 */
+function drawElementChip(ctx, cx, cy, wx, suffix){
+  var hex = SHARE_ELEMENT_HEX[wx] || '#e0ad55';
+  ctx.font='700 21px "Noto Sans KR", sans-serif';
+  var label = wx ? (wx+' '+(suffix||'일간')) : '';
+  var tw = ctx.measureText(label).width;
+  var padX=14, dotR=5, h=34;
+  var totalW = padX*2 + dotR*2 + 7 + tw;
+  var x0 = cx - totalW/2;
+  roundRectPath(ctx, x0, cy-h/2, totalW, h, h/2);
+  ctx.fillStyle = hexToRgba(hex, .16);
+  ctx.fill();
+  ctx.beginPath(); ctx.arc(x0+padX+dotR, cy, dotR, 0, Math.PI*2); ctx.fillStyle=hex; ctx.fill();
+  ctx.fillStyle = hex; ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText(label, x0+padX+dotR*2+7, cy+1);
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+}
+/* 라벨(위, 회색) + 값(아래, 금색 굵게) 2줄짜리 칩을 가로로 n개 균등 배치 — 오늘의 행운/사주요약 보조정보용 */
+function drawInfoChipsRow(ctx, cy, items, totalW){
+  totalW = totalW || 940;
+  var n = items.length, gap = 18;
+  var chipW = (totalW - gap*(n-1))/n, chipH = 118;
+  var x0 = (1080-totalW)/2;
+  items.forEach(function(it, i){
+    var cx = x0 + i*(chipW+gap);
+    roundRectPath(ctx, cx, cy-chipH/2, chipW, chipH, 20);
+    ctx.fillStyle = 'rgba(224,173,85,.08)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(224,173,85,.28)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#a1a8bd'; ctx.font='400 20px "Noto Sans KR", sans-serif';
+    ctx.fillText(it.k, cx+chipW/2, cy-chipH/2+34);
+    ctx.fillStyle='#f3e6c8'; ctx.font='700 23px "Noto Sans KR", sans-serif';
+    var lines = wrapCanvasText(ctx, it.v, chipW-28, 2);
+    var lh=28;
+    var startY = cy - ((lines.length-1)*lh)/2 + 10;
+    lines.forEach(function(line, li){ ctx.fillText(line, cx+chipW/2, startY+li*lh); });
+  });
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+}
+function shareCardFrame(ctx, W, H, seed){
+  roundRectPath(ctx, 0, 0, W, H, 56);
+  ctx.clip();
+  var bgGrad = ctx.createRadialGradient(W/2, H*0.26, 40, W/2, H*0.5, H*0.85);
+  bgGrad.addColorStop(0,'#1c2340'); bgGrad.addColorStop(.55,'#121735'); bgGrad.addColorStop(1,'#080b18');
+  ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
+  function rnd(i){ var x=Math.sin(seed+i*12.9898)*43758.5453; return x-Math.floor(x); }
+  for (var i=0;i<56;i++){
+    var sx=rnd(i)*W, sy=rnd(i+500)*H, sr=.8+rnd(i+900)*1.5;
+    ctx.globalAlpha = .25+rnd(i+200)*.4;
+    ctx.fillStyle = '#e0ad55';
+    ctx.beginPath(); ctx.arc(sx,sy,sr,0,Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  roundRectPath(ctx, 24, 24, W-48, H-48, 40);
+  ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(224,173,85,.3)'; ctx.stroke();
+  drawShareOrnament(ctx, W/2, 78);
+}
+function shareCardFooter(ctx, W, dividerY, hookLine){
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+  ctx.strokeStyle='rgba(224,173,85,.35)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(W/2-60, dividerY); ctx.lineTo(W/2+60, dividerY); ctx.stroke();
+  ctx.fillStyle='#f3e6c8'; ctx.font='700 32px "Noto Serif KR", serif';
+  ctx.fillText(hookLine, W/2, dividerY+64);
+  ctx.fillStyle='#e0ad55'; ctx.font='700 24px "Noto Sans KR", sans-serif';
+  ctx.fillText('사주바라에서 무료로 확인하기', W/2, dividerY+110);
+  ctx.fillStyle='#767e94'; ctx.font='400 19px "Noto Sans KR", sans-serif';
+  ctx.fillText('sazubara.app', W/2, dividerY+146);
+}
 function buildCompatShareCard(resA, resB, compat, total){
   var W=1080, H=1650;
   var canvas = document.createElement('canvas');
@@ -3458,27 +3603,8 @@ function buildCompatShareCard(resA, resB, compat, total){
     var avA = imgs[0], avB = imgs[1];
     var rel = ZHI_REL_SHORT[compat.zhiRel] || {tag:'인연', phrase:'서로를 알아가는 사이'};
 
-    roundRectPath(ctx, 0, 0, W, H, 56);
-    ctx.clip();
-
-    var bgGrad = ctx.createRadialGradient(W/2, H*0.28, 40, W/2, H*0.5, H*0.85);
-    bgGrad.addColorStop(0,'#1c2340'); bgGrad.addColorStop(.55,'#121735'); bgGrad.addColorStop(1,'#080b18');
-    ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
-
     var seed = (total*97 + (resA.name||'A').length*13 + (resB.name||'B').length*7) % 997;
-    function rnd(i){ var x=Math.sin(seed+i*12.9898)*43758.5453; return x-Math.floor(x); }
-    for (var i=0;i<56;i++){
-      var sx=rnd(i)*W, sy=rnd(i+500)*H, sr=.8+rnd(i+900)*1.5;
-      ctx.globalAlpha = .25+rnd(i+200)*.4;
-      ctx.fillStyle = '#e0ad55';
-      ctx.beginPath(); ctx.arc(sx,sy,sr,0,Math.PI*2); ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-
-    roundRectPath(ctx, 24, 24, W-48, H-48, 40);
-    ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(224,173,85,.3)'; ctx.stroke();
-
-    drawShareOrnament(ctx, W/2, 78);
+    shareCardFrame(ctx, W, H, seed);
 
     ctx.textAlign='center'; ctx.textBaseline='alphabetic';
     ctx.fillStyle='#e0ad55';
@@ -3500,24 +3626,8 @@ function buildCompatShareCard(resA, resB, compat, total){
     ctx.fillText(resA.name||'나', W/2-gap, avY+avR+62);
     ctx.fillText(resB.name||'상대방', W/2+gap, avY+avR+62);
 
-    function elementChip(cx, cy, wx){
-      var hex = SHARE_ELEMENT_HEX[wx] || '#e0ad55';
-      ctx.font='700 21px "Noto Sans KR", sans-serif';
-      var label = wx ? (wx+' 일간') : '';
-      var tw = ctx.measureText(label).width;
-      var padX=14, dotR=5, h=34;
-      var totalW = padX*2 + dotR*2 + 7 + tw;
-      var x0 = cx - totalW/2;
-      roundRectPath(ctx, x0, cy-h/2, totalW, h, h/2);
-      ctx.fillStyle = hexToRgba(hex, .16);
-      ctx.fill();
-      ctx.beginPath(); ctx.arc(x0+padX+dotR, cy, dotR, 0, Math.PI*2); ctx.fillStyle=hex; ctx.fill();
-      ctx.fillStyle = hex; ctx.textAlign='left'; ctx.textBaseline='middle';
-      ctx.fillText(label, x0+padX+dotR*2+7, cy+1);
-      ctx.textAlign='center'; ctx.textBaseline='alphabetic';
-    }
-    elementChip(W/2-gap, avY+avR+108, resA.dayGanWx);
-    elementChip(W/2+gap, avY+avR+108, resB.dayGanWx);
+    drawElementChip(ctx, W/2-gap, avY+avR+108, resA.dayGanWx, '일간');
+    drawElementChip(ctx, W/2+gap, avY+avR+108, resB.dayGanWx, '일간');
 
     var ringCx=W/2, ringCy=816, ringR=172, ringW=26;
     for (var g=3; g>=1; g--){
@@ -3565,15 +3675,188 @@ function buildCompatShareCard(resA, resB, compat, total){
     ctx.textBaseline='alphabetic';
 
     var dividerY = pillY + 94;
-    ctx.strokeStyle='rgba(224,173,85,.35)'; ctx.lineWidth=1.5;
-    ctx.beginPath(); ctx.moveTo(W/2-60, dividerY); ctx.lineTo(W/2+60, dividerY); ctx.stroke();
+    shareCardFooter(ctx, W, dividerY, '너랑 나는 몇 점일까? 👀');
 
-    ctx.fillStyle='#f3e6c8'; ctx.font='700 32px "Noto Serif KR", serif';
-    ctx.fillText('너랑 나는 몇 점일까? 👀', W/2, dividerY+64);
-    ctx.fillStyle='#e0ad55'; ctx.font='700 24px "Noto Sans KR", sans-serif';
-    ctx.fillText('사주바라에서 무료로 확인하기', W/2, dividerY+110);
+    return canvas;
+  });
+}
+
+/* ---------- 오늘의 운세 공유카드 ---------- */
+function buildDailyShareCard(my){
+  var W=1080, H=1650;
+  var canvas = document.createElement('canvas');
+  canvas.width=W; canvas.height=H;
+  var ctx = canvas.getContext('2d');
+  var fontsReady = (document.fonts && document.fonts.load) ?
+    Promise.all([
+      document.fonts.load('700 40px "Noto Serif KR"'),
+      document.fonts.load('700 90px "Noto Serif KR"'),
+      document.fonts.load('700 34px "Noto Sans KR"'),
+      document.fonts.load('400 26px "Noto Sans KR"')
+    ]).catch(function(){}) : Promise.resolve();
+  return fontsReady.then(function(){
+    return loadImageAsync(CHAR_AVATAR[my.gender]);
+  }).then(function(avImg){
+    var today = todayGanZhi();
+    var ssKey = dailyShishenKey(my.day.gan, my.dayGanWx, today.gan, today.wxGan);
+    var ft = FORTUNE_TEXT[ssKey];
+    var luckyInfo = WUXING_INFO[my.dayGanWx];
+    var now = new Date();
+    var weekKr = ['일','월','화','수','목','금','토'][now.getDay()];
+
+    var seed = (my.day.gan+my.day.zhi+today.gan+today.zhi).length*41 + (my.name||'나').length*13;
+    shareCardFrame(ctx, W, H, seed % 997);
+
+    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#e0ad55';
+    ctx.font='700 38px "Noto Serif KR", serif';
+    ctx.fillText('사주바라 오늘의 운세', W/2, 146);
+    ctx.fillStyle='#a1a8bd';
+    ctx.font='400 23px "Noto Sans KR", sans-serif';
+    ctx.fillText(now.getFullYear()+'년 '+(now.getMonth()+1)+'월 '+now.getDate()+'일 ('+weekKr+') · '+(my.name?my.name+'님':'나')+' 기준', W/2, 188);
+
+    var avR=100, avY=338;
+    drawShareAvatar(ctx, avImg, W/2, avY, avR, (my.name||'나').charAt(0));
+    ctx.font='700 32px "Noto Serif KR", serif';
+    ctx.fillStyle='#eef0f6';
+    ctx.fillText(my.name||'나', W/2, avY+avR+62);
+    drawElementChip(ctx, W/2, avY+avR+108, today.wxGan, '일진');
+
+    var ringCx=W/2, ringCy=806, ringR=164, ringW=24;
+    for (var g=3; g>=1; g--){
+      ctx.beginPath(); ctx.arc(ringCx,ringCy,ringR+g*7,0,Math.PI*2);
+      ctx.strokeStyle = 'rgba(224,173,85,'+(.05*g)+')'; ctx.lineWidth = 6; ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(ringCx,ringCy,ringR,0,Math.PI*2);
+    ctx.strokeStyle='#e0ad55'; ctx.lineWidth=ringW; ctx.globalAlpha=.9; ctx.stroke(); ctx.globalAlpha=1;
+    ctx.beginPath(); ctx.arc(ringCx,ringCy,ringR-ringW/2-6,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,.1)'; ctx.lineWidth=1.5; ctx.stroke();
+
+    ctx.textBaseline='middle';
+    ctx.fillStyle='#eef0f6'; ctx.font='700 86px "Noto Serif KR", serif';
+    ctx.fillText(today.gan+today.zhi, ringCx, ringCy-14);
+    ctx.fillStyle='#a1a8bd'; ctx.font='400 26px "Noto Sans KR", sans-serif';
+    ctx.fillText(today.ganKr+today.zhiKr+'일 · '+ft.label, ringCx, ringCy+56);
+    ctx.textBaseline='alphabetic';
+
+    ctx.fillStyle='#c9b98a'; ctx.font='400 25px "Noto Sans KR", sans-serif';
+    var ftLines = wrapCanvasText(ctx, ft.total, 820, 3);
+    var ftY0 = ringCy+ringR+86, ftLH = 36;
+    ftLines.forEach(function(line, idx){ ctx.fillText(line, ringCx, ftY0+idx*ftLH); });
+
+    var chipsY = ftY0 + 3*ftLH + 74;
+    drawInfoChipsRow(ctx, chipsY, [
+      {k:'행운의 색', v:luckyInfo.color},
+      {k:'행운의 방향', v:luckyInfo.dir},
+      {k:'행운의 아이템', v:luckyInfo.item}
+    ]);
+
+    var dividerY = chipsY + 118;
+    shareCardFooter(ctx, W, dividerY, '오늘 하루, 더 자세히 보러 가기 👀');
+
+    return canvas;
+  });
+}
+
+/* ---------- 사주요약(명식) 공유카드 ---------- */
+function drawPillarBox(ctx, cx, cy, w, h, label, p){
+  roundRectPath(ctx, cx-w/2, cy-h/2, w, h, 18);
+  ctx.fillStyle = 'rgba(224,173,85,.07)'; ctx.fill();
+  ctx.strokeStyle = 'rgba(224,173,85,.26)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+  ctx.fillStyle='#a1a8bd'; ctx.font='400 20px "Noto Sans KR", sans-serif';
+  ctx.fillText(label, cx, cy-h/2+34);
+  if (!p){
+    ctx.fillStyle='#767e94'; ctx.font='700 40px "Noto Serif KR", serif';
+    ctx.fillText('—', cx, cy+16);
+    return;
+  }
+  ctx.fillStyle='#f3e6c8'; ctx.font='700 46px "Noto Serif KR", serif';
+  ctx.fillText(p.gan+p.zhi, cx, cy+18);
+  ctx.fillStyle='#8f97ae'; ctx.font='400 19px "Noto Sans KR", sans-serif';
+  ctx.fillText(p.ganKr+p.zhiKr, cx, cy+46);
+  var d1 = SHARE_ELEMENT_HEX[p.wxGan]||'#e0ad55', d2 = SHARE_ELEMENT_HEX[p.wxZhi]||'#e0ad55';
+  ctx.beginPath(); ctx.arc(cx-8, cy-h/2+66, 4, 0, Math.PI*2); ctx.fillStyle=d1; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx+8, cy-h/2+66, 4, 0, Math.PI*2); ctx.fillStyle=d2; ctx.fill();
+}
+function buildSajuShareCard(result){
+  var W=1080, H=1650;
+  var canvas = document.createElement('canvas');
+  canvas.width=W; canvas.height=H;
+  var ctx = canvas.getContext('2d');
+  var fontsReady = (document.fonts && document.fonts.load) ?
+    Promise.all([
+      document.fonts.load('700 40px "Noto Serif KR"'),
+      document.fonts.load('700 46px "Noto Serif KR"'),
+      document.fonts.load('700 34px "Noto Sans KR"'),
+      document.fonts.load('400 26px "Noto Sans KR"')
+    ]).catch(function(){}) : Promise.resolve();
+  return fontsReady.then(function(){
+    return loadImageAsync(CHAR_AVATAR[result.gender]);
+  }).then(function(avImg){
+    var dayInfo = WUXING_INFO[result.dayGanWx];
+    var seed = ((result.name||'나').length*23 + result.totalCount*31 + result.day.gan.length*7) % 997;
+    shareCardFrame(ctx, W, H, seed);
+
+    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#e0ad55';
+    ctx.font='700 38px "Noto Serif KR", serif';
+    ctx.fillText('사주바라 사주풀이', W/2, 146);
+    ctx.fillStyle='#a1a8bd';
+    ctx.font='400 23px "Noto Sans KR", sans-serif';
+    ctx.fillText('나의 사주팔자', W/2, 188);
+
+    var avR=84, avY=306;
+    drawShareAvatar(ctx, avImg, W/2, avY, avR, (result.name||'나').charAt(0));
+    ctx.font='700 32px "Noto Serif KR", serif';
+    ctx.fillStyle='#eef0f6';
+    ctx.fillText(result.name?result.name+'님의 사주':'나의 사주', W/2, avY+avR+54);
+
+    var pillars = [['연주',result.year],['월주',result.month],['일주',result.day],['시주',result.time]];
+    var pW=232, pH=168, pGap=16, pY=avY+avR+180;
+    var totalPW = pW*4+pGap*3, pX0 = W/2-totalPW/2+pW/2;
+    pillars.forEach(function(pr, i){ drawPillarBox(ctx, pX0+i*(pW+pGap), pY, pW, pH, pr[0], pr[1]); });
+
+    var wxY = pY + pH/2 + 150;
+    var wxItems = WX_ORDER.map(function(wx){
+      return {k:wx, v:(result.wxCount[wx]||0)+'개'};
+    });
+    var gap2=14, n=5, totalW2=940, chipW2=(totalW2-gap2*(n-1))/n;
+    ctx.font='700 21px "Noto Sans KR", sans-serif';
+    var x0b = W/2-totalW2/2;
+    wxItems.forEach(function(it, i){
+      var cx = x0b + i*(chipW2+gap2) + chipW2/2;
+      var hex = SHARE_ELEMENT_HEX[it.k]||'#e0ad55';
+      ctx.beginPath(); ctx.arc(cx, wxY-14, 7, 0, Math.PI*2); ctx.fillStyle=hex; ctx.fill();
+      ctx.fillStyle='#eef0f6'; ctx.font='700 24px "Noto Sans KR", sans-serif';
+      ctx.fillText(it.v, cx, wxY+22);
+      ctx.fillStyle='#8f97ae'; ctx.font='400 18px "Noto Sans KR", sans-serif';
+      ctx.fillText(it.k, cx, wxY+46);
+    });
+
+    ctx.fillStyle='#e0ad55'; ctx.font='700 32px "Noto Serif KR", serif';
+    ctx.fillText(dayInfo.hanja+' '+result.dayGanWx+'(으)로 태어난 사람', W/2, wxY+112);
+
+    ctx.fillStyle='#c9b98a'; ctx.font='400 25px "Noto Sans KR", sans-serif';
+    var pLines = wrapCanvasText(ctx, dayInfo.personality, 820, 3);
+    var pY0 = wxY+160, pLH=36;
+    pLines.forEach(function(line, idx){ ctx.fillText(line, W/2, pY0+idx*pLH); });
+
+    var strengthY = pY0 + 3*pLH + 56;
+    var strengthPct = Math.round((result.strengthRatio||0.5)*100);
+    var barW=760, barH=14, barX=W/2-barW/2;
+    roundRectPath(ctx, barX, strengthY-barH/2, barW, barH, barH/2);
+    ctx.fillStyle='rgba(255,255,255,.08)'; ctx.fill();
+    roundRectPath(ctx, barX, strengthY-barH/2, barW*Math.max(0.03,Math.min(1,strengthPct/100)), barH, barH/2);
+    ctx.fillStyle='#e0ad55'; ctx.fill();
     ctx.fillStyle='#767e94'; ctx.font='400 19px "Noto Sans KR", sans-serif';
-    ctx.fillText('sazubara.app', W/2, dividerY+146);
+    ctx.textAlign='left'; ctx.fillText('신약', barX, strengthY+38);
+    ctx.textAlign='right'; ctx.fillText('신강', barX+barW, strengthY+38);
+    ctx.textAlign='center'; ctx.fillStyle='#e0ad55'; ctx.font='700 21px "Noto Sans KR", sans-serif';
+    ctx.fillText((result.strength==='strong'?'신강':'신약')+' '+strengthPct+'%', W/2, strengthY+38);
+
+    var dividerY = strengthY + 96;
+    shareCardFooter(ctx, W, dividerY, '내 사주, 더 자세히 보러 가기 👀');
 
     return canvas;
   });
@@ -3583,19 +3866,19 @@ function hexToRgba(hex, a){
   var r = parseInt(h.substring(0,2),16), g = parseInt(h.substring(2,4),16), b = parseInt(h.substring(4,6),16);
   return 'rgba('+r+','+g+','+b+','+a+')';
 }
-function downloadCanvasImage(canvas, filename){
+function downloadCanvasImage(canvas, filename, toastMsg){
   var a=document.createElement('a');
   a.href=canvas.toDataURL('image/png');
   a.download=filename;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  showToast('궁합 카드 이미지가 저장됐어요! 카카오톡·인스타에 올려보세요 💕');
+  showToast(toastMsg || '카드 이미지가 저장됐어요! 카카오톡·인스타에 올려보세요 💕');
 }
-function fallbackCompatTextShare(text, url){
+function fallbackTextShare(text, url, title){
   if (navigator.share){
-    navigator.share({ title:'사주바라 궁합', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
+    navigator.share({ title:title||'사주바라', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
   } else {
     copyToClipboard(text+'\n'+url);
-    showToast('궁합 결과 공유 텍스트가 복사됐어요. 카카오톡에 붙여넣어 보내보세요!');
+    showToast('공유 텍스트가 복사됐어요. 카카오톡에 붙여넣어 보내보세요!');
     maybeAwardShareBonus();
   }
 }
@@ -3609,39 +3892,64 @@ function isKakaoInApp(){
 function doShareCompat(resA, resB, total, compat){
   var url = shareUrl();
   var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+' 궁합 점수는 '+total+'점! 사주바라에서 우리 궁합도 확인해보세요 💕';
-  if (!document.createElement('canvas').getContext){ fallbackCompatTextShare(text, url); return; }
+  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '사주바라 궁합'); return; }
   buildCompatShareCard(resA, resB, compat, total).then(function(canvas){
     canvas.toBlob(function(blob){
-      if (!blob){ fallbackCompatTextShare(text, url); return; }
-      shareCompatImageBlob(canvas, blob, text, url);
+      if (!blob){ fallbackTextShare(text, url, '사주바라 궁합'); return; }
+      shareImageBlob(canvas, blob, text, url, 'sazubara-compat.png', '사주바라 궁합', '우리 궁합 확인하기');
     }, 'image/png', 0.95);
-  }).catch(function(){ fallbackCompatTextShare(text, url); });
+  }).catch(function(){ fallbackTextShare(text, url, '사주바라 궁합'); });
+}
+function doShareDaily(my){
+  var url = shareUrl();
+  var today = todayGanZhi();
+  var ssKey = dailyShishenKey(my.day.gan, my.dayGanWx, today.gan, today.wxGan);
+  var ft = FORTUNE_TEXT[ssKey];
+  var text = (my.name?my.name+'님의':'나의')+' 오늘 기운은 "'+ft.label+'"! 사주바라에서 오늘의 운세를 확인해보세요 🔮';
+  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '사주바라 오늘의 운세'); return; }
+  buildDailyShareCard(my).then(function(canvas){
+    canvas.toBlob(function(blob){
+      if (!blob){ fallbackTextShare(text, url, '사주바라 오늘의 운세'); return; }
+      shareImageBlob(canvas, blob, text, url, 'sazubara-today.png', '사주바라 오늘의 운세', '오늘 운세 확인하기');
+    }, 'image/png', 0.95);
+  }).catch(function(){ fallbackTextShare(text, url, '사주바라 오늘의 운세'); });
+}
+function doShareSaju(result){
+  var url = shareUrl();
+  var text = (result.name?result.name+'님의':'나의')+' 사주를 사주바라에서 무료로 풀어보세요 ✨';
+  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '사주바라 내 사주'); return; }
+  buildSajuShareCard(result).then(function(canvas){
+    canvas.toBlob(function(blob){
+      if (!blob){ fallbackTextShare(text, url, '사주바라 내 사주'); return; }
+      shareImageBlob(canvas, blob, text, url, 'sazubara-saju.png', '사주바라 내 사주', '내 사주 확인하기');
+    }, 'image/png', 0.95);
+  }).catch(function(){ fallbackTextShare(text, url, '사주바라 내 사주'); });
 }
 /* 기본(=클로드 아티팩트 버전 포함 공용) 공유 방식: Web Share API로 이미지 파일을 바로 공유 시도,
    안 되면 다운로드. 독립 배포본(build_standalone.py)에서는 이 함수를 감싸서, 카카오톡으로
    누르면 바로 사주바라로 랜딩되는 "초대 메시지" 형태(이미지가 들어간 카카오 피드 카드)를
    먼저 시도하고, 그게 실패할 때만 아래 로직으로 떨어지도록 패치한다. */
-function shareCompatImageBlob(canvas, blob, text, url){
+function shareImageBlob(canvas, blob, text, url, filename, kakaoTitle, buttonTitle){
   var fallbackFn = function(){
   if (isKakaoInApp()){
-    downloadCanvasImage(canvas, 'sazubara-compat.png');
+    downloadCanvasImage(canvas, filename);
     maybeAwardShareBonus();
     return;
   }
   var file;
-  try { file = new File([blob], 'sazubara-compat.png', {type:'image/png'}); } catch(e){ file = null; }
+  try { file = new File([blob], filename, {type:'image/png'}); } catch(e){ file = null; }
   if (file && navigator.canShare && navigator.canShare({files:[file]})){
-    navigator.share({ files:[file], title:'사주바라 궁합', text:text }).then(maybeAwardShareBonus).catch(function(err){
+    navigator.share({ files:[file], title:kakaoTitle, text:text }).then(maybeAwardShareBonus).catch(function(err){
       if (err && err.name==='AbortError') return;
-      downloadCanvasImage(canvas, 'sazubara-compat.png');
+      downloadCanvasImage(canvas, filename);
       maybeAwardShareBonus();
     });
   } else {
-    downloadCanvasImage(canvas, 'sazubara-compat.png');
+    downloadCanvasImage(canvas, filename);
     maybeAwardShareBonus();
   }
   };
-  kakaoShareImage('사주바라 궁합', text, blob, url).then(maybeAwardShareBonus).catch(fallbackFn);
+  kakaoShareImage(kakaoTitle, text, blob, url, buttonTitle).then(maybeAwardShareBonus).catch(fallbackFn);
 }
 
 /* ---- 마이룸: 내가 확인한 궁합 상대 로컬 저장(추후 마이룸 화면에서 사용) ---- */
