@@ -1891,6 +1891,14 @@ function renderCreditSheet(){
           '</div>'+
         '</div>'+
 
+        '<div><p class="section-title" style="font-size:.95rem;">프로모션 코드</p>'+
+          '<div class="invite-box">'+
+            '<p class="section-desc">받으신 코드가 있다면 입력해보세요.</p>'+
+            '<div class="invite-link-row"><input type="text" id="promo-code-input" placeholder="코드 입력" style="text-transform:uppercase;"></div>'+
+            '<button type="button" class="share-btn" id="promo-code-btn">코드 사용하기</button>'+
+          '</div>'+
+        '</div>'+
+
         '<div><p class="section-title" style="font-size:.95rem;">크레딧 충전</p>'+
           '<div class="pack-grid">'+packHtml+'</div>'+
           '<p class="demo-note">💳 토스페이먼츠로 안전하게 결제돼요. (연동 키가 테스트 모드인 동안에는 실제로 금액이 청구되지 않습니다) 적립된 크레딧은 이 기기(브라우저)에만 저장돼요.</p>'+
@@ -1903,6 +1911,7 @@ function renderCreditSheet(){
   $('#credit-backdrop').addEventListener('click', function(e){ if (e.target.id==='credit-backdrop') closeCreditSheet(); });
   $('#credit-close').addEventListener('click', closeCreditSheet);
   $('#btn-do-share').addEventListener('click', doShare);
+  $('#promo-code-btn').addEventListener('click', redeemPromoCode);
   $all('.pack-card', root).forEach(function(card){
     card.addEventListener('click', function(){
       var amt = parseInt(card.dataset.amt,10);
@@ -1912,6 +1921,39 @@ function renderCreditSheet(){
       startTossPayment(pack);
     });
   });
+}
+
+/* 프로모션 코드 입력(지인/테스터 배포용). 서버(/api/promo/redeem)가 코드 유효성 ·
+   중복사용 · 소진 여부를 모두 검증하고, 성공하면 이 기기(deviceId)의 credit_ledger에 적립한다. */
+function redeemPromoCode(){
+  var input = $('#promo-code-input');
+  var code = ((input && input.value) || '').trim();
+  if (!code){ showToast('코드를 입력해주세요.'); return; }
+  var btn = $('#promo-code-btn');
+  if (btn){ btn.disabled = true; btn.textContent = '확인 중...'; }
+  fetch('/api/promo/redeem', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ code: code, deviceId: CREDITS.shareCode })
+  }).then(function(r){ return r.json().then(function(data){ return { ok:r.ok, data:data }; }); })
+    .then(function(res){
+      if (res.data && res.data.ok){
+        addCredits(res.data.amount, '프로모션 코드: '+code.toUpperCase());
+        renderCreditSheet();
+        return;
+      }
+      var msgs = {
+        INVALID_CODE: '존재하지 않는 코드예요.',
+        CODE_EXHAUSTED: '이미 모두 소진된 코드예요.',
+        ALREADY_REDEEMED: '이미 이 기기에서 사용한 코드예요.',
+        MISSING_FIELDS: '코드를 입력해주세요.'
+      };
+      showToast((res.data && msgs[res.data.error]) || '코드를 사용할 수 없어요.');
+      if (btn){ btn.disabled = false; btn.textContent = '코드 사용하기'; }
+    })
+    .catch(function(){
+      showToast('네트워크 오류로 코드를 사용하지 못했어요.');
+      if (btn){ btn.disabled = false; btn.textContent = '코드 사용하기'; }
+    });
 }
 
 function wxDot(wxKr){
