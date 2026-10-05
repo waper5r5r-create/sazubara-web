@@ -248,6 +248,10 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
   background:var(--accent); border-radius:999px; padding:2px 7px;
 }
 @keyframes myroomTwinkle{0%,100%{opacity:.4; transform:scale(.9);}50%{opacity:1; transform:scale(1.15);}}
+.myroom-delete-btn{
+  width:100%; padding:11px; border-radius:12px; border:1px solid rgba(224,90,90,.35); background:rgba(224,90,90,.08);
+  color:var(--bad); font-size:.85rem; font-weight:700; cursor:pointer;
+}
 /* ---- 마이룸 카드 프레임(꾸미기, 크레딧 소비) ---- */
 .myroom-card[data-frame]::after{
   content:''; position:absolute; inset:0; border-radius:16px; pointer-events:none;
@@ -298,6 +302,36 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .dex-stat .v{font-family:var(--font-display); font-weight:700; font-size:1.15rem; color:var(--accent); font-variant-numeric:tabular-nums;}
 .dex-stat .k{font-size:.68rem; color:var(--fg-muted);}
 .dex-subhead{font-weight:700; font-size:.88rem; margin-top:4px;}
+/* ---- 캐릭터 궁합 ---- */
+.char-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.char-card{
+  display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;
+  padding:16px 10px 14px; border-radius:14px; background:var(--surface-2); border:1.5px solid var(--border);
+}
+.char-card.locked{opacity:.92;}
+.char-card .char-portrait{
+  width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  font-family:var(--font-display); font-weight:700; font-size:1.2rem; color:#fff; background:var(--accent);
+  flex:none;
+}
+.char-card .char-portrait img{width:100%; height:100%; object-fit:cover;}
+.char-card .nm{font-weight:700; font-size:.88rem;}
+.char-card .tagline{font-size:.7rem; color:var(--fg-muted); line-height:1.3;}
+.char-card .char-unlock-btn{padding:7px 12px; font-size:.74rem;}
+.char-got-badge{font-size:.68rem; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:3px 9px;}
+.owner-tag.char-tag{color:var(--accent); background:var(--accent-soft);}
+.char-admin-gear{background:none; border:none; font-size:1rem; cursor:pointer; padding:4px; line-height:1;}
+.char-admin-row{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:12px; background:var(--surface-2); border:1px solid var(--border);}
+.char-admin-row + .char-admin-row{margin-top:8px;}
+.char-portrait-sm{width:38px; height:38px; font-size:1rem; flex:none;}
+.char-admin-row-nm{flex:1; min-width:0; font-weight:700; font-size:.85rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.char-admin-edit-btn, .char-admin-del-btn{
+  border:1px solid var(--border-strong); background:var(--surface); color:var(--fg); border-radius:999px;
+  padding:5px 10px; font-size:.72rem; font-weight:700; cursor:pointer; flex:none;
+}
+.char-admin-del-btn{color:var(--bad); border-color:rgba(224,90,90,.35);}
+.char-edit-img-row{display:flex; align-items:center; gap:12px;}
+.char-edit-img-row .char-portrait{width:56px; height:56px; font-size:1.3rem;}
 
 /* ---- 결과 공개(reveal) 연출 ---- */
 .reveal-overlay{
@@ -1242,6 +1276,22 @@ function todayGanZhi(dateObj){
   return { gan:ganZh, zhi:zhiZh, ganKr:GAN_KR[ganZh], zhiKr:ZHI_KR[zhiZh],
            wxGan:WX_KR[LunarUtil.WU_XING_GAN[ganZh]], solar:s };
 }
+/* 월간/신년(세운) 프리미엄 운세용 — 실제 월주·세운(태어난 날이 아니라 "지금" 기준 월/연 기둥)을 계산.
+   사주 뽑을 때 쓰는 것과 같은 EightChar API를 날짜만 "오늘"로 바꿔서 그대로 재사용한다. */
+function monthGanZhi(dateObj){
+  var s = Solar.fromDate(dateObj || new Date());
+  var ec = s.getLunar().getEightChar();
+  var ganZh = ec.getMonthGan(), zhiZh = ec.getMonthZhi();
+  return { gan:ganZh, zhi:zhiZh, ganKr:GAN_KR[ganZh], zhiKr:ZHI_KR[zhiZh],
+           wxGan:WX_KR[LunarUtil.WU_XING_GAN[ganZh]], wxZhi:WX_KR[LunarUtil.WU_XING_ZHI[zhiZh]], solar:s };
+}
+function yearGanZhi(dateObj){
+  var s = Solar.fromDate(dateObj || new Date());
+  var ec = s.getLunar().getEightChar();
+  var ganZh = ec.getYearGan(), zhiZh = ec.getYearZhi();
+  return { gan:ganZh, zhi:zhiZh, ganKr:GAN_KR[ganZh], zhiKr:ZHI_KR[zhiZh],
+           wxGan:WX_KR[LunarUtil.WU_XING_GAN[ganZh]], wxZhi:WX_KR[LunarUtil.WU_XING_ZHI[zhiZh]], solar:s };
+}
 
 function dailyFortuneRelation(myWxKr, todayWxKr){
   if (myWxKr===todayWxKr) return 'bigyeop';
@@ -1497,6 +1547,18 @@ function initCredits(){
   if (inviteNow && inviteNow !== CREDITS.shareCode){
     /* 나중에(사주 입력을 실제로 마칠 때) 서버에 등록을 보고하기 위해 기억해둔다 */
     CREDITS.pendingInviteCode = inviteNow;
+  }
+  if (inviteNow){
+    /* 초대 코드는 CREDITS.pendingInviteCode(로컬 저장)에 이미 기억해뒀다. 주소창 해시에 그대로
+       남겨두면, 다음에 새로고침할 때마다 initCredits()가 똑같은 코드를 "방금 받은 초대"로 다시 읽어서
+       pendingInviteCode를 되살리고, 그 상태에서 사주를 다시 제출하면 서버에 등록을 또 시도하게 된다
+       (서버 쪽 유니크 제약 덕에 중복 적립은 막히지만, 불필요한 재시도와 혼란스러운 상태가 남는다).
+       한 번 읽었으면 바로 지워서 다음 로드부터는 깨끗한 상태로 시작한다. */
+    try{
+      var _u = new URL(location.href);
+      _u.hash = '';
+      history.replaceState({}, '', _u.pathname + (_u.search||''));
+    }catch(e){}
   }
   if (isNew){
     addCredits(5, '가입 축하 크레딧', true);
@@ -2339,8 +2401,8 @@ function renderTodayPeriod(period){
 
 function renderTodayPeriodContent(period, my, body){
   if (period==='week') body.innerHTML = weekFortuneHtml(my);
-  else if (period==='month') body.innerHTML = monthFortuneHtml(my);
-  else if (period==='year') body.innerHTML = yearFortuneHtml(my);
+  else if (period==='month'){ body.innerHTML = monthFortuneHtml(my); wirePremiumPeriodUnlock(my, 'month'); }
+  else if (period==='year'){ body.innerHTML = yearFortuneHtml(my); wirePremiumPeriodUnlock(my, 'year'); }
 }
 
 /* 오늘의 운세 - 시간대별(아침/오후/저녁) 세분화 — 유료, 날짜가 바뀌어도 한 번 해금하면 계속 이용 가능 */
@@ -2609,6 +2671,79 @@ function dayFortuneHtml(my){
     '</div>';
 }
 
+/* ============================================================
+   월간/신년운세 프리미엄 — "이번 달/올해" 탭 상단에 붙는 크레딧 해금 카드.
+   무료 영역(위 personaWrap 문단, 추천일/월별 타임라인)은 일간 타입별 공통 문구나 개별 날짜 계산에
+   머물지만, 이 카드는 "지금 이 순간의 진짜 월주·세운"을 직접 계산해서 내 일간과의 십성 관계를 따진
+   뒤 FORTUNE_TEXT(오늘의 운세와 동일한 엔진)로 영역별(재물·애정·건강·관계) 풀이를 깊이 있게 보여준다. */
+var PREMIUM_PERIOD_COST = { month:8, year:15 };
+function premiumPeriodKey(period){
+  var now = new Date();
+  return period==='month' ? ('premium-month-'+now.getFullYear()+'-'+(now.getMonth()+1)) : ('premium-year-'+now.getFullYear());
+}
+function premiumPeriodUnlockedHtml(my, period){
+  var pillar = period==='month' ? monthGanZhi() : yearGanZhi();
+  var ssKey = dailyShishenKey(my.day.gan, my.dayGanWx, pillar.gan, pillar.wxGan);
+  var ft = FORTUNE_TEXT[ssKey];
+  var peopleRelKey = zhiRelation(my.day.zhi, pillar.zhi);
+  var peopleText = REL_PEOPLE_TEXT[peopleRelKey];
+  var lucky = WUXING_INFO[pillar.wxGan];
+  var now = new Date();
+  var periodLabel = period==='month' ? (now.getMonth()+1)+'월' : now.getFullYear()+'년';
+  var pillarLabel = period==='month' ? '월주' : '세운';
+  return '<div class="card">'+
+      '<p class="eyebrow">'+(period==='month'?'월간':'신년')+' 프리미엄 · '+periodLabel+'</p>'+
+      '<div class="today-ganzhi">'+
+        '<span class="dot" style="width:14px;height:14px;background:var('+lucky.var+')"></span>'+
+        '<span class="hanja">'+pillar.gan+pillar.zhi+'</span>'+
+        '<span class="hangul" style="font-size:.86rem;color:var(--fg-muted)">'+pillar.ganKr+pillar.zhiKr+' '+pillarLabel+' · '+ft.label+'</span>'+
+      '</div>'+
+      personaWrap('today', autoParas(ft.total))+
+    '</div>'+
+    '<div class="card">'+
+      '<p class="section-title" style="font-size:.98rem;">영역별 심층 풀이</p>'+
+      '<div class="fortune-grid">'+
+        '<div class="fortune-tile"><p class="ttl">'+ICO_COIN+' 재물운</p><p class="body">'+ft.money+'</p></div>'+
+        '<div class="fortune-tile"><p class="ttl">'+ICO_HEART2+' 애정운</p><p class="body">'+ft.love+'</p></div>'+
+        '<div class="fortune-tile"><p class="ttl">'+ICO_LOTUS+' 건강운</p><p class="body">'+ft.health+'</p></div>'+
+        '<div class="fortune-tile"><p class="ttl">'+ICO_PEOPLE+' 관계운</p><p class="body">'+peopleText+'</p></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="card">'+
+      '<p class="section-title" style="font-size:.98rem;">'+periodLabel+' 행운</p>'+
+      '<div class="lucky-row">'+
+        '<div class="lucky-chip"><p class="k">행운의 색</p><p class="v">'+lucky.color+'</p></div>'+
+        '<div class="lucky-chip"><p class="k">행운의 방향</p><p class="v">'+lucky.dir+'</p></div>'+
+        '<div class="lucky-chip"><p class="k">행운의 아이템</p><p class="v">'+lucky.item+'</p></div>'+
+      '</div>'+
+      '<p class="disclaimer">내 일간과 실제 '+pillarLabel+'('+pillar.ganKr+pillar.zhiKr+')의 십성 관계를 바탕으로 한 참고용 콘텐츠입니다.</p>'+
+    '</div>';
+}
+function premiumPeriodHtml(my, period){
+  var unlockKey = premiumPeriodKey(period);
+  var cost = PREMIUM_PERIOD_COST[period];
+  if (!isUnlocked(unlockKey)){
+    var title = period==='month' ? '이번 달 월주 심층분석' : '신년운세 · 세운 심층분석';
+    var desc = period==='month' ?
+      '이번 달의 실제 월주를 내 사주와 대조해 재물·애정·건강·관계운을 깊이 있게 풀어드려요.' :
+      '올해의 실제 세운을 내 사주와 대조해 재물·애정·건강·관계운을 깊이 있게 풀어드려요.';
+    return '<div class="locked-card-wrap" id="premium-'+period+'-slot">'+lockedCardHtml(cost, title, desc, '크레딧으로 열어보기')+'</div>';
+  }
+  return premiumPeriodUnlockedHtml(my, period);
+}
+function wirePremiumPeriodUnlock(my, period){
+  var slot = $('#premium-'+period+'-slot');
+  if (!slot) return;
+  var unlockKey = premiumPeriodKey(period);
+  var cost = PREMIUM_PERIOD_COST[period];
+  var label = (period==='month' ? '월간' : '신년운세')+' 프리미엄';
+  $('.unlock-btn', slot).addEventListener('click', function(){
+    tryUnlock(unlockKey, cost, label, function(){
+      slot.outerHTML = premiumPeriodUnlockedHtml(my, period);
+    });
+  });
+}
+
 function weekFortuneHtml(my){
   var rows = weeklyFortuneData(my);
   var dom = dominantRelKey(rows);
@@ -2652,7 +2787,8 @@ function monthFortuneHtml(my){
         '<span class="pw-chev">›</span></div>';
     }).join('');
   }
-  return '<div class="card">'+
+  return premiumPeriodHtml(my, 'month')+
+    '<div class="card">'+
       '<p class="eyebrow">이번 달 운세</p>'+
       personaWrap('today', autoParas(PERIOD_TEXT[dom.key].month))+
     '</div>'+
@@ -2672,7 +2808,8 @@ function yearFortuneHtml(my){
     var fg = r.score===0 ? 'var(--fg-muted)' : '#fff';
     return '<div class="month-cell pw-clickable" style="background:'+bg+';color:'+fg+';" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+(i+1)+'월" data-zhi="'+r.zhi+'">'+(i+1)+'월</div>';
   }).join('');
-  return '<div class="card">'+
+  return premiumPeriodHtml(my, 'year')+
+    '<div class="card">'+
       '<p class="eyebrow">올해 운세</p>'+
       personaWrap('today', autoParas(PERIOD_TEXT[dom.key].year))+
     '</div>'+
@@ -2809,14 +2946,43 @@ function setMyRoomFrame(id, frameKey){
 function loadMyRoomList(){
   try{
     var raw = localStorage.getItem(MYROOM_KEY);
-    return raw ? JSON.parse(raw) : [];
+    var list = raw ? JSON.parse(raw) : [];
+    var hidden = getHiddenMyRoomIds();
+    if (hidden.length) list = list.filter(function(e){ return hidden.indexOf(e.id)===-1; });
+    return list;
   }catch(e){ return []; }
 }
+/* 마이룸 카드 삭제 — 로컬 기록은 바로 지우고, 그 외(초대 기반 등 서버 연동 카드)는 항상
+   "숨김" 목록에 올려서 다음부터 안 보이게 한다. 서버 쪽 초대/크레딧 기록 자체는 건드리지 않는다. */
+var MYROOM_HIDDEN_KEY = 'mysaju_myroom_hidden_v1';
+function getHiddenMyRoomIds(){
+  try{ return JSON.parse(localStorage.getItem(MYROOM_HIDDEN_KEY)||'[]'); }catch(e){ return []; }
+}
+function deleteMyRoomEntry(entry){
+  var id = entry.id;
+  try{
+    var raw = localStorage.getItem(MYROOM_KEY);
+    if (raw){
+      var list = JSON.parse(raw).filter(function(e){ return e.id !== id; });
+      localStorage.setItem(MYROOM_KEY, JSON.stringify(list));
+    }
+  }catch(e){}
+  if (DB_NS && MY_UID){
+    try{
+      var safeDocId = dbSafeId(MY_UID) + '_' + dbSafeId(id);
+      DB_NS.collection('myroom_entries').doc(safeDocId).delete().catch(function(){});
+    }catch(e){}
+  }
+  try{
+    var hidden = getHiddenMyRoomIds();
+    if (hidden.indexOf(id)===-1){ hidden.push(id); localStorage.setItem(MYROOM_HIDDEN_KEY, JSON.stringify(hidden)); }
+  }catch(e){}
+}
 /* 궁합 두 사람의 오행 색을 겹쳐 보여주는 장식용 뱃지 (이니셜 대신) */
-function myroomPairDotsHtml(wxA, wxB, genderA, genderB){
-  if (CHAR_AVATAR[genderA] || CHAR_AVATAR[genderB]){
+function myroomPairDotsHtml(wxA, wxB, genderA, genderB, charImgB){
+  if (charImgB || CHAR_AVATAR[genderA] || CHAR_AVATAR[genderB]){
     var imgA = CHAR_AVATAR[genderA] ? '<img src="'+CHAR_AVATAR[genderA]+'" alt="">' : '';
-    var imgB = CHAR_AVATAR[genderB] ? '<img src="'+CHAR_AVATAR[genderB]+'" alt="">' : '';
+    var imgB = charImgB ? '<img src="'+charImgB+'" alt="">' : (CHAR_AVATAR[genderB] ? '<img src="'+CHAR_AVATAR[genderB]+'" alt="">' : '');
     return '<span class="pairdots"><span class="pd">'+imgA+'</span><span class="pd pd2">'+imgB+'</span></span>';
   }
   var a = WUXING_INFO[wxA] || WUXING_INFO['목'];
@@ -2844,7 +3010,8 @@ function myroomCardHtml(entry, rank){
   /* fromInviter: 내가 초대받아서 가입했을 때, 나를 초대해준 사람 쪽에서 자동으로 뜨는 카드.
      entry.ownerName(공개 갤러리의 "소유자" 표시)과 같은 자리를 쓰지만 의미가 다르므로 겹치지 않게 처리. */
   var ownerTag = entry.ownerName ? '<span class="owner-tag">'+esc(entry.ownerName)+'님의 룸</span>' :
-    (entry.fromInviter ? '<span class="owner-tag">나를 초대함</span>' : '');
+    (entry.fromInviter ? '<span class="owner-tag">나를 초대함</span>' :
+    (entry.isCharacter ? '<span class="owner-tag char-tag">✨ 캐릭터</span>' : ''));
   var isNew = entry.at && (Date.now()-entry.at < 24*3600*1000);
   var newBadge = (isNew && !ownerTag) ? '<span class="myroom-new">NEW</span>' : '';
   var sparkle = (tier.key==='legend') ? '<span class="myroom-sparkle">✨</span>' : '';
@@ -2859,7 +3026,7 @@ function myroomCardHtml(entry, rank){
       rankBadge+
       ownerTag+
       newBadge+
-      myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB)+
+      myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB, entry.charImg)+
       '<span class="nm">'+esc(entry.nameB||'상대방')+'</span>'+
       '<span class="sc">궁합 '+entry.score+'점</span>'+
       '<span class="myroom-badge">'+tier.icon+' '+tier.label+'</span>'+
@@ -2917,7 +3084,7 @@ function openMyroomDetail(entry){
           '<button type="button" class="sheet-close" id="myroom-detail-close">✕</button>'+
         '</div>'+
         '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">'+
-          myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB)+
+          myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB, entry.charImg)+
           '<span class="myroom-badge" style="position:static;">'+tier.icon+' '+tier.label+'</span>'+
           '<span style="font-weight:700; font-size:.85rem; color:var(--fg-muted); font-variant-numeric:tabular-nums;">궁합 '+entry.score+'점</span>'+
         '</div>'+
@@ -2938,12 +3105,41 @@ function openMyroomDetail(entry){
         (GAN_REL_TALK_TEXT[entry.ganRel] ? '<div class="detail-block"><p class="ttl">💬 대화 스타일</p>'+autoParas(GAN_REL_TALK_TEXT[entry.ganRel])+'</div>' : '')+
         (dateTxt ? '<p class="disclaimer">'+dateTxt+'</p>' : '')+
         '<div class="detail-block"><p class="ttl">'+ICO_GEM+' 카드 꾸미기</p>'+frameSwatchesHtml(entry)+'</div>'+
+        '<div class="detail-block" id="myroom-delete-zone">'+myroomDeleteZoneHtml()+'</div>'+
       '</div>'+
     '</div>';
   $('#myroom-detail-backdrop').addEventListener('click', closeMyroomDetail);
   $('#myroom-detail-close').addEventListener('click', closeMyroomDetail);
   wireFrameSwatches(entry);
+  wireMyroomDeleteBtn(entry);
   if (chemi) renderChemiDetailSlot(entry, chemi);
+}
+function myroomDeleteZoneHtml(){
+  return '<button type="button" class="myroom-delete-btn" id="btn-myroom-delete">🗑️ 이 카드 삭제</button>';
+}
+function wireMyroomDeleteBtn(entry){
+  var btn = $('#btn-myroom-delete');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var zone = $('#myroom-delete-zone');
+    if (!zone) return;
+    zone.innerHTML =
+      '<p class="section-desc" style="margin-bottom:6px;">정말 삭제할까요? 삭제하면 되돌릴 수 없어요.</p>'+
+      '<div style="display:flex; gap:8px;">'+
+        '<button type="button" class="btn-secondary" id="btn-myroom-delete-cancel" style="flex:1;">취소</button>'+
+        '<button type="button" class="myroom-delete-btn" id="btn-myroom-delete-confirm" style="flex:1;">삭제할게요</button>'+
+      '</div>';
+    $('#btn-myroom-delete-cancel').addEventListener('click', function(){
+      zone.innerHTML = myroomDeleteZoneHtml();
+      wireMyroomDeleteBtn(entry);
+    });
+    $('#btn-myroom-delete-confirm').addEventListener('click', function(){
+      deleteMyRoomEntry(entry);
+      closeMyroomDetail();
+      renderMyRoom();
+      showToast('카드를 삭제했어요.');
+    });
+  });
 }
 function closeMyroomDetail(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML=''; }
 /* 오늘의 케미 자세히 보기 — 카드(상대)별 + 날짜별로 잠금 키가 갈려서, 같은 카드도 날이 바뀌면 다시 크레딧을 써야
@@ -3087,6 +3283,362 @@ function openMyroomDex(){
   $('#myroom-dex-close').addEventListener('click', closeMyroomDex);
 }
 function closeMyroomDex(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML=''; }
+
+/* ============================================================
+   캐릭터 궁합 — 저작권 걱정 없는 "오리지널" 캐릭터와의 사주 궁합.
+   실제 저작권 있는 애니메이션 캐릭터는 사용하지 않고, 이름·세계관을
+   새로 만든 캐릭터만 넣는다. 각 캐릭터는 가상의 생년월일시를 두고
+   실제 EightChar 계산을 그대로 태워 진짜 사주/궁합 로직을 재사용한다.
+   이미지는 추후 사용자가 직접 공급: img를 'characters/xxx.png' 같은
+   경로(또는 data URI)로 채우면 그 이미지가 마이룸 카드에 그대로
+   쓰인다. img가 비어있으면 성별 기반 기본 아바타로 대체 표시된다.
+   새 캐릭터를 추가하려면 아래 배열에 같은 모양으로 한 줄 추가하면 됨:
+     { id, name, tagline, cost, gender:'male'|'female', img,
+       opts:{ year, month, day, hour, minute, isLunar, isLeapMonth,
+              unknownTime, useCorrection, city } }
+   ============================================================ */
+var CHARACTERS = [];
+var CHAR_LIST_CACHE = null;
+function loadCharacterList(forceRefresh){
+  if (CHAR_LIST_CACHE && !forceRefresh) return Promise.resolve(CHAR_LIST_CACHE);
+  return fetch('/api/characters/list').then(function(r){ return r.json(); }).then(function(data){
+    var rows = (data && data.ok && data.rows) ? data.rows : [];
+    CHAR_LIST_CACHE = rows.map(normalizeCharacterRow);
+    return CHAR_LIST_CACHE;
+  });
+}
+/* 서버(Supabase, snake_case 컬럼)에서 온 행과 데모용 하드코딩 객체(opts 포함) 둘 다
+   { id, name, tagline, cost, gender, img, opts } 모양으로 통일해준다. */
+function normalizeCharacterRow(row){
+  if (row.opts) return row;
+  return {
+    id: row.id, name: row.name, tagline: row.tagline||'', cost: row.cost||25,
+    gender: row.gender==='female' ? 'female' : 'male', img: row.img_url || null,
+    opts: {
+      year:row.birth_year, month:row.birth_month, day:row.birth_day,
+      hour:row.birth_hour, minute:row.birth_minute,
+      isLunar:!!row.is_lunar, isLeapMonth:!!row.is_leap_month, unknownTime:!!row.unknown_time,
+      useCorrection:false, city:'서울'
+    }
+  };
+}
+function characterUnlockKey(c){ return 'char-unlock-'+c.id; }
+function computeCharacterRes(c){
+  return computeSaju(Object.assign({}, c.opts, { gender:c.gender, name:c.name }));
+}
+function characterCardHtml(c){
+  var unlocked = isUnlocked(characterUnlockKey(c));
+  var portraitInner = c.img ? '<img src="'+c.img+'" alt="">' : esc(c.name.charAt(0));
+  return '<div class="char-card'+(unlocked?' got':' locked')+'">'+
+      '<span class="char-portrait">'+portraitInner+'</span>'+
+      '<span class="nm">'+esc(c.name)+'</span>'+
+      '<span class="tagline">'+esc(c.tagline)+'</span>'+
+      (unlocked ?
+        '<span class="char-got-badge">✨ 마이룸에 있어요</span>' :
+        '<button type="button" class="unlock-btn char-unlock-btn" data-char-id="'+c.id+'" data-cost="'+c.cost+'">'+c.cost+'크레딧으로 해금</button>')+
+    '</div>';
+}
+function addCharacterToMyRoom(c){
+  if (!STATE.mySaju) return;
+  var charRes = computeCharacterRes(c);
+  var compat = computeCompat(STATE.mySaju, charRes);
+  var total = compat.scores.total;
+  saveMyRoomEntry(STATE.mySaju, charRes, compat, total, {
+    id:'char-'+c.id, isCharacter:true, charImg:c.img||null
+  });
+}
+function openCharacterGallery(){
+  var root = $('#myroom-sheet-root');
+  if (!root) return;
+  if (!STATE.mySaju){
+    showToast('먼저 내 사주를 확인한 뒤에 캐릭터 궁합을 볼 수 있어요.');
+    return;
+  }
+  root.innerHTML =
+    '<div class="sheet-backdrop" id="char-gallery-backdrop">'+
+      '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
+        '<div class="sheet-handle"></div>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">캐릭터 궁합</p>'+
+          '<div style="display:flex; gap:6px; align-items:center;">'+
+            '<button type="button" class="char-admin-gear" id="char-admin-gear" title="캐릭터 관리">⚙️</button>'+
+            '<button type="button" class="sheet-close" id="char-gallery-close">✕</button>'+
+          '</div>'+
+        '</div>'+
+        '<p class="section-desc">크레딧으로 캐릭터를 해금하면 나와의 궁합을 계산해서 마이룸에 카드로 추가돼요.</p>'+
+        '<div class="char-grid" id="char-grid"><p class="section-desc">불러오는 중...</p></div>'+
+      '</div>'+
+    '</div>';
+  $('#char-gallery-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-gallery-backdrop') closeCharacterGallery(); });
+  $('#char-gallery-close').addEventListener('click', closeCharacterGallery);
+  $('#char-admin-gear').addEventListener('click', openCharacterAdminList);
+  loadCharacterList().then(function(list){
+    var grid = $('#char-grid');
+    if (!grid) return;
+    grid.innerHTML = list.length ? list.map(characterCardHtml).join('') : '<p class="section-desc">아직 등록된 캐릭터가 없어요. ⚙️ 버튼으로 추가해보세요.</p>';
+    wireCharacterUnlockBtns(list);
+  }).catch(function(){
+    var grid = $('#char-grid');
+    if (grid) grid.innerHTML = '<p class="section-desc">캐릭터를 불러오지 못했어요. 잠시 후 다시 시도해주세요.</p>';
+  });
+}
+function closeCharacterGallery(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML=''; }
+function wireCharacterUnlockBtns(list){
+  $all('.char-unlock-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var c = list.filter(function(x){ return x.id===btn.dataset.charId; })[0];
+      if (!c) return;
+      var cost = Number(btn.dataset.cost);
+      tryUnlock(characterUnlockKey(c), cost, c.name+' 캐릭터 해금', function(){
+        addCharacterToMyRoom(c);
+        showToast(c.name+'을 마이룸에 추가했어요! ✨');
+        renderMyRoom();
+        openCharacterGallery();
+      });
+    });
+  });
+}
+function myroomCharBtnHtml(){
+  return '<button type="button" class="myroom-dex-btn" id="btn-myroom-char">✨ 캐릭터</button>';
+}
+function wireMyroomCharBtn(){
+  var b = $('#btn-myroom-char');
+  if (b) b.addEventListener('click', openCharacterGallery);
+}
+
+/* ---- 캐릭터 관리자(비밀번호로 보호) — 캐릭터 이미지/이름/생년월일시를 직접 추가·수정·삭제 ----
+   비밀번호는 Vercel 환경변수 ADMIN_SECRET과 대조되며(서버에서 검증), 맞게 입력하면 이 브라우저에만
+   저장해두고 매번 다시 묻지 않는다. 데모(Claude Artifact)에서는 /api/characters/* 가 없어서
+   저장을 시도하면 서버 오류 토스트가 뜨는데, 이는 배포된 사이트에서만 쓰는 기능이라 정상이다. */
+var ADMIN_SECRET_KEY = 'mysaju_admin_secret_v1';
+function getAdminSecret(){ try{ return localStorage.getItem(ADMIN_SECRET_KEY)||''; }catch(e){ return ''; } }
+function setAdminSecret(v){ try{ localStorage.setItem(ADMIN_SECRET_KEY, v); }catch(e){} }
+function clearAdminSecret(){ try{ localStorage.removeItem(ADMIN_SECRET_KEY); }catch(e){} }
+function adminHeaders(){ return { 'Content-Type':'application/json', 'x-admin-secret': getAdminSecret() }; }
+
+function openCharacterAdminList(){
+  if (!getAdminSecret()){ openCharacterAdminLogin(); return; }
+  var root = $('#myroom-sheet-root');
+  if (!root) return;
+  root.innerHTML =
+    '<div class="sheet-backdrop" id="char-admin-backdrop">'+
+      '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
+        '<div class="sheet-handle"></div>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">캐릭터 관리</p>'+
+          '<button type="button" class="sheet-close" id="char-admin-close">✕</button></div>'+
+        '<button type="button" class="btn-primary" id="char-admin-add">+ 새 캐릭터 추가</button>'+
+        '<div id="char-admin-list"><p class="section-desc">불러오는 중...</p></div>'+
+      '</div>'+
+    '</div>';
+  $('#char-admin-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-admin-backdrop') openCharacterGallery(); });
+  $('#char-admin-close').addEventListener('click', openCharacterGallery);
+  $('#char-admin-add').addEventListener('click', function(){ openCharacterEditForm(null); });
+  loadCharacterList(true).then(function(list){
+    var wrap = $('#char-admin-list');
+    if (!wrap) return;
+    wrap.innerHTML = list.length ? list.map(charAdminRowHtml).join('') : '<p class="section-desc">아직 등록된 캐릭터가 없어요.</p>';
+    wireCharAdminRowBtns(list);
+  }).catch(function(){
+    var wrap = $('#char-admin-list');
+    if (wrap) wrap.innerHTML = '<p class="section-desc">목록을 불러오지 못했어요.</p>';
+  });
+}
+function charAdminRowHtml(c){
+  var portraitInner = c.img ? '<img src="'+c.img+'" alt="">' : esc(c.name.charAt(0));
+  return '<div class="char-admin-row">'+
+      '<span class="char-portrait char-portrait-sm">'+portraitInner+'</span>'+
+      '<span class="char-admin-row-nm">'+esc(c.name)+'</span>'+
+      '<button type="button" class="char-admin-edit-btn" data-char-id="'+c.id+'">수정</button>'+
+      '<button type="button" class="char-admin-del-btn" data-char-id="'+c.id+'">삭제</button>'+
+    '</div>';
+}
+function wireCharAdminRowBtns(list){
+  $all('.char-admin-edit-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var c = list.filter(function(x){ return x.id===btn.dataset.charId; })[0];
+      if (c) openCharacterEditForm(c);
+    });
+  });
+  $all('.char-admin-del-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if (btn.dataset.confirm !== '1'){
+        btn.dataset.confirm = '1';
+        btn.textContent = '정말 삭제?';
+        setTimeout(function(){ btn.dataset.confirm=''; btn.textContent='삭제'; }, 2500);
+        return;
+      }
+      deleteCharacterAdmin(btn.dataset.charId);
+    });
+  });
+}
+function openCharacterAdminLogin(){
+  var root = $('#myroom-sheet-root');
+  if (!root) return;
+  root.innerHTML =
+    '<div class="sheet-backdrop" id="char-login-backdrop">'+
+      '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
+        '<div class="sheet-handle"></div>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">관리자 확인</p>'+
+          '<button type="button" class="sheet-close" id="char-login-close">✕</button></div>'+
+        '<div class="field"><label for="char-admin-pw">관리자 비밀번호</label><input type="password" id="char-admin-pw" autocomplete="off"></div>'+
+        '<button type="button" class="btn-primary" id="char-admin-login-btn">확인</button>'+
+      '</div>'+
+    '</div>';
+  $('#char-login-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-login-backdrop') openCharacterGallery(); });
+  $('#char-login-close').addEventListener('click', openCharacterGallery);
+  $('#char-admin-login-btn').addEventListener('click', function(){
+    var v = $('#char-admin-pw').value.trim();
+    if (!v){ showToast('비밀번호를 입력해주세요.'); return; }
+    setAdminSecret(v);
+    openCharacterAdminList();
+  });
+}
+var CHAR_ADMIN_PENDING_IMAGE = null; /* 저장 전까지 들고 있는 새로 고른 이미지 {base64, mime} */
+function charOptsToFormDefaults(c){
+  var pad = function(n){ return (n<10?'0':'')+n; };
+  if (!c) return { date:'1998-01-01', time:'12:00', unknown:false, lunar:false, leap:false };
+  return {
+    date: c.opts.year+'-'+pad(c.opts.month)+'-'+pad(c.opts.day),
+    time: pad(c.opts.hour)+':'+pad(c.opts.minute),
+    unknown: !!c.opts.unknownTime, lunar: !!c.opts.isLunar, leap: !!c.opts.isLeapMonth
+  };
+}
+function openCharacterEditForm(existing){
+  CHAR_ADMIN_PENDING_IMAGE = null;
+  var root = $('#myroom-sheet-root');
+  if (!root) return;
+  var d = charOptsToFormDefaults(existing);
+  root.innerHTML =
+    '<div class="sheet-backdrop" id="char-edit-backdrop">'+
+      '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
+        '<div class="sheet-handle"></div>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(existing?'캐릭터 수정':'새 캐릭터')+'</p>'+
+          '<button type="button" class="sheet-close" id="char-edit-close">✕</button></div>'+
+        '<div class="field"><label>이미지</label>'+
+          '<div class="char-edit-img-row">'+
+            '<span class="char-portrait" id="char-edit-preview">'+(existing && existing.img ? '<img src="'+existing.img+'" alt="">' : '📷')+'</span>'+
+            '<input type="file" id="char-edit-file" accept="image/*">'+
+          '</div>'+
+        '</div>'+
+        '<div class="field"><label for="char-edit-name">이름</label><input type="text" id="char-edit-name" maxlength="12" value="'+(existing?esc(existing.name):'')+'"></div>'+
+        '<div class="field"><label for="char-edit-tagline">한줄소개</label><input type="text" id="char-edit-tagline" maxlength="40" value="'+(existing?esc(existing.tagline):'')+'"></div>'+
+        '<div class="two-col">'+
+          '<div class="field"><label>성별</label><div class="seg" id="char-edit-gender"><button type="button" data-val="male" class="'+((!existing||existing.gender==='male')?'active':'')+'">남성</button><button type="button" data-val="female" class="'+(existing&&existing.gender==='female'?'active':'')+'">여성</button></div></div>'+
+          '<div class="field"><label for="char-edit-cost">해금 비용(크레딧)</label><input type="number" id="char-edit-cost" min="1" value="'+(existing?existing.cost:25)+'"></div>'+
+        '</div>'+
+        '<div class="field"><label>달력</label><div class="seg" id="char-edit-calendar"><button type="button" data-val="solar" class="'+(!d.lunar?'active':'')+'">양력</button><button type="button" data-val="lunar" class="'+(d.lunar?'active':'')+'">음력</button></div></div>'+
+        '<label class="check-row" id="char-edit-leap-row"'+(d.lunar?'':' hidden')+'><input type="checkbox" id="char-edit-leap" '+(d.leap?'checked':'')+'>윤달입니다</label>'+
+        '<div class="field"><label for="char-edit-date">생년월일</label><input type="date" id="char-edit-date" min="1900-01-01" max="2100-12-31" value="'+d.date+'"></div>'+
+        '<div class="two-col">'+
+          '<div class="field"><label for="char-edit-time">출생시간</label><input type="time" id="char-edit-time" value="'+d.time+'" '+(d.unknown?'disabled':'')+'></div>'+
+          '<div class="field" style="justify-content:flex-end;"><label class="check-row"><input type="checkbox" id="char-edit-unknown" '+(d.unknown?'checked':'')+'>시간 모름</label></div>'+
+        '</div>'+
+        '<button type="button" class="btn-primary" id="char-edit-save">저장</button>'+
+      '</div>'+
+    '</div>';
+  $('#char-edit-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-edit-backdrop') openCharacterAdminList(); });
+  $('#char-edit-close').addEventListener('click', openCharacterAdminList);
+  wireSeg($('#char-edit-gender'));
+  wireSeg($('#char-edit-calendar'), function(val){ $('#char-edit-leap-row').hidden = (val!=='lunar'); });
+  $('#char-edit-unknown').addEventListener('change', function(e){ $('#char-edit-time').disabled = e.target.checked; });
+  $('#char-edit-file').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    resizeImageFileToBase64(file, 480).then(function(res){
+      CHAR_ADMIN_PENDING_IMAGE = res;
+      var prev = $('#char-edit-preview');
+      if (prev) prev.innerHTML = '<img src="data:'+res.mime+';base64,'+res.base64+'" alt="">';
+    }).catch(function(){ showToast('이미지를 처리하지 못했어요.'); });
+  });
+  $('#char-edit-save').addEventListener('click', function(){ submitCharacterEditForm(existing); });
+}
+/* 브라우저에서 이미지를 캔버스로 리사이즈해 용량을 줄인 뒤 base64로 돌려준다(서버 업로드용). */
+function resizeImageFileToBase64(file, maxDim){
+  return new Promise(function(resolve, reject){
+    var reader = new FileReader();
+    reader.onerror = function(){ reject(new Error('read failed')); };
+    reader.onload = function(){
+      var img = new Image();
+      img.onerror = function(){ reject(new Error('decode failed')); };
+      img.onload = function(){
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var w = Math.max(1, Math.round(img.width*scale));
+        var h = Math.max(1, Math.round(img.height*scale));
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.86);
+        resolve({ base64: dataUrl.split(',')[1], mime:'image/jpeg' });
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function submitCharacterEditForm(existing){
+  var name = $('#char-edit-name').value.trim();
+  if (!name){ showToast('이름을 입력해주세요.'); return; }
+  var dateStr = $('#char-edit-date').value;
+  if (!dateStr){ showToast('생년월일을 입력해주세요.'); return; }
+  if (!existing && !CHAR_ADMIN_PENDING_IMAGE){ showToast('이미지를 선택해주세요.'); return; }
+  var parts = dateStr.split('-').map(Number);
+  var timeStr = $('#char-edit-time').value || '12:00';
+  var timeParts = timeStr.split(':').map(Number);
+  var unknownTime = $('#char-edit-unknown').checked;
+  var isLunar = segValue($('#char-edit-calendar'))==='lunar';
+  var isLeapMonth = isLunar && $('#char-edit-leap').checked;
+  var gender = segValue($('#char-edit-gender'));
+  var payload = {
+    id: existing ? existing.id : null,
+    name: name,
+    tagline: $('#char-edit-tagline').value.trim(),
+    cost: Number($('#char-edit-cost').value) || 25,
+    gender: gender,
+    existingImgUrl: existing ? existing.img : null,
+    opts: {
+      year:parts[0], month:parts[1], day:parts[2],
+      hour: unknownTime?12:timeParts[0], minute: unknownTime?0:timeParts[1],
+      isLunar:isLunar, isLeapMonth:isLeapMonth, unknownTime:unknownTime
+    }
+  };
+  if (CHAR_ADMIN_PENDING_IMAGE){
+    payload.imageBase64 = CHAR_ADMIN_PENDING_IMAGE.base64;
+    payload.imageMime = CHAR_ADMIN_PENDING_IMAGE.mime;
+  }
+  saveCharacterAdmin(payload);
+}
+function saveCharacterAdmin(payload){
+  showToast('저장하는 중...');
+  fetch('/api/characters/save', { method:'POST', headers:adminHeaders(), body:JSON.stringify(payload) })
+    .then(function(r){
+      if (r.status===401){ clearAdminSecret(); showToast('비밀번호가 올바르지 않아요.'); openCharacterAdminLogin(); return null; }
+      return r.json();
+    })
+    .then(function(data){
+      if (!data) return;
+      if (!data.ok){ showToast('저장에 실패했어요.'); return; }
+      showToast('저장했어요!');
+      CHAR_LIST_CACHE = null;
+      openCharacterAdminList();
+    })
+    .catch(function(){ showToast('서버에 연결하지 못했어요. (배포된 사이트에서만 되는 기능이에요)'); });
+}
+function deleteCharacterAdmin(id){
+  fetch('/api/characters/delete', { method:'POST', headers:adminHeaders(), body:JSON.stringify({ id:id }) })
+    .then(function(r){
+      if (r.status===401){ clearAdminSecret(); showToast('비밀번호가 올바르지 않아요.'); openCharacterAdminLogin(); return null; }
+      return r.json();
+    })
+    .then(function(data){
+      if (!data) return;
+      if (!data.ok){ showToast('삭제에 실패했어요.'); return; }
+      showToast('삭제했어요.');
+      CHAR_LIST_CACHE = null;
+      openCharacterAdminList();
+    })
+    .catch(function(){ showToast('서버에 연결하지 못했어요.'); });
+}
+
 var MYROOM_CLOUD_DOCS = null; /* db 연동 시 구독된 공개 갤러리 전체 문서 */
 var MYROOM_UNSUB = null;
 function subscribeMyRoomCloud(){
@@ -3122,31 +3674,43 @@ function renderMyRoomLocal(root){
     fetchInviteMyRoom();
     return;
   }
-  var list = INVITE_MYROOM_CACHE;
+  /* 마이룸 = (서버에서 받아온) 실제로 초대해서 등록한 친구 + (이 기기에 로컬로 저장된) 해금한 캐릭터.
+     둘을 합쳐 최신순으로 다시 정렬해서 하나의 갤러리처럼 보여준다. */
+  var hiddenIds = getHiddenMyRoomIds();
+  var friendList = hiddenIds.length ? INVITE_MYROOM_CACHE.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : INVITE_MYROOM_CACHE;
+  var charList = loadMyRoomList().filter(function(e){ return e.isCharacter; });
+  var list = charList.concat(friendList).sort(function(a,b){ return (b.at||0)-(a.at||0); });
   if (!list.length){
     root.innerHTML =
-      '<p class="eyebrow">마이룸</p>'+
+      '<div class="myroom-head"><p class="eyebrow">마이룸</p>'+
+        '<div class="myroom-head-right">'+myroomCharBtnHtml()+'</div>'+
+      '</div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>친구를 초대해서 상대방이 자기 사주를 등록하면 이곳에 카드가 모여요.</span></div>';
+      '<span>친구를 초대하거나 캐릭터를 해금하면 이곳에 카드가 모여요.</span></div>';
+    wireMyroomCharBtn();
     return;
   }
   var rankMap = myroomRankMap(list);
   var displayList = myroomSortedForDisplay(list, STATE.myroomSort);
   root.innerHTML =
     '<div class="myroom-head"><p class="eyebrow">마이룸</p>'+
-      '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
+      '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomCharBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
     '</div>'+
     '<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
-    '<p class="disclaimer">내가 초대해서 실제로 사주를 등록한 친구만 모이는 갤러리예요.</p>';
+    '<p class="disclaimer">내가 초대해서 실제로 사주를 등록한 친구와, 해금한 캐릭터가 함께 모이는 갤러리예요.</p>';
   wireMyroomSortSeg();
   wireMyroomCardClicks($('.myroom-grid', root), displayList);
   wireMyroomDexBtn();
+  wireMyroomCharBtn();
 }
 /* 마이룸은 두 방향을 모두 모아서 보여준다:
    1) 내가 초대해서 실제로 등록한 친구 (/api/invite/list) — row.invitee_saju를 그대로 받아온다.
    2) 나를 초대해준 친구 (/api/invite/received) — 그 친구가 /api/device/save-saju 로 올려둔
       자기 사주(row.inviter_saju)를 받아온다. 아직 한 번도 올리지 않은 초대자는 서버가 알아서 걸러서 내려준다.
-   두 목록을 합쳐 최신순으로 섞어 보여주고, fromInviter 플래그로 카드에 "나를 초대함" 표시만 다르게 단다. */
+   두 목록을 합쳐 최신순으로 섞어 보여주고, fromInviter 플래그로 카드에 "나를 초대함" 표시만 다르게 단다.
+   서로 초대를 주고받은 경우(상대 기기가 sentList·receivedList 양쪽에 다 걸리는 경우) 같은 사람이
+   카드 두 장으로 중복돼 보일 수 있어서, 상대방 device_id(_otherId) 기준으로 한 장만 남기고 합친다 —
+   둘 중 더 먼저 생긴(원래) 관계 쪽을 대표 카드로 쓴다. */
 function fetchInviteMyRoom(){
   var sentP = fetch('/api/invite/list?device_id='+encodeURIComponent(CREDITS.shareCode))
     .then(function(r){ return r.json(); }).catch(function(){ return null; });
@@ -3161,7 +3725,7 @@ function fetchInviteMyRoom(){
       try{ resB = computeSaju(row.invitee_saju); }catch(e){ return null; }
       var compat = computeCompat(STATE.mySaju, resB);
       return {
-        id:'invite-'+row.invitee_device_id, nameB:row.invitee_name||resB.name||'상대방',
+        id:'invite-'+row.invitee_device_id, _otherId:row.invitee_device_id, nameB:row.invitee_name||resB.name||'상대방',
         dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx,
         shinsalA:STATE.mySaju.shinsal||[], shinsalB:resB.shinsal||[],
         zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:compat.scores.total,
@@ -3173,14 +3737,20 @@ function fetchInviteMyRoom(){
       try{ resB = computeSaju(row.inviter_saju); }catch(e){ return null; }
       var compat = computeCompat(STATE.mySaju, resB);
       return {
-        id:'invited-by-'+row.inviter_device_id, nameB:resB.name||'초대한 친구', fromInviter:true,
+        id:'invited-by-'+row.inviter_device_id, _otherId:row.inviter_device_id, nameB:resB.name||'초대한 친구', fromInviter:true,
         dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx,
         shinsalA:STATE.mySaju.shinsal||[], shinsalB:resB.shinsal||[],
         zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:compat.scores.total,
         at:row.created_at ? new Date(row.created_at).getTime() : Date.now()
       };
     }).filter(Boolean);
-    INVITE_MYROOM_CACHE = sentList.concat(receivedList).sort(function(a,b){ return (b.at||0)-(a.at||0); });
+    var byOther = {};
+    sentList.concat(receivedList).forEach(function(e){
+      var cur = byOther[e._otherId];
+      if (!cur || (e.at||0) < (cur.at||0)) byOther[e._otherId] = e;
+    });
+    INVITE_MYROOM_CACHE = Object.keys(byOther).map(function(k){ return byOther[k]; })
+      .sort(function(a,b){ return (b.at||0)-(a.at||0); });
   }).catch(function(){ INVITE_MYROOM_CACHE = []; })
   .then(function(){ renderMyRoom(); });
 }
@@ -3954,14 +4524,14 @@ function shareImageBlob(canvas, blob, text, url, filename, kakaoTitle, buttonTit
 
 /* ---- 마이룸: 내가 확인한 궁합 상대 로컬 저장(추후 마이룸 화면에서 사용) ---- */
 var MYROOM_KEY = 'mysaju_myroom_v1';
-function saveMyRoomEntry(resA, resB, compat, total){
-  var id = 'compat-'+resA.day.gan+resA.day.zhi+'-'+resB.day.gan+resB.day.zhi;
-  var entry = {
+function saveMyRoomEntry(resA, resB, compat, total, extra){
+  var id = (extra && extra.id) ? extra.id : ('compat-'+resA.day.gan+resA.day.zhi+'-'+resB.day.gan+resB.day.zhi);
+  var entry = Object.assign({
     id:id, nameB:resB.name||'상대방', dayGanWxA:resA.dayGanWx, dayGanWxB:resB.dayGanWx,
     genderA:resA.gender, genderB:resB.gender,
     shinsalA:resA.shinsal||[], shinsalB:resB.shinsal||[],
     zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:total, at:Date.now()
-  };
+  }, extra||{});
   try{
     var raw = localStorage.getItem(MYROOM_KEY);
     var list = raw ? JSON.parse(raw) : [];
