@@ -320,7 +320,6 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .char-card .char-unlock-btn{padding:7px 12px; font-size:.74rem;}
 .char-got-badge{font-size:.68rem; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:3px 9px;}
 .owner-tag.char-tag{color:var(--accent); background:var(--accent-soft);}
-.char-admin-gear{background:none; border:none; font-size:1rem; cursor:pointer; padding:4px; line-height:1;}
 .char-admin-row{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:12px; background:var(--surface-2); border:1px solid var(--border);}
 .char-admin-row + .char-admin-row{margin-top:8px;}
 .char-portrait-sm{width:38px; height:38px; font-size:1rem; flex:none;}
@@ -1525,6 +1524,9 @@ function parseInviteHash(){
   var m = (location.hash||'').match(/^#invite-([A-Za-z0-9_.~-]+)$/);
   return m ? m[1] : null;
 }
+/* 캐릭터 관리자 화면 진입용 — 일반 사용자 눈에는 아무 버튼도 안 보이고,
+   본인만 아는 URL(.../#char-admin)로 들어와야만 열린다. */
+function isAdminHash(){ return (location.hash||'') === '#char-admin'; }
 function saveCredits(){
   try{
     localStorage.setItem(CREDIT_KEY, JSON.stringify({
@@ -3359,10 +3361,7 @@ function openCharacterGallery(){
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">캐릭터 궁합</p>'+
-          '<div style="display:flex; gap:6px; align-items:center;">'+
-            '<button type="button" class="char-admin-gear" id="char-admin-gear" title="캐릭터 관리">⚙️</button>'+
-            '<button type="button" class="sheet-close" id="char-gallery-close">✕</button>'+
-          '</div>'+
+          '<button type="button" class="sheet-close" id="char-gallery-close">✕</button>'+
         '</div>'+
         '<p class="section-desc">크레딧으로 캐릭터를 해금하면 나와의 궁합을 계산해서 마이룸에 카드로 추가돼요.</p>'+
         '<div class="char-grid" id="char-grid"><p class="section-desc">불러오는 중...</p></div>'+
@@ -3370,7 +3369,6 @@ function openCharacterGallery(){
     '</div>';
   $('#char-gallery-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-gallery-backdrop') closeCharacterGallery(); });
   $('#char-gallery-close').addEventListener('click', closeCharacterGallery);
-  $('#char-admin-gear').addEventListener('click', openCharacterAdminList);
   loadCharacterList().then(function(list){
     var grid = $('#char-grid');
     if (!grid) return;
@@ -3429,8 +3427,8 @@ function openCharacterAdminList(){
         '<div id="char-admin-list"><p class="section-desc">불러오는 중...</p></div>'+
       '</div>'+
     '</div>';
-  $('#char-admin-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-admin-backdrop') openCharacterGallery(); });
-  $('#char-admin-close').addEventListener('click', openCharacterGallery);
+  $('#char-admin-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-admin-backdrop') closeCharacterGallery(); });
+  $('#char-admin-close').addEventListener('click', closeCharacterGallery);
   $('#char-admin-add').addEventListener('click', function(){ openCharacterEditForm(null); });
   loadCharacterList(true).then(function(list){
     var wrap = $('#char-admin-list');
@@ -3483,8 +3481,8 @@ function openCharacterAdminLogin(){
         '<button type="button" class="btn-primary" id="char-admin-login-btn">확인</button>'+
       '</div>'+
     '</div>';
-  $('#char-login-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-login-backdrop') openCharacterGallery(); });
-  $('#char-login-close').addEventListener('click', openCharacterGallery);
+  $('#char-login-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-login-backdrop') closeCharacterGallery(); });
+  $('#char-login-close').addEventListener('click', closeCharacterGallery);
   $('#char-admin-login-btn').addEventListener('click', function(){
     var v = $('#char-admin-pw').value.trim();
     if (!v){ showToast('비밀번호를 입력해주세요.'); return; }
@@ -4653,6 +4651,14 @@ function initCapabilities(){
 }
 
 function init(){
+  var wantsCharAdmin = isAdminHash();
+  if (wantsCharAdmin){
+    try{
+      var _au = new URL(location.href);
+      _au.hash = '';
+      history.replaceState({}, '', _au.pathname + (_au.search||''));
+    }catch(e){}
+  }
   var brandIc = $('#brand-mark-ic');
   if (brandIc) brandIc.innerHTML = BRAND_MARK_SVG;
   var ti1=$('#tab-ico-saju'), ti2=$('#tab-ico-today'), ti3=$('#tab-ico-compat');
@@ -4709,6 +4715,8 @@ function init(){
     subscribeMyRoomCloud();
     renderMyRoom();
   });
+
+  if (wantsCharAdmin) openCharacterAdminList();
 }
 
 if (document.readyState==='loading'){
