@@ -302,36 +302,39 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .dex-stat .v{font-family:var(--font-display); font-weight:700; font-size:1.15rem; color:var(--accent); font-variant-numeric:tabular-nums;}
 .dex-stat .k{font-size:.68rem; color:var(--fg-muted);}
 .dex-subhead{font-weight:700; font-size:.88rem; margin-top:4px;}
-/* ---- 캐릭터 궁합 ---- */
-.char-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-.char-card{
+/* ---- 일러스트 상세 리포트 ---- */
+.report-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.report-card{
   display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;
   padding:16px 10px 14px; border-radius:14px; background:var(--surface-2); border:1.5px solid var(--border);
+  cursor:pointer;
 }
-.char-card.locked{opacity:.92;}
-.char-card .char-portrait{
-  width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; overflow:hidden;
-  font-family:var(--font-display); font-weight:700; font-size:1.2rem; color:#fff; background:var(--accent);
-  flex:none;
+.report-card .report-cover{
+  width:64px; height:64px; border-radius:14px; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  font-size:1.4rem; background:var(--accent-soft); flex:none;
 }
-.char-card .char-portrait img{width:100%; height:100%; object-fit:cover;}
-.char-card .nm{font-weight:700; font-size:.88rem;}
-.char-card .tagline{font-size:.7rem; color:var(--fg-muted); line-height:1.3;}
-.char-card .char-unlock-btn{padding:7px 12px; font-size:.74rem;}
-.char-got-badge{font-size:.68rem; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:3px 9px;}
-.owner-tag.char-tag{color:var(--accent); background:var(--accent-soft);}
-.char-admin-row{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:12px; background:var(--surface-2); border:1px solid var(--border);}
-.char-admin-row + .char-admin-row{margin-top:8px;}
-.char-portrait-sm{width:38px; height:38px; font-size:1rem; flex:none;}
-.char-admin-row-nm{flex:1; min-width:0; font-weight:700; font-size:.85rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.char-admin-edit-btn, .char-admin-del-btn{
+.report-card .report-cover img{width:100%; height:100%; object-fit:cover;}
+.report-card .nm{font-weight:700; font-size:.88rem;}
+.report-card .tagline{font-size:.7rem; color:var(--fg-muted); line-height:1.3;}
+.report-cost-badge{font-size:.68rem; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:3px 9px;}
+.report-panel{display:flex; flex-direction:column; gap:8px;}
+.report-panel + .report-panel{margin-top:4px;}
+.report-panel-img{display:block; width:100%; border-radius:14px; overflow:hidden; background:var(--surface-2);}
+.report-panel-img img{width:100%; display:block;}
+.report-panel-img.blur img{filter:blur(14px); transform:scale(1.04);}
+.report-caption{font-size:.85rem; line-height:1.55; background:var(--surface-2); border-radius:12px; padding:10px 12px;}
+.report-admin-row{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:12px; background:var(--surface-2); border:1px solid var(--border);}
+.report-admin-row + .report-admin-row{margin-top:8px;}
+.report-admin-thumb{width:38px; height:38px; border-radius:10px; font-size:1rem; flex:none; display:flex; align-items:center; justify-content:center; overflow:hidden; background:var(--accent-soft);}
+.report-admin-thumb img{width:100%; height:100%; object-fit:cover;}
+.report-admin-row-nm{flex:1; min-width:0; font-weight:700; font-size:.85rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.report-admin-edit-btn, .report-admin-del-btn, .report-admin-panels-btn{
   border:1px solid var(--border-strong); background:var(--surface); color:var(--fg); border-radius:999px;
   padding:5px 10px; font-size:.72rem; font-weight:700; cursor:pointer; flex:none;
 }
-.char-admin-del-btn{color:var(--bad); border-color:rgba(224,90,90,.35);}
-.char-edit-img-row{display:flex; align-items:center; gap:12px;}
-.char-edit-img-row .char-portrait{width:56px; height:56px; font-size:1.3rem;}
-
+.report-admin-del-btn{color:var(--bad); border-color:rgba(224,90,90,.35);}
+.report-edit-img-row{display:flex; align-items:center; gap:12px;}
+.report-edit-img-row .report-admin-thumb{width:56px; height:56px; font-size:1.3rem;}
 /* ---- 결과 공개(reveal) 연출 ---- */
 .reveal-overlay{
   position:fixed; inset:0; z-index:500;
@@ -693,6 +696,7 @@ img{max-width:100%;}
   <div id="chat-sheet-root"></div>
   <div id="brief-sheet-root"></div>
   <div id="myroom-sheet-root"></div>
+  <div id="report-sheet-root"></div>
   <div id="toast-root"></div>
 </div>
 <script>
@@ -1524,9 +1528,40 @@ function parseInviteHash(){
   var m = (location.hash||'').match(/^#invite-([A-Za-z0-9_.~-]+)$/);
   return m ? m[1] : null;
 }
-/* 캐릭터 관리자 화면 진입용 — 일반 사용자 눈에는 아무 버튼도 안 보이고,
-   본인만 아는 URL(.../#char-admin)로 들어와야만 열린다. */
-function isAdminHash(){ return (location.hash||'') === '#char-admin'; }
+/* 리포트 관리자 화면 진입용 — 일반 사용자 눈에는 아무 버튼도 안 보이고,
+   본인만 아는 URL(.../#report-admin)로 들어와야만 열린다. */
+function isReportAdminHash(){ return (location.hash||'') === '#report-admin'; }
+/* 관리자 전용 기능 공통 — 비밀번호는 Vercel 환경변수 ADMIN_SECRET과 대조되며(서버에서 검증),
+   맞게 입력하면 이 브라우저에만 저장해두고 매번 다시 묻지 않는다. */
+var ADMIN_SECRET_KEY = 'mysaju_admin_secret_v1';
+function getAdminSecret(){ try{ return localStorage.getItem(ADMIN_SECRET_KEY)||''; }catch(e){ return ''; } }
+function setAdminSecret(v){ try{ localStorage.setItem(ADMIN_SECRET_KEY, v); }catch(e){} }
+function clearAdminSecret(){ try{ localStorage.removeItem(ADMIN_SECRET_KEY); }catch(e){} }
+function adminHeaders(){ return { 'Content-Type':'application/json', 'x-admin-secret': getAdminSecret() }; }
+/* 브라우저에서 이미지를 캔버스로 리사이즈해 용량을 줄인 뒤 base64로 돌려준다(서버 업로드용). */
+function resizeImageFileToBase64(file, maxDim){
+  return new Promise(function(resolve, reject){
+    var reader = new FileReader();
+    reader.onerror = function(){ reject(new Error('read failed')); };
+    reader.onload = function(){
+      var img = new Image();
+      img.onerror = function(){ reject(new Error('decode failed')); };
+      img.onload = function(){
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var w = Math.max(1, Math.round(img.width*scale));
+        var h = Math.max(1, Math.round(img.height*scale));
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.86);
+        resolve({ base64: dataUrl.split(',')[1], mime:'image/jpeg' });
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 function saveCredits(){
   try{
     localStorage.setItem(CREDIT_KEY, JSON.stringify({
@@ -2324,6 +2359,13 @@ function renderSajuResult(result){
     shinsalCardHtml(result.shinsal) +
 
     '<div class="card">'+
+      '<p class="eyebrow">프리미엄 콘텐츠</p>'+
+      '<p class="section-title" style="font-size:.98rem;">✨ 일러스트로 보는 상세 리포트</p>'+
+      '<p class="section-desc">연애·커리어·힐링 등 다양한 컨셉으로, 그림과 함께 내 사주를 더 깊이 풀어드려요.</p>'+
+      '<button type="button" class="share-btn" id="btn-open-reports">리포트 보러가기</button>'+
+    '</div>'+
+
+    '<div class="card">'+
       '<p class="eyebrow">고민 상담</p>'+
       '<p class="section-title" style="font-size:.98rem;">어떤 부분이 궁금하세요?</p>'+
       '<div class="chip-row" id="worry-chips">'+
@@ -2346,6 +2388,8 @@ function renderSajuResult(result){
   });
   var shareSajuBtn = $('#btn-share-saju-summary');
   if (shareSajuBtn) shareSajuBtn.addEventListener('click', function(){ doShareSaju(result); });
+  var openReportsBtn = $('#btn-open-reports');
+  if (openReportsBtn) openReportsBtn.addEventListener('click', function(){ openReportGallery(); });
 }
 
 function showWorryCategory(my, cat){
@@ -3329,176 +3373,193 @@ function openMyroomDex(){
 function closeMyroomDex(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML=''; }
 
 /* ============================================================
-   캐릭터 궁합 — 저작권 걱정 없는 "오리지널" 캐릭터와의 사주 궁합.
-   실제 저작권 있는 애니메이션 캐릭터는 사용하지 않고, 이름·세계관을
-   새로 만든 캐릭터만 넣는다. 각 캐릭터는 가상의 생년월일시를 두고
-   실제 EightChar 계산을 그대로 태워 진짜 사주/궁합 로직을 재사용한다.
-   이미지는 추후 사용자가 직접 공급: img를 'characters/xxx.png' 같은
-   경로(또는 data URI)로 채우면 그 이미지가 마이룸 카드에 그대로
-   쓰인다. img가 비어있으면 성별 기반 기본 아바타로 대체 표시된다.
-   새 캐릭터를 추가하려면 아래 배열에 같은 모양으로 한 줄 추가하면 됨:
-     { id, name, tagline, cost, gender:'male'|'female', img,
-       opts:{ year, month, day, hour, minute, isLunar, isLeapMonth,
-              unknownTime, useCorrection, city } }
+   일러스트 상세 리포트 — 컨셉별(연애/커리어/힐링 등) 웹툰형 상세 풀이.
+   일러스트는 관리자(#report-admin)가 직접 공급한다. 문구는 관리자가 쓴 템플릿을
+   {name}/{dayGan}/{dayGanWx}/{domWx}/{strength}/{gender} 자리표시자로 저장해두고,
+   보는 사람의 실제 사주 결과로 매번 채워서 보여준다(캐릭터 궁합과 같은 이유로,
+   잠금 해제는 이 앱의 다른 크레딧 콘텐츠처럼 클라이언트 UI에서만 처리한다).
    ============================================================ */
-var CHARACTERS = [];
-var CHAR_LIST_CACHE = null;
-function loadCharacterList(forceRefresh){
-  if (CHAR_LIST_CACHE && !forceRefresh) return Promise.resolve(CHAR_LIST_CACHE);
-  return fetch('/api/characters/list').then(function(r){ return r.json(); }).then(function(data){
-    var rows = (data && data.ok && data.rows) ? data.rows : [];
-    CHAR_LIST_CACHE = rows.map(normalizeCharacterRow);
-    return CHAR_LIST_CACHE;
+var REPORT_LIST_CACHE = null;
+function loadReportList(forceRefresh){
+  if (REPORT_LIST_CACHE && !forceRefresh) return Promise.resolve(REPORT_LIST_CACHE);
+  return fetch('/api/reports/list').then(function(r){ return r.json(); }).then(function(data){
+    REPORT_LIST_CACHE = (data && data.ok && data.rows) ? data.rows : [];
+    return REPORT_LIST_CACHE;
   });
 }
-/* 서버(Supabase, snake_case 컬럼)에서 온 행과 데모용 하드코딩 객체(opts 포함) 둘 다
-   { id, name, tagline, cost, gender, img, opts } 모양으로 통일해준다. */
-function normalizeCharacterRow(row){
-  if (row.opts) return row;
-  return {
-    id: row.id, name: row.name, tagline: row.tagline||'', cost: row.cost||25,
-    gender: row.gender==='female' ? 'female' : 'male', img: row.img_url || null,
-    opts: {
-      year:row.birth_year, month:row.birth_month, day:row.birth_day,
-      hour:row.birth_hour, minute:row.birth_minute,
-      isLunar:!!row.is_lunar, isLeapMonth:!!row.is_leap_month, unknownTime:!!row.unknown_time,
-      useCorrection:false, city:'서울'
-    }
+function loadReportPanels(conceptId){
+  return fetch('/api/reports/panels?conceptId='+encodeURIComponent(conceptId)).then(function(r){ return r.json(); }).then(function(data){
+    return (data && data.ok && data.rows) ? data.rows : [];
+  });
+}
+function fillReportTemplate(tpl, result){
+  if (!tpl) return '';
+  var dom = dominantWx(result.wxCount);
+  var map = {
+    name: result.name || '당신',
+    dayGan: result.day.ganKr,
+    dayGanWx: result.dayGanWx,
+    domWx: dom.wx,
+    strength: result.strength==='strong' ? '강한' : '약한',
+    gender: result.gender==='female' ? '여성' : '남성'
   };
+  return esc(String(tpl)).replace(/\{(\w+)\}/g, function(m, k){ return (k in map) ? esc(String(map[k])) : m; });
 }
-function characterUnlockKey(c){ return 'char-unlock-'+c.id; }
-function computeCharacterRes(c){
-  return computeSaju(Object.assign({}, c.opts, { gender:c.gender, name:c.name }));
-}
-function characterCardHtml(c){
-  var unlocked = isUnlocked(characterUnlockKey(c));
-  var portraitInner = c.img ? '<img src="'+c.img+'" alt="">' : esc(c.name.charAt(0));
-  return '<div class="char-card'+(unlocked?' got':' locked')+'">'+
-      '<span class="char-portrait">'+portraitInner+'</span>'+
-      '<span class="nm">'+esc(c.name)+'</span>'+
-      '<span class="tagline">'+esc(c.tagline)+'</span>'+
-      (unlocked ?
-        '<span class="char-got-badge">✨ 마이룸에 있어요</span>' :
-        '<button type="button" class="unlock-btn char-unlock-btn" data-char-id="'+c.id+'" data-cost="'+c.cost+'">'+c.cost+'크레딧으로 해금</button>')+
+function reportUnlockKey(c){ return 'report-'+c.id; }
+function reportCardHtml(c){
+  var unlocked = isUnlocked(reportUnlockKey(c));
+  var coverInner = c.cover_img_url ? '<img src="'+c.cover_img_url+'" alt="">' : '✨';
+  return '<div class="report-card" data-report-id="'+c.id+'">'+
+      '<span class="report-cover">'+coverInner+'</span>'+
+      '<span class="nm">'+esc(c.title)+'</span>'+
+      '<span class="tagline">'+esc(c.tagline||'')+'</span>'+
+      '<span class="report-cost-badge">'+(unlocked ? '✨ 열어봤어요' : ICO_GEM+' '+c.cost+'크레딧')+'</span>'+
     '</div>';
 }
-function addCharacterToMyRoom(c){
-  if (!STATE.mySaju) return;
-  var charRes = computeCharacterRes(c);
-  var compat = computeCompat(STATE.mySaju, charRes);
-  var total = compat.scores.total;
-  saveMyRoomEntry(STATE.mySaju, charRes, compat, total, {
-    id:'char-'+c.id, isCharacter:true, charImg:c.img||null
-  });
-}
-function openCharacterGallery(){
-  var root = $('#myroom-sheet-root');
+function closeReportSheet(){ var r = $('#report-sheet-root'); if (r) r.innerHTML=''; }
+function openReportGallery(){
+  var root = $('#report-sheet-root');
   if (!root) return;
   if (!STATE.mySaju){
-    showToast('먼저 내 사주를 확인한 뒤에 캐릭터 궁합을 볼 수 있어요.');
+    showToast('먼저 내 사주를 확인한 뒤에 상세 리포트를 볼 수 있어요.');
     return;
   }
   root.innerHTML =
-    '<div class="sheet-backdrop" id="char-gallery-backdrop">'+
+    '<div class="sheet-backdrop" id="report-gallery-backdrop">'+
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
         '<div class="sheet-handle"></div>'+
-        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">캐릭터 궁합</p>'+
-          '<button type="button" class="sheet-close" id="char-gallery-close">✕</button>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">일러스트 상세 리포트</p>'+
+          '<button type="button" class="sheet-close" id="report-gallery-close">✕</button>'+
         '</div>'+
-        '<p class="section-desc">크레딧으로 캐릭터를 해금하면 나와의 궁합을 계산해서 마이룸에 카드로 추가돼요.</p>'+
-        '<div class="char-grid" id="char-grid"><p class="section-desc">불러오는 중...</p></div>'+
+        '<p class="section-desc">컨셉을 고르면 그림과 함께 내 사주를 풀어드려요. 첫 컷은 무료로 볼 수 있어요.</p>'+
+        '<div class="report-grid" id="report-grid"><p class="section-desc">불러오는 중...</p></div>'+
       '</div>'+
     '</div>';
-  $('#char-gallery-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-gallery-backdrop') closeCharacterGallery(); });
-  $('#char-gallery-close').addEventListener('click', closeCharacterGallery);
-  loadCharacterList().then(function(list){
-    var grid = $('#char-grid');
+  $('#report-gallery-backdrop').addEventListener('click', function(e){ if (e.target.id==='report-gallery-backdrop') closeReportSheet(); });
+  $('#report-gallery-close').addEventListener('click', closeReportSheet);
+  loadReportList().then(function(list){
+    var grid = $('#report-grid');
     if (!grid) return;
-    grid.innerHTML = list.length ? list.map(characterCardHtml).join('') : '<p class="section-desc">아직 등록된 캐릭터가 없어요. ⚙️ 버튼으로 추가해보세요.</p>';
-    wireCharacterUnlockBtns(list);
-  }).catch(function(){
-    var grid = $('#char-grid');
-    if (grid) grid.innerHTML = '<p class="section-desc">캐릭터를 불러오지 못했어요. 잠시 후 다시 시도해주세요.</p>';
-  });
-}
-function closeCharacterGallery(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML=''; }
-function wireCharacterUnlockBtns(list){
-  $all('.char-unlock-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var c = list.filter(function(x){ return x.id===btn.dataset.charId; })[0];
-      if (!c) return;
-      var cost = Number(btn.dataset.cost);
-      tryUnlock(characterUnlockKey(c), cost, c.name+' 캐릭터 해금', function(){
-        addCharacterToMyRoom(c);
-        showToast(c.name+'을 마이룸에 추가했어요! ✨');
-        renderMyRoom();
-        openCharacterGallery();
+    grid.innerHTML = list.length ? list.map(reportCardHtml).join('') : '<p class="section-desc">아직 등록된 리포트가 없어요.</p>';
+    $all('.report-card', grid).forEach(function(el){
+      el.addEventListener('click', function(){
+        var c = list.filter(function(x){ return String(x.id)===el.dataset.reportId; })[0];
+        if (c) openReportViewer(c);
       });
     });
+  }).catch(function(){
+    var grid = $('#report-grid');
+    if (grid) grid.innerHTML = '<p class="section-desc">불러오지 못했어요. 잠시 후 다시 시도해주세요.</p>';
   });
 }
-function myroomCharBtnHtml(){
-  return '<button type="button" class="myroom-dex-btn" id="btn-myroom-char">✨ 캐릭터</button>';
+function reportPanelHtml(panel, locked, result){
+  var imgHtml = panel.img_url ? '<img src="'+panel.img_url+'" alt="">' : '';
+  if (locked){
+    return '<div class="report-panel"><span class="report-panel-img blur">'+imgHtml+'</span></div>';
+  }
+  return '<div class="report-panel">'+
+      '<span class="report-panel-img">'+imgHtml+'</span>'+
+      '<p class="report-caption">'+fillReportTemplate(panel.caption_template, result)+'</p>'+
+    '</div>';
 }
-function wireMyroomCharBtn(){
-  var b = $('#btn-myroom-char');
-  if (b) b.addEventListener('click', openCharacterGallery);
-}
-
-/* ---- 캐릭터 관리자(비밀번호로 보호) — 캐릭터 이미지/이름/생년월일시를 직접 추가·수정·삭제 ----
-   비밀번호는 Vercel 환경변수 ADMIN_SECRET과 대조되며(서버에서 검증), 맞게 입력하면 이 브라우저에만
-   저장해두고 매번 다시 묻지 않는다. 데모(Claude Artifact)에서는 /api/characters/* 가 없어서
-   저장을 시도하면 서버 오류 토스트가 뜨는데, 이는 배포된 사이트에서만 쓰는 기능이라 정상이다. */
-var ADMIN_SECRET_KEY = 'mysaju_admin_secret_v1';
-function getAdminSecret(){ try{ return localStorage.getItem(ADMIN_SECRET_KEY)||''; }catch(e){ return ''; } }
-function setAdminSecret(v){ try{ localStorage.setItem(ADMIN_SECRET_KEY, v); }catch(e){} }
-function clearAdminSecret(){ try{ localStorage.removeItem(ADMIN_SECRET_KEY); }catch(e){} }
-function adminHeaders(){ return { 'Content-Type':'application/json', 'x-admin-secret': getAdminSecret() }; }
-
-function openCharacterAdminList(){
-  if (!getAdminSecret()){ openCharacterAdminLogin(); return; }
-  var root = $('#myroom-sheet-root');
-  if (!root) return;
+function openReportViewer(concept){
+  var root = $('#report-sheet-root');
+  if (!root || !STATE.mySaju) return;
   root.innerHTML =
-    '<div class="sheet-backdrop" id="char-admin-backdrop">'+
-      '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
+    '<div class="sheet-backdrop" id="report-view-backdrop">'+
+      '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
         '<div class="sheet-handle"></div>'+
-        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">캐릭터 관리</p>'+
-          '<button type="button" class="sheet-close" id="char-admin-close">✕</button></div>'+
-        '<button type="button" class="btn-primary" id="char-admin-add">+ 새 캐릭터 추가</button>'+
-        '<div id="char-admin-list"><p class="section-desc">불러오는 중...</p></div>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+esc(concept.title)+'</p>'+
+          '<button type="button" class="sheet-close" id="report-view-close">✕</button></div>'+
+        '<div id="report-panel-list"><p class="section-desc">불러오는 중...</p></div>'+
       '</div>'+
     '</div>';
-  $('#char-admin-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-admin-backdrop') closeCharacterGallery(); });
-  $('#char-admin-close').addEventListener('click', closeCharacterGallery);
-  $('#char-admin-add').addEventListener('click', function(){ openCharacterEditForm(null); });
-  loadCharacterList(true).then(function(list){
-    var wrap = $('#char-admin-list');
-    if (!wrap) return;
-    wrap.innerHTML = list.length ? list.map(charAdminRowHtml).join('') : '<p class="section-desc">아직 등록된 캐릭터가 없어요.</p>';
-    wireCharAdminRowBtns(list);
+  $('#report-view-backdrop').addEventListener('click', function(e){ if (e.target.id==='report-view-backdrop') closeReportSheet(); });
+  $('#report-view-close').addEventListener('click', closeReportSheet);
+  loadReportPanels(concept.id).then(function(panels){
+    renderReportPanels(concept, panels, isUnlocked(reportUnlockKey(concept)));
   }).catch(function(){
-    var wrap = $('#char-admin-list');
+    var list = $('#report-panel-list');
+    if (list) list.innerHTML = '<p class="section-desc">불러오지 못했어요.</p>';
+  });
+}
+function renderReportPanels(concept, panels, unlocked){
+  var list = $('#report-panel-list');
+  if (!list) return;
+  var result = STATE.mySaju;
+  if (!panels.length){
+    list.innerHTML = '<p class="section-desc">아직 준비 중인 리포트예요.</p>';
+    return;
+  }
+  var html = panels.map(function(p, idx){
+    return reportPanelHtml(p, (!unlocked && idx>0), result);
+  }).join('');
+  if (!unlocked && panels.length>1){
+    html += lockedCardHtml(concept.cost, '나머지 '+(panels.length-1)+'컷 더 보기', '크레딧으로 전체 리포트를 마지막까지 확인하세요.', '크레딧으로 열어보기');
+  }
+  list.innerHTML = html;
+  if (!unlocked && panels.length>1){
+    $('.unlock-btn', list).addEventListener('click', function(){
+      tryUnlock(reportUnlockKey(concept), concept.cost, concept.title+' 리포트 해금', function(){
+        REPORT_LIST_CACHE = null;
+        renderReportPanels(concept, panels, true);
+      });
+    });
+  }
+}
+
+/* ---- 리포트 관리자(비밀번호로 보호) — 컨셉/컷 직접 추가·수정·삭제 ---- */
+function openReportAdminList(){
+  if (!getAdminSecret()){ openReportAdminLogin(); return; }
+  var root = $('#report-sheet-root');
+  if (!root) return;
+  root.innerHTML =
+    '<div class="sheet-backdrop" id="report-admin-backdrop">'+
+      '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
+        '<div class="sheet-handle"></div>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">리포트 관리</p>'+
+          '<button type="button" class="sheet-close" id="report-admin-close">✕</button></div>'+
+        '<button type="button" class="btn-primary" id="report-admin-add">+ 새 리포트 추가</button>'+
+        '<div id="report-admin-list"><p class="section-desc">불러오는 중...</p></div>'+
+      '</div>'+
+    '</div>';
+  $('#report-admin-backdrop').addEventListener('click', function(e){ if (e.target.id==='report-admin-backdrop') closeReportSheet(); });
+  $('#report-admin-close').addEventListener('click', closeReportSheet);
+  $('#report-admin-add').addEventListener('click', function(){ openReportConceptForm(null); });
+  loadReportList(true).then(function(list){
+    var wrap = $('#report-admin-list');
+    if (!wrap) return;
+    wrap.innerHTML = list.length ? list.map(reportAdminRowHtml).join('') : '<p class="section-desc">아직 등록된 리포트가 없어요.</p>';
+    wireReportAdminRowBtns(list);
+  }).catch(function(){
+    var wrap = $('#report-admin-list');
     if (wrap) wrap.innerHTML = '<p class="section-desc">목록을 불러오지 못했어요.</p>';
   });
 }
-function charAdminRowHtml(c){
-  var portraitInner = c.img ? '<img src="'+c.img+'" alt="">' : esc(c.name.charAt(0));
-  return '<div class="char-admin-row">'+
-      '<span class="char-portrait char-portrait-sm">'+portraitInner+'</span>'+
-      '<span class="char-admin-row-nm">'+esc(c.name)+'</span>'+
-      '<button type="button" class="char-admin-edit-btn" data-char-id="'+c.id+'">수정</button>'+
-      '<button type="button" class="char-admin-del-btn" data-char-id="'+c.id+'">삭제</button>'+
+function reportAdminRowHtml(c){
+  var thumbInner = c.cover_img_url ? '<img src="'+c.cover_img_url+'" alt="">' : '✨';
+  return '<div class="report-admin-row">'+
+      '<span class="report-admin-thumb">'+thumbInner+'</span>'+
+      '<span class="report-admin-row-nm">'+esc(c.title)+'</span>'+
+      '<button type="button" class="report-admin-panels-btn" data-id="'+c.id+'">컷 관리</button>'+
+      '<button type="button" class="report-admin-edit-btn" data-id="'+c.id+'">수정</button>'+
+      '<button type="button" class="report-admin-del-btn" data-id="'+c.id+'">삭제</button>'+
     '</div>';
 }
-function wireCharAdminRowBtns(list){
-  $all('.char-admin-edit-btn').forEach(function(btn){
+function wireReportAdminRowBtns(list){
+  $all('.report-admin-panels-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
-      var c = list.filter(function(x){ return x.id===btn.dataset.charId; })[0];
-      if (c) openCharacterEditForm(c);
+      var c = list.filter(function(x){ return x.id===btn.dataset.id; })[0];
+      if (c) openReportPanelAdmin(c);
     });
   });
-  $all('.char-admin-del-btn').forEach(function(btn){
+  $all('.report-admin-edit-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var c = list.filter(function(x){ return x.id===btn.dataset.id; })[0];
+      if (c) openReportConceptForm(c);
+    });
+  });
+  $all('.report-admin-del-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
       if (btn.dataset.confirm !== '1'){
         btn.dataset.confirm = '1';
@@ -3506,175 +3567,255 @@ function wireCharAdminRowBtns(list){
         setTimeout(function(){ btn.dataset.confirm=''; btn.textContent='삭제'; }, 2500);
         return;
       }
-      deleteCharacterAdmin(btn.dataset.charId);
+      deleteReportConceptAdmin(btn.dataset.id);
     });
   });
 }
-function openCharacterAdminLogin(){
-  var root = $('#myroom-sheet-root');
+function openReportAdminLogin(){
+  var root = $('#report-sheet-root');
   if (!root) return;
   root.innerHTML =
-    '<div class="sheet-backdrop" id="char-login-backdrop">'+
+    '<div class="sheet-backdrop" id="report-login-backdrop">'+
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">관리자 확인</p>'+
-          '<button type="button" class="sheet-close" id="char-login-close">✕</button></div>'+
-        '<div class="field"><label for="char-admin-pw">관리자 비밀번호</label><input type="password" id="char-admin-pw" autocomplete="off"></div>'+
-        '<button type="button" class="btn-primary" id="char-admin-login-btn">확인</button>'+
+          '<button type="button" class="sheet-close" id="report-login-close">✕</button></div>'+
+        '<div class="field"><label for="report-admin-pw">관리자 비밀번호</label><input type="password" id="report-admin-pw" autocomplete="off"></div>'+
+        '<button type="button" class="btn-primary" id="report-admin-login-btn">확인</button>'+
       '</div>'+
     '</div>';
-  $('#char-login-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-login-backdrop') closeCharacterGallery(); });
-  $('#char-login-close').addEventListener('click', closeCharacterGallery);
-  $('#char-admin-login-btn').addEventListener('click', function(){
-    var v = $('#char-admin-pw').value.trim();
+  $('#report-login-backdrop').addEventListener('click', function(e){ if (e.target.id==='report-login-backdrop') closeReportSheet(); });
+  $('#report-login-close').addEventListener('click', closeReportSheet);
+  $('#report-admin-login-btn').addEventListener('click', function(){
+    var v = $('#report-admin-pw').value.trim();
     if (!v){ showToast('비밀번호를 입력해주세요.'); return; }
     setAdminSecret(v);
-    openCharacterAdminList();
+    openReportAdminList();
   });
 }
-var CHAR_ADMIN_PENDING_IMAGE = null; /* 저장 전까지 들고 있는 새로 고른 이미지 {base64, mime} */
-function charOptsToFormDefaults(c){
-  var pad = function(n){ return (n<10?'0':'')+n; };
-  if (!c) return { date:'1998-01-01', time:'12:00', unknown:false, lunar:false, leap:false };
-  return {
-    date: c.opts.year+'-'+pad(c.opts.month)+'-'+pad(c.opts.day),
-    time: pad(c.opts.hour)+':'+pad(c.opts.minute),
-    unknown: !!c.opts.unknownTime, lunar: !!c.opts.isLunar, leap: !!c.opts.isLeapMonth
-  };
-}
-function openCharacterEditForm(existing){
-  CHAR_ADMIN_PENDING_IMAGE = null;
-  var root = $('#myroom-sheet-root');
+var REPORT_ADMIN_PENDING_IMAGE = null;
+function openReportConceptForm(existing){
+  REPORT_ADMIN_PENDING_IMAGE = null;
+  var root = $('#report-sheet-root');
   if (!root) return;
-  var d = charOptsToFormDefaults(existing);
   root.innerHTML =
-    '<div class="sheet-backdrop" id="char-edit-backdrop">'+
+    '<div class="sheet-backdrop" id="report-edit-backdrop">'+
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
         '<div class="sheet-handle"></div>'+
-        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(existing?'캐릭터 수정':'새 캐릭터')+'</p>'+
-          '<button type="button" class="sheet-close" id="char-edit-close">✕</button></div>'+
-        '<div class="field"><label>이미지</label>'+
-          '<div class="char-edit-img-row">'+
-            '<span class="char-portrait" id="char-edit-preview">'+(existing && existing.img ? '<img src="'+existing.img+'" alt="">' : '📷')+'</span>'+
-            '<input type="file" id="char-edit-file" accept="image/*">'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(existing?'리포트 수정':'새 리포트')+'</p>'+
+          '<button type="button" class="sheet-close" id="report-edit-close">✕</button></div>'+
+        '<div class="field"><label>표지 이미지</label>'+
+          '<div class="report-edit-img-row">'+
+            '<span class="report-admin-thumb" id="report-edit-preview">'+(existing && existing.cover_img_url ? '<img src="'+existing.cover_img_url+'" alt="">' : '📷')+'</span>'+
+            '<input type="file" id="report-edit-file" accept="image/*">'+
           '</div>'+
         '</div>'+
-        '<div class="field"><label for="char-edit-name">이름</label><input type="text" id="char-edit-name" maxlength="12" value="'+(existing?esc(existing.name):'')+'"></div>'+
-        '<div class="field"><label for="char-edit-tagline">한줄소개</label><input type="text" id="char-edit-tagline" maxlength="40" value="'+(existing?esc(existing.tagline):'')+'"></div>'+
-        '<div class="two-col">'+
-          '<div class="field"><label>성별</label><div class="seg" id="char-edit-gender"><button type="button" data-val="male" class="'+((!existing||existing.gender==='male')?'active':'')+'">남성</button><button type="button" data-val="female" class="'+(existing&&existing.gender==='female'?'active':'')+'">여성</button></div></div>'+
-          '<div class="field"><label for="char-edit-cost">해금 비용(크레딧)</label><input type="number" id="char-edit-cost" min="1" value="'+(existing?existing.cost:25)+'"></div>'+
-        '</div>'+
-        '<div class="field"><label>달력</label><div class="seg" id="char-edit-calendar"><button type="button" data-val="solar" class="'+(!d.lunar?'active':'')+'">양력</button><button type="button" data-val="lunar" class="'+(d.lunar?'active':'')+'">음력</button></div></div>'+
-        '<label class="check-row" id="char-edit-leap-row"'+(d.lunar?'':' hidden')+'><input type="checkbox" id="char-edit-leap" '+(d.leap?'checked':'')+'>윤달입니다</label>'+
-        '<div class="field"><label for="char-edit-date">생년월일</label><input type="date" id="char-edit-date" min="1900-01-01" max="2100-12-31" value="'+d.date+'"></div>'+
-        '<div class="two-col">'+
-          '<div class="field"><label for="char-edit-time">출생시간</label><input type="time" id="char-edit-time" value="'+d.time+'" '+(d.unknown?'disabled':'')+'></div>'+
-          '<div class="field" style="justify-content:flex-end;"><label class="check-row"><input type="checkbox" id="char-edit-unknown" '+(d.unknown?'checked':'')+'>시간 모름</label></div>'+
-        '</div>'+
-        '<button type="button" class="btn-primary" id="char-edit-save">저장</button>'+
+        '<div class="field"><label for="report-edit-title">제목</label><input type="text" id="report-edit-title" maxlength="20" value="'+(existing?esc(existing.title):'')+'"></div>'+
+        '<div class="field"><label for="report-edit-tagline">한줄소개</label><input type="text" id="report-edit-tagline" maxlength="40" value="'+(existing?esc(existing.tagline||''):'')+'"></div>'+
+        '<div class="field"><label for="report-edit-cost">해금 비용(크레딧)</label><input type="number" id="report-edit-cost" min="1" value="'+(existing?existing.cost:20)+'"></div>'+
+        '<button type="button" class="btn-primary" id="report-edit-save">저장</button>'+
       '</div>'+
     '</div>';
-  $('#char-edit-backdrop').addEventListener('click', function(e){ if (e.target.id==='char-edit-backdrop') openCharacterAdminList(); });
-  $('#char-edit-close').addEventListener('click', openCharacterAdminList);
-  wireSeg($('#char-edit-gender'));
-  wireSeg($('#char-edit-calendar'), function(val){ $('#char-edit-leap-row').hidden = (val!=='lunar'); });
-  $('#char-edit-unknown').addEventListener('change', function(e){ $('#char-edit-time').disabled = e.target.checked; });
-  $('#char-edit-file').addEventListener('change', function(e){
+  $('#report-edit-backdrop').addEventListener('click', function(e){ if (e.target.id==='report-edit-backdrop') openReportAdminList(); });
+  $('#report-edit-close').addEventListener('click', openReportAdminList);
+  $('#report-edit-file').addEventListener('change', function(e){
     var file = e.target.files && e.target.files[0];
     if (!file) return;
-    resizeImageFileToBase64(file, 480).then(function(res){
-      CHAR_ADMIN_PENDING_IMAGE = res;
-      var prev = $('#char-edit-preview');
+    resizeImageFileToBase64(file, 600).then(function(res){
+      REPORT_ADMIN_PENDING_IMAGE = res;
+      var prev = $('#report-edit-preview');
       if (prev) prev.innerHTML = '<img src="data:'+res.mime+';base64,'+res.base64+'" alt="">';
     }).catch(function(){ showToast('이미지를 처리하지 못했어요.'); });
   });
-  $('#char-edit-save').addEventListener('click', function(){ submitCharacterEditForm(existing); });
+  $('#report-edit-save').addEventListener('click', function(){ submitReportConceptForm(existing); });
 }
-/* 브라우저에서 이미지를 캔버스로 리사이즈해 용량을 줄인 뒤 base64로 돌려준다(서버 업로드용). */
-function resizeImageFileToBase64(file, maxDim){
-  return new Promise(function(resolve, reject){
-    var reader = new FileReader();
-    reader.onerror = function(){ reject(new Error('read failed')); };
-    reader.onload = function(){
-      var img = new Image();
-      img.onerror = function(){ reject(new Error('decode failed')); };
-      img.onload = function(){
-        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-        var w = Math.max(1, Math.round(img.width*scale));
-        var h = Math.max(1, Math.round(img.height*scale));
-        var canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.86);
-        resolve({ base64: dataUrl.split(',')[1], mime:'image/jpeg' });
-      };
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-function submitCharacterEditForm(existing){
-  var name = $('#char-edit-name').value.trim();
-  if (!name){ showToast('이름을 입력해주세요.'); return; }
-  var dateStr = $('#char-edit-date').value;
-  if (!dateStr){ showToast('생년월일을 입력해주세요.'); return; }
-  if (!existing && !CHAR_ADMIN_PENDING_IMAGE){ showToast('이미지를 선택해주세요.'); return; }
-  var parts = dateStr.split('-').map(Number);
-  var timeStr = $('#char-edit-time').value || '12:00';
-  var timeParts = timeStr.split(':').map(Number);
-  var unknownTime = $('#char-edit-unknown').checked;
-  var isLunar = segValue($('#char-edit-calendar'))==='lunar';
-  var isLeapMonth = isLunar && $('#char-edit-leap').checked;
-  var gender = segValue($('#char-edit-gender'));
+function submitReportConceptForm(existing){
+  var title = $('#report-edit-title').value.trim();
+  if (!title){ showToast('제목을 입력해주세요.'); return; }
   var payload = {
     id: existing ? existing.id : null,
-    name: name,
-    tagline: $('#char-edit-tagline').value.trim(),
-    cost: Number($('#char-edit-cost').value) || 25,
-    gender: gender,
-    existingImgUrl: existing ? existing.img : null,
-    opts: {
-      year:parts[0], month:parts[1], day:parts[2],
-      hour: unknownTime?12:timeParts[0], minute: unknownTime?0:timeParts[1],
-      isLunar:isLunar, isLeapMonth:isLeapMonth, unknownTime:unknownTime
-    }
+    title: title,
+    tagline: $('#report-edit-tagline').value.trim(),
+    cost: Number($('#report-edit-cost').value) || 20,
+    existingCoverUrl: existing ? existing.cover_img_url : null
   };
-  if (CHAR_ADMIN_PENDING_IMAGE){
-    payload.imageBase64 = CHAR_ADMIN_PENDING_IMAGE.base64;
-    payload.imageMime = CHAR_ADMIN_PENDING_IMAGE.mime;
+  if (REPORT_ADMIN_PENDING_IMAGE){
+    payload.imageBase64 = REPORT_ADMIN_PENDING_IMAGE.base64;
+    payload.imageMime = REPORT_ADMIN_PENDING_IMAGE.mime;
   }
-  saveCharacterAdmin(payload);
+  saveReportConceptAdmin(payload);
 }
-function saveCharacterAdmin(payload){
+function saveReportConceptAdmin(payload){
   showToast('저장하는 중...');
-  fetch('/api/characters/save', { method:'POST', headers:adminHeaders(), body:JSON.stringify(payload) })
+  fetch('/api/admin/reports', { method:'POST', headers:adminHeaders(), body:JSON.stringify(Object.assign({action:'save-concept'}, payload)) })
     .then(function(r){
-      if (r.status===401){ clearAdminSecret(); showToast('비밀번호가 올바르지 않아요.'); openCharacterAdminLogin(); return null; }
+      if (r.status===401){ clearAdminSecret(); showToast('비밀번호가 올바르지 않아요.'); openReportAdminLogin(); return null; }
       return r.json();
     })
     .then(function(data){
       if (!data) return;
       if (!data.ok){ showToast('저장에 실패했어요.'); return; }
       showToast('저장했어요!');
-      CHAR_LIST_CACHE = null;
-      openCharacterAdminList();
+      REPORT_LIST_CACHE = null;
+      openReportAdminList();
     })
     .catch(function(){ showToast('서버에 연결하지 못했어요. (배포된 사이트에서만 되는 기능이에요)'); });
 }
-function deleteCharacterAdmin(id){
-  fetch('/api/characters/delete', { method:'POST', headers:adminHeaders(), body:JSON.stringify({ id:id }) })
+function deleteReportConceptAdmin(id){
+  fetch('/api/admin/reports', { method:'POST', headers:adminHeaders(), body:JSON.stringify({ action:'delete-concept', id:id }) })
     .then(function(r){
-      if (r.status===401){ clearAdminSecret(); showToast('비밀번호가 올바르지 않아요.'); openCharacterAdminLogin(); return null; }
+      if (r.status===401){ clearAdminSecret(); showToast('비밀번호가 올바르지 않아요.'); openReportAdminLogin(); return null; }
       return r.json();
     })
     .then(function(data){
       if (!data) return;
       if (!data.ok){ showToast('삭제에 실패했어요.'); return; }
       showToast('삭제했어요.');
-      CHAR_LIST_CACHE = null;
-      openCharacterAdminList();
+      REPORT_LIST_CACHE = null;
+      openReportAdminList();
+    })
+    .catch(function(){ showToast('서버에 연결하지 못했어요.'); });
+}
+
+/* ---- 컷(panel) 관리 ---- */
+function openReportPanelAdmin(concept){
+  var root = $('#report-sheet-root');
+  if (!root) return;
+  root.innerHTML =
+    '<div class="sheet-backdrop" id="report-panels-backdrop">'+
+      '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
+        '<div class="sheet-handle"></div>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+esc(concept.title)+' · 컷 관리</p>'+
+          '<button type="button" class="sheet-close" id="report-panels-close">✕</button></div>'+
+        '<button type="button" class="btn-primary" id="report-panel-add">+ 새 컷 추가</button>'+
+        '<p class="hint">문구에 쓸 수 있는 자리표시자: {name} {dayGan} {dayGanWx} {domWx} {strength} {gender}</p>'+
+        '<div id="report-panel-admin-list"><p class="section-desc">불러오는 중...</p></div>'+
+      '</div>'+
+    '</div>';
+  $('#report-panels-backdrop').addEventListener('click', function(e){ if (e.target.id==='report-panels-backdrop') openReportAdminList(); });
+  $('#report-panels-close').addEventListener('click', openReportAdminList);
+  $('#report-panel-add').addEventListener('click', function(){ openReportPanelForm(concept, null); });
+  loadReportPanelsForAdmin(concept);
+}
+function loadReportPanelsForAdmin(concept){
+  loadReportPanels(concept.id).then(function(panels){
+    var wrap = $('#report-panel-admin-list');
+    if (!wrap) return;
+    wrap.innerHTML = panels.length ? panels.map(reportPanelAdminRowHtml).join('') : '<p class="section-desc">아직 등록된 컷이 없어요.</p>';
+    wireReportPanelAdminRowBtns(panels, concept);
+  }).catch(function(){
+    var wrap = $('#report-panel-admin-list');
+    if (wrap) wrap.innerHTML = '<p class="section-desc">목록을 불러오지 못했어요.</p>';
+  });
+}
+function reportPanelAdminRowHtml(p){
+  var thumbInner = p.img_url ? '<img src="'+p.img_url+'" alt="">' : '📷';
+  var preview = (p.caption_template||'').slice(0,24);
+  return '<div class="report-admin-row">'+
+      '<span class="report-admin-thumb">'+thumbInner+'</span>'+
+      '<span class="report-admin-row-nm">#'+p.sort_order+' · '+esc(preview)+(preview.length===24?'…':'')+'</span>'+
+      '<button type="button" class="report-admin-edit-btn" data-id="'+p.id+'">수정</button>'+
+      '<button type="button" class="report-admin-del-btn" data-id="'+p.id+'">삭제</button>'+
+    '</div>';
+}
+function wireReportPanelAdminRowBtns(panels, concept){
+  var listEl = $('#report-panel-admin-list');
+  $all('.report-admin-edit-btn', listEl).forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var p = panels.filter(function(x){ return String(x.id)===btn.dataset.id; })[0];
+      if (p) openReportPanelForm(concept, p);
+    });
+  });
+  $all('.report-admin-del-btn', listEl).forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if (btn.dataset.confirm !== '1'){
+        btn.dataset.confirm = '1';
+        btn.textContent = '정말 삭제?';
+        setTimeout(function(){ btn.dataset.confirm=''; btn.textContent='삭제'; }, 2500);
+        return;
+      }
+      deleteReportPanelAdmin(btn.dataset.id, concept);
+    });
+  });
+}
+var REPORT_PANEL_PENDING_IMAGE = null;
+function openReportPanelForm(concept, existing){
+  REPORT_PANEL_PENDING_IMAGE = null;
+  var root = $('#report-sheet-root');
+  if (!root) return;
+  root.innerHTML =
+    '<div class="sheet-backdrop" id="report-panel-edit-backdrop">'+
+      '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
+        '<div class="sheet-handle"></div>'+
+        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(existing?'컷 수정':'새 컷')+'</p>'+
+          '<button type="button" class="sheet-close" id="report-panel-edit-close">✕</button></div>'+
+        '<div class="field"><label>이미지</label>'+
+          '<div class="report-edit-img-row">'+
+            '<span class="report-admin-thumb" id="report-panel-edit-preview">'+(existing && existing.img_url ? '<img src="'+existing.img_url+'" alt="">' : '📷')+'</span>'+
+            '<input type="file" id="report-panel-edit-file" accept="image/*">'+
+          '</div>'+
+        '</div>'+
+        '<div class="field"><label for="report-panel-edit-order">순서(숫자, 작을수록 먼저)</label><input type="number" id="report-panel-edit-order" value="'+(existing?existing.sort_order:0)+'"></div>'+
+        '<div class="field"><label for="report-panel-edit-caption">문구 템플릿</label>'+
+          '<textarea id="report-panel-edit-caption" rows="4" maxlength="300">'+(existing?esc(existing.caption_template||''):'')+'</textarea>'+
+        '</div>'+
+        '<button type="button" class="btn-primary" id="report-panel-edit-save">저장</button>'+
+      '</div>'+
+    '</div>';
+  $('#report-panel-edit-backdrop').addEventListener('click', function(e){ if (e.target.id==='report-panel-edit-backdrop'){ REPORT_PANEL_PENDING_IMAGE=null; openReportPanelAdmin(concept); } });
+  $('#report-panel-edit-close').addEventListener('click', function(){ openReportPanelAdmin(concept); });
+  $('#report-panel-edit-file').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    resizeImageFileToBase64(file, 900).then(function(res){
+      REPORT_PANEL_PENDING_IMAGE = res;
+      var prev = $('#report-panel-edit-preview');
+      if (prev) prev.innerHTML = '<img src="data:'+res.mime+';base64,'+res.base64+'" alt="">';
+    }).catch(function(){ showToast('이미지를 처리하지 못했어요.'); });
+  });
+  $('#report-panel-edit-save').addEventListener('click', function(){ submitReportPanelForm(concept, existing); });
+}
+function submitReportPanelForm(concept, existing){
+  if (!existing && !REPORT_PANEL_PENDING_IMAGE){ showToast('이미지를 선택해주세요.'); return; }
+  var payload = {
+    id: existing ? existing.id : null,
+    conceptId: concept.id,
+    sortOrder: Number($('#report-panel-edit-order').value) || 0,
+    captionTemplate: $('#report-panel-edit-caption').value,
+    existingImgUrl: existing ? existing.img_url : null
+  };
+  if (REPORT_PANEL_PENDING_IMAGE){
+    payload.imageBase64 = REPORT_PANEL_PENDING_IMAGE.base64;
+    payload.imageMime = REPORT_PANEL_PENDING_IMAGE.mime;
+  }
+  saveReportPanelAdmin(payload, concept);
+}
+function saveReportPanelAdmin(payload, concept){
+  showToast('저장하는 중...');
+  fetch('/api/admin/reports', { method:'POST', headers:adminHeaders(), body:JSON.stringify(Object.assign({action:'save-panel'}, payload)) })
+    .then(function(r){
+      if (r.status===401){ clearAdminSecret(); showToast('비밀번호가 올바르지 않아요.'); openReportAdminLogin(); return null; }
+      return r.json();
+    })
+    .then(function(data){
+      if (!data) return;
+      if (!data.ok){ showToast('저장에 실패했어요.'); return; }
+      showToast('저장했어요!');
+      loadReportPanelsForAdmin(concept);
+    })
+    .catch(function(){ showToast('서버에 연결하지 못했어요. (배포된 사이트에서만 되는 기능이에요)'); });
+}
+function deleteReportPanelAdmin(id, concept){
+  fetch('/api/admin/reports', { method:'POST', headers:adminHeaders(), body:JSON.stringify({ action:'delete-panel', id:id }) })
+    .then(function(r){
+      if (r.status===401){ clearAdminSecret(); showToast('비밀번호가 올바르지 않아요.'); openReportAdminLogin(); return null; }
+      return r.json();
+    })
+    .then(function(data){
+      if (!data) return;
+      if (!data.ok){ showToast('삭제에 실패했어요.'); return; }
+      showToast('삭제했어요.');
+      loadReportPanelsForAdmin(concept);
     })
     .catch(function(){ showToast('서버에 연결하지 못했어요.'); });
 }
@@ -3714,34 +3855,28 @@ function renderMyRoomLocal(root){
     fetchInviteMyRoom();
     return;
   }
-  /* 마이룸 = (서버에서 받아온) 실제로 초대해서 등록한 친구 + (이 기기에 로컬로 저장된) 해금한 캐릭터.
-     둘을 합쳐 최신순으로 다시 정렬해서 하나의 갤러리처럼 보여준다. */
+  /* 마이룸 = (서버에서 받아온) 실제로 초대해서 등록한 친구 목록을 최신순으로 보여준다. */
   var hiddenIds = getHiddenMyRoomIds();
-  var friendList = hiddenIds.length ? INVITE_MYROOM_CACHE.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : INVITE_MYROOM_CACHE;
-  var charList = loadMyRoomList().filter(function(e){ return e.isCharacter; });
-  var list = charList.concat(friendList).sort(function(a,b){ return (b.at||0)-(a.at||0); });
+  var list = hiddenIds.length ? INVITE_MYROOM_CACHE.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : INVITE_MYROOM_CACHE;
   if (!list.length){
     root.innerHTML =
       '<div class="myroom-head"><p class="eyebrow">마이룸</p>'+
-        '<div class="myroom-head-right">'+myroomCharBtnHtml()+'</div>'+
       '</div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>친구를 초대하거나 캐릭터를 해금하면 이곳에 카드가 모여요.</span></div>';
-    wireMyroomCharBtn();
+      '<span>친구를 초대하면 이곳에 카드가 모여요.</span></div>';
     return;
   }
   var rankMap = myroomRankMap(list);
   var displayList = myroomSortedForDisplay(list, STATE.myroomSort);
   root.innerHTML =
     '<div class="myroom-head"><p class="eyebrow">마이룸</p>'+
-      '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomCharBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
+      '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
     '</div>'+
     '<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
-    '<p class="disclaimer">내가 초대해서 실제로 사주를 등록한 친구와, 해금한 캐릭터가 함께 모이는 갤러리예요.</p>';
+    '<p class="disclaimer">내가 초대해서 실제로 사주를 등록한 친구들이 모이는 갤러리예요.</p>';
   wireMyroomSortSeg();
   wireMyroomCardClicks($('.myroom-grid', root), displayList);
   wireMyroomDexBtn();
-  wireMyroomCharBtn();
 }
 /* 마이룸은 두 방향을 모두 모아서 보여준다:
    1) 내가 초대해서 실제로 등록한 친구 (/api/invite/list) — row.invitee_saju를 그대로 받아온다.
@@ -4693,13 +4828,9 @@ function initCapabilities(){
 }
 
 function init(){
-  var wantsCharAdmin = isAdminHash();
-  if (wantsCharAdmin){
-    try{
-      var _au = new URL(location.href);
-      _au.hash = '';
-      history.replaceState({}, '', _au.pathname + (_au.search||''));
-    }catch(e){}
+  var wantsReportAdmin = isReportAdminHash();
+  if (wantsReportAdmin){
+    history.replaceState(null, '', location.pathname + location.search);
   }
   var brandIc = $('#brand-mark-ic');
   if (brandIc) brandIc.innerHTML = BRAND_MARK_SVG;
@@ -4758,7 +4889,7 @@ function init(){
     renderMyRoom();
   });
 
-  if (wantsCharAdmin) openCharacterAdminList();
+  if (wantsReportAdmin) openReportAdminList();
 }
 
 if (document.readyState==='loading'){
