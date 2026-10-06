@@ -64,7 +64,7 @@ async function insertLedger({ deviceId, amount, reason, orderId }) {
 }
 
 // Supabase Storage에 이미지(Buffer)를 업로드하고 공개 URL을 돌려준다 (서비스 롤 키로 — 버킷 RLS 우회).
-// x-upsert:true라서 같은 path로 다시 올리면 덮어쓴다(캐릭터 이미지 교체 시 재사용).
+// x-upsert:true라서 같은 path로 다시 올리면 덮어쓴다(이미지 교체 시 재사용).
 async function uploadStorageImage(bucket, path, buffer, mime) {
   if (!SUPABASE_URL || !SERVICE_KEY) {
     throw new Error('NO_SUPABASE_ENV');
