@@ -3773,7 +3773,7 @@ function reportMiniTeaserHtml(){
                  '<p class="report-caption">'+fillReportTemplate(panel.caption_template, result)+'</p>'+
                '</div>';
    };
-   function reportShareBtnHtml(){
+   reportSectionHtml=function(panel,result){var hasImg=!!panel.img_url;var imgHtml=hasImg?'<span class="report-section-img"><img src="'+panel.img_url+'" alt=""></span>':'';var filledHtml=fillReportTemplate(panel.caption_template,result);if(!hasImg&&(panel.tone==='formal'||panel.tone==='warning')){return '<div class="report-callout '+panel.tone+'">'+reportCaptionParasHtml(filledHtml)+'</div>';}return '<div class="report-section'+(hasImg?' has-img':'')+'">'+imgHtml+reportCaptionParasHtml(filledHtml)+'</div>';};function reportShareBtnHtml(){
   return '<button type="button" class="share-btn" id="btn-share-report">📤 이 이야기 공유하기</button>';
 }
 /* 다른 크레딧 콘텐츠(unlock-btn/lockedCardHtml)와 달리, 리포트(=이야기)는 건별(원화) 결제라
