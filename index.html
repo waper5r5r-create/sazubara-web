@@ -4025,7 +4025,6 @@ function openReportPanelForm(concept, existing){
   $('#report-panel-edit-save').addEventListener('click', function(){ submitReportPanelForm(concept, existing); });
 }
 function submitReportPanelForm(concept, existing){
-  if (!existing && !REPORT_PANEL_PENDING_IMAGE){ showToast('이미지를 선택해주세요.'); return; }
   var payload = {
     id: existing ? existing.id : null,
     conceptId: concept.id,
