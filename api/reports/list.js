@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
       const r = await sbFetch(
         '/report_panels?concept_id=eq.' +
           encodeURIComponent(conceptId) +
-          '&select=id,sort_order,img_url,caption_template&order=sort_order.asc',
+          '&select=id,sort_order,img_url,caption_template,tone&order=sort_order.asc',
         { method: 'GET' }
       );
       if (!r.ok) {
