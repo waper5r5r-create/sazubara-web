@@ -1,7 +1,7 @@
 // 일러스트 상세 리포트 관리자 전용 엔드포인트 (비밀번호: Vercel 환경변수 ADMIN_SECRET, 캐릭터
 // 관리자 기능 때 쓰던 것과 동일한 x-admin-secret 헤더 체크를 그대로 재사용).
 // body.action 으로 분기:
-//   'save-concept'  { id?, title, tagline, cost, imageBase64?, imageMime?, existingCoverUrl? }
+//   'save-concept'  { id?, title, tagline, priceKrw, imageBase64?, imageMime?, existingCoverUrl? }
 //   'delete-concept'{ id }                         — 컨셉과 그 안의 컷(panels)까지 함께 삭제(DB가 cascade 처리)
 //   'save-panel'    { id?, conceptId, sortOrder, captionTemplate, imageBase64?, imageMime?, existingImgUrl? }
 //   'delete-panel'  { id }
@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
           id: id,
           title: body.title,
           tagline: body.tagline || '',
-          cost: Number(body.cost) || 20,
+          price_krw: Number(body.priceKrw) || 3900,
           cover_img_url: coverUrl,
           active: body.active !== false,
           sort_order: Number(body.sortOrder) || 0,
