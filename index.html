@@ -423,7 +423,7 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
         background:rgba(255,93,93,.09);
         border:1px solid rgba(255,93,93,.4);
    }
-   .report-callout.warning .report-caption{color:#ffd0d0;}
+   .report-callout.warning .report-caption{color:#ffd0d0;}.report-caption + .report-caption{margin-top:12px;}.report-section.has-img .report-caption:not(:first-child){margin-top:12px;}
    .mini-teaser-card{
         display:flex; gap:12px; align-items:flex-start; padding:14px 16px;
         background:var(--surface-2); border-radius:14px; border:1px dashed var(--border-strong);
@@ -3660,7 +3660,7 @@ function fillReportTemplate(tpl, result){
   });
   return esc(branched).replace(/\{(\w+)\}/g, function(m, k){ return (k in map) ? esc(String(map[k])) : m; });
 }
-function reportUnlockKey(c){ return 'report-'+c.id; }
+function reportUnlockKey(c){ return 'report-'+c.id; }var JOSA_FIX={'이에요':{batchim:'이에요',no:'예요'},'예요':{batchim:'이에요',no:'예요'},'은':{batchim:'은',no:'는'},'는':{batchim:'은',no:'는'},'이':{batchim:'이',no:'가'},'가':{batchim:'이',no:'가'},'을':{batchim:'을',no:'를'},'를':{batchim:'을',no:'를'},'과':{batchim:'과',no:'와'},'와':{batchim:'과',no:'와'}};function hasBatchim(ch){var code=String(ch).charCodeAt(0);if(code<0xAC00||code>0xD7A3)return false;return (code-0xAC00)%28!==0;}function reportCaptionParasHtml(filledHtml){var marked=String(filledHtml).replace(/([.!?])(\s+)/g,'$1\u0001');var parts=marked.split('\u0001').map(function(s){return s.trim();}).filter(Boolean);if(parts.length<=1)return '<p class="report-caption">'+filledHtml+'</p>';return parts.map(function(p){return '<p class="report-caption">'+p+'</p>';}).join('');}fillReportTemplate=function(tpl,result){if(!tpl)return '';var dom=dominantWx(result.wxCount);var weak=weakestWx(result.wxCount);var map={name:result.name||'당신',dayGan:result.day.ganKr,dayGanWx:result.dayGanWx,domWx:dom.wx,weakWx:weak.wx,strength:result.strength==='strong'?'강한':'약한',gender:result.gender==='female'?'여성':'남성'};var branched=String(tpl).replace(/\{\{branch:(\w+)\|((?:(?!\}\})[\s\S])*?)\}\}/g,function(m,varName,body){var actual=(varName in map)?String(map[varName]):'';var pairs=body.split('||');var fallback=null;for(var i=0;i<pairs.length;i++){var idx=pairs[i].indexOf('::');if(idx===-1)continue;var key=pairs[i].slice(0,idx).trim();var text=pairs[i].slice(idx+2);if(key===actual)return text;if(key==='else')fallback=text;}return fallback!==null?fallback:'';});var MARK='⁠';var filled=esc(branched).replace(/\{(\w+)\}/g,function(m,k){return (k in map)?esc(String(map[k]))+MARK:m;});filled=filled.replace(/([가-힣])⁠([)\]"'\s]{0,2})(이에요|예요|은|는|이|가|을|를|과|와)/g,function(m,lastChar,between,josa){var fix=JOSA_FIX[josa];return lastChar+between+(hasBatchim(lastChar)?fix.batchim:fix.no);});return filled.replace(/⁠/g,'');};reportSectionHtml=function(panel,result){var hasImg=!!panel.img_url;var imgHtml=hasImg?'<span class="report-section-img"><img src="'+panel.img_url+'" alt=""></span>':'';var filledHtml=fillReportTemplate(panel.caption_template,result);if(!hasImg&&(panel.tone==='formal'||panel.tone==='warning')){return '<div class="report-callout '+panel.tone+'">'+reportCaptionParasHtml(filledHtml)+'</div>';}return '<div class="report-section'+(hasImg?' has-img':'')+'">'+imgHtml+reportCaptionParasHtml(filledHtml)+'</div>';};
 function krwFmt(n){ return (Number(n)||0).toLocaleString('ko-KR'); }
 function reportCardHtml(c){
   var unlocked = isUnlocked(reportUnlockKey(c));
