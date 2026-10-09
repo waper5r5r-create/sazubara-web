@@ -1,8 +1,7 @@
-// "내가 초대해서 실제로 사주를 등록한 친구" 목록을 돌려줍니다 — 마이룸에 쓰입니다.
-// 궁합 점수 자체는 계산하지 않고(이 기기는 초대한 사람의 사주를 모르므로) 친구의 입력값(invitee_saju)만
-// 내려주면, 요청한 브라우저(초대한 사람)가 자기 사주와 비교해서 직접 계산합니다.
+// 일러스트 상세 리포트(웹툰형 컷) 컨셉 목록 — 누구나 볼 수 있는 공개 엔드포인트.
+// 실제 컷 내용(panels)은 /api/reports/panels 에서 따로 받아온다.
 
-const { sbFetch, getQuery } = require('../_supabase');
+const { sbFetch } = require('../_supabase');
 
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -12,25 +11,13 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const q = getQuery(req);
-  const deviceId = q.device_id || '';
-  if (!deviceId) {
-    res.status(400).json({ ok: false, error: 'MISSING_DEVICE_ID' });
-    return;
-  }
-
   try {
     const r = await sbFetch(
-      '/invite_redemptions?inviter_device_id=eq.' +
-        encodeURIComponent(deviceId) +
-        '&select=invitee_device_id,invitee_name,invitee_saju,created_at&order=created_at.desc&limit=60',
+      '/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,price_krw&order=sort_order.asc',
       { method: 'GET' }
     );
     if (!r.ok) {
-      const text = await r.text().catch(function () {
-        return '';
-      });
-      res.status(500).json({ ok: false, error: 'QUERY_FAILED', message: text });
+      res.status(500).json({ ok: false, error: 'QUERY_FAILED' });
       return;
     }
     const rows = await r.json();
