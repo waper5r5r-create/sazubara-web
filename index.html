@@ -363,22 +363,53 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 }
 .report-cost-badge.locked{color:var(--accent-ink); background:var(--accent);}
 .report-cost-badge.unlocked{color:#fff; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.32);}
-/* 이야기 리포트 본문 — 컷(이미지) 단위로 뚝뚝 끊어 보여주던 걸 그만두고, 글이 메인이 되는
-   연속 스크롤 글 형태로 바꿨다. 이미지는 있으면 문단 옆에 작게 떠서 보조 역할만 한다. */
-.report-article{display:flex; flex-direction:column; gap:22px;}
+/* 이야기 리포트 — 팝업(바텀시트)이 아니라 전체 화면 전용 페이지(.report-page)로 열리고,
+   본문도 "글이 메인, 이미지는 부속"이 아니라 이미지가 화면을 꽉 채우며 쭉 이어지는 웹툰형
+   스크롤로 구성한다. 이미지가 있는 섹션은 풀블리드 패널로, 이미지가 없는(아직 준비 안 된)
+   섹션은 나레이션 박스처럼 작게 묶어서 "이미지 빠진 느낌"이 아니라 의도된 캡션처럼 보이게 한다. */
+.report-page{
+  position:fixed; inset:0; z-index:45; max-width:480px; margin:0 auto;
+  background:var(--surface); overflow-y:auto; -webkit-overflow-scrolling:touch;
+  display:flex; flex-direction:column;
+}
+.report-page-topbar{
+  position:sticky; top:0; z-index:3; flex:none; display:flex; align-items:center; gap:10px;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;
+  background:linear-gradient(to bottom, rgba(7,11,28,.88), rgba(7,11,28,.88) 65%, transparent);
+}
+.report-page-back{
+  width:32px; height:32px; border-radius:50%; border:none; flex:none; padding:0;
+  display:flex; align-items:center; justify-content:center; font-size:1.25rem; line-height:1;
+  background:rgba(255,255,255,.16); color:#fff; cursor:pointer;
+}
+.report-page-topbar-title{
+  font-size:.86rem; font-weight:700; color:#fff; opacity:.92;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.report-page-hero{position:relative; width:100%; aspect-ratio:4/5; overflow:hidden; flex:none; background:var(--surface-2); margin-top:-48px;}
+.report-page-hero.no-img{background:linear-gradient(145deg, var(--surface-2), var(--surface-3));}
+.report-page-hero img{width:100%; height:100%; object-fit:cover; display:block;}
+.report-page-hero-grad{position:absolute; left:0; right:0; bottom:0; height:60%; background:linear-gradient(to bottom, transparent, rgba(7,11,28,.94));}
+.report-page-hero-text{position:absolute; left:20px; right:20px; bottom:18px;}
+.report-page-eyebrow{font-size:.72rem; font-weight:700; color:var(--accent); letter-spacing:.04em; margin:0 0 5px;}
+.report-page-title{font-size:1.3rem; font-weight:800; color:#fff; margin:0; line-height:1.32; text-wrap:balance;}
+.report-page-body{padding:24px 20px calc(30px + env(safe-area-inset-bottom,0px));}
+.report-article{display:flex; flex-direction:column; gap:26px;}
 .report-section{position:relative;}
-.report-section::after{content:''; display:table; clear:both;}
 .report-section-img{
-  float:left; width:38%; max-width:150px; aspect-ratio:4/5; border-radius:12px; overflow:hidden;
-  margin:2px 14px 8px 0; background:var(--surface-2);
+  display:block; width:calc(100% + 40px); margin:0 -20px 12px; aspect-ratio:4/3; overflow:hidden; background:var(--surface-2);
 }
 .report-section-img img{width:100%; height:100%; object-fit:cover; display:block;}
-.report-caption{font-size:.92rem; line-height:1.8; color:var(--fg); margin:0;}
-/* 잠긴 뒷부분은 통째로 숨기지 않고 실제 글을 보여주다가 아래로 갈수록 배경색으로 서서히
+.report-caption{font-size:.92rem; line-height:1.85; color:var(--fg); margin:0;}
+/* 아직 이미지가 없는 섹션은 작은 나레이션 박스로 묶어서, 글도 짧게 끊어 보이고 "컷 사이 설명"
+   처럼 읽히게 한다 — 화면 전체를 글로 채우지 않는다. */
+.report-section:not(.has-img){background:var(--surface-2); border-radius:14px; padding:16px 18px;}
+.report-section:not(.has-img) .report-caption{font-size:.88rem; line-height:1.78; color:var(--fg-muted);}
+/* 잠긴 뒷부분은 통째로 숨기지 않고 실제 글/이미지를 보여주다가 아래로 갈수록 배경색으로 서서히
    흐려지게(gradient fade) 해서, "이 아래로도 진짜 이야기가 더 있다"는 느낌을 준다. */
-.report-article-fade-wrap{position:relative; max-height:260px; overflow:hidden; margin-top:-4px;}
+.report-article-fade-wrap{position:relative; max-height:420px; overflow:hidden; margin-top:-4px;}
 .report-article-fade-wrap::after{
-  content:''; position:absolute; left:0; right:0; bottom:0; height:170px;
+  content:''; position:absolute; left:0; right:0; bottom:0; height:200px;
   background:linear-gradient(to bottom, transparent, var(--surface) 92%); pointer-events:none;
 }
 .review-strip{display:flex; flex-direction:column; gap:12px;}
@@ -3687,8 +3718,9 @@ function reviewStripHtml(){
     '</div>';
 }
 function reportSectionHtml(panel, result){
-  var imgHtml = panel.img_url ? '<span class="report-section-img"><img src="'+panel.img_url+'" alt=""></span>' : '';
-  return '<div class="report-section">'+imgHtml+
+  var hasImg = !!panel.img_url;
+  var imgHtml = hasImg ? '<span class="report-section-img"><img src="'+panel.img_url+'" alt=""></span>' : '';
+  return '<div class="report-section'+(hasImg?' has-img':'')+'">'+imgHtml+
       '<p class="report-caption">'+fillReportTemplate(panel.caption_template, result)+'</p>'+
     '</div>';
 }
@@ -3729,17 +3761,24 @@ function startReportUnlock(concept, panels){
 function openReportViewer(concept){
   var root = $('#report-sheet-root');
   if (!root || !STATE.mySaju) return;
+  var hasHero = !!concept.cover_img_url;
   root.innerHTML =
-    '<div class="sheet-backdrop" id="report-view-backdrop">'+
-      '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
-        '<div class="sheet-handle"></div>'+
-        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+esc(concept.title)+'</p>'+
-          '<button type="button" class="sheet-close" id="report-view-close">✕</button></div>'+
-        '<div id="report-panel-list"><p class="section-desc">불러오는 중...</p></div>'+
+    '<div class="report-page" id="report-page-root">'+
+      '<div class="report-page-topbar">'+
+        '<button type="button" class="report-page-back" id="report-page-back">‹</button>'+
+        '<span class="report-page-topbar-title">'+esc(concept.title)+'</span>'+
       '</div>'+
+      '<div class="report-page-hero'+(hasHero?'':' no-img')+'">'+
+        (hasHero ? '<img src="'+concept.cover_img_url+'" alt="">' : '')+
+        '<div class="report-page-hero-grad"></div>'+
+        '<div class="report-page-hero-text">'+
+          '<p class="report-page-eyebrow">사주 풀이</p>'+
+          '<h1 class="report-page-title">'+esc(concept.title)+'</h1>'+
+        '</div>'+
+      '</div>'+
+      '<div class="report-page-body"><div id="report-panel-list"><p class="section-desc">불러오는 중...</p></div></div>'+
     '</div>';
-  $('#report-view-backdrop').addEventListener('click', function(e){ if (e.target.id==='report-view-backdrop') closeReportSheet(); });
-  $('#report-view-close').addEventListener('click', closeReportSheet);
+  $('#report-page-back').addEventListener('click', closeReportSheet);
   loadReportPanels(concept.id).then(function(panels){
     renderReportPanels(concept, panels, isUnlocked(reportUnlockKey(concept)));
   }).catch(function(){
