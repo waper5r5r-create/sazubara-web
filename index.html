@@ -19,20 +19,20 @@
 <title>SAZUBARA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Serif+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* 레이아웃: 상단 고정 헤더 + 스크롤 콘텐츠 + 하단 고정 3탭 바를 가진 모바일 앱 셸.
    웹툰 포스터풍 다크 테마 — 짙은 자정 보라 배경 + 비비드 마젠타 액센트. */
 :root{
   --bg:#070b1c; --surface:#0f1630; --surface-2:#16204a; --surface-3:#1c2b5e;
   --fg:#eef1fb; --fg-muted:#a7afc9; --fg-faint:#7a84a3;
-  --accent:#ffd43b; --accent-ink:#1c1442; --accent-soft:rgba(255,212,59,0.18);
+  --accent:#ffd43b; --accent-ink:#000000; --accent-soft:rgba(255,212,59,0.18);
   --gold:#e0ad55; --gold-ink:#201604; --gold-soft:#3a2d12;
   --border:rgba(255,255,255,0.12); --border-strong:rgba(255,255,255,0.24);
   --shadow:0 8px 28px rgba(0,0,0,0.5);
   --el-wood:#44a386; --el-fire:#b12c00; --el-earth:#ab7400; --el-metal:#006e9a; --el-water:#7552db;
   --good:#4fcf7c; --bad:#ff6b6b;
-  --font-display:'Black Han Sans','Noto Serif KR',serif; --font-body:'Noto Sans KR',sans-serif; --font-heading:'Noto Serif KR',serif;
+  --font-display:'Black Han Sans',serif; --font-body:'Noto Sans KR',sans-serif; --font-heading:'Noto Sans KR',sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box;}
@@ -40,7 +40,7 @@ body{
   margin:0; background:var(--bg); color:var(--fg);
   font-family:var(--font-body); line-height:1.62; -webkit-tap-highlight-color:transparent;
 }
-h1,h2,h3{font-family:var(--font-heading); text-wrap:balance; margin:0;}
+h1,h2,h3{font-family:var(--font-heading); font-weight:700; text-wrap:balance; margin:0;}
 p{margin:0;}
 button{font-family:var(--font-body);}
 img{max-width:100%;}
@@ -56,7 +56,7 @@ img{max-width:100%;}
   border-bottom:1px solid var(--border);
 }
 .app-header .title-col{display:flex; flex-direction:column; gap:1px; min-width:0; flex:1;}
-.app-header .mark{font-family:var(--font-heading); font-weight:700; font-size:1.32rem; letter-spacing:.01em; flex:none; line-height:1.2; background:linear-gradient(135deg,#ffe066,#ffaa00); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.app-header .mark{font-family:var(--font-heading); font-weight:700; font-size:1.32rem; letter-spacing:0; flex:none; line-height:1.2; background:linear-gradient(135deg,#ffe066,#ffaa00); -webkit-background-clip:text; background-clip:text; color:transparent;}
 .brand-mark{display:flex; align-items:center; gap:6px;}
 .brand-ic{width:24px; height:24px; flex:none; display:block; position:relative;}
 .brand-ic::before{
@@ -75,7 +75,7 @@ img{max-width:100%;}
   padding:20px 18px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:16px; min-width:0;
 }
 .card.flat{box-shadow:none;}
-.section-title{font-family:var(--font-heading); font-weight:700; font-size:1.08rem;}
+.section-title{font-family:var(--font-heading); font-weight:700; font-size:1.06rem;}
 .section-desc{font-size:.82rem; color:var(--fg-muted); line-height:1.65;}
 .wx-badge{width:9px; height:9px; border-radius:50%; flex:none; box-shadow:0 0 0 3px rgba(255,255,255,0.06);}
 .eyebrow{
@@ -101,7 +101,7 @@ img{max-width:100%;}
 .hint{font-size:.74rem; color:var(--fg-faint);}
 .btn-primary{
   width:100%; padding:14px; border-radius:14px; border:none; background:var(--accent); color:var(--accent-ink);
-  font-size:1rem; font-weight:700; font-family:var(--font-display); cursor:pointer; letter-spacing:.02em;
+  font-size:1rem; font-weight:700; font-family:var(--font-body); cursor:pointer; letter-spacing:0;
   box-shadow:0 6px 20px rgba(224,173,85,.28); transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
 }
 .btn-primary:active{opacity:.85; transform:scale(.98); box-shadow:0 2px 8px rgba(224,173,85,.22);}
