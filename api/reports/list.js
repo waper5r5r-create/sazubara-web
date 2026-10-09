@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
 
   try {
     const r = await sbFetch(
-      '/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,cost&order=sort_order.asc',
+      '/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,price_krw&order=sort_order.asc',
       { method: 'GET' }
     );
     if (!r.ok) {
