@@ -58,7 +58,7 @@
     }
 
     var isReport = (type === 'report' && conceptId);
-    var endpoint = isReport ? '/api/reports/unlock-confirm' : '/api/toss/confirm';
+    var endpoint = isReport ? '/api/reports/unlock' : '/api/toss/confirm';
     var body = isReport
       ? { paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId, conceptId: conceptId }
       : { paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId };
@@ -70,7 +70,7 @@
     }).then(function(r){ return r.json(); }).then(function(data){
       if (data.ok){
         // 실제로 몇 크레딧을 적립했는지 / 어떤 리포트를 지급했는지는 서버가 정했고, 홈 화면이
-        // /api/credits/pull 또는 /api/reports/unlocks로 직접 받아갑니다(URL로 주고받지 않음 — 조작 방지).
+        // /api/credits/pull 또는 /api/reports/unlock로 직접 받아갑니다(URL로 주고받지 않음 — 조작 방지).
         var back = '/?paid=1&order=' + encodeURIComponent(orderId);
         if (isReport) back += '&report=' + encodeURIComponent(conceptId);
         location.replace(back);
