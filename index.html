@@ -363,23 +363,23 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 }
 .report-cost-badge.locked{color:var(--accent-ink); background:var(--accent);}
 .report-cost-badge.unlocked{color:#fff; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.32);}
-.report-panel{display:flex; flex-direction:column; gap:0; position:relative;}
-.report-panel + .report-panel{margin-top:14px;}
-.report-panel .cut-tag{
-  position:absolute; top:10px; left:10px; z-index:2; font-size:.66rem; font-weight:700; letter-spacing:.04em;
-  color:var(--accent-ink); background:var(--accent); border-radius:999px; padding:3px 9px;
+/* 이야기 리포트 본문 — 컷(이미지) 단위로 뚝뚝 끊어 보여주던 걸 그만두고, 글이 메인이 되는
+   연속 스크롤 글 형태로 바꿨다. 이미지는 있으면 문단 옆에 작게 떠서 보조 역할만 한다. */
+.report-article{display:flex; flex-direction:column; gap:22px;}
+.report-section{position:relative;}
+.report-section::after{content:''; display:table; clear:both;}
+.report-section-img{
+  float:left; width:38%; max-width:150px; aspect-ratio:4/5; border-radius:12px; overflow:hidden;
+  margin:2px 14px 8px 0; background:var(--surface-2);
 }
-.report-panel-img{display:block; width:100%; aspect-ratio:4/5; border-radius:14px 14px 0 0; overflow:hidden; background:var(--surface-2); position:relative;}
-.report-panel-img img{width:100%; height:100%; object-fit:cover; display:block;}
-.report-panel-img.blur img{filter:blur(18px); transform:scale(1.06);}
-.report-panel-img.blur::after{
-  content:'🔒'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  font-size:1.6rem; background:rgba(7,11,28,.38);
-}
-.report-panel:last-of-type .report-panel-img{border-radius:14px;}
-.report-caption{
-  font-size:.85rem; line-height:1.55; background:var(--surface-2); border-radius:0 0 14px 14px;
-  padding:12px 14px; border-top:1px solid var(--border);
+.report-section-img img{width:100%; height:100%; object-fit:cover; display:block;}
+.report-caption{font-size:.92rem; line-height:1.8; color:var(--fg); margin:0;}
+/* 잠긴 뒷부분은 통째로 숨기지 않고 실제 글을 보여주다가 아래로 갈수록 배경색으로 서서히
+   흐려지게(gradient fade) 해서, "이 아래로도 진짜 이야기가 더 있다"는 느낌을 준다. */
+.report-article-fade-wrap{position:relative; max-height:260px; overflow:hidden; margin-top:-4px;}
+.report-article-fade-wrap::after{
+  content:''; position:absolute; left:0; right:0; bottom:0; height:170px;
+  background:linear-gradient(to bottom, transparent, var(--surface) 92%); pointer-events:none;
 }
 .review-strip{display:flex; flex-direction:column; gap:12px;}
 .review-strip-head{display:flex; align-items:center; gap:7px; flex-wrap:wrap;}
@@ -2407,6 +2407,11 @@ function dominantWx(wxCount){
 function emptyWx(wxCount){
   return WX_ORDER.filter(function(wx){ return !(wxCount[wx]>0); });
 }
+function weakestWx(wxCount){
+  var worst=WX_ORDER[0], worstN=Infinity;
+  WX_ORDER.forEach(function(wx){ var c=wxCount[wx]||0; if (c<worstN){ worstN=c; worst=wx; } });
+  return { wx:worst, count:worstN };
+}
 
 function shinsalCardHtml(keys){
   if (!keys || !keys.length){
@@ -3547,7 +3552,7 @@ function closeMyroomDex(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML='
 /* ============================================================
    일러스트 상세 리포트 — 컨셉별(연애/커리어/힐링 등) 웹툰형 상세 풀이.
    일러스트는 관리자(#report-admin)가 직접 공급한다. 문구는 관리자가 쓴 템플릿을
-   {name}/{dayGan}/{dayGanWx}/{domWx}/{strength}/{gender} 자리표시자로 저장해두고,
+   {name}/{dayGan}/{dayGanWx}/{domWx}/{weakWx}/{strength}/{gender} 자리표시자로 저장해두고,
    보는 사람의 실제 사주 결과로 매번 채워서 보여준다.
    해금 방식: 다른 크레딧 콘텐츠와 달리, 리포트는 건별(원화) 결제다 — price_krw가 크레딧이
    아니라 원화 가격이고, 이 앱(app.html, 백엔드 없는 데모)에서는 startReportUnlock()이 그냥
@@ -3566,18 +3571,39 @@ function loadReportPanels(conceptId){
     return (data && data.ok && data.rows) ? data.rows : [];
   });
 }
+/* 사람마다 진짜 다른 해석이 나오도록, 단순 치환 외에 조건 분기 문법을 하나 지원한다:
+     {{branch:VAR|key1::text1||key2::text2||...||else::fallback}}
+   VAR의 실제 값이 key와 일치하는 분기의 text를 쓰고, 없으면 else, 그것도 없으면 빈 문자열.
+   text 안에 {dayGan} 같은 일반 치환 토큰을 또 써도 된다(분기 처리가 먼저 끝난 뒤에 치환됨).
+   구분자로 "||"와 "::"를 쓰는 건 일반 문장에서 거의 등장하지 않는 조합이라 충돌 위험이 낮다. */
 function fillReportTemplate(tpl, result){
   if (!tpl) return '';
   var dom = dominantWx(result.wxCount);
+  var weak = weakestWx(result.wxCount);
   var map = {
     name: result.name || '당신',
     dayGan: result.day.ganKr,
     dayGanWx: result.dayGanWx,
     domWx: dom.wx,
+    weakWx: weak.wx,
     strength: result.strength==='strong' ? '강한' : '약한',
     gender: result.gender==='female' ? '여성' : '남성'
   };
-  return esc(String(tpl)).replace(/\{(\w+)\}/g, function(m, k){ return (k in map) ? esc(String(map[k])) : m; });
+  var branched = String(tpl).replace(/\{\{branch:(\w+)\|((?:(?!\}\})[\s\S])*?)\}\}/g, function(m, varName, body){
+    var actual = (varName in map) ? String(map[varName]) : '';
+    var pairs = body.split('||');
+    var fallback = null;
+    for (var i=0;i<pairs.length;i++){
+      var idx = pairs[i].indexOf('::');
+      if (idx===-1) continue;
+      var key = pairs[i].slice(0, idx).trim();
+      var text = pairs[i].slice(idx+2);
+      if (key===actual) return text;
+      if (key==='else') fallback = text;
+    }
+    return fallback!==null ? fallback : '';
+  });
+  return esc(branched).replace(/\{(\w+)\}/g, function(m, k){ return (k in map) ? esc(String(map[k])) : m; });
 }
 function reportUnlockKey(c){ return 'report-'+c.id; }
 function krwFmt(n){ return (Number(n)||0).toLocaleString('ko-KR'); }
@@ -3660,14 +3686,9 @@ function reviewStripHtml(){
       '</div>'+
     '</div>';
 }
-function reportPanelHtml(panel, locked, result, idx){
-  var imgHtml = panel.img_url ? '<img src="'+panel.img_url+'" alt="">' : '';
-  var cutTag = '<span class="cut-tag">CUT '+String((idx||0)+1).padStart(2,'0')+'</span>';
-  if (locked){
-    return '<div class="report-panel">'+cutTag+'<span class="report-panel-img blur">'+imgHtml+'</span></div>';
-  }
-  return '<div class="report-panel">'+cutTag+
-      '<span class="report-panel-img">'+imgHtml+'</span>'+
+function reportSectionHtml(panel, result){
+  var imgHtml = panel.img_url ? '<span class="report-section-img"><img src="'+panel.img_url+'" alt=""></span>' : '';
+  return '<div class="report-section">'+imgHtml+
       '<p class="report-caption">'+fillReportTemplate(panel.caption_template, result)+'</p>'+
     '</div>';
 }
@@ -3678,12 +3699,12 @@ function reportShareBtnHtml(){
    마크업과 버튼을 따로 둔다 — .unlock-btn 클래스도 같이 붙여서 기존 잠금 카드와 같은 스타일을
    그대로 쓴다. 문구는 "리포트를 결제한다"가 아니라 "이야기의 결말을 산다"는 느낌으로, 건별
    결제가 아깝지 않게 느껴지도록 신경 썼다. */
-function reportLockedCardHtml(concept, panelsLeft){
+function reportLockedCardHtml(concept){
   return '<div class="locked-card">'+
     '<span class="lock-ic">🔒</span>'+
-    '<p class="section-title" style="font-size:.95rem;">나머지 '+panelsLeft+'컷, 결말은 어떻게 될까요?</p>'+
-    '<p class="section-desc">딱 한 번 결제하면 이 이야기는 평생 내 거예요.</p>'+
-    '<button type="button" class="unlock-btn report-unlock-btn">'+krwFmt(concept.price_krw)+'원 내고 결말까지 보기</button>'+
+    '<p class="section-title" style="font-size:.95rem;">여기서부터가 진짜예요</p>'+
+    '<p class="section-desc">지금까지는 맛보기였고, 이 아래로 훨씬 더 깊은 이야기가 이어져요. 딱 한 번 결제하면 이 이야기는 평생 내 거예요.</p>'+
+    '<button type="button" class="unlock-btn report-unlock-btn">'+krwFmt(concept.price_krw)+'원 내고 전체 보기</button>'+
     '<span class="cost-badge">1회 결제 · 평생 소장</span>'+
   '</div>';
 }
@@ -3734,18 +3755,25 @@ function renderReportPanels(concept, panels, unlocked){
     list.innerHTML = '<p class="section-desc">아직 준비 중인 이야기예요.</p>';
     return;
   }
-  var html = panels.map(function(p, idx){
-    return reportPanelHtml(p, (!unlocked && idx>0), result, idx);
-  }).join('');
-  if (!unlocked && panels.length>1){
+  /* 전체 글의 30~40% 정도만 무료로 끝까지 보여주고, 그 아래는 fade-wrap 안에 실제 글을 그대로
+     렌더링해서 "조금 더 보이다가 흐려지는" 미리보기로 쓴다(이미지 블러가 아니라 글 자체가
+     미끼). 섹션이 1~2개뿐인 예전 테스트 데이터에서도 최소 1개는 무료로 보이게 한다. */
+  var freeCount = unlocked ? panels.length : Math.min(panels.length, Math.max(1, Math.round(panels.length*0.35)));
+  var html = '<div class="report-article">'+
+      panels.slice(0, freeCount).map(function(p){ return reportSectionHtml(p, result); }).join('')+
+    '</div>';
+  if (!unlocked && panels.length > freeCount){
+    html += '<div class="report-article-fade-wrap"><div class="report-article">'+
+        panels.slice(freeCount).map(function(p){ return reportSectionHtml(p, result); }).join('')+
+      '</div></div>';
     html += reviewStripHtml();
-    html += reportLockedCardHtml(concept, panels.length-1);
+    html += reportLockedCardHtml(concept);
   }
   if (unlocked){
     html += reportShareBtnHtml();
   }
   list.innerHTML = html;
-  if (!unlocked && panels.length>1){
+  if (!unlocked && panels.length > freeCount){
     $('.report-unlock-btn', list).addEventListener('click', function(){
       startReportUnlock(concept, panels);
     });
@@ -3937,7 +3965,7 @@ function openReportPanelAdmin(concept){
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+esc(concept.title)+' · 컷 관리</p>'+
           '<button type="button" class="sheet-close" id="report-panels-close">✕</button></div>'+
         '<button type="button" class="btn-primary" id="report-panel-add">+ 새 컷 추가</button>'+
-        '<p class="hint">문구에 쓸 수 있는 자리표시자: {name} {dayGan} {dayGanWx} {domWx} {strength} {gender}</p>'+
+        '<p class="hint">문구에 쓸 수 있는 자리표시자: {name} {dayGan} {dayGanWx} {domWx} {weakWx} {strength} {gender}</p>'+
         '<div id="report-panel-admin-list"><p class="section-desc">불러오는 중...</p></div>'+
       '</div>'+
     '</div>';
@@ -4006,7 +4034,7 @@ function openReportPanelForm(concept, existing){
         '</div>'+
         '<div class="field"><label for="report-panel-edit-order">순서(숫자, 작을수록 먼저)</label><input type="number" id="report-panel-edit-order" value="'+(existing?existing.sort_order:0)+'"></div>'+
         '<div class="field"><label for="report-panel-edit-caption">문구 템플릿</label>'+
-          '<textarea id="report-panel-edit-caption" rows="4" maxlength="300">'+(existing?esc(existing.caption_template||''):'')+'</textarea>'+
+          '<textarea id="report-panel-edit-caption" rows="10" maxlength="1500">'+(existing?esc(existing.caption_template||''):'')+'</textarea>'+
         '</div>'+
         '<button type="button" class="btn-primary" id="report-panel-edit-save">저장</button>'+
       '</div>'+
