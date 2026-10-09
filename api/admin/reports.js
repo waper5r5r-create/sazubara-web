@@ -17,12 +17,23 @@ function slugify(title) {
   return (base || 'concept') + '-' + Date.now().toString(36).slice(-5);
 }
 
+// Supabase Storage 오브젝트 키는 아스키 문자만 허용한다(한글이 섞이면 "InvalidKey" 400 에러로
+// 업로드가 실패한다 — 컨셉 id를 한글 그대로 slugify해서 쓰는 지금 구조에서 실제로 발생했던 버그).
+// id/conceptId 자체(DB 기본키, ?conceptId= URL 등)는 한글 그대로 둬야 하니 건드리지 않고,
+// Storage 경로를 만들 때만 한글 등 비(非)아스키 글자를 코드포인트 기반으로 안전하게 치환한다.
+function storagePathSafe(str) {
+  return String(str).split('').map(function (ch) {
+    var code = ch.codePointAt(0);
+    return (code < 128 && /[A-Za-z0-9_-]/.test(ch)) ? ch : ('u' + code.toString(16));
+  }).join('');
+}
+
 async function uploadIfProvided(bucket, idForPath, body) {
   if (!body.imageBase64) return body.existingCoverUrl || body.existingImgUrl || null;
   var mime = body.imageMime || 'image/jpeg';
   var ext = mime.indexOf('png') !== -1 ? 'png' : 'jpg';
   var buffer = Buffer.from(body.imageBase64, 'base64');
-  return uploadStorageImage(bucket, idForPath + '-' + Date.now() + '.' + ext, buffer, mime);
+  return uploadStorageImage(bucket, storagePathSafe(idForPath) + '-' + Date.now() + '.' + ext, buffer, mime);
 }
 
 module.exports = async (req, res) => {
