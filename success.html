@@ -28,6 +28,10 @@
     var paymentKey = params.get('paymentKey');
     var orderId = params.get('orderId');
     var amount = params.get('amount');
+    // 리포트 건별 결제는 requestPayment()를 부를 때 successUrl에 이 두 값을 미리 실어 보내서,
+    // 토스가 paymentKey/orderId/amount를 덧붙여 돌아올 때도 그대로 남아있다.
+    var type = params.get('type'); // 'report'면 리포트 건별 결제, 없으면 기존 크레딧 충전
+    var conceptId = params.get('conceptId');
 
     function showError(text){
       document.getElementById('msg').textContent = text;
@@ -53,15 +57,23 @@
       return;
     }
 
-    fetch('/api/toss/confirm', {
+    var isReport = (type === 'report' && conceptId);
+    var endpoint = isReport ? '/api/reports/unlock-confirm' : '/api/toss/confirm';
+    var body = isReport
+      ? { paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId, conceptId: conceptId }
+      : { paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId };
+
+    fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId })
+      body: JSON.stringify(body)
     }).then(function(r){ return r.json(); }).then(function(data){
       if (data.ok){
-        // 실제로 몇 크레딧을 적립했는지는 서버가 정했고, 홈 화면이 /api/credits/pull로 직접 받아갑니다.
-        // (URL에 크레딧 숫자를 실어 보내지 않습니다 — 조작 방지)
-        location.replace('/?paid=1&order=' + encodeURIComponent(orderId));
+        // 실제로 몇 크레딧을 적립했는지 / 어떤 리포트를 지급했는지는 서버가 정했고, 홈 화면이
+        // /api/credits/pull 또는 /api/reports/unlocks로 직접 받아갑니다(URL로 주고받지 않음 — 조작 방지).
+        var back = '/?paid=1&order=' + encodeURIComponent(orderId);
+        if (isReport) back += '&report=' + encodeURIComponent(conceptId);
+        location.replace(back);
       } else {
         showError('결제 승인에 실패했습니다: ' + (data.message || data.error || '알 수 없는 오류'));
       }
