@@ -3931,7 +3931,7 @@ function saveReportConceptAdmin(payload){
     })
     .then(function(data){
       if (!data) return;
-      if (!data.ok){ showToast('저장에 실패했어요.'); return; }
+      if (!data.ok){ showToast('저장에 실패했어요.' + (data.message ? (' ' + data.message) : '')); return; }
       showToast('저장했어요!');
       REPORT_LIST_CACHE = null;
       openReportAdminList();
@@ -4075,7 +4075,7 @@ function saveReportPanelAdmin(payload, concept){
     })
     .then(function(data){
       if (!data) return;
-      if (!data.ok){ showToast('저장에 실패했어요.'); return; }
+      if (!data.ok){ showToast('저장에 실패했어요.' + (data.message ? (' ' + data.message) : '')); return; }
       showToast('저장했어요!');
       loadReportPanelsForAdmin(concept);
     })
