@@ -1,14 +1,16 @@
-// 리포트(유료 상세 풀이) 건별(원화) 결제 승인 — 크레딧 장부와는 완전히 별개 경로다.
-// 토스페이먼츠 결제 승인 API를 "서버에서만" 호출하고(/api/toss/confirm과 동일한 패턴),
-// 결제가 끝나면 report_unlocks에 (device_id, concept_id) 한 줄을 남긴다.
+// 토스페이먼츠 결제 승인 API를 "서버에서만" 호출합니다.
+// 시크릿 키는 절대 클라이언트로 내려가지 않고, 이 서버리스 함수(Vercel 환경변수) 안에만 존재합니다.
+// 참고: https://docs.tosspayments.com/reference#결제-승인
 //
-// 금액 검증: 클라이언트가 보낸 amount가 아니라, 토스가 실제로 승인한 결제금액(KRW)을
-// 서버가 report_concepts.price_krw와 직접 대조해서 확인한다 — 개발자도구로 금액을 조작해도
-// 실제 가격과 다르면 거부되고 지급되지 않는다.
-// 중복 지급 방지: order_id 유니크 제약(같은 결제가 두 번 승인 호출돼도 1회만 기록) +
-// device_id+concept_id 유니크 제약(같은 리포트를 두 번 결제해도 보유 상태는 1건만 유지).
+// 크레딧 적립은 Supabase(서버 DB)의 credit_ledger에 한 줄 남기는 방식으로 처리합니다.
+// - 지급할 크레딧 개수는 클라이언트가 보낸 값이 아니라, 토스가 실제로 승인한 결제금액(KRW)을
+//   서버가 직접 금액표(CREDIT_PACKS_BY_KRW)에 대조해서 정합니다 — 그래서 브라우저 개발자도구로
+//   결제금액/크레딧개수를 조작해도 실제로 지급되는 크레딧은 바뀌지 않습니다.
+// - 같은 주문번호(orderId)로 다시 호출돼도 DB의 unique 제약 때문에 크레딧이 두 번 적립되지 않습니다.
 
-const { ensureDevice, sbFetch, readJsonBody } = require('../_supabase');
+const { ensureDevice, insertLedger, readJsonBody } = require('../_supabase');
+
+const CREDIT_PACKS_BY_KRW = { 3900: 30, 9900: 80, 19900: 200 };
 
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -25,27 +27,13 @@ module.exports = async (req, res) => {
   }
 
   const body = await readJsonBody(req);
-  const { paymentKey, orderId, amount, deviceId, conceptId } = body || {};
-  if (!paymentKey || !orderId || !amount || !deviceId || !conceptId) {
+  const { paymentKey, orderId, amount, deviceId } = body || {};
+  if (!paymentKey || !orderId || !amount || !deviceId) {
     res.status(400).json({ ok: false, error: 'MISSING_FIELDS' });
     return;
   }
 
   try {
-    const conceptRes = await sbFetch(
-      '/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,price_krw,active'
-    );
-    if (!conceptRes.ok) {
-      res.status(500).json({ ok: false, error: 'CONCEPT_LOOKUP_FAILED' });
-      return;
-    }
-    const concepts = await conceptRes.json();
-    const concept = concepts[0];
-    if (!concept || !concept.active) {
-      res.status(400).json({ ok: false, error: 'UNKNOWN_CONCEPT', message: '존재하지 않거나 비활성화된 리포트입니다.' });
-      return;
-    }
-
     const basicAuth = Buffer.from(secretKey + ':').toString('base64');
     const tossRes = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
       method: 'POST',
@@ -62,31 +50,22 @@ module.exports = async (req, res) => {
       return;
     }
 
-    if (data.totalAmount !== concept.price_krw) {
-      // 토스 승인은 됐지만, 이 리포트의 실제 가격과 승인 금액이 다름 — 지급하지 않음(조작/오류 방지).
-      res.status(400).json({ ok: false, error: 'AMOUNT_MISMATCH', message: '결제 금액이 올바르지 않습니다. 고객센터로 문의해주세요.' });
+    const creditAmt = CREDIT_PACKS_BY_KRW[data.totalAmount];
+    if (!creditAmt) {
+      // 토스 승인은 됐지만, 사주바라가 파는 크레딧팩 금액과 일치하지 않음 — 지급하지 않음(조작/오류 방지).
+      res.status(400).json({ ok: false, error: 'UNKNOWN_AMOUNT', message: '알 수 없는 결제 금액입니다. 고객센터로 문의해주세요.' });
       return;
     }
 
     await ensureDevice(deviceId);
-    const insertRes = await sbFetch('/report_unlocks', {
-      method: 'POST',
-      headers: { Prefer: 'return=representation' },
-      body: JSON.stringify({
-        device_id: deviceId,
-        concept_id: conceptId,
-        order_id: data.orderId,
-        amount: data.totalAmount
-      })
-    });
-    if (insertRes.status !== 409 && !insertRes.ok) {
-      const text = await insertRes.text().catch(function () { return ''; });
-      res.status(500).json({ ok: false, error: 'UNLOCK_INSERT_FAILED', message: text });
-      return;
-    }
-    // 409(이미 같은 order_id 또는 같은 device+concept가 있음)도 "이미 지급됨"으로 정상 처리한다.
+    await insertLedger({ deviceId: deviceId, amount: creditAmt, reason: '크레딧 충전', orderId: data.orderId });
 
-    res.status(200).json({ ok: true, conceptId: conceptId, orderId: data.orderId, approvedAt: data.approvedAt });
+    res.status(200).json({
+      ok: true,
+      orderId: data.orderId,
+      amount: creditAmt,
+      approvedAt: data.approvedAt
+    });
   } catch (e) {
     res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
   }
