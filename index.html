@@ -1918,7 +1918,7 @@ function doShare(){
    클라이언트는 device_id(=CREDITS.shareCode)로만 자신을 식별하고(로그인 없음),
    실제 크레딧 지급 권한은 전부 서버(Vercel 서버리스 함수 + Supabase)가 갖습니다.
    - 결제 충전: /api/toss/confirm 이 토스 승인 금액을 직접 검증해서 credit_ledger에 기록
-   - 초대 보너스: 친구가 "자기 사주를 직접 입력"하면 /api/invite/redeem 이 inviter에게 기록
+   - 초대 보너스: 친구가 "자기 사주를 직접 입력"하면 /api/invite?action=redeem 이 inviter에게 기록
    - 브라우저는 /api/credits/pull 로 자신에게 쌓인 새 장부 줄만 가져와 반영합니다(URL 파라미터로
      크레딧 숫자를 직접 주고받지 않음 — 조작 방지).
    ============================================================ */
@@ -2000,7 +2000,7 @@ function pullCreditLedger(){
    반영한다. credit_ledger와 달리 "증분"이 아니라 매번 전체 목록 — 리포트는 가짓수가 적어 가볍다. */
 function pullReportUnlocks(){
   if (!CREDITS.shareCode) return;
-  fetch('/api/reports/unlocks?device_id='+encodeURIComponent(CREDITS.shareCode))
+  fetch('/api/reports/unlock?device_id='+encodeURIComponent(CREDITS.shareCode))
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data || !data.ok || !data.rows) return;
@@ -2014,7 +2014,7 @@ function pullReportUnlocks(){
 function attemptInviteRedeem(opts){
   if (!CREDITS.pendingInviteCode) return;
   if (CREDITS.pendingInviteCode === CREDITS.shareCode){ CREDITS.pendingInviteCode = null; saveCredits(); return; }
-  fetch('/api/invite/redeem', {
+  fetch('/api/invite?action=redeem', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       code: CREDITS.pendingInviteCode,
@@ -3562,7 +3562,7 @@ function loadReportList(forceRefresh){
   });
 }
 function loadReportPanels(conceptId){
-  return fetch('/api/reports/panels?conceptId='+encodeURIComponent(conceptId)).then(function(r){ return r.json(); }).then(function(data){
+  return fetch('/api/reports/list?conceptId='+encodeURIComponent(conceptId)).then(function(r){ return r.json(); }).then(function(data){
     return (data && data.ok && data.rows) ? data.rows : [];
   });
 }
@@ -4128,17 +4128,17 @@ function renderMyRoomLocal(root){
   wireMyroomDexBtn();
 }
 /* 마이룸은 두 방향을 모두 모아서 보여준다:
-   1) 내가 초대해서 실제로 등록한 친구 (/api/invite/list) — row.invitee_saju를 그대로 받아온다.
-   2) 나를 초대해준 친구 (/api/invite/received) — 그 친구가 /api/device/save-saju 로 올려둔
+   1) 내가 초대해서 실제로 등록한 친구 (/api/invite?action=list) — row.invitee_saju를 그대로 받아온다.
+   2) 나를 초대해준 친구 (/api/invite?action=received) — 그 친구가 /api/device/save-saju 로 올려둔
       자기 사주(row.inviter_saju)를 받아온다. 아직 한 번도 올리지 않은 초대자는 서버가 알아서 걸러서 내려준다.
    두 목록을 합쳐 최신순으로 섞어 보여주고, fromInviter 플래그로 카드에 "나를 초대함" 표시만 다르게 단다.
    서로 초대를 주고받은 경우(상대 기기가 sentList·receivedList 양쪽에 다 걸리는 경우) 같은 사람이
    카드 두 장으로 중복돼 보일 수 있어서, 상대방 device_id(_otherId) 기준으로 한 장만 남기고 합친다 —
    둘 중 더 먼저 생긴(원래) 관계 쪽을 대표 카드로 쓴다. */
 function fetchInviteMyRoom(){
-  var sentP = fetch('/api/invite/list?device_id='+encodeURIComponent(CREDITS.shareCode))
+  var sentP = fetch('/api/invite?action=list&device_id='+encodeURIComponent(CREDITS.shareCode))
     .then(function(r){ return r.json(); }).catch(function(){ return null; });
-  var receivedP = fetch('/api/invite/received?device_id='+encodeURIComponent(CREDITS.shareCode))
+  var receivedP = fetch('/api/invite?action=received&device_id='+encodeURIComponent(CREDITS.shareCode))
     .then(function(r){ return r.json(); }).catch(function(){ return null; });
   Promise.all([sentP, receivedP]).then(function(results){
     var sentData = results[0], receivedData = results[1];
