@@ -3364,7 +3364,7 @@ function fillReportTemplate(tpl, result){
     domWx: dom.wx,
     weakWx: weak.wx,
     strength: result.strength==='strong' ? '강한' : '약한',
-    gender: result.gender==='female' ? '여성' : '남성'
+    gender: result.gender==='f'||result.gender==='female' ? '여성' : '남성'
   };
   var branched = String(tpl).replace(/\{\{branch:(\w+)\|((?:(?!\}\})[\s\S])*?)\}\}/g, function(m, varName, body){
     var actual = (varName in map) ? String(map[varName]) : '';
