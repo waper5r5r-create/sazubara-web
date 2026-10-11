@@ -688,6 +688,55 @@ img{max-width:100%;}
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
 </style>
+<style>
+/* 사주바라 화면 정리: 읽기 쉬운 카드와 포스터 중심 탐색 */
+:root{--fg-muted:#b4bdd3;--fg-faint:#929db9;--border:rgba(190,202,239,.12);--shadow:0 6px 20px rgba(0,0,0,.16);}
+html{min-height:100%;scroll-padding-top:90px;}
+body{background:radial-gradient(ellipse at 50% 0,rgba(37,48,85,.28),transparent 55%),var(--bg);}
+.app{min-height:100vh;min-height:100dvh;background:rgba(7,11,28,.55);}
+.app-header{padding:16px 20px;background:rgba(7,11,28,.94);backdrop-filter:blur(16px);}
+.content{padding:26px 20px calc(110px + env(safe-area-inset-bottom,0px));gap:24px;}
+.view{gap:22px;}
+.card{padding:24px 20px;border-radius:20px;gap:18px;background:linear-gradient(145deg,rgba(255,255,255,.035),transparent 65%),var(--surface);}
+.section-title{font-size:1.12rem;letter-spacing:-.035em;line-height:1.45;}
+.section-desc{font-size:.88rem;line-height:1.8;word-break:keep-all;overflow-wrap:anywhere;}
+.eyebrow{letter-spacing:.07em;font-size:.72rem;}
+#saju-form>div:first-child{padding:6px 0 18px;border-bottom:1px solid var(--border);}
+#saju-form h1{font-size:1.65rem;line-height:1.4;margin:8px 0 12px;}
+.field{gap:9px;}.field label{font-size:.85rem;color:var(--fg);}
+.field input[type="text"],.field input[type="date"],.field input[type="time"],.field select{min-height:48px;font-size:16px;background:rgba(25,35,67,.8);border-color:rgba(190,202,239,.2);}
+.seg{padding:4px;gap:4px;border-color:var(--border);background:rgba(25,35,67,.7);border-radius:14px;}
+.seg button{border-radius:10px;min-height:40px;background:transparent;font-size:.84rem;}
+.seg button.active{box-shadow:0 2px 8px rgba(0,0,0,.16);}
+.btn-primary{min-height:50px;box-shadow:0 4px 16px rgba(224,173,85,.14);}
+button:focus-visible,[role="button"]:focus-visible,.report-card:focus-visible{outline:2px solid var(--accent);outline-offset:4px;}
+.tabs-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;margin:0;min-height:76px;background:rgba(15,22,48,.96);backdrop-filter:blur(18px);box-shadow:0 -6px 24px rgba(0,0,0,.16);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));}
+.tab-btn{position:relative;gap:6px;padding:8px 2px;color:var(--fg-faint);border-radius:12px;min-height:54px;}
+.tab-btn.active{background:rgba(255,212,59,.065);}
+.tab-btn.active::before{content:'';position:absolute;top:0;width:20px;height:2px;border-radius:2px;background:var(--accent);}
+.tab-btn .ico svg{width:100%;height:100%;display:block;}
+#today-period-body{display:flex;flex-direction:column;gap:22px;min-width:0;}
+.today-ganzhi-panel{padding:22px 18px;border:1px solid rgba(224,173,85,.15);background:linear-gradient(120deg,rgba(224,173,85,.10),rgba(28,43,94,.6));}
+.today-date{font-size:.85rem;}.fortune-grid{gap:12px;}
+.fortune-tile{padding:16px 14px;gap:10px;background:rgba(22,32,74,.65);}
+.fortune-tile .ttl{font-size:.84rem;}.fortune-tile .body{font-size:.86rem;line-height:1.85;word-break:keep-all;overflow-wrap:anywhere;}
+.detail-block{font-size:.9rem;line-height:1.9;word-break:keep-all;overflow-wrap:anywhere;}
+.lucky-chip{background:rgba(22,32,74,.65);padding:16px 8px;gap:7px;}
+.disclaimer{line-height:1.8;padding-top:12px;}.ss-row .desc{line-height:1.8;font-size:.84rem;}
+.tab-intro{padding:4px 2px 8px;display:flex;flex-direction:column;gap:8px;}
+.tab-intro h1{font-size:1.5rem;letter-spacing:-.04em;line-height:1.4;}
+.report-cat-chips{flex-wrap:nowrap;overflow-x:auto;padding:2px 2px 8px;scrollbar-width:none;}.report-cat-chips .chip-btn{flex:none;min-height:40px;}
+.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px;}
+.report-grid>p{grid-column:1/-1;}
+.report-card{aspect-ratio:3/4.5;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.18);}
+.report-card .report-text{left:12px;right:12px;bottom:14px;gap:6px;}
+.report-card .nm{font-size:.96rem;line-height:1.4;}.report-card .tagline{font-size:.73rem;line-height:1.55;}
+.report-card::after{background:linear-gradient(180deg,transparent 35%,rgba(7,11,28,.96) 100%);}
+.report-cost-badge{font-size:.64rem;padding:4px 7px;right:8px;top:8px;}
+@media(hover:hover){.report-card{transition:transform .18s,border-color .18s;}.report-card:hover{transform:translateY(-3px);border-color:rgba(224,173,85,.5);}}
+@media(max-width:374px){.content{padding-left:14px;padding-right:14px;}.app-header{padding-left:14px;padding-right:14px;}.card{padding:20px 16px;}.fortune-grid{grid-template-columns:1fr;}.report-grid{gap:12px 10px;}.report-card .nm{font-size:.86rem;}.report-card .tagline{font-size:.7rem;}.pillars{gap:6px;}.ss-row{flex-wrap:wrap;}.ss-row .desc{flex-basis:100%;}}
+@media(prefers-reduced-motion:reduce){.report-card,.btn-primary{transition:none;}}
+</style>
 </head>
 <body>
 
@@ -2432,6 +2481,7 @@ function renderTodayView(){
     return;
   }
   root.innerHTML =
+    '<div class="tab-intro"><p class="eyebrow">나의 운세</p><h1>오늘, 어떤 흐름일까요?</h1><p class="section-desc">나의 사주로 살펴보는 하루와 앞으로의 흐름</p></div>'+
     '<div class="seg" id="today-period-seg">'+
       '<button type="button" data-val="day" class="active">오늘</button>'+
       '<button type="button" data-val="week">이번 주</button>'+
@@ -3302,9 +3352,9 @@ function renderReportsTabView(){
     return;
   }
   view.innerHTML =
-    '<p class="eyebrow">당신만 모르고 있던 이야기</p>'+
-    '<p class="section-title" style="font-size:1.1rem; margin-bottom:2px;">어떤 장부터 펼쳐볼래요?</p>'+
-    '<p class="section-desc" style="margin-bottom:10px;">끌리는 이야기 하나 골라봐요. 첫 컷은 무료로 볼 수 있어요.</p>'+
+    '<div class="tab-intro"><p class="eyebrow">당신만 모르고 있던 이야기</p>'+
+    '<h1>어떤 장부터 펼쳐볼래요?</h1>'+
+    '<p class="section-desc">끌리는 이야기 하나 골라봐요. 첫 컷은 무료로 볼 수 있어요.</p></div>'+
     '<div class="chip-row report-cat-chips" id="report-cat-chips" hidden></div>'+
     '<div class="report-grid" id="report-grid"><p class="section-desc">불러오는 중...</p></div>';
   loadReportList().then(function(list){
