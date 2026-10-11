@@ -1,12 +1,16 @@
 // 프로모션 코드(테스트 배포용) 사용. 지인/테스터가 각자 기기에서 코드를 입력하면
-// 그 기기(deviceId)에 바로 크레딧이 적립됩니다.
+// 그 기기(deviceId)에 유료 콘텐츠 전체(기본사주 심층 + 오늘운세 프리미엄)가 결제 없이 열립니다.
 // - 같은 코드를 같은 기기가 두 번 쓰면(promo_redemptions의 code+device_id unique 제약) 막힙니다.
 // - max_redemptions가 설정돼있으면 그 횟수를 넘기면 더 이상 쓸 수 없습니다(소진).
 // - 코드 자체는 Supabase SQL 편집기에서 직접 만듭니다(관리자 화면 없음) — 예:
-//   insert into promo_codes (code, amount, max_redemptions, note)
-//   values ('코드이름', 50, 20, '메모');
+//   insert into promo_codes (code, max_redemptions, note)
+//   values ('코드이름', 20, '메모');
+// (예전엔 amount만큼 크레딧을 적립했지만, 크레딧 폐지 이후로는 코드 하나당 지급되는 항목이
+//  고정이라 amount 컬럼은 더 이상 쓰지 않습니다 — 남아있어도 무시됩니다.)
 
-const { ensureDevice, insertLedger, sbFetch, readJsonBody } = require('../_supabase');
+const { ensureDevice, sbFetch, readJsonBody } = require('../_supabase');
+
+const PROMO_UNLOCK_KEYS = ['feature-saju-deep', 'feature-today-premium'];
 
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -29,7 +33,7 @@ module.exports = async (req, res) => {
     await ensureDevice(deviceId);
 
     const codeRes = await sbFetch(
-      '/promo_codes?code=eq.' + encodeURIComponent(code) + '&active=eq.true&select=code,amount,max_redemptions,times_redeemed',
+      '/promo_codes?code=eq.' + encodeURIComponent(code) + '&active=eq.true&select=code,max_redemptions,times_redeemed',
       { method: 'GET' }
     );
     if (!codeRes.ok) {
@@ -71,9 +75,25 @@ module.exports = async (req, res) => {
       body: JSON.stringify({ times_redeemed: promo.times_redeemed + 1 })
     });
 
-    await insertLedger({ deviceId: deviceId, amount: promo.amount, reason: '프로모션 코드: ' + code });
+    // 기본사주 심층 + 오늘운세 프리미엄을 한꺼번에 결제 없이 열어준다. 이미 결제해서 보유 중인
+    // 항목이 있으면 device_id+unlock_key unique 제약으로 409가 나는데, 그것도 "이미 열려있음"으로
+    // 정상 처리한다(/api/reports/unlock, /api/unlock과 같은 패턴).
+    await Promise.all(
+      PROMO_UNLOCK_KEYS.map(function (key) {
+        return sbFetch('/paid_unlocks', {
+          method: 'POST',
+          headers: { Prefer: 'return=minimal' },
+          body: JSON.stringify({
+            device_id: deviceId,
+            unlock_key: key,
+            order_id: 'promo_' + code + '_' + deviceId + '_' + key,
+            amount: 0
+          })
+        }).catch(function () { return null; });
+      })
+    );
 
-    res.status(200).json({ ok: true, credited: true, amount: promo.amount });
+    res.status(200).json({ ok: true, unlockKeys: PROMO_UNLOCK_KEYS });
   } catch (e) {
     res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
   }
