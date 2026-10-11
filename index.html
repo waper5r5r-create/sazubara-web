@@ -2572,6 +2572,7 @@ function renderTodayView(){
     '<div id="today-period-body"></div>';
   wireSeg($('#today-period-seg'), function(val){ renderTodayPeriod(val); });
   renderTodayPeriod('day');
+  $('#today-period-body').addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-relkey]')){e.preventDefault();e.target.click();}});
   $('#today-period-body').addEventListener('click', function(e){
     var el = e.target.closest('[data-relkey]');
     if (el) openPeriodBrief(el.dataset.relkey, el.dataset.label, el.dataset.zhi, el.dataset.sskey);
@@ -2746,7 +2747,7 @@ function weekFortuneHtml(my){
     var isToday = r.date.toDateString()===todayStr;
     var color = r.score>0 ? 'var(--good)' : (r.score<0 ? 'var(--bad)' : 'var(--fg-muted)');
     var dLabel = (r.date.getMonth()+1)+'월 '+r.date.getDate()+'일 ('+dowKr[i]+')';
-    return '<div class="period-week-row pw-clickable" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
+    return '<div class="period-week-row pw-clickable" role="button" tabindex="0" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
       '<span class="dow">'+dowKr[i]+'</span>'+
       '<span class="dt">'+(r.date.getMonth()+1)+'/'+r.date.getDate()+'</span>'+
       '<span class="lbl2">'+r.ganKr+r.zhiKr+'일</span>'+
@@ -2767,13 +2768,15 @@ function weekFortuneHtml(my){
 function monthFortuneHtml(my){
   var rows = monthlyFortuneData(my);
   var dom = dominantRelKey(rows);
-  var sorted = rows.slice().sort(function(a,b){ return b.score-a.score || a.date-b.date; });
+  var fromToday=new Date();fromToday.setHours(0,0,0,0);
+  var remaining=rows.filter(function(row){return row.date>=fromToday;});
+  var sorted = remaining.slice().sort(function(a,b){ return b.score-a.score || a.date-b.date; });
   var best = sorted.slice(0,3);
-  var worst = rows.slice().sort(function(a,b){ return a.score-b.score || a.date-b.date; }).slice(0,3);
+  var worst = remaining.slice().sort(function(a,b){ return a.score-b.score || a.date-b.date; }).slice(0,3);
   function listHtml(list){
     return list.map(function(r){
       var dLabel = (r.date.getMonth()+1)+'월 '+r.date.getDate()+'일';
-      return '<div class="period-week-row pw-clickable" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
+      return '<div class="period-week-row pw-clickable" role="button" tabindex="0" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
         '<span class="dt" style="width:40px;">'+(r.date.getMonth()+1)+'/'+r.date.getDate()+'</span>'+
         '<span class="lbl2">'+r.ganKr+r.zhiKr+'일</span>'+
         '<span style="font-size:.76rem;color:var(--fg-muted);">'+FORTUNE_TEXT[r.ssKey].label+'</span>'+
@@ -2785,9 +2788,9 @@ function monthFortuneHtml(my){
       '<p class="eyebrow">이번 달 운세</p>'+
       personaWrap('today', autoParas(PERIOD_TEXT[dom.key].month))+
     '</div>'+
-    '<div class="card"><p class="section-title" style="font-size:.95rem;">✨ 추천일 TOP3 <span class="hint">(눌러서 자세히 보기)</span></p>'+
+    '<div class="card"><p class="section-title" style="font-size:.95rem;">남은 달의 추천일 <span class="hint">(눌러서 자세히 보기)</span></p>'+
       '<div class="period-week-list">'+listHtml(best)+'</div></div>'+
-    '<div class="card"><p class="section-title" style="font-size:.95rem;">'+ICO_CLOUD+' 주의할 날 TOP3 <span class="hint">(눌러서 자세히 보기)</span></p>'+
+    '<div class="card"><p class="section-title" style="font-size:.95rem;">'+ICO_CLOUD+' 남은 달에 주의할 날 <span class="hint">(눌러서 자세히 보기)</span></p>'+
       '<div class="period-week-list">'+listHtml(worst)+'</div>'+
       '<p class="disclaimer">일간과 각 날짜의 일진 관계를 바탕으로 산출한 참고용 콘텐츠입니다.</p>'+
     '</div>';
@@ -2799,7 +2802,7 @@ function yearFortuneHtml(my){
   var cellsHtml = rows.map(function(r, i){
     var bg = r.score>0 ? 'var(--good)' : (r.score<0 ? 'var(--bad)' : 'var(--surface-3)');
     var fg = r.score===0 ? 'var(--fg-muted)' : '#fff';
-    return '<div class="month-cell pw-clickable" style="background:'+bg+';color:'+fg+';" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+(i+1)+'월" data-zhi="'+r.zhi+'">'+(i+1)+'월</div>';
+    return '<div class="month-cell pw-clickable" role="button" tabindex="0" style="background:'+bg+';color:'+fg+';" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+(i+1)+'월" data-zhi="'+r.zhi+'">'+(i+1)+'월</div>';
   }).join('');
   return premiumPeriodHtml(my, 'year')+
     '<div class="card">'+
@@ -3333,14 +3336,16 @@ function closeMyroomDex(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML='
 var REPORT_LIST_CACHE = null;
 function loadReportList(forceRefresh){
   if (REPORT_LIST_CACHE && !forceRefresh) return Promise.resolve(REPORT_LIST_CACHE);
-  return fetch('/api/reports/list').then(function(r){ return r.json(); }).then(function(data){
-    REPORT_LIST_CACHE = (data && data.ok && data.rows) ? data.rows : [];
+  return fetch('/api/reports/list').then(function(r){if(!r.ok)throw new Error('REPORT_LIST_FAILED');return r.json();}).then(function(data){
+    if(!data||!data.ok||!Array.isArray(data.rows))throw new Error('REPORT_LIST_FAILED');
+    REPORT_LIST_CACHE = data.rows;
     return REPORT_LIST_CACHE;
   });
 }
 function loadReportPanels(conceptId){
-  return fetch('/api/reports/list?conceptId='+encodeURIComponent(conceptId)).then(function(r){ return r.json(); }).then(function(data){
-    return (data && data.ok && data.rows) ? data.rows : [];
+  return fetch('/api/reports/list?conceptId='+encodeURIComponent(conceptId)).then(function(r){if(!r.ok)throw new Error('REPORT_PANELS_FAILED');return r.json();}).then(function(data){
+    if(!data||!data.ok||!Array.isArray(data.rows))throw new Error('REPORT_PANELS_FAILED');
+    return data.rows;
   });
 }
 /* 사람마다 진짜 다른 해석이 나오도록, 단순 치환 외에 조건 분기 문법을 하나 지원한다:
@@ -3457,7 +3462,7 @@ function renderReportsTabView(){
     renderReportGrid(list, '전체');
   }).catch(function(){
     var grid = $('#report-grid');
-    if (grid) grid.innerHTML = '<p class="section-desc">불러오지 못했어요. 잠시 후 다시 시도해주세요.</p>';
+    if(grid){grid.innerHTML='<div class="card" style="grid-column:1/-1"><p class="section-desc">이야기를 불러오지 못했어요.</p><button type="button" class="btn-secondary" id="retry-reports">다시 불러오기</button></div>';$('#retry-reports').addEventListener('click',renderReportsTabView);}
   });
 }
    /* ---- 리포트 해금 전 소셜프루프(후기) 스트립 ----
