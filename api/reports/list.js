@@ -1,54 +1,45 @@
-// 일러스트 상세 리포트(웹툰형 컷) — 컨셉 목록 + 컷(panel) 목록을 한 파일로 합쳤습니다.
-// Vercel Hobby 플랜의 서버리스 함수 12개 제한 때문에 api/reports/panels.js를 따로 두지 않고
-// 같은 /api/reports/list 경로에 conceptId 유무로 분기했습니다 — 둘 다 공개 엔드포인트입니다.
-//
-// GET /api/reports/list                 → 컨셉 목록(기존 list.js와 동일)
-// GET /api/reports/list?conceptId=...   → 그 컨셉의 컷 목록(기존 panels.js와 동일)
-//   (이 앱의 다른 "크레딧으로 열어보기" 콘텐츠들과 동일하게, 잠금 해제는 클라이언트 UI에서만
-//    처리한다 — 크레딧 적립 자체가 로컬에서 처리되는 구조라 서버가 "해금 여부"를 증명해줄 방법이
-//    없기 때문. 문구 템플릿의 {name}/{dayGanWx} 등 자리표시자는 클라이언트가 본인 사주로 채운다.)
+const { sbFetch, getQuery, checkAdminSecret } = require('../_supabase');
+const { STAGE_PRICE, rowsAt, reportAccess } = require('../_report-access');
 
-const { sbFetch, getQuery } = require('../_supabase');
-
+function shortSentences(text) {
+  return String(text).match(/[^.!?]+[.!?]?/g)?.slice(0, 2).join('').trim() || '';
+}
+function storyCaption(tpl) {
+  // Keep branch syntax intact while shortening each personalised narrative.
+  return String(tpl || '').replace(/\{\{branch:(\w+)\|((?:(?!\}\})[\s\S])*?)\}\}/g, (m, name, body) =>
+    '{{branch:' + name + '|' + body.split('||').map(pair => {
+      const at = pair.indexOf('::');
+      return at < 0 ? pair : pair.slice(0, at + 2) + shortSentences(pair.slice(at + 2));
+    }).join('||') + '}}');
+}
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
-
-  if (req.method !== 'GET') {
-    res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
-    return;
-  }
-
-  const q = getQuery(req);
-  const conceptId = q.conceptId || '';
-
+  res.setHeader('Cache-Control', 'no-store');
+  if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
+  const q = getQuery(req), conceptId = q.conceptId || '';
   try {
     if (conceptId) {
-      const r = await sbFetch(
-        '/report_panels?concept_id=eq.' +
-          encodeURIComponent(conceptId) +
-          '&select=id,sort_order,img_url,caption_template,tone,img_variants&order=sort_order.asc',
-        { method: 'GET' }
-      );
-      if (!r.ok) {
-        res.status(500).json({ ok: false, error: 'QUERY_FAILED' });
-        return;
-      }
-      const rows = await r.json();
-      res.status(200).json({ ok: true, rows: rows });
+      const concepts = await rowsAt('/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,active');
+      const admin = checkAdminSecret(req);
+      if (!concepts[0] || (!concepts[0].active && !admin)) return res.status(404).json({ ok: false, error: 'UNKNOWN_CONCEPT' });
+      const panels = await rowsAt('/report_panels?concept_id=eq.' + encodeURIComponent(conceptId) + '&select=id,sort_order,img_url,caption_template,tone,img_variants&order=sort_order.asc');
+      if (admin) return res.status(200).json({ ok: true, rows: panels, access: { story: true, detail: true, legacy: true } });
+      const access = await reportAccess(q.device_id || '', conceptId);
+      // Preserve every original scene and its complete narrative in the paid webtoon.
+      let lastArt = null;
+      const firstArt = panels.find(p => p.img_url || (p.img_variants && Object.keys(p.img_variants).length));
+      const story = panels.map(p => {
+        if (p.img_url || (p.img_variants && Object.keys(p.img_variants).length)) lastArt = p;
+        const art = lastArt || firstArt || {};
+        return {...p, img_url:p.img_url || art.img_url, img_variants:p.img_variants || art.img_variants};
+      });
+      const preview = story.slice(0, 1);
+      res.status(200).json({ ok: true, rows: access.story ? story : preview, detailRows: access.detail ? panels : [], access, preview: !access.story, storyCount: story.length });
       return;
     }
-
-    const r = await sbFetch(
-      '/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,price_krw,category&order=sort_order.asc',
-      { method: 'GET' }
-    );
-    if (!r.ok) {
-      res.status(500).json({ ok: false, error: 'QUERY_FAILED' });
-      return;
-    }
-    const rows = await r.json();
-    res.status(200).json({ ok: true, rows: rows });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
-  }
+    const r = await sbFetch('/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,price_krw,category&order=sort_order.asc');
+    if (!r.ok) throw new Error('QUERY_FAILED');
+    const rows = (await r.json()).map(c => ({ ...c, price_krw: STAGE_PRICE.story, detail_price_krw: STAGE_PRICE.detail }));
+    res.status(200).json({ ok: true, rows });
+  } catch (e) { res.status(500).json({ ok: false, error: 'SERVER_ERROR' }); }
 };

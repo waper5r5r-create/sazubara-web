@@ -62,7 +62,7 @@ module.exports = async (req, res) => {
           id: id,
           title: body.title,
           tagline: body.tagline || '',
-          price_krw: Number(body.priceKrw) || 3900,
+          price_krw: 4900,
           cover_img_url: coverUrl,
           active: body.active !== false,
           sort_order: Number(body.sortOrder) || 0,

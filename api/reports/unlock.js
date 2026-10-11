@@ -1,122 +1,96 @@
-// 리포트(이야기) 건별 결제 관련 2개 엔드포인트(보유 목록 조회 / 결제 승인)를 한 파일로 합쳤습니다.
-// Vercel Hobby 플랜의 서버리스 함수 12개 제한 때문에 api/reports/unlocks.js, api/reports/unlock-confirm.js
-// 2개였던 걸 메서드(GET/POST)로 분기해서 이 파일 하나로 합쳤습니다 — 각 동작 자체는 그대로입니다.
-//
-// GET  /api/reports/unlock?device_id=...   이 기기가 실제로 결제해서 보유 중인 리포트 concept_id 목록.
-//   누구나 조회 가능한 공개 엔드포인트(device_id 자체가 추측 불가능한 무작위 문자열이라 안전).
-//   credit_ledger처럼 "아직 안 받은 줄만" 증분으로 주지 않고 매번 전체 목록을 돌려준다 — 리포트는
-//   가짓수가 적고(기기당 결제 건수가 많아야 수십 건) 한 번 사면 영구 보유라 가볍다.
-//
-// POST /api/reports/unlock  body:{paymentKey, orderId, amount, deviceId, conceptId}
-//   리포트(유료 상세 풀이) 건별(원화) 결제 승인 — 크레딧 장부와는 완전히 별개 경로다.
-//   토스페이먼츠 결제 승인 API를 "서버에서만" 호출하고(/api/unlock과 동일한 패턴),
-//   결제가 끝나면 report_unlocks에 (device_id, concept_id) 한 줄을 남긴다.
-//   금액 검증: 클라이언트가 보낸 amount가 아니라, 토스가 실제로 승인한 결제금액(KRW)을
-//   서버가 report_concepts.price_krw와 직접 대조해서 확인한다.
-//   중복 지급 방지: order_id 유니크 제약 + device_id+concept_id 유니크 제약.
-
+// Two independent purchases; historic report_unlocks still grants both stages.
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('../_supabase');
+const { STAGE_PRICE, STAGES, stageKey, rowsAt, reportAccess } = require('../_report-access');
+const { signQuote, verifyQuote, newOrderId } = require('../_payment-quote');
 
 async function handleGet(req, res) {
-  const q = getQuery(req);
-  const deviceId = q.device_id || '';
-  if (!deviceId) {
-    res.status(400).json({ ok: false, error: 'MISSING_DEVICE_ID' });
-    return;
-  }
-  try {
-    const r = await sbFetch(
-      '/report_unlocks?device_id=eq.' + encodeURIComponent(deviceId) + '&select=concept_id'
-    );
-    if (!r.ok) {
-      res.status(500).json({ ok: false, error: 'QUERY_FAILED' });
-      return;
-    }
-    const rows = await r.json();
-    res.status(200).json({ ok: true, rows: rows.map(function (row) { return row.concept_id; }) });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
-  }
+  const { device_id: deviceId } = getQuery(req);
+  if (!deviceId) return res.status(400).json({ ok: false, error: 'MISSING_DEVICE_ID' });
+  const [legacy, stages] = await Promise.all([
+    rowsAt('/report_unlocks?device_id=eq.' + encodeURIComponent(deviceId) + '&select=concept_id'),
+    rowsAt('/paid_unlocks?device_id=eq.' + encodeURIComponent(deviceId) + '&select=unlock_key')
+  ]);
+  res.status(200).json({ ok: true, rows: legacy.map(r => r.concept_id), stageKeys: stages.map(r => r.unlock_key).filter(k => /^report-(story|detail)-/.test(k)) });
+}
+
+async function prepareCheckout(body,res){
+  const {deviceId,conceptId,stage}=body;
+  if(typeof deviceId!=='string'||!deviceId||typeof conceptId!=='string'||!conceptId||!STAGES.includes(stage)) return res.status(400).json({ok:false,error:'MISSING_FIELDS'});
+  if(!process.env.TOSS_SECRET_KEY) return res.status(503).json({ok:false,error:'PAYMENT_UNAVAILABLE',message:'결제 연결을 준비 중이에요.'});
+  const concepts=await rowsAt('/report_concepts?id=eq.'+encodeURIComponent(conceptId)+'&select=id,title,active');
+  if(!concepts[0]||!concepts[0].active) return res.status(400).json({ok:false,error:'UNKNOWN_CONCEPT'});
+  const access=await reportAccess(deviceId,conceptId);
+  if(stage==='detail'&&!access.story) return res.status(409).json({ok:false,error:'STORY_REQUIRED',message:'이야기를 먼저 열어주세요.'});
+  if(access[stage]) return res.status(409).json({ok:false,error:'ALREADY_OWNED',message:'이미 보유한 콘텐츠예요.'});
+  const fields={orderId:newOrderId(),deviceId,conceptId,stage,amount:STAGE_PRICE[stage]};
+  res.status(200).json({ok:true,orderId:fields.orderId,amount:STAGE_PRICE[stage],quote:signQuote(fields)});
 }
 
 async function handlePost(req, res) {
-  const secretKey = process.env.TOSS_SECRET_KEY;
-  if (!secretKey) {
-    res.status(500).json({ ok: false, error: 'NO_SECRET_KEY', message: 'TOSS_SECRET_KEY 환경변수가 설정되지 않았습니다.' });
-    return;
-  }
-
   const body = await readJsonBody(req);
-  const { paymentKey, orderId, amount, deviceId, conceptId } = body || {};
-  if (!paymentKey || !orderId || !amount || !deviceId || !conceptId) {
-    res.status(400).json({ ok: false, error: 'MISSING_FIELDS' });
-    return;
+  if(body.action==='prepare') return prepareCheckout(body,res);
+  const { paymentKey, orderId, amount, deviceId, conceptId, stage, quote } = body;
+  if (!paymentKey || !orderId || !deviceId || !conceptId || !Number.isSafeInteger(amount)) {
+    return res.status(400).json({ ok: false, error: 'MISSING_FIELDS' });
   }
-
-  try {
-    const conceptRes = await sbFetch(
-      '/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,price_krw,active'
-    );
-    if (!conceptRes.ok) {
-      res.status(500).json({ ok: false, error: 'CONCEPT_LOOKUP_FAILED' });
-      return;
+  // The old full-report checkout can finish during the rollout. New UI always sends stage.
+  const legacy = stage == null && amount === 4900;
+  if (!legacy && !STAGES.includes(stage)) return res.status(400).json({ ok: false, error: 'INVALID_STAGE' });
+  const price = legacy ? 4900 : STAGE_PRICE[stage];
+  if(!legacy&&!verifyQuote(quote,{orderId,deviceId,conceptId,stage,amount:price})) return res.status(400).json({ok:false,error:'INVALID_CHECKOUT',message:'상품 화면에서 결제를 다시 시작해주세요.'});
+  if (amount !== price) return res.status(400).json({ ok: false, error: 'AMOUNT_MISMATCH', message: '결제 금액이 올바르지 않아요. 상품 화면에서 다시 시작해주세요.' });
+  const concepts = await rowsAt('/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,active');
+  if (!concepts[0] || !concepts[0].active) return res.status(400).json({ ok: false, error: 'UNKNOWN_CONCEPT' });
+  const key = stageKey(conceptId, stage);
+  const table = legacy ? 'report_unlocks' : 'paid_unlocks';
+  const previous = await rowsAt('/' + table + '?order_id=eq.' + encodeURIComponent(orderId) + '&select=*');
+  if (previous.length) {
+    const row = previous[0];
+    if (row.device_id !== deviceId || row.amount !== amount || (legacy ? row.concept_id !== conceptId : row.unlock_key !== key)) {
+      return res.status(409).json({ ok: false, error: 'ORDER_CONFLICT' });
     }
-    const concepts = await conceptRes.json();
-    const concept = concepts[0];
-    if (!concept || !concept.active) {
-      res.status(400).json({ ok: false, error: 'UNKNOWN_CONCEPT', message: '존재하지 않거나 비활성화된 리포트입니다.' });
-      return;
-    }
-
-    const basicAuth = Buffer.from(secretKey + ':').toString('base64');
-    const tossRes = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Basic ' + basicAuth,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ paymentKey, orderId, amount })
-    });
-    const data = await tossRes.json();
-
-    if (!tossRes.ok) {
-      res.status(tossRes.status).json({ ok: false, error: data.code || 'CONFIRM_FAILED', message: data.message || '결제 승인에 실패했습니다.' });
-      return;
-    }
-
-    if (data.totalAmount !== concept.price_krw) {
-      // 토스 승인은 됐지만, 이 리포트의 실제 가격과 승인 금액이 다름 — 지급하지 않음(조작/오류 방지).
-      res.status(400).json({ ok: false, error: 'AMOUNT_MISMATCH', message: '결제 금액이 올바르지 않습니다. 고객센터로 문의해주세요.' });
-      return;
-    }
-
-    await ensureDevice(deviceId);
-    const insertRes = await sbFetch('/report_unlocks', {
-      method: 'POST',
-      headers: { Prefer: 'return=representation' },
-      body: JSON.stringify({
-        device_id: deviceId,
-        concept_id: conceptId,
-        order_id: data.orderId,
-        amount: data.totalAmount
-      })
-    });
-    if (insertRes.status !== 409 && !insertRes.ok) {
-      const text = await insertRes.text().catch(function () { return ''; });
-      res.status(500).json({ ok: false, error: 'UNLOCK_INSERT_FAILED', message: text });
-      return;
-    }
-    // 409(이미 같은 order_id 또는 같은 device+concept가 있음)도 "이미 지급됨"으로 정상 처리한다.
-
-    res.status(200).json({ ok: true, conceptId: conceptId, orderId: data.orderId, approvedAt: data.approvedAt });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
+    return res.status(200).json({ ok: true, conceptId, stage: legacy ? 'legacy' : stage, orderId });
   }
+  const access = await reportAccess(deviceId, conceptId);
+  if (stage === 'detail' && !access.story) return res.status(409).json({ ok: false, error: 'STORY_REQUIRED', message: '이야기를 먼저 열어주세요.' });
+  if (legacy ? access.legacy : access[stage]) return res.status(409).json({ ok: false, error: 'ALREADY_OWNED', message: '이미 보유한 콘텐츠예요. 상품 화면으로 돌아가주세요.' });
+  const secretKey = process.env.TOSS_SECRET_KEY;
+  if (!secretKey) return res.status(503).json({ ok: false, error: 'PAYMENT_UNAVAILABLE', message: '결제 연결을 준비 중이에요.' });
+  const authorization = 'Basic ' + Buffer.from(secretKey + ':').toString('base64');
+  const tossRes = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
+    method: 'POST', headers: { Authorization: authorization, 'Content-Type': 'application/json', 'Idempotency-Key': orderId },
+    body: JSON.stringify({ paymentKey, orderId, amount })
+  });
+  let data = await tossRes.json();
+  // Recover approval that succeeded before a network/DB failure, without approving again.
+  if (!tossRes.ok && ['ALREADY_PROCESSED_PAYMENT', 'DUPLICATED_REQUEST'].includes(data.code)) {
+    const lookup = await fetch('https://api.tosspayments.com/v1/payments/' + encodeURIComponent(paymentKey), { headers: { Authorization: authorization } });
+    if (!lookup.ok) return res.status(502).json({ ok: false, error: 'PAYMENT_LOOKUP_FAILED' });
+    data = await lookup.json();
+  } else if (!tossRes.ok) return res.status(tossRes.status).json({ ok: false, error: data.code || 'CONFIRM_FAILED', message: data.message || '결제를 승인하지 못했어요.' });
+  if (data.totalAmount !== price || data.orderId !== orderId || data.status !== 'DONE' || data.currency !== 'KRW') {
+    return res.status(400).json({ ok: false, error: 'PAYMENT_MISMATCH' });
+  }
+  await ensureDevice(deviceId);
+  const payload = { device_id: deviceId, order_id: orderId, amount: data.totalAmount };
+  if (legacy) payload.concept_id = conceptId; else payload.unlock_key = key;
+  const insert = await sbFetch('/' + table, { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(payload) });
+  if (!insert.ok) {
+    if (insert.status === 409) {
+      const after = await rowsAt('/' + table + '?order_id=eq.' + encodeURIComponent(orderId) + '&select=*');
+      if (!after.some(r => r.device_id === deviceId && r.amount === amount && (legacy ? r.concept_id === conceptId : r.unlock_key === key))) {
+        return res.status(409).json({ ok: false, error: 'UNLOCK_CONFLICT', message: '구매 내역을 확인하지 못했어요. 같은 결제 확인 주소에서 다시 시도해주세요.' });
+      }
+    } else return res.status(500).json({ ok: false, error: 'UNLOCK_INSERT_FAILED' });
+  }
+  res.status(200).json({ ok: true, conceptId, stage: legacy ? 'legacy' : stage, orderId, approvedAt: data.approvedAt });
 }
-
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  if (req.method === 'GET') return handleGet(req, res);
-  if (req.method === 'POST') return handlePost(req, res);
-  res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
+  res.setHeader('Cache-Control', 'no-store');
+  try {
+    if (req.method === 'GET') return await handleGet(req, res);
+    if (req.method === 'POST') return await handlePost(req, res);
+    res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
+  } catch (e) { res.status(500).json({ ok: false, error: 'SERVER_ERROR' }); }
 };

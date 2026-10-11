@@ -3,8 +3,8 @@
 //
 // 다루는 unlock_key 종류:
 // - feature-saju-deep     : 고민상담 전체 카테고리 (4,900원, 기기당 1회, 평생)
-// - feature-today-premium : 월간/신년 프리미엄 + 오늘의 케미 상세 (3,900원, 기기당 1회, 평생)
-// - compat-<pairKey>      : 궁합 상세 리포트 (2,900원, 기기+조합 쌍마다 1회)
+// - feature-today-premium : 월간/신년 프리미엄 + 오늘의 케미 상세 (990원, 기기당 1회, 평생)
+// - compat-<pairKey>      : 궁합 상세 리포트 (990원, 기기+조합 쌍마다 1회)
 //
 // 지급 금액은 클라이언트가 보낸 값이 아니라, 토스가 실제로 승인한 결제금액(KRW)을 서버가 직접
 // PAID_UNLOCK_PRICE_BY_KEY(또는 compat- 접두사는 고정가)에 대조해서 검증합니다.
@@ -14,13 +14,14 @@ const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('./_supabase')
 
 const PAID_UNLOCK_PRICE_BY_KEY = {
   'feature-saju-deep': 4900,
-  'feature-today-premium': 3900
+  'feature-today-premium': 990
 };
-const COMPAT_DETAIL_PRICE = 2900;
+const COMPAT_DETAIL_PRICE = 990;
 
 function priceForUnlockKey(key) {
   if (typeof key !== 'string' || !key) return null;
   if (PAID_UNLOCK_PRICE_BY_KEY[key] != null) return PAID_UNLOCK_PRICE_BY_KEY[key];
+  if (['연애','직장','재물','건강','인간관계'].some(cat => key === 'feature-saju-deep:' + cat)) return 990;
   if (key.indexOf('compat-') === 0) return COMPAT_DETAIL_PRICE;
   return null;
 }
@@ -67,13 +68,27 @@ async function handlePost(req, res) {
     return;
   }
 
+  if (!Number.isSafeInteger(amount) || amount !== price) {
+    res.status(400).json({ ok: false, error: 'AMOUNT_MISMATCH', message: '가격이 변경되었어요. 상품 화면에서 다시 시작해주세요.' });
+    return;
+  }
+
   try {
+    const existing = await sbFetch('/paid_unlocks?order_id=eq.' + encodeURIComponent(orderId) + '&select=device_id,unlock_key,amount');
+    if (!existing.ok) throw new Error('ORDER_LOOKUP_FAILED');
+    const rows = await existing.json();
+    const matches = row => row.device_id === deviceId && row.unlock_key === unlockKey && row.amount === price;
+    if (rows.length) {
+      res.status(matches(rows[0]) ? 200 : 409).json(matches(rows[0]) ? {ok:true,unlockKey,orderId} : {ok:false,error:'ORDER_CONFLICT'});
+      return;
+    }
     const basicAuth = Buffer.from(secretKey + ':').toString('base64');
     const tossRes = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
       method: 'POST',
       headers: {
         Authorization: 'Basic ' + basicAuth,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Idempotency-Key': orderId
       },
       body: JSON.stringify({ paymentKey, orderId, amount })
     });
@@ -84,7 +99,7 @@ async function handlePost(req, res) {
       return;
     }
 
-    if (data.totalAmount !== price) {
+    if (data.totalAmount !== price || data.orderId !== orderId || data.status !== 'DONE' || data.currency !== 'KRW') {
       // 토스 승인은 됐지만 이 unlock_key의 실제 가격과 승인 금액이 다름 — 지급하지 않음(조작/오류 방지).
       res.status(400).json({ ok: false, error: 'AMOUNT_MISMATCH', message: '결제 금액이 올바르지 않습니다. 고객센터로 문의해주세요.' });
       return;
@@ -101,12 +116,16 @@ async function handlePost(req, res) {
         amount: data.totalAmount
       })
     });
-    if (insertRes.status !== 409 && !insertRes.ok) {
-      const text = await insertRes.text().catch(function () { return ''; });
-      res.status(500).json({ ok: false, error: 'UNLOCK_INSERT_FAILED', message: text });
-      return;
+    if (!insertRes.ok) {
+      if (insertRes.status !== 409) throw new Error('UNLOCK_INSERT_FAILED');
+      const conflict = await sbFetch('/paid_unlocks?order_id=eq.' + encodeURIComponent(orderId) + '&select=device_id,unlock_key,amount');
+      if (!conflict.ok) throw new Error('ORDER_LOOKUP_FAILED');
+      const saved = await conflict.json();
+      if (!saved.some(matches)) {
+        res.status(409).json({ok:false,error:'ORDER_CONFLICT'});
+        return;
+      }
     }
-    // 409(이미 같은 order_id 또는 같은 device+unlock_key)도 "이미 지급됨"으로 정상 처리한다.
 
     res.status(200).json({ ok: true, unlockKey: unlockKey, orderId: data.orderId, approvedAt: data.approvedAt });
   } catch (e) {
@@ -115,6 +134,7 @@ async function handlePost(req, res) {
 }
 
 module.exports = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   if (req.method === 'GET') return handleGet(req, res);
   if (req.method === 'POST') return handlePost(req, res);
