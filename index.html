@@ -702,6 +702,7 @@ body{background:radial-gradient(ellipse at 50% 0,rgba(37,48,85,.28),transparent 
 .section-desc{font-size:.88rem;line-height:1.8;word-break:keep-all;overflow-wrap:anywhere;}
 .eyebrow{letter-spacing:.07em;font-size:.72rem;}
 #saju-form>div:first-child{padding:6px 0 18px;border-bottom:1px solid var(--border);}
+#compat-form h1{font-size:1.45rem;line-height:1.45;margin:8px 0 12px;}
 #saju-form h1{font-size:1.65rem;line-height:1.4;margin:8px 0 12px;}
 .field{gap:9px;}.field label{font-size:.85rem;color:var(--fg);}
 .field input[type="text"],.field input[type="date"],.field input[type="time"],.field select{min-height:48px;font-size:16px;background:rgba(25,35,67,.8);border-color:rgba(190,202,239,.2);}
@@ -5052,7 +5053,7 @@ function init(){
   }
 
   var startTab = (location.hash||'').replace('#','');
-  if (['saju','today','compat'].indexOf(startTab)===-1) startTab='saju';
+  if (['saju','today','compat','reports'].indexOf(startTab)===-1) startTab='saju';
   switchTab(startTab);
 
   $all('.tab-btn').forEach(function(btn){
