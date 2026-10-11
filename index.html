@@ -434,6 +434,7 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
    .mini-teaser-list li{font-size:.78rem; color:var(--fg-muted); padding-left:16px; position:relative;}
    .mini-teaser-list li::before{content:'✓'; position:absolute; left:0; color:var(--accent); font-weight:700;}
    .review-strip{display:flex; flex-direction:column; gap:12px;}
+      #report-panel-list .mini-teaser-card, #report-panel-list .review-strip, #report-panel-list .locked-card, #report-panel-list .share-btn{margin-top:22px;}
 .review-strip-head{display:flex; align-items:center; gap:7px; flex-wrap:wrap;}
 .review-stars{color:var(--accent); font-size:.86rem; letter-spacing:1px;}
 .review-score{font-weight:700; font-size:.92rem;}
@@ -1940,12 +1941,12 @@ function doShare(){
         var text = (myName? myName+'님이 ':'')+'당신과의 궁합이 궁금해서 보내요 💕 링크 열고 본인 사주만 입력하면 바로 궁합을 확인할 수 있어요!';
         kakaoShare(text, url, '궁합 확인하러 가기').then(function(){
                maybeAwardShareBonus();
-               showToast('초대를 보냈어요! 상대방이 입력하면 마이룸에서 궁합을 확인할 수 있어요.');
+               showToast('링크를 보냈어요! 상대방이 입력하면 나의 카드첩에서 서로 궁합을 확인할 수 있어요.');
         }).catch(function(){
                if (navigator.share){
                         navigator.share({ title:'사주바라 궁합', text:text, url:url }).then(function(){
                                    maybeAwardShareBonus();
-                                   showToast('초대를 보냈어요! 상대방이 입력하면 마이룸에서 궁합을 확인할 수 있어요.');
+                                   showToast('링크를 보냈어요! 상대방이 입력하면 나의 카드첩에서 서로 궁합을 확인할 수 있어요.');
                         }).catch(function(){});
                } else {
                         copyToClipboard(text+'\n'+url);
@@ -2117,7 +2118,7 @@ function renderCreditSheet(){
 
         '<div><p class="section-title" style="font-size:.95rem;">친구 · 연인 초대하기</p>'+
           '<div class="invite-box">'+
-            '<p class="section-desc">링크로 들어온 친구가 자기 사주를 직접 등록하면, 나에게 크레딧 +3이 자동으로 적립되고 마이룸에도 보여요.</p>'+
+            '<p class="section-desc">링크로 들어온 친구가 자기 사주를 직접 등록하면, 나에게 크레딧 +3이 자동으로 적립되고 나의 카드첩에도 보여요.</p>'+
             '<div class="invite-link-row"><input type="text" readonly id="invite-link-input" value="'+shareUrl()+'"></div>'+
             '<button type="button" class="share-btn" id="btn-do-share">📤 카카오톡 등으로 공유하기</button>'+
             '<p class="hint">지금까지 '+CREDITS.shareBonusCount+'명의 친구가 등록해서 보너스를 받았어요</p>'+
@@ -2963,11 +2964,11 @@ function refreshCompatPersonA(){
          '<hr class="sep">'+
          '<div class="field">'+
            '<label>상대방 정보</label>'+
-           '<div class="seg" id="c-b-mode"><button type="button" data-val="kakao" class="active">카카오톡으로 받기</button><button type="button" data-val="manual">직접 입력</button></div>'+
+           '<div class="seg" id="c-b-mode"><button type="button" data-val="kakao" class="active">링크 보내서 받기</button><button type="button" data-val="manual">직접 입력</button></div>'+
          '</div>'+
          '<div id="c-b-kakao-pane">'+
-           '<p class="section-desc">상대방의 생년월일시를 내가 몰라도 괜찮아요. 카카오톡으로 링크를 보내면 상대방이 직접 입력하고, 결과는 마이룸에서 둘 다 확인할 수 있어요.</p>'+
-           '<button type="button" class="btn-primary" id="btn-compat-kakao-invite">카카오톡으로 궁합 물어보기</button>'+
+           '<p class="section-desc">상대방의 생년월일시를 내가 몰라도 괜찮아요. 링크를 보내면 상대방이 직접 입력하고, 서로의 궁합을 확인할 수 있어요. 확인한 궁합은 나의 카드첩에 모여요.</p>'+
+           '<button type="button" class="btn-primary" id="btn-compat-kakao-invite">상대방에게 궁합 물어보기</button>'+
          '</div>'+
          '<div id="c-b-manual-pane" hidden>'+
            personFieldsHtml('b','상대방')+
@@ -3032,12 +3033,11 @@ function refreshCompatPersonA(){
 
 /* ---- 마이룸: 궁합 확인 기록 갈러리 ---- */
 var MYROOM_TIERS = [
-  { min:90, key:'legend', label:'운명의 인연', icon:ICO_SPARK, color:'#e0ad55', soft:'rgba(224,173,85,.16)' },
-  { min:75, key:'great',  label:'찰떡궁합',   icon:ICO_HEART, color:'#ff8a9e', soft:'rgba(255,138,158,.16)' },
-  { min:60, key:'good',   label:'좋은 인연',   icon:ICO_DOT, color:'#6fd9b0', soft:'rgba(111,217,176,.16)' },
-  { min:40, key:'normal', label:'무난한 인연', icon:ICO_DROP, color:'#5bb8e0', soft:'rgba(91,184,224,.16)' },
-  { min:0,  key:'effort', label:'노력이 필요해요', icon:ICO_CLOUD, color:'#b39ddb', soft:'rgba(179,157,219,.16)' }
-];
+     { min:90, key:'s', grade:'S', label:'운명의 인연', icon:ICO_SPARK, color:'#e0ad55', soft:'rgba(224,173,85,.16)' },
+   { min:70, key:'a', grade:'A', label:'찰떡궁합',   icon:ICO_HEART, color:'#ff8a9e', soft:'rgba(255,138,158,.16)' },
+   { min:50, key:'b', grade:'B', label:'좋은 인연',   icon:ICO_DOT, color:'#6fd9b0', soft:'rgba(111,217,176,.16)' },
+   { min:0,  key:'c', grade:'C', label:'무난한 인연', icon:ICO_DROP, color:'#5bb8e0', soft:'rgba(91,184,224,.16)' }
+   ];
 function myroomTier(score){
   for (var i=0;i<MYROOM_TIERS.length;i++){ if (score >= MYROOM_TIERS[i].min) return MYROOM_TIERS[i]; }
   return MYROOM_TIERS[MYROOM_TIERS.length-1];
@@ -3125,44 +3125,56 @@ function myroomShinsalChipsHtml(entry){
   var keys = myroomShinsalKeys(entry);
   if (!keys.length) return '';
   return '<span class="myroom-shinsal">'+keys.map(function(k){
-    var s = SHINSAL_TEXT[k];
-    return '<span class="chip" style="--sal-color:'+s.color+'; --sal-soft:'+s.soft+';">'+s.icon+' '+s.label+'</span>';
-  }).join('')+'</span>';
-}
-var RANK_MEDAL = ['🥇','🥈','🥉'];
-function myroomCardHtml(entry, rank){
-  var tier = myroomTier(entry.score);
-  /* fromInviter: 내가 초대받아서 가입했을 때, 나를 초대해준 사람 쪽에서 자동으로 뜨는 카드.
+     var WX_CARD_HEX = {'목':'#44a386','화':'#b12c00','토':'#ab7400','금':'#006e9a','수':'#7552db'};
+   /* 상대방(entry.dayGanWxB)의 일주 오행을 모티프로 한 카드 배경 일러스트 — 별도 이미지 생성 없이
+      오행별 색으로 추상 패턴을 SVG로 그려 카드 배경에 얇게 깔아, 카드첩이 "그 사람의 사주를 닮은
+      카드"처럼 보이게 한다. */
+   function wxCardArtUrl(wx){
+     var c = WX_CARD_HEX[wx] || WX_CARD_HEX['목'];
+     var motif =
+       (wx==='화') ? '<path d="M100 260C40 220 50 150 90 110C70 150 110 160 100 110C140 150 150 210 100 260Z" fill="'+c+'" opacity=".2"/><path d="M158 92C120 64 124 22 154 2C140 26 164 36 157 2C184 26 194 70 158 92Z" fill="'+c+'" opacity=".14"/>' :
+       (wx==='토') ? '<rect x="-20" y="190" width="240" height="90" fill="'+c+'" opacity=".16"/><rect x="-20" y="150" width="240" height="40" fill="'+c+'" opacity=".12"/><rect x="-20" y="118" width="240" height="24" fill="'+c+'" opacity=".1"/>' :
+       (wx==='금') ? '<polygon points="100,20 150,90 100,160 50,90" fill="'+c+'" opacity=".18"/><polygon points="100,120 160,190 100,260 40,190" fill="'+c+'" opacity=".12"/>' :
+       (wx==='수') ? '<path d="M-20 90C30 70 60 110 110 90C160 70 180 110 220 90L220 160C180 180 160 140 110 160C60 180 30 140 -20 160Z" fill="'+c+'" opacity=".16"/><path d="M-20 170C30 150 60 190 110 170C160 150 180 190 220 170L220 230C180 250 160 210 110 230C60 250 30 210 -20 230Z" fill="'+c+'" opacity=".12"/>' :
+       '<path d="M100 260C100 190 70 170 70 120C70 80 100 40 100 0" stroke="'+c+'" stroke-width="10" fill="none" opacity=".22"/><path d="M100 150C100 100 150 90 150 40" stroke="'+c+'" stroke-width="8" fill="none" opacity=".16"/><path d="M100 190C100 150 40 140 30 90" stroke="'+c+'" stroke-width="8" fill="none" opacity=".16"/>';
+     var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260">'+motif+'</svg>';
+     return 'data:image/svg+xml,'+encodeURIComponent(svg);
+   }
+   function myroomCardHtml(entry, rank){
+     var tier = myroomTier(entry.score);
+     /* fromInviter: 내가 초대받아서 가입했을 때, 나를 초대해준 사람 쪽에서 자동으로 뜨는 카드.
+/* score
      entry.ownerName(공개 갤러리의 "소유자" 표시)과 같은 자리를 쓰지만 의미가 다르므로 겹치지 않게 처리. */
-  var ownerTag = entry.ownerName ? '<span class="owner-tag">'+esc(entry.ownerName)+'님의 룸</span>' :
-    (entry.fromInviter ? '<span class="owner-tag">나를 초대함</span>' :
-    (entry.isCharacter ? '<span class="owner-tag char-tag">✨ 캐릭터</span>' : ''));
-  var isNew = entry.at && (Date.now()-entry.at < 24*3600*1000);
-  var newBadge = (isNew && !ownerTag) ? '<span class="myroom-new">NEW</span>' : '';
-  var sparkle = (tier.key==='legend') ? '<span class="myroom-sparkle">✨</span>' : '';
-  var rankBadge = (rank!=null && rank<=3 && !ownerTag) ? '<span class="myroom-rank">'+RANK_MEDAL[rank-1]+'</span>' :
-    (rank!=null && rank<=3) ? '<span class="myroom-rank" style="top:26px;">'+RANK_MEDAL[rank-1]+'</span>' : '';
-  var chemi = (entry.dayGanWxA && entry.dayGanWxB) ? coupleTodayInfo(entry.dayGanWxA, entry.dayGanWxB) : null;
-  var chemiBadge = chemi ? '<span class="myroom-chemi" style="color:'+chemi.tier.color+';">'+chemi.tier.icon+' 오늘 '+chemi.tier.short+'</span>' : '';
-  var curFrame = getMyRoomFrame(entry.id);
-  var frameAttr = curFrame ? ' data-frame="'+curFrame+'"' : '';
-  var legendCls = (tier.key==='legend') ? ' is-legend' : '';
-  var pct = Math.max(4, Math.min(100, entry.score||0));
-  return '<div class="myroom-card'+legendCls+'" tabindex="0" role="button" aria-label="'+esc(entry.nameB||'상대방')+'님과의 궁합 자세히 보기"'+frameAttr+' style="--tier-color:'+tier.color+'; --tier-soft:'+tier.soft+'; '+frameStyleVars(curFrame)+'">'+
-      sparkle+
-      rankBadge+
-      ownerTag+
-      newBadge+
-      myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB, entry.charImg)+
-      '<span class="nm">'+esc(entry.nameB||'상대방')+'</span>'+
-      '<span class="sc">궁합 '+entry.score+'점</span>'+
-      '<div class="myroom-score-bar"><div class="myroom-score-fill" style="width:'+pct+'%;"></div></div>'+
-      '<span class="myroom-badge">'+tier.icon+' '+tier.label+'</span>'+
-      chemiBadge+
-      myroomShinsalChipsHtml(entry)+
-    '</div>';
-}
-/* score 기준 상위 3개의 랭크를 ownerId+id 키로 매핑 (표시 순서와 무관하게 항상 궁합점수 기준) */
+     var ownerTag = entry.ownerName ? '<span class="owner-tag">'+esc(entry.ownerName)+'님의 룸</span>' :
+       (entry.fromInviter ? '<span class="owner-tag">나를 초대함</span>' :
+       (entry.isCharacter ? '<span class="owner-tag char-tag">✨ 캐릭터</span>' : ''));
+     var isNew = entry.at && (Date.now()-entry.at < 24*3600*1000);
+     var newBadge = (isNew && !ownerTag) ? '<span class="myroom-new">NEW</span>' : '';
+     var sparkle = (tier.key==='s') ? '<span class="myroom-sparkle">✨</span>' : '';
+     var rankBadge = (rank!=null && rank<=3 && !ownerTag) ? '<span class="myroom-rank">'+RANK_MEDAL[rank-1]+'</span>' :
+       (rank!=null && rank<=3) ? '<span class="myroom-rank" style="top:26px;">'+RANK_MEDAL[rank-1]+'</span>' : '';
+     var chemi = (entry.dayGanWxA && entry.dayGanWxB) ? coupleTodayInfo(entry.dayGanWxA, entry.dayGanWxB) : null;
+     var chemiBadge = chemi ? '<span class="myroom-chemi" style="color:'+chemi.tier.color+';">'+chemi.tier.icon+' 오늘 '+chemi.tier.short+'</span>' : '';
+     var curFrame = getMyRoomFrame(entry.id);
+     var frameAttr = curFrame ? ' data-frame="'+curFrame+'"' : '';
+     var legendCls = (tier.key==='s') ? ' is-legend' : '';
+     var pct = Math.max(4, Math.min(100, entry.score||0));
+     var cardArt = wxCardArtUrl(entry.dayGanWxB);
+     return '<div class="myroom-card'+legendCls+'" tabindex="0" role="button" aria-label="'+esc(entry.nameB||'상대방')+'님과의 궁합 자세히 보기"'+frameAttr+' style="--tier-color:'+tier.color+'; --tier-soft:'+tier.soft+'; background:url(\''+cardArt+'\') center/cover no-repeat, linear-gradient(165deg,var(--surface-2),var(--surface-3)); '+frameStyleVars(curFrame)+'">'+
+         sparkle+
+         rankBadge+
+         ownerTag+
+         newBadge+
+         myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB, entry.charImg)+
+         '<span class="nm">'+esc(entry.nameB||'상대방')+'</span>'+
+         '<span class="sc">궁합 '+entry.score+'점</span>'+
+         '<div class="myroom-score-bar"><div class="myroom-score-fill" style="width:'+pct+'%;"></div></div>'+
+         '<span class="myroom-badge">'+tier.icon+' <b>'+(tier.grade||'')+'</b> · '+tier.label+'</span>'+
+         chemiBadge+
+         myroomShinsalChipsHtml(entry)+
+       '</div>';
+   }
+   기준 상위 3개의 랭크를 ownerId+id 키로 매핑 (표시 순서와 무관하게 항상 궁합점수 기준) */
 function myroomRankMap(list){
   var sorted = list.slice().sort(function(a,b){ return (b.score||0)-(a.score||0); });
   var map = {};
@@ -3205,7 +3217,7 @@ function openMyroomDetail(entry){
   if (!root) return;
   var curFrame = getMyRoomFrame(entry.id);
   var frameAttr = curFrame ? ' data-frame="'+curFrame+'"' : '';
-  var legendCls = (tier.key==='legend') ? ' is-legend' : '';
+  var legendCls = (tier.key==='s') ? ' is-legend' : '';
   var pct = Math.max(4, Math.min(100, entry.score||0));
   root.innerHTML =
     '<div class="sheet-backdrop" id="myroom-detail-backdrop">'+
@@ -3215,12 +3227,12 @@ function openMyroomDetail(entry){
           '<p class="section-title" style="font-size:1rem;">'+esc(entry.nameB||'상대방')+'님과의 궁합</p>'+
           '<button type="button" class="sheet-close" id="myroom-detail-close">✕</button>'+
         '</div>'+
-        '<div class="myroom-card is-preview'+legendCls+'" tabindex="-1"'+frameAttr+' style="--tier-color:'+tier.color+'; --tier-soft:'+tier.soft+'; '+frameStyleVars(curFrame)+'">'+
+        '<div class="myroom-card is-preview'+legendCls+'" tabindex="-1"'+frameAttr+' style="--tier-color:'+tier.color+'; --tier-soft:'+tier.soft+'; background:url(\''+wxCardArtUrl(entry.dayGanWxB)+'\') center/cover no-repeat, linear-gradient(165deg,var(--surface-2),var(--surface-3)); '+frameStyleVars(curFrame)+'">'+
           myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB, entry.charImg)+
           '<span class="nm">'+esc(entry.nameB||'상대방')+'님과의 궁합</span>'+
           '<span class="sc">궁합 '+entry.score+'점</span>'+
           '<div class="myroom-score-bar" style="max-width:160px;"><div class="myroom-score-fill" style="width:'+pct+'%;"></div></div>'+
-          '<span class="myroom-badge" style="position:static;">'+tier.icon+' '+tier.label+'</span>'+
+          '<span class="myroom-badge" style="tier.soft+'; background:url(\''+wxCardArtUrl(entry.dayGanWxB)+'\') center/cover no-repeat, linear-gradientposition:static;">'+tier.icon+' <b>'+(tier.grade||'')+'</b> · '+tier.label+'</span>'+
         '</div>'+
         (chemi ?
           '<div class="detail-block"><p class="ttl">오늘의 케미</p>'+
@@ -3717,39 +3729,32 @@ function renderReportPanels(concept, panels, unlocked){
   }
 }
 
-renderReportPanels = function(concept, panels, unlocked){
-     var list = $('#report-panel-list');
-     if (!list) return;
-     var result = STATE.mySaju;
-     if (!panels.length){
-            list.innerHTML = '<p class="section-desc">아직 준비 중인 이야기예요.</p>';
-            return;
-     }
-     var freeCount = unlocked ? panels.length : Math.min(panels.length, Math.max(1, Math.round(panels.length*0.35)));
-     var showMidTeaser = !unlocked && panels.length > freeCount && freeCount >= 4;
-     var mid = showMidTeaser ? Math.max(1, Math.floor(freeCount/2)) : freeCount;
-     var html = '<div class="report-article">'+
-              panels.slice(0, mid).map(function(p){ return reportSectionHtml(p, result); }).join('')+
-            '</div>';
-     if (showMidTeaser){
-            html += reportMiniTeaserHtml();
-            html += '<div class="report-article">'+
-                       panels.slice(mid, freeCount).map(function(p){ return reportSectionHtml(p, result); }).join('')+
-         '</div>';
-     }
-     if (!unlocked && panels.length > freeCount){
-            html += '<div class="report-article-fade-wrap"><div class="report-article">'+
-                       panels.slice(freeCount).map(function(p){ return reportSectionHtml(p, result); }).join('')+
-                     '</div></div>';
-            html += reviewStripHtml(concept);
-            html += reportLockedCardHtml(concept);
-     }
-     list.innerHTML = html;
-     if (!unlocked && panels.length > freeCount){
-            $('.report-unlock-btn', list).addEventListener('click', function(){
-                     startReportUnlock(concept, panels);
-            });
-   }
+   renderReportPanels = function(concept, panels, unlocked){
+           var list = $('#report-panel-list');
+           if (!list) return;
+           var result = STATE.mySaju;
+           if (!panels.length){
+                          list.innerHTML = '<p class="section-desc">아직 준비 중인 이야기예요.</p>';
+                          return;
+           }
+           var freeCount = unlocked ? panels.length : Math.min(panels.length, Math.max(1, Math.round(panels.length*0.35)));
+           var html = '<div class="report-article">'+
+                            panels.slice(0, freeCount).map(function(p){ return reportSectionHtml(p, result); }).join('')+
+                          '</div>';
+           if (!unlocked && panels.length > freeCount){
+                          html += '<div class="report-article-fade-wrap"><div class="report-article">'+
+                                                    panels.slice(freeCount).map(function(p){ return reportSectionHtml(p, result); }).join('')+
+                                                  '</div></div>';
+                          html += reportMiniTeaserHtml();
+                          html += reviewStripHtml(concept);
+                          html += reportLockedCardHtml(concept);
+           }
+           list.innerHTML = html;
+           if (!unlocked && panels.length > freeCount){
+                          $('.report-unlock-btn', list).addEventListener('click', function(){
+                                                  startReportUnlock(concept, panels);
+                          });
+           }
    };
    /* ---- 리포트 관리자(비밀번호로 보호) — 컨셉/컷 직접 추가·수정·삭제 ---- */
 function openReportAdminList(){
@@ -4087,13 +4092,13 @@ var INVITE_MYROOM_CACHE = null; /* 초대해서 실제 등록한 친구 목록(�
 function renderMyRoomLocal(root){
   if (!STATE.mySaju){
     root.innerHTML =
-      '<p class="eyebrow">마이룸</p>'+
+      '<p class="eyebrow">나의 카드첩</p>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
       '<span>먼저 내 사주를 입력하면, 초대한 친구가 등록했을 때 이곳에 카드가 모여요.</span></div>';
     return;
   }
   if (INVITE_MYROOM_CACHE === null){
-    root.innerHTML = '<p class="eyebrow">마이룸</p><div class="myroom-empty"><span style="font-size:1.8rem;">⏳</span><span>불러오는 중...</span></div>';
+    root.innerHTML = '<p class="eyebrow">나의 카드첩</p><div class="myroom-empty"><span style="font-size:1.8rem;">⏳</span><span>불러오는 중...</span></div>';
     fetchInviteMyRoom();
     return;
   }
@@ -4102,7 +4107,7 @@ function renderMyRoomLocal(root){
   var list = hiddenIds.length ? INVITE_MYROOM_CACHE.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : INVITE_MYROOM_CACHE;
   if (!list.length){
     root.innerHTML =
-      '<div class="myroom-head"><p class="eyebrow">마이룸</p>'+
+      '<div class="myroom-head"><p class="eyebrow">나의 카드첩</p>'+
       '</div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
       '<span>친구를 초대하면 이곳에 카드가 모여요.</span></div>';
@@ -4111,7 +4116,7 @@ function renderMyRoomLocal(root){
   var rankMap = myroomRankMap(list);
   var displayList = myroomSortedForDisplay(list, STATE.myroomSort);
   root.innerHTML =
-    '<div class="myroom-head"><p class="eyebrow">마이룸</p>'+
+    '<div class="myroom-head"><p class="eyebrow">나의 카드첩</p>'+
       '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
     '</div>'+
     '<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
@@ -4175,14 +4180,14 @@ function renderMyRoomCloud(root){
   var docs = MYROOM_CLOUD_DOCS || [];
   if (!docs.length){
     root.innerHTML =
-      '<p class="eyebrow">모두의 마이룸 <span class="chat-ai-badge">LIVE</span></p>'+
+      '<p class="eyebrow">모두의 카드첩 <span class="chat-ai-badge">LIVE</span></p>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
       '<span>궁합을 확인하면 이곳에 모두가 볼 수 있는 카드가 쌓여요. 첫 카드의 주인공이 되어보세요!</span></div>';
     return;
   }
   var rankMap = myroomRankMap(docs);
   root.innerHTML =
-    '<div class="myroom-head"><p class="eyebrow">모두의 마이룸 <span class="chat-ai-badge">LIVE</span></p>'+
+    '<div class="myroom-head"><p class="eyebrow">모두의 카드첩 <span class="chat-ai-badge">LIVE</span></p>'+
       '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+docs.length+'개 모음</span></div>'+
     '</div>'+
     '<div class="myroom-grid" id="myroom-grid-cloud"></div>'+
