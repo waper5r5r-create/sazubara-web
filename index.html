@@ -4255,7 +4255,7 @@ function renderCoupleTodayCard(resA, resB){
   body.innerHTML =
     '<div class="couple-today-head">'+
       '<p class="eyebrow">오늘 우리 둘의 합</p>'+
-      '<span class="couple-today-date">'+(t.gan+t.zhi)+'일 · '+(new Date()).getMonth()+1+'/'+(new Date()).getDate()+'</span>'+
+      '<span class="couple-today-date">'+(t.gan+t.zhi)+'일 · '+((new Date()).getMonth()+1)+'/'+(new Date()).getDate()+'</span>'+
     '</div>'+
     '<div class="couple-today-badge" style="--tier-color:'+info.tier.color+'; --tier-soft:'+info.tier.soft+';">'+
       '<span class="ic">'+info.tier.icon+'</span><span class="lb">'+info.tier.label+'</span>'+
