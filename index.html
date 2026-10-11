@@ -3143,7 +3143,6 @@ function myroomShinsalChipsHtml(entry){
    function myroomCardHtml(entry, rank){
      var tier = myroomTier(entry.score);
      /* fromInviter: 내가 초대받아서 가입했을 때, 나를 초대해준 사람 쪽에서 자동으로 뜨는 카드.
-/* score
      entry.ownerName(공개 갤러리의 "소유자" 표시)과 같은 자리를 쓰지만 의미가 다르므로 겹치지 않게 처리. */
      var ownerTag = entry.ownerName ? '<span class="owner-tag">'+esc(entry.ownerName)+'님의 룸</span>' :
        (entry.fromInviter ? '<span class="owner-tag">나를 초대함</span>' :
@@ -3174,7 +3173,7 @@ function myroomShinsalChipsHtml(entry){
          myroomShinsalChipsHtml(entry)+
        '</div>';
    }
-   기준 상위 3개의 랭크를 ownerId+id 키로 매핑 (표시 순서와 무관하게 항상 궁합점수 기준) */
+/* score 기준 상위 3개의 랭크를 ownerId+id 키로 매핑 (표시 순서와 무관하게 항상 궁합점수 기준) */
 function myroomRankMap(list){
   var sorted = list.slice().sort(function(a,b){ return (b.score||0)-(a.score||0); });
   var map = {};
