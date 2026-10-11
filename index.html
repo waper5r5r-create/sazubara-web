@@ -562,20 +562,13 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .persona-voice .ic{font-size:1rem;}
 .persona-voice .nm{font-size:.76rem; font-weight:700; color:var(--accent);}
 .persona-line{font-size:.85rem; color:var(--fg); font-style:italic; padding:9px 12px; background:var(--surface-3); border-radius:12px; border-left:3px solid var(--accent);}
-/* ---------- 크레딧 ---------- */
-.credit-chip{
-  display:flex; align-items:center; gap:4px; background:var(--accent-soft);
-  border:1px solid var(--accent); border-radius:999px; padding:5px 11px 5px 9px; cursor:pointer;
-  font-size:.78rem; font-weight:700; color:var(--accent); flex:none;
-}
+
 .sound-toggle{
   display:flex; align-items:center; justify-content:center; width:30px; height:30px; flex:none;
   background:var(--surface-2); border:1px solid var(--border-strong); border-radius:50%; cursor:pointer;
   color:var(--fg-muted); font-size:.92rem; line-height:1; padding:0;
 }
 .sound-toggle.is-on{color:var(--accent); border-color:var(--accent);}
-.credit-chip .ic{display:flex; align-items:center;}
-.credit-chip .lbl{font-size:.68rem; font-weight:600; opacity:.85; margin-right:1px;}
 .sheet-backdrop{
   position:fixed; inset:0; background:rgba(10,12,20,.5); z-index:40; display:flex; align-items:flex-end;
   max-width:480px; margin:0 auto;
@@ -759,6 +752,22 @@ button:focus-visible,[role="button"]:focus-visible,.report-card:focus-visible{ou
 .report-price{font-size:.78rem;font-weight:700;color:var(--accent);}
 @media(max-width:374px){.report-card .report-text{padding:12px 10px;}.report-card .nm{font-size:.85rem;}.report-card .tagline{font-size:.72rem;}.report-price{font-size:.74rem;}}
 </style>
+<style>
+/* 달과 별의 브랜드 마크와 통일된 라인 아이콘 */
+.brand-ic{width:32px;height:32px;}.brand-ic::before{display:none;}.brand-mark{gap:9px;}
+.app-header .mark{font-size:1.25rem;background:none;color:#f5dcad;letter-spacing:-.04em;}.app-header .sub{padding-left:41px;font-size:.68rem;}
+.header-icon-btn,.sound-toggle{width:40px;height:40px;display:flex;align-items:center;justify-content:center;padding:9px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--fg-muted);cursor:pointer;}
+.header-icon-btn svg,.sound-toggle svg{display:block;width:22px;height:22px;}.sound-toggle.is-on{color:var(--fg-muted);border-color:var(--border);}
+#sound-toggle-ic{display:flex;}.header-icon-btn:hover,.sound-toggle:hover{color:var(--accent);background:var(--accent-soft);}
+.tab-btn .ico{width:24px;height:24px;}.tab-btn{font-size:.73rem;font-weight:500;}.tab-btn.active{color:#f0cf8d;background:rgba(224,173,85,.075);}.tab-btn.active::before{background:#e0ad55;}
+.menu-backdrop{position:fixed;inset:0;z-index:60;background:rgba(3,7,18,.65);backdrop-filter:blur(4px);display:flex;justify-content:flex-end;}
+.site-menu{width:min(360px,90vw);height:100%;height:100dvh;overflow-y:auto;background:#0f172d;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px));border-left:1px solid rgba(224,173,85,.2);box-shadow:-16px 0 50px rgba(0,0,0,.25);}
+.menu-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;}.menu-top h2{font-size:1.15rem;color:#f5dcad;}
+.menu-profile{display:flex;align-items:center;gap:12px;padding:18px 14px;width:100%;text-align:left;background:linear-gradient(130deg,rgba(224,173,85,.1),rgba(27,39,71,.8));border:1px solid rgba(224,173,85,.2);border-radius:16px;color:var(--fg);cursor:pointer;}
+.menu-profile-mark{width:38px;height:38px;flex:none;}.menu-profile strong,.menu-row strong{display:block;font-size:.9rem;line-height:1.5;}.menu-profile small,.menu-row small{display:block;font-size:.72rem;color:var(--fg-muted);margin-top:5px;line-height:1.65;}
+.menu-nav{margin-top:22px;display:flex;flex-direction:column;}.menu-row{display:flex;align-items:center;gap:14px;width:100%;padding:17px 2px;text-align:left;color:var(--fg);border:0;border-bottom:1px solid var(--border);background:none;cursor:pointer;}.menu-row:hover{color:var(--accent);}.menu-row-icon{width:23px;height:23px;color:#e0ad55;flex:none;}.menu-row-icon svg{width:100%;height:100%;}.menu-chevron{margin-left:auto;font-size:1.5rem;color:var(--fg-faint);}
+.menu-footnote{margin-top:28px;font-size:.71rem;color:var(--fg-faint);line-height:1.8;}#menu-archive{margin-top:24px;display:flex;flex-direction:column;gap:14px;}#menu-archive h3{font-size:.95rem;}
+</style>
 </head>
 <body>
 
@@ -772,7 +781,7 @@ button:focus-visible,[role="button"]:focus-visible,.report-card:focus-visible{ou
     <div class="header-actions">
       <button type="button" class="sound-toggle" id="btn-sound-toggle" title="효과음 켜기/끄기"><span id="sound-toggle-ic">🔔</span></button>
       <button type="button" class="persona-chip" id="btn-open-persona" title="풀이자 선택"><span id="persona-chip-ic">🧙</span></button>
-      <button type="button" class="credit-chip" id="btn-open-credits" title="보유 크레딧"><span class="ic"><svg width="13" height="13" viewBox="0 0 24 24" style="vertical-align:-2px" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 9L12 3l7 6-7 12-7-12z"/><path d="M5 9h14M9 9l3 12 3-12M8.3 9L12 3M15.7 9L12 3"/></svg></span><span class="lbl">크레딧</span><span id="credit-chip-num">0</span></button>
+      <button type="button" class="header-icon-btn" id="btn-open-menu" aria-label="전체 메뉴 열기" aria-controls="site-menu-root" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
     </div>
   </header>
 
@@ -872,7 +881,7 @@ button:focus-visible,[role="button"]:focus-visible,.report-card:focus-visible{ou
   </nav>
 
   <div id="persona-sheet-root"></div>
-  <div id="credit-sheet-root"></div>
+  <div id="site-menu-root"></div>
   <div id="brief-sheet-root"></div>
   <div id="myroom-sheet-root"></div>
   <div id="report-sheet-root"></div>
@@ -1968,7 +1977,7 @@ function maybeAwardShareBonus(){
 }
 function doShare(){
   var url = shareUrl();
-  var text = (STATE.mySaju&&STATE.mySaju.name? STATE.mySaju.name+'님이 ':'')+'사주바라에서 사주풀이·오늘의 운세·궁합을 확인해보세요! 링크로 들어오면 무료 크레딧을 드려요 ✨';
+  var text = (STATE.mySaju&&STATE.mySaju.name? STATE.mySaju.name+'님이 ':'')+'사주바라에서 사주풀이·오늘의 운세·궁합을 확인해보세요! 생년월일을 입력하고 서로의 궁합도 확인해보세요 ✨';
   kakaoShare(text, url).then(maybeAwardShareBonus).catch(function(){
   if (navigator.share){
     navigator.share({ title:'사주바라', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
@@ -2005,7 +2014,7 @@ function doShare(){
         });
    }
 
-/* ---- 크레딧 시트(모달) ---- */
+
 
 /* ============================================================
    standalone 웹 배포 전용 — 서버(Supabase) 연동
@@ -2209,10 +2218,10 @@ function personaIconSvg(bg, inner){
       '<circle cx="32" cy="32" r="32" fill="'+bg+'"/>'+inner+'</svg>';
 }
 /* 태극의 유동적인 소용돌이 곡선 + 꼬리 끝의 별 — 동양 철학의 흐름과 점성술의 반짝임을 함께 담은 브랜드 마크 */
-var BRAND_MARK_SVG = personaIconSvg('#f3ece0',
-  '<path d="M38 10c-12.2 0-20.5 9.3-20.5 20.5S25.8 51 38 51c-5.3 0-9.6-4.6-9.6-10.3S32.7 30.4 38 30.4s9.6-4.6 9.6-10.3S43.3 10 38 10z" fill="#9c6b1f"/>'+
-  '<path d="M46 42.5l1.3 4.4 4.2 1.3-4.2 1.3-1.3 4.4-1.3-4.4-4.2-1.3 4.2-1.3z" fill="#9c6b1f"/>'
-);
+var BRAND_MARK_SVG = '<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+  '<rect x="1" y="1" width="38" height="38" rx="12" fill="#141d36" stroke="#e0ad55" stroke-opacity=".5"/>'+
+  '<path d="M23 8a12 12 0 1 0 9 20A13 13 0 0 1 23 8Z" fill="#e0ad55"/>'+
+  '<path d="m29 9 1.1 3.9L34 14l-3.9 1.1L29 19l-1.1-3.9L24 14l3.9-1.1L29 9Z" fill="#f8e2b3"/></svg>';
 /* 리빌 오버레이 전용 — 계속 회전하는 로딩 마크라 방사 대칭인 반짝임 모양을 그대로 유지 */
 var REVEAL_SPARK_SVG = personaIconSvg('#f3ece0',
   '<path d="M32 12c1.6 11 3.4 16.6 14 18-10.6 1.4-12.4 7-14 18-1.6-11-3.4-16.6-14-18 10.6-1.4 12.4-7 14-18z" fill="#9c6b1f"/>'
@@ -2504,7 +2513,6 @@ function renderWorryContent(my, cat, body){
 /* ============================================================
    탭 2: 오늘의 운세
    ============================================================ */
-var TODAY_PERIOD_COST = { week:3, month:5, year:8 };
 var TODAY_PERIOD_LABEL = { day:'오늘', week:'이번 주', month:'이번 달', year:'올해' };
 
 function renderTodayView(){
@@ -5033,6 +5041,56 @@ function initCapabilities(){
   }).catch(function(){});
 }
 
+var MENU_ICONS = {
+  saju:TAB_ICON_SAJU, today:TAB_ICON_TODAY, compat:TAB_ICON_COMPAT, reports:TAB_ICON_REPORTS,
+  archive:'<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h16v12H4V8Zm-1-4h18v4H3V4Zm7 8h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+var menuPreviousOverflow = '';
+function closeSiteMenu(){
+  if (!$('#site-menu-root').firstChild) return;
+  $('#site-menu-root').innerHTML='';
+  document.body.style.overflow=menuPreviousOverflow;
+  $('#btn-open-menu').setAttribute('aria-expanded','false');
+  document.removeEventListener('keydown', siteMenuKeydown);
+  $('#btn-open-menu').focus();
+}
+function siteMenuKeydown(e){
+  if(e.key==='Escape'){e.preventDefault();closeSiteMenu();return;}
+  if(e.key!=='Tab')return;
+  var buttons=$all('button:not([disabled])', $('#site-menu-root'));
+  if(!buttons.length)return;
+  var first=buttons[0],last=buttons[buttons.length-1];
+  if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();}
+}
+function openSiteMenu(){
+  var root=$('#site-menu-root');
+  if(root.firstChild)return;
+  menuPreviousOverflow=document.body.style.overflow;
+  document.body.style.overflow='hidden';
+  $('#btn-open-menu').setAttribute('aria-expanded','true');
+  var rows=[['archive','열어본 이야기','구매한 리포트 다시 보기'],['saju','사주풀이','타고난 성향과 나의 강점'],['today','오늘의 운세','오늘부터 올해까지의 흐름'],['compat','궁합보기','두 사람의 기운과 관계'],['reports','이야기','그림으로 펼쳐보는 나의 사주']];
+  root.innerHTML='<div class="menu-backdrop" id="menu-backdrop"><aside class="site-menu" role="dialog" aria-modal="true" aria-labelledby="menu-title">'+
+    '<div class="menu-top"><h2 id="menu-title">사주바라</h2><button type="button" class="header-icon-btn" id="menu-close" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button></div>'+
+    '<button type="button" class="menu-profile" data-menu-tab="saju"><span class="menu-profile-mark">'+BRAND_MARK_SVG+'</span><span><strong>'+(STATE.mySaju ? esc(STATE.mySaju.name||'나')+'의 사주' : '나의 사주를 시작해보세요')+'</strong><small>'+(STATE.mySaju ? '이 브라우저에 사주 정보가 저장되어 있어요' : '생년월일로 나만의 이야기를 확인하세요')+'</small></span></button>'+
+    '<div class="menu-nav">'+rows.map(function(row){return '<button type="button" class="menu-row" data-menu-tab="'+row[0]+'"><span class="menu-row-icon">'+MENU_ICONS[row[0]]+'</span><span><strong>'+row[1]+'</strong><small>'+row[2]+'</small></span><span class="menu-chevron" aria-hidden="true">›</span></button>';}).join('')+'</div>'+
+    '<div id="menu-archive" hidden></div><p class="menu-footnote">나의 사주와 열어본 이야기는 현재 브라우저 기준으로 표시됩니다.</p></aside></div>';
+  $('#menu-close').addEventListener('click',closeSiteMenu);
+  $('#menu-backdrop').addEventListener('click',function(e){if(e.target.id==='menu-backdrop')closeSiteMenu();});
+  $all('[data-menu-tab]',root).forEach(function(btn){btn.addEventListener('click',function(){var tab=btn.dataset.menuTab;if(tab==='archive'){renderMenuArchive();return;}closeSiteMenu();switchTab(tab);window.scrollTo({top:0,behavior:'instant'});});});
+  document.addEventListener('keydown',siteMenuKeydown);
+  $('#menu-close').focus();
+}
+function renderMenuArchive(){
+  var target=$('#menu-archive');target.hidden=false;
+  target.innerHTML='<h3>나의 이야기 보관함</h3><p class="section-desc">불러오는 중...</p>';
+  Promise.all([pullReportUnlocks(),loadReportList()]).then(function(values){
+    if(!target.isConnected)return;
+    var list=values[1].filter(function(c){return isUnlocked(reportUnlockKey(c));});
+    target.innerHTML='<h3>나의 이야기 보관함</h3>'+(list.length ? '<div class="report-grid">'+list.map(reportCardHtml).join('')+'</div>' : '<p class="section-desc">아직 열어본 이야기가 없어요. 이야기 탭에서 첫 컷을 둘러보세요.</p>');
+    if(list.length)$all('.report-card',target).forEach(function(el){el.addEventListener('click',function(){var c=list.filter(function(x){return String(x.id)===el.dataset.reportId;})[0];closeSiteMenu();if(c)openReportViewer(c);});});
+  }).catch(function(){if(target.isConnected)target.innerHTML='<p class="section-desc">보관함을 불러오지 못했어요. 잠시 후 다시 눌러주세요.</p>';});
+}
 function init(){
   var wantsReportAdmin = isReportAdminHash();
   if (wantsReportAdmin){
@@ -5045,6 +5103,7 @@ function init(){
   if (ti2) ti2.innerHTML = TAB_ICON_TODAY;
   if (ti3) ti3.innerHTML = TAB_ICON_COMPAT;
   if (ti4) ti4.innerHTML = TAB_ICON_REPORTS;
+  $('#btn-open-menu').addEventListener('click',openSiteMenu);
   var invited = initDevice();
   handleTossPaymentCallback();
   pullPaidUnlocks();
@@ -5055,7 +5114,9 @@ function init(){
     function render(){
       var on = isSoundOn();
       btn.classList.toggle('is-on', on);
-      ic.textContent = on ? '🔔' : '🔕';
+      ic.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>'+(on ? '<path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' : '<path d="m16 9 5 6m0-6-5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>')+'</svg>';
+      btn.setAttribute('aria-label', on ? '효과음 끄기' : '효과음 켜기');
+      btn.setAttribute('aria-pressed', String(on));
     }
     render();
     btn.addEventListener('click', function(){
@@ -5099,7 +5160,7 @@ function init(){
     btn.addEventListener('click', function(){ switchTab(btn.dataset.tab); });
   });
 
-  if (invited) showToast('친구 초대로 시작하셨네요! 사주를 등록하면 서로의 카드첩에 카드가 생겨요 🎁');
+  if (invited) showToast('친구 초대로 시작하셨네요! 사주를 등록하면 서로의 카드첩에 카드가 생겨요.');
 
   initCapabilities().then(function(){
     subscribeMyRoomCloud();
