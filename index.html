@@ -4950,7 +4950,7 @@ function init(){
   handleTossPaymentCallback();
   pullPaidUnlocks();
   pullReportUnlocks();
-  $('#btn-open-invite').addEventListener('click', openInviteSheet);
+  var btnOpenInvite = $('#btn-open-invite'); if (btnOpenInvite) btnOpenInvite.addEventListener('click', openInviteSheet);
   (function(){
     var btn = $('#btn-sound-toggle'), ic = $('#sound-toggle-ic');
     function render(){
