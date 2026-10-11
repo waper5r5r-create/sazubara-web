@@ -37,32 +37,6 @@ async function ensureDevice(deviceId) {
   });
 }
 
-// 크레딧 장부에 한 줄 기록. orderId가 있으면 DB의 unique 제약으로 같은 주문번호가 중복 적립되지 않는다(멱등 처리).
-// 이미 같은 orderId가 있으면 409가 오는데, 이것도 "정상"(이미 지급됨)으로 처리한다.
-async function insertLedger({ deviceId, amount, reason, orderId }) {
-  const res = await sbFetch('/credit_ledger', {
-    method: 'POST',
-    headers: { Prefer: 'return=representation' },
-    body: JSON.stringify({
-      device_id: deviceId,
-      amount: amount,
-      reason: reason,
-      order_id: orderId || null
-    })
-  });
-  if (res.status === 409) {
-    return { ok: true, duplicate: true };
-  }
-  if (!res.ok) {
-    const text = await res.text().catch(function () {
-      return '';
-    });
-    throw new Error('LEDGER_INSERT_FAILED: ' + res.status + ' ' + text);
-  }
-  const rows = await res.json();
-  return { ok: true, duplicate: false, row: rows[0] };
-}
-
 // Supabase Storage에 이미지(Buffer)를 업로드하고 공개 URL을 돌려준다 (서비스 롤 키로 — 버킷 RLS 우회).
 // x-upsert:true라서 같은 path로 다시 올리면 덮어쓴다(이미지 교체 시 재사용).
 async function uploadStorageImage(bucket, path, buffer, mime) {
@@ -123,7 +97,6 @@ async function readJsonBody(req) {
 module.exports = {
   sbFetch,
   ensureDevice,
-  insertLedger,
   getQuery,
   readJsonBody,
   uploadStorageImage,
