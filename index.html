@@ -5135,32 +5135,40 @@ function doShareReport(concept, panels, result){
     }, 'image/png', 0.95);
   }).catch(function(){ fallbackTextShare(text, url, '사주바라 이야기'); });
 }
-/* 기본(=클로드 아티팩트 버전 포함 공용) 공유 방식: Web Share API로 이미지 파일을 바로 공유 시도,
-   안 되면 다운로드. 독립 배포본(build_standalone.py)에서는 이 함수를 감싸서, 카카오톡으로
-   누르면 바로 사주바라로 랜딩되는 "초대 메시지" 형태(이미지가 들어간 카카오 피드 카드)를
-   먼저 시도하고, 그게 실패할 때만 아래 로직으로 떨어지도록 패치한다. */
-function shareImageBlob(canvas, blob, text, url, filename, kakaoTitle, buttonTitle){
-  var fallbackFn = function(){
-  if (isKakaoInApp()){
-    downloadCanvasImage(canvas, filename);
-    maybeAwardShareBonus();
-    return;
-  }
-  var file;
-  try { file = new File([blob], filename, {type:'image/png'}); } catch(e){ file = null; }
-  if (file && navigator.canShare && navigator.canShare({files:[file]})){
-    navigator.share({ files:[file], title:kakaoTitle, text:text }).then(maybeAwardShareBonus).catch(function(err){
-      if (err && err.name==='AbortError') return;
-      downloadCanvasImage(canvas, filename);
-      maybeAwardShareBonus();
-    });
-  } else {
-    downloadCanvasImage(canvas, filename);
-    maybeAwardShareBonus();
-  }
-  };
-  kakaoShareImage(kakaoTitle, text, blob, url, buttonTitle).then(maybeAwardShareBonus).catch(fallbackFn);
-}
+/* 공유 카드(canvas) 공유 — 우선순위:
+   1) kakaoShareImage: 카드 이미지를 카카오에 업로드해서 그 이미지가 꽂힌 피드 카드로 공유.
+         가장 예쁘지만 Kakao.Share.uploadImage 한 단계가 더 있어서 간혹 실패한다.
+            2) kakaoShare(plain): 업로드 없이 고정 브랜드 이미지로 카카오 피드 카드를 보낸다 — 초대
+                  공유(doShare)에서 이미 안정적으로 동작 확인된 경로라, "카카오로 직접 공유"를 보장하는
+                        진짜 핵심 폴백이다. 카카오톡 인앱 브라우저 안에서도 이 경로(SDK의 sendDefault)는 문제
+                              없이 동작하므로 isKakaoInApp() 여부와 무관하게 먼저 시도한다.
+                                 3) navigator.share(files): OS 공유시트를 띄워 그 안에서 카카오톡을 직접 고르게 한다. 다만
+                                       카카오톡 인앱 브라우저는 canShare({files})가 true를 반환해도 실제로는 파일을 못 넘기는
+                                             경우가 흔해서(파일 공유가 깨지고 텍스트/링크 공유처럼 뜸), 거기서는 이 단계를 건너뛴다.
+                                                4) downloadCanvasImage: 위 세 가지가 전부 실패했을 때만 쓰는 최후의 수단(이미지 저장). */
+   function shareImageBlob(canvas, blob, text, url, filename, kakaoTitle, buttonTitle){
+        var downloadFallback = function(){
+               downloadCanvasImage(canvas, filename, '카드 이미지가 저장됐어요! 카카오톡 채팅방에 직접 올려보세요 💕');
+               maybeAwardShareBonus();
+        };
+        var fileShareFallback = function(){
+               if (isKakaoInApp()){ downloadFallback(); return; }
+       var file;
+       try { file = new File([blob], filename, {type:'image/png'}); } catch(e){ file = null; }
+       if (file && navigator.canShare && navigator.canShare({files:[file]})){
+         navigator.share({ files:[file], title:kakaoTitle, text:text }).then(maybeAwardShareBonus).catch(function(err){
+           if (err && err.name==='AbortError') return;
+           downloadFallback();
+         });
+       } else {
+         downloadFallback();
+       }
+     };
+     var kakaoPlainFallback = function(){
+       kakaoShare(text, url, buttonTitle).then(maybeAwardShareBonus).catch(fileShareFallback);
+     };
+     kakaoShareImage(kakaoTitle, text, blob, url, buttonTitle).then(maybeAwardShareBonus).catch(kakaoPlainFallback);
+   }
 
 /* ---- 마이룸: 내가 확인한 궁합 상대 로컬 저장(추후 마이룸 화면에서 사용) ---- */
 var MYROOM_KEY = 'mysaju_myroom_v1';
