@@ -621,41 +621,8 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
   background:var(--fg); color:var(--bg); padding:10px 18px; border-radius:999px; font-size:.82rem; font-weight:600;
   z-index:60; box-shadow:0 8px 20px rgba(0,0,0,.25); max-width:88%; text-align:center;
 }
-/* ---------- 오늘의 운세 챗봇 ---------- */
-.chat-fab{
-  display:flex; align-items:center; gap:7px; justify-content:center; width:100%; padding:12px;
-  border-radius:14px; border:1px dashed var(--border-strong); background:var(--surface-2);
-  color:var(--accent); font-weight:700; font-size:.88rem; cursor:pointer;
-}
-/* 채팅 시트: 헤더·빠른질문·입력창은 항상 고정하고, 대화 로그만 그 안에서 스크롤되게 함 —
-   그냥 .sheet(전체가 스크롤되는 범용 레이아웃)를 쓰면 대화가 길어질수록 입력창이 화면 밖으로
-   밀려나는 문제가 있어서 이 화면만 따로 고정 레이아웃을 쓴다. */
-.sheet.chat-sheet{ height:86vh; overflow:hidden; }
-.chat-head-id{display:flex; align-items:center; gap:8px; min-width:0;}
-.chat-head-av{width:30px; height:30px; border-radius:50%; overflow:hidden; flex:none; display:flex; background:var(--surface-2);}
-.chat-head-av svg, .chat-head-av img{width:100%; height:100%; display:block; object-fit:cover;}
-.chat-log{display:flex; flex-direction:column; gap:10px; flex:1; min-height:0; overflow-y:auto; padding:2px;}
-.chat-msg{display:block; max-width:84%; font-size:.86rem; line-height:1.5; padding:9px 13px; border-radius:14px; min-width:0; overflow-wrap:anywhere; word-break:break-word; white-space:pre-line;}
-.chat-msg.bot{align-self:flex-start; background:var(--surface-2); color:var(--fg); border-bottom-left-radius:4px;}
-.chat-msg.user{align-self:flex-end; background:var(--accent); color:var(--accent-ink); border-bottom-right-radius:4px;}
-.chat-msg.pending{color:var(--fg-muted); font-style:italic;}
-.chat-dots{display:inline-block; margin-left:2px; animation:chatblink 1.1s infinite;}
-@keyframes chatblink{0%,100%{opacity:.3;}50%{opacity:1;}}
+/* 공용 배지 스타일 (예: 모두의 마이룸 LIVE 배지) */
 .chat-ai-badge{font-size:.62rem; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:2px 7px; vertical-align:2px; letter-spacing:.02em;}
-.chat-input-row{display:flex; gap:8px; align-items:center; flex:none;}
-.chat-input-row input{
-  flex:1; min-width:0; border:1px solid var(--border-strong); border-radius:999px; background:var(--surface-2);
-  color:var(--fg); padding:11px 16px; font-size:.88rem; font-family:var(--font-body);
-}
-.chat-input-row button{
-  flex:none; width:42px; height:42px; border-radius:50%; border:none; background:var(--accent);
-  color:var(--accent-ink); font-size:1rem; cursor:pointer;
-}
-.chat-quick-row{display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; flex:none;}
-.chat-quick-row button{
-  flex:none; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--fg);
-  border-radius:999px; padding:7px 13px; font-size:.78rem; cursor:pointer; white-space:nowrap;
-}
 /* ---------- 잠금 콘텐츠 / 기간 탭 ---------- */
 .locked-card{
   display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; padding:26px 16px;
@@ -832,7 +799,6 @@ img{max-width:100%;}
 
   <div id="persona-sheet-root"></div>
   <div id="credit-sheet-root"></div>
-  <div id="chat-sheet-root"></div>
   <div id="brief-sheet-root"></div>
   <div id="myroom-sheet-root"></div>
   <div id="report-sheet-root"></div>
@@ -2679,11 +2645,9 @@ function renderTodayView(){
       '<button type="button" data-val="month">이번 달</button>'+
       '<button type="button" data-val="year">올해</button>'+
     '</div>'+
-    '<div id="today-period-body"></div>'+
-    '<button type="button" class="chat-fab" id="btn-open-chat">💬 '+esc(currentPersona().name)+'에게 물어보기</button>';
+    '<div id="today-period-body"></div>';
   wireSeg($('#today-period-seg'), function(val){ renderTodayPeriod(val); });
   renderTodayPeriod('day');
-  $('#btn-open-chat').addEventListener('click', openChatSheet);
   $('#today-period-body').addEventListener('click', function(e){
     var el = e.target.closest('[data-relkey]');
     if (el) openPeriodBrief(el.dataset.relkey, el.dataset.label, el.dataset.zhi, el.dataset.sskey);
@@ -2732,210 +2696,7 @@ function renderTimeBlockContent(my, body){
     )+
     '<p class="disclaimer">일간과 오늘 일진의 관계를 세 시간대로 나누어 본 참고용 콘텐츠입니다.</p>';
 }
-
-/* ---- 오늘의 운세 챗봇 (Claude 실시간 AI 연동, 실패/미동의 시 키워드 기반으로 자동 대체) ---- */
-var CHAT_LOG = [];
-var CHAT_QUICK = ['오늘 운세','재물운','연애운','건강운','이번 주는 어때?'];
-var CHAT_BUSY = false;
-var CHAT_AI_DISABLED = false; /* not_granted 등으로 한번 거절되면 이 화면 동안은 키워드 모드로 고정 */
-function chatGreeting(){
-  return '안녕 🌙 재물운·연애운·건강운이나 "이번 주 어때?" 같은 질문을 편하게 물어봐.';
-}
-function openChatSheet(){
-  if (!STATE.mySaju){ showToast('먼저 사주풀이 탭에서 내 사주를 등록해주세요.'); switchTab('saju'); return; }
-  if (!CHAT_LOG.length) CHAT_LOG.push({ role:'bot', text:chatGreeting() });
-  renderChatSheet();
-}
-function closeChatSheet(){ $('#chat-sheet-root').innerHTML = ''; }
-/* 챗봇 답변(특히 AI 응답)에 섞여나올 수 있는 마크다운 표기를 일반 텍스트로 정리.
-   채팅 말풍선은 마크다운 렌더러가 아니라서, 별표/해시/대시 기호가 그대로 노출되면 "텍스트가 깨진" 것처럼 보인다. */
-function stripMd(s){
-  return String(s==null?'':s)
-    .replace(/\r\n/g,'\n')
-    .replace(/^#{1,6}\s+/gm,'')          /* # 헤딩 기호 */
-    .replace(/\*\*(.+?)\*\*/g,'$1')      /* **굵게** */
-    .replace(/__(.+?)__/g,'$1')          /* __굵게__ */
-    .replace(/(?<!\*)\*(?!\*)([^*\n]+)\*(?!\*)/g,'$1') /* *기울임* */
-    .replace(/`([^`]+)`/g,'$1')          /* `코드` */
-    .replace(/^\s*[-*+]\s+/gm,'· ')      /* - 목록 → · 목록 */
-    .replace(/^\s*\d+\.\s+/gm,'')        /* 1. 번호 목록 */
-    .replace(/\n{3,}/g,'\n\n')           /* 과도한 빈 줄 정리 */
-    .trim();
-}
-function chatMsgHtml(m){
-  var cls = 'chat-msg '+m.role+(m.pending?' pending':'');
-  var text = m.role==='bot' && !m.pending ? stripMd(m.text) : m.text;
-  return '<div class="'+cls+'">'+esc(text)+(m.pending?'<span class="chat-dots">·&nbsp;·&nbsp;·</span>':'')+'</div>';
-}
-function renderChatSheet(){
-  var root = $('#chat-sheet-root');
-  var p = currentPersona();
-  root.innerHTML =
-    '<div class="sheet-backdrop" id="chat-backdrop">'+
-      '<div class="sheet chat-sheet" onclick="event.stopPropagation()">'+
-        '<div class="sheet-handle"></div>'+
-        '<div class="sheet-head">'+
-          '<div class="chat-head-id">'+
-            '<span class="chat-head-av">'+personaAvatarHtml(p.id)+'</span>'+
-            '<p class="section-title" style="font-size:1rem; margin:0;">'+esc(p.name)+
-              (SAMPLE_NS && !CHAT_AI_DISABLED ? ' <span class="chat-ai-badge">AI</span>' : '')+
-            '</p>'+
-          '</div>'+
-          '<button type="button" class="sheet-close" id="chat-close">✕</button>'+
-        '</div>'+
-        '<div class="chat-log" id="chat-log">'+CHAT_LOG.map(chatMsgHtml).join('')+'</div>'+
-        '<div class="chat-quick-row">'+CHAT_QUICK.map(function(q){ return '<button type="button" data-q="'+esc(q)+'">'+esc(q)+'</button>'; }).join('')+'</div>'+
-        '<form class="chat-input-row" id="chat-form">'+
-          '<input type="text" id="chat-input" placeholder="무엇이 궁금하세요?" autocomplete="off" maxlength="200" '+(CHAT_BUSY?'disabled':'')+'>'+
-          '<button type="submit" '+(CHAT_BUSY?'disabled':'')+'>↑</button>'+
-        '</form>'+
-      '</div>'+
-    '</div>';
-  $('#chat-backdrop').addEventListener('click', closeChatSheet);
-  $('#chat-close').addEventListener('click', closeChatSheet);
-  $all('.chat-quick-row button', root).forEach(function(b){
-    b.addEventListener('click', function(){ if (!CHAT_BUSY) sendChatMessage(b.dataset.q); });
-  });
-  $('#chat-form').addEventListener('submit', function(e){
-    e.preventDefault();
-    if (CHAT_BUSY) return;
-    var input = $('#chat-input');
-    var text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-    sendChatMessage(text);
-  });
-  var logEl = $('#chat-log');
-  if (logEl) logEl.scrollTop = logEl.scrollHeight;
-}
-function sendChatMessage(text){
-  CHAT_LOG.push({ role:'user', text:text });
-  CHAT_BUSY = true;
-  CHAT_LOG.push({ role:'bot', text:'생각 중이에요', pending:true });
-  renderChatSheet();
-  chatGetReply(text).then(function(replyText){
-    CHAT_LOG.pop(); /* pending 말풍선 제거 */
-    CHAT_LOG.push({ role:'bot', text:replyText });
-    CHAT_BUSY = false;
-    renderChatSheet();
-  });
-}
-/* AI(sample) 사용 가능하면 실제 Claude에게 질문하고, 불가/실패/거절 시 기존 키워드 매칭으로 자동 대체 */
-function chatGetReply(text){
-  if (!SAMPLE_NS || CHAT_AI_DISABLED){
-    return new Promise(function(resolve){ setTimeout(function(){ resolve(chatBotReply(text)); }, 300); });
-  }
-  var p = currentPersona();
-  var ctx = chatContextSummary();
-  var sys = '너는 한국 사주(명리학) 운세 앱 "사주바라"의 풀이자 캐릭터 "'+p.name+'"야. '+p.tagline+'. '+
-    '아래 사용자의 사주/오늘운세 요약 정보를 참고해서, 사용자의 질문에 '+p.name+'의 말투로 3~5문장 정도로 답해줘. '+
-    '과도하게 길게 쓰지 말고, 사주·운세 용어는 쉬운 말로 풀어서 설명해. 의학적·법적 조언처럼 들릴 수 있는 확정적 단언은 피하고, '+
-    '참고용 콘텐츠라는 점을 말투에 자연스럽게 녹여줘(명시적 disclaimer 문장은 넣지 마).\n\n[사용자 사주 요약]\n'+ctx+'\n\n[사용자 질문]\n'+text;
-  return sample(sys, { modelTier:'quick', cache:false }).then(function(res){
-    return res.text;
-  }).catch(function(err){
-    if (err && (err.code==='not_granted' || err.code==='sampling_disabled' || err.code==='not_declared' || err.code==='capability_disabled' || err.code==='capability_removed')){
-      CHAT_AI_DISABLED = true;
-    }
-    /* rate_limited, upstream_error 등 그 외 실패도 이번 답변만 키워드 모드로 대체 */
-    return chatBotReply(text);
-  });
-}
-function chatContextSummary(){
-  var my = STATE.mySaju;
-  if (!my) return '(사주 정보 없음)';
-  var today = todayGanZhi();
-  var ssKey = dailyShishenKey(my.day.gan, my.dayGanWx, today.gan, today.wxGan);
-  var ft = FORTUNE_TEXT[ssKey];
-  var wk = dominantRelKey(weeklyFortuneData(my));
-  return '이름: '+(my.name||'익명')+' / 일간 오행: '+my.dayGanWx+' / 신강신약: '+(my.strength||'-')+
-    ' / 오늘 총운 요약: '+ft.label+' / 이번주 전반 분위기: '+PERIOD_TEXT[wk.key].week;
-}
-function pickRand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-/* 여러 후보 문구 중 비어있지 않은 것만 걸러 랜덤으로 하나 고른다 — 같은 질문을 반복해도 매번 다른 조합이 나오게 함 */
-function pickVariant(cands){
-  var ok = cands.filter(function(s){ return s && String(s).trim(); });
-  return ok.length ? pickRand(ok) : '';
-}
-function currentTimeOfDay(){
-  var h = new Date().getHours();
-  if (h < 11) return 'morning';
-  if (h < 18) return 'afternoon';
-  return 'evening';
-}
-var CHAT_OPENERS = ['음, 한번 볼게.','그 부분이 궁금하구나.','좋아, 바로 짚어줄게.','', '', ''];
-var CHAT_CLOSERS = ['', '', '', '더 궁금한 거 있으면 또 물어봐.', '오늘 하루 참고만 가볍게 해줘.'];
-var CHAT_FALLBACKS_SUFFIX = [
-  '조금 더 구체적으로 "재물운", "연애운", "건강운", "직장운", "인간관계", "이번 주는 어때?" 처럼 물어봐 주면 더 자세히 답해줄게.',
-  '"재물운"이나 "연애운"처럼 궁금한 영역을 콕 집어 물어보면 더 깊이 있게 풀어줄 수 있어.',
-  '어느 쪽이 궁금한지 알려주면 좋겠어 — 재물·연애·건강·직장·인간관계 중에 골라서 물어봐도 좋아.'
-];
-var CHAT_SMALLTALK = {
-  greet: { pat:/^(안녕|하이|헬로|hi|hello|뭐해|뭐 해)[\s!?.]*$/i, replies:[
-    '안녕! 오늘 하루 궁금한 거 있으면 편하게 물어봐.',
-    '왔구나. 오늘 운세 궁금해서 온 거지? 뭐부터 볼까.',
-    '어서 와. 재물운·연애운·건강운 중에 뭐가 제일 궁금해?'
-  ]},
-  who: { pat:/(너\s*누구|넌\s*누구|정체|뭐\s*하는\s*애)/, replies:[
-    '나는 네 사주를 바탕으로 오늘의 흐름을 읽어주는 풀이자야. 궁금한 영역 있으면 물어봐.',
-    '오늘의 운세를 속삭여주는 역할이야. 재물·연애·건강·직장·인간관계, 뭐든 좋아.'
-  ]},
-  thanks: { pat:/(고마워|감사|땡큐|thx|thanks)/i, replies:[
-    '도움이 됐다니 다행이야. 또 궁금한 거 생기면 언제든 와.',
-    '별말씀을, 오늘 하루도 잘 풀리길 바라.'
-  ]},
-  compliment: { pat:/(용해|신기|똑똑|대단)/, replies:[
-    '하하, 과찬이야. 더 알고 싶은 거 있으면 편하게 물어봐.'
-  ]}
-};
-function chatBotReply(text){
-  var my = STATE.mySaju;
-  var today = todayGanZhi();
-  var relKey = dailyFortuneRelation(my.dayGanWx, today.wxGan);
-  var ft = FORTUNE_TEXT[dailyShishenKey(my.day.gan, my.dayGanWx, today.gan, today.wxGan)];
-  var tb = TIME_BLOCK_TEXT[relKey];
-  var tip = WUXING_WORRY_TIP[my.dayGanWx] || {};
-  var tod = currentTimeOfDay();
-
-  for (var k in CHAT_SMALLTALK){
-    if (CHAT_SMALLTALK[k].pat.test(text)) return pickRand(CHAT_SMALLTALK[k].replies);
-  }
-
-  var opener = pickRand(CHAT_OPENERS);
-  var closer = pickRand(CHAT_CLOSERS);
-  function wrap(label, body){
-    return (opener? opener+' ' : '')+label+' '+body+(closer? '\n\n'+closer : '');
-  }
-  /* 채팅 말풍선은 순수 텍스트(esc 처리)로 렌더되므로 SVG 아이콘 마크업이 아니라
-     짧은 한글 라벨을 붙인다 — ICO_* 상수를 그대로 넣으면 이스케이프된 SVG 코드가
-     그대로 글자로 보이는 버그가 생긴다. */
-
-  if (/재물|돈|투자|지출/.test(text)) return wrap('[재물운]', pickVariant([ft.money, tip['재물'], tb && tb[tod]]));
-  if (/연애|애정|사랑|썸|이성/.test(text)) return wrap('[애정운]', pickVariant([ft.love, tip['연애']]));
-  if (/건강|몸|컨디션|피곤/.test(text)) return wrap('[건강운]', pickVariant([ft.health, tip['건강']]));
-  if (/직장|일|업무|커리어/.test(text)) return wrap('[직장운]', pickVariant([tip['직장'], ft.total, tb && tb[tod]]));
-  if (/인간관계|친구|사람/.test(text)) return wrap('[관계운]', pickVariant([tip['인간관계'], ft.total]));
-  if (/공부|학업|시험|자격증/.test(text)) return wrap('[공부운]', pickVariant([tip['직장'], ft.total]));
-  if (/여행|이동|이사/.test(text)) return wrap('[이동운]', pickVariant([ft.total, tb && tb[tod]]));
-  if (/아침/.test(text) && tb) return wrap('[아침]', tb.morning);
-  if (/오후/.test(text) && tb) return wrap('[오후]', tb.afternoon);
-  if (/저녁|밤/.test(text) && tb) return wrap('[저녁]', tb.evening);
-  if (/이번\s*주|주간|weekly/i.test(text)){
-    var wk = dominantRelKey(weeklyFortuneData(my));
-    return wrap('[이번 주]', PERIOD_TEXT[wk.key].week);
-  }
-  if (/이번\s*달|월간|monthly/i.test(text)){
-    var mo = dominantRelKey(monthlyFortuneData(my));
-    return wrap('[이번 달]', PERIOD_TEXT[mo.key].month);
-  }
-  if (/올해|연간|yearly/i.test(text)){
-    var yr = dominantRelKey(yearlyFortuneData(my));
-    return wrap('[올해]', PERIOD_TEXT[yr.key].year);
-  }
-  if (/오늘|지금|today/i.test(text)) return wrap('[오늘]', pickVariant([ft.total, tb && tb[tod]]));
-  return wrap('[오늘]', ft.total)+'\n\n'+pickRand(CHAT_FALLBACKS_SUFFIX);
-}
-
+   
 function dayFortuneHtml(my){
   var today = todayGanZhi();
   var ssKey = dailyShishenKey(my.day.gan, my.dayGanWx, today.gan, today.wxGan);
