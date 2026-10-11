@@ -23,28 +23,34 @@
   </div>
   <script>
   (function(){
-    var CREDIT_KEY = 'mysaju_credits_v1';
+    var DEVICE_KEY = 'mysaju_device_v1';
+    var LEGACY_CREDIT_KEY = 'mysaju_credits_v1'; // 크레딧 폐지 이전 기기의 shareCode 복구용(마이그레이션)
     var params = new URLSearchParams(location.search);
     var paymentKey = params.get('paymentKey');
     var orderId = params.get('orderId');
     var amount = params.get('amount');
-    // 리포트 건별 결제는 requestPayment()를 부를 때 successUrl에 이 두 값을 미리 실어 보내서,
+    // 어떤 결제인지는 requestPayment()를 부를 때 successUrl에 미리 실어 보내서,
     // 토스가 paymentKey/orderId/amount를 덧붙여 돌아올 때도 그대로 남아있다.
-    var type = params.get('type'); // 'report'면 리포트 건별 결제, 없으면 기존 크레딧 충전
+    // type: 'report'(리포트 건별결제) | 'unlock'(고민상담/프리미엄/궁합상세 등 건별결제)
+    var type = params.get('type');
     var conceptId = params.get('conceptId');
+    var unlockKey = params.get('unlockKey');
 
     function showError(text){
       document.getElementById('msg').textContent = text;
       document.getElementById('back').hidden = false;
     }
 
-    function readDeviceId(){
+    function readShareCode(raw){
       try{
-        var raw = localStorage.getItem(CREDIT_KEY);
         if (!raw) return null;
         var d = JSON.parse(raw);
         return d && d.shareCode ? d.shareCode : null;
       }catch(e){ return null; }
+    }
+
+    function readDeviceId(){
+      return readShareCode(localStorage.getItem(DEVICE_KEY)) || readShareCode(localStorage.getItem(LEGACY_CREDIT_KEY));
     }
 
     if (!paymentKey || !orderId || !amount){
@@ -58,10 +64,15 @@
     }
 
     var isReport = (type === 'report' && conceptId);
-    var endpoint = isReport ? '/api/reports/unlock' : '/api/toss/confirm';
+    var isUnlock = (type === 'unlock' && unlockKey);
+    if (!isReport && !isUnlock){
+      showError('결제 정보가 올바르지 않습니다.');
+      return;
+    }
+    var endpoint = isReport ? '/api/reports/unlock' : '/api/unlock';
     var body = isReport
       ? { paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId, conceptId: conceptId }
-      : { paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId };
+      : { paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId, unlockKey: unlockKey };
 
     fetch(endpoint, {
       method: 'POST',
@@ -69,8 +80,8 @@
       body: JSON.stringify(body)
     }).then(function(r){ return r.json(); }).then(function(data){
       if (data.ok){
-        // 실제로 몇 크레딧을 적립했는지 / 어떤 리포트를 지급했는지는 서버가 정했고, 홈 화면이
-        // /api/credits/pull 또는 /api/reports/unlock로 직접 받아갑니다(URL로 주고받지 않음 — 조작 방지).
+        // 실제로 어떤 리포트/항목을 지급했는지는 서버가 정했고, 홈 화면이
+        // /api/unlock 또는 /api/reports/unlock로 직접 받아갑니다(URL로 주고받지 않음 — 조작 방지).
         var back = '/?paid=1&order=' + encodeURIComponent(orderId);
         if (isReport) back += '&report=' + encodeURIComponent(conceptId);
         location.replace(back);
