@@ -3122,10 +3122,15 @@ function myroomShinsalKeys(entry){
   return out;
 }
 function myroomShinsalChipsHtml(entry){
-  var keys = myroomShinsalKeys(entry);
-  if (!keys.length) return '';
-  return '<span class="myroom-shinsal">'+keys.map(function(k){
-     var WX_CARD_HEX = {'목':'#44a386','화':'#b12c00','토':'#ab7400','금':'#006e9a','수':'#7552db'};
+     var keys = myroomShinsalKeys(entry);
+     if (!keys.length) return '';
+     return '<span class="myroom-shinsal">'+keys.map(function(k){
+       var s = SHINSAL_TEXT[k];
+       return '<span class="chip" style="--sal-color:'+s.color+'; --sal-soft:'+s.soft+';">'+s.icon+' '+s.label+'</span>';
+   }).join('')+'</span>';
+   }
+   var RANK_MEDAL = ['🥇','🥈','🥉'];
+   var WX_CARD_HEX = {'목':'#44a386','화':'#b12c00','토':'#ab7400','금':'#006e9a','수':'#7552db'};
    /* 상대방(entry.dayGanWxB)의 일주 오행을 모티프로 한 카드 배경 일러스트 — 별도 이미지 생성 없이
       오행별 색으로 추상 패턴을 SVG로 그려 카드 배경에 얇게 깔아, 카드첩이 "그 사람의 사주를 닮은
       카드"처럼 보이게 한다. */
@@ -3143,7 +3148,7 @@ function myroomShinsalChipsHtml(entry){
    function myroomCardHtml(entry, rank){
      var tier = myroomTier(entry.score);
      /* fromInviter: 내가 초대받아서 가입했을 때, 나를 초대해준 사람 쪽에서 자동으로 뜨는 카드.
-     entry.ownerName(공개 갤러리의 "소유자" 표시)과 같은 자리를 쓰지만 의미가 다르므로 겹치지 않게 처리. */
+        entry.ownerName(공개 갤러리의 "소유자" 표시)과 같은 자리를 쓰지만 의미가 다르므로 겹치지 않게 처리. */
      var ownerTag = entry.ownerName ? '<span class="owner-tag">'+esc(entry.ownerName)+'님의 룸</span>' :
        (entry.fromInviter ? '<span class="owner-tag">나를 초대함</span>' :
        (entry.isCharacter ? '<span class="owner-tag char-tag">✨ 캐릭터</span>' : ''));
