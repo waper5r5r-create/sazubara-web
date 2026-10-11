@@ -738,6 +738,26 @@ button:focus-visible,[role="button"]:focus-visible,.report-card:focus-visible{ou
 @media(max-width:374px){.content{padding-left:14px;padding-right:14px;}.app-header{padding-left:14px;padding-right:14px;}.card{padding:20px 16px;}.fortune-grid{grid-template-columns:1fr;}.report-grid{gap:12px 10px;}.report-card .nm{font-size:.86rem;}.report-card .tagline{font-size:.7rem;}.pillars{gap:6px;}.ss-row{flex-wrap:wrap;}.ss-row .desc{flex-basis:100%;}}
 @media(prefers-reduced-motion:reduce){.report-card,.btn-primary{transition:none;}}
 </style>
+<style>
+/* 첫 방문 이미지, 사주 요약, 이야기 카드 */
+.brand-hero{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;border-radius:14px;margin-bottom:22px;}
+.saju-quick-summary{padding:18px;border:1px solid rgba(224,173,85,.2);border-radius:16px;background:linear-gradient(135deg,rgba(224,173,85,.08),rgba(22,32,74,.5));}
+.quick-heading{font-size:.9rem;font-weight:700;color:var(--accent);margin-bottom:16px;}
+.saju-quick-summary dl{display:flex;flex-direction:column;gap:14px;margin:0 0 14px;}
+.saju-quick-summary dl>div{display:flex;flex-direction:column;gap:4px;}
+.saju-quick-summary dt{font-size:.72rem;color:var(--fg-muted);}
+.saju-quick-summary dd{margin:0;font-size:.88rem;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere;}
+.report-card{display:flex;flex-direction:column;aspect-ratio:auto;padding:0;text-align:left;color:var(--fg);font:inherit;background:var(--surface);border:1px solid var(--border);}
+.report-card::after{display:none;}
+.report-card .report-cover{position:relative;inset:auto;flex:none;aspect-ratio:3/4;height:auto;width:100%;overflow:hidden;}
+.report-card .report-text{position:static;padding:15px 12px 14px;display:flex;flex-direction:column;gap:8px;flex:1;}
+.report-card .nm{font-size:.92rem;line-height:1.55;color:var(--fg);text-shadow:none;text-wrap:initial;word-break:keep-all;overflow-wrap:anywhere;}
+.report-card .tagline{font-size:.76rem;line-height:1.65;color:var(--fg-muted);word-break:keep-all;overflow-wrap:anywhere;}
+.report-card-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:12px;}
+.report-preview-label{font-size:.66rem;color:var(--fg-muted);}
+.report-price{font-size:.78rem;font-weight:700;color:var(--accent);}
+@media(max-width:374px){.report-card .report-text{padding:12px 10px;}.report-card .nm{font-size:.85rem;}.report-card .tagline{font-size:.72rem;}.report-price{font-size:.74rem;}}
+</style>
 </head>
 <body>
 
@@ -762,7 +782,8 @@ button:focus-visible,[role="button"]:focus-visible,.report-card:focus-visible{ou
 
       <form class="card" id="saju-form">
         <div>
-          <p class="eyebrow">사주팔자</p>
+          <img class="brand-hero" src="og-image.jpg" alt="달빛 아래 두 인물과 사주바라 브랜드" width="1200" height="630" fetchpriority="high">
+          <p class="eyebrow">내 사주 속, 아직 몰랐던 이야기</p>
           <h1 class="section-title">나는 어떤 사람일까?</h1>
           <p class="section-desc">생년월일만 알려주면 돼요. 타고난 성격부터 숨겨진 기운, 오늘의 흐름까지 무료로 풀어드려요.</p>
         </div>
@@ -2298,6 +2319,23 @@ function shinsalCardHtml(keys){
     '<p class="disclaimer">일지를 기준으로 네 기둥의 지지를 대조해 판단한 참고용 콘텐츠입니다.</p>'+
   '</div>';
 }
+var SAJU_QUICK_SUMMARY = {
+  '목':{strength:'새로운 일을 시작하고 꾸준히 키워가는 힘',tip:'속도를 내기 전에 주변의 의견도 함께 살펴보세요.'},
+  '화':{strength:'마음을 표현하고 사람들에게 활력을 전하는 힘',tip:'감정이 앞설 때는 잠시 쉬고 결정해보세요.'},
+  '토':{strength:'관계를 조율하고 신뢰를 차곡차곡 쌓는 힘',tip:'다른 사람을 챙기는 만큼 내 마음도 확인해보세요.'},
+  '금':{strength:'기준을 세우고 필요한 결정을 내리는 힘',tip:'분명한 기준에 상대의 사정도 조금 보태보세요.'},
+  '수':{strength:'상황을 넓게 바라보고 유연하게 풀어가는 힘',tip:'혼자 고민하기보다 믿을 만한 사람에게 마음을 나눠보세요.'}
+};
+function sajuQuickSummaryHtml(result){
+  var info = WUXING_INFO[result.dayGanWx];
+  var summary = SAJU_QUICK_SUMMARY[result.dayGanWx];
+  return '<div class="saju-quick-summary" aria-label="나의 사주 핵심 요약">'+
+    '<p class="quick-heading">나의 사주, 세 줄로 먼저 보기</p>'+
+    '<dl><div><dt>타고난 성향</dt><dd>'+esc(info.trait)+'</dd></div>'+
+    '<div><dt>나의 강점</dt><dd>'+esc(summary.strength)+'</dd></div>'+
+    '<div><dt>기억할 한 가지</dt><dd>'+esc(summary.tip)+'</dd></div></dl>'+
+    '<p class="hint">일간 오행을 바탕으로 정리한 요약이에요.</p></div>';
+}
 function renderSajuResult(result){
   var wrap = $('#saju-result');
   var pillarsHtml = '<div class="pillars no-time">'+
@@ -2342,6 +2380,7 @@ function renderSajuResult(result){
         '<div><p class="eyebrow">사주팔자</p><h2 class="section-title">'+(result.name? esc(result.name)+'님의 사주':'나의 사주')+'</h2></div>'+
         '<button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button>'+
       '</div>'+
+      sajuQuickSummaryHtml(result) +
       pillarsHtml + corrNote +
     '</div>'+
 
@@ -3301,15 +3340,14 @@ function reportUnlockKey(c){ return 'report-'+c.id; }var JOSA_FIX={'이에요':{
 function krwFmt(n){ return (Number(n)||0).toLocaleString('ko-KR'); }
 function reportCardHtml(c){
   var unlocked = isUnlocked(reportUnlockKey(c));
-  var coverInner = c.cover_img_url ? '<img src="'+c.cover_img_url+'" alt="">' : '🔮';
-  return '<div class="report-card" data-report-id="'+c.id+'" data-cat="'+esc(c.category||'')+'">'+
+  var coverInner = c.cover_img_url ? '<img src="'+esc(c.cover_img_url)+'" alt="" loading="lazy" decoding="async">' : '🔮';
+  return '<button type="button" class="report-card" data-report-id="'+esc(String(c.id))+'" data-cat="'+esc(c.category||'')+'">'+
       '<span class="report-cover">'+coverInner+'</span>'+
-      (c.cover_img_url ? '<span class="report-play">▶</span>' : '')+
-      '<span class="report-cost-badge '+(unlocked?'unlocked':'locked')+'">'+(unlocked ? '✓ 열어봤어요' : krwFmt(c.price_krw)+'원')+'</span>'+
       '<span class="report-text"><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc(c.tagline||'')+'</span>'+
-        '<span class="report-rating">⭐ 4.9</span>'+
+        '<span class="report-card-footer"><span class="report-preview-label">첫 컷 무료</span>'+
+        '<span class="report-price">'+(unlocked ? '✓ 열어봤어요' : krwFmt(c.price_krw)+'원')+'</span></span>'+
       '</span>'+
-    '</div>';
+    '</button>';
 }
 function closeReportSheet(){ var r = $('#report-sheet-root'); if (r) r.innerHTML=''; }
 /* 카테고리 칩(청월당 참고 — 전체 + 실제 로드된 목록에 있는 카테고리만 동적으로).
