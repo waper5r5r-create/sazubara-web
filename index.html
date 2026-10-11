@@ -2342,12 +2342,6 @@ function renderSajuResult(result){
         }).join('')+
       '</div>'+
       '<div id="worry-content"></div>'+
-    '</div>'+
-
-    '<div class="card" id="today-section-card">'+
-      '<p class="eyebrow">오늘의 운세</p>'+
-      '<h2 class="section-title" style="font-size:1.05rem;">오늘 · 이번 주 · 이번 달의 흐름도 바로 확인해요</h2>'+
-      '<div id="today-section-root"></div>'+
     '</div>';
 
   wrap.innerHTML = html;
@@ -2365,7 +2359,7 @@ function renderSajuResult(result){
   var openReportsBtn = $('#btn-open-reports');
   if (openReportsBtn) openReportsBtn.addEventListener('click', function(){ switchTab('reports'); });
 
-  /* 오늘의 운세는 더 이상 별도 탭이 아니라, 사주풀이 결과 바로 아래에 이어서 보여준다. */
+  /* 사주 정보를 수정하면 오늘의 운세 탭도 같은 정보로 갱신한다. */
   renderTodayView();
 }
 
@@ -2420,10 +2414,19 @@ var TODAY_PERIOD_COST = { week:3, month:5, year:8 };
 var TODAY_PERIOD_LABEL = { day:'오늘', week:'이번 주', month:'이번 달', year:'올해' };
 
 function renderTodayView(){
-  /* 더 이상 독립 탭이 아니라 사주풀이 결과(renderSajuResult) 뒤에 항상 이어서 그려지므로,
-     이 시점엔 STATE.mySaju가 이미 있는 게 보장된다(사주 미입력 상태 안내는 필요 없음). */
-  var root = $('#today-section-root');
-  if (!root || !STATE.mySaju) return;
+  var root = $('#view-today');
+  if (!root) return;
+  if (!STATE.mySaju){
+    root.innerHTML =
+      '<div class="card" style="align-items:center; text-align:center;">'+
+        '<p class="eyebrow">오늘의 운세</p>'+
+        '<h2 class="section-title" style="font-size:1.05rem;">사주를 먼저 확인해주세요</h2>'+
+        '<p class="section-desc">생년월일을 입력하면 오늘부터 이번 주, 이번 달, 올해의 흐름까지 확인할 수 있어요.</p>'+
+        '<button type="button" class="btn-primary" id="btn-today-goto-saju">사주풀이로 가기</button>'+
+      '</div>';
+    $('#btn-today-goto-saju').addEventListener('click', function(){ switchTab('saju'); });
+    return;
+  }
   root.innerHTML =
     '<div class="seg" id="today-period-seg">'+
       '<button type="button" data-val="day" class="active">오늘</button>'+
@@ -4846,6 +4849,7 @@ function switchTab(name){
   $all('.view').forEach(function(v){ v.hidden = true; });
   $('#view-'+name).hidden = false;
   $all('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===name); });
+  if (name==='today') renderTodayView();
   if (name==='compat') refreshCompatPersonA();
   if (name==='reports') renderReportsTabView();
   try{ history.replaceState(null,'','#'+name); }catch(e){}
@@ -4993,7 +4997,7 @@ function init(){
   }
 
   var startTab = (location.hash||'').replace('#','');
-  if (['saju','compat'].indexOf(startTab)===-1) startTab='saju';
+  if (['saju','today','compat'].indexOf(startTab)===-1) startTab='saju';
   switchTab(startTab);
 
   $all('.tab-btn').forEach(function(btn){
