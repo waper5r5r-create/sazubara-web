@@ -3472,36 +3472,63 @@ function renderReportsTabView(){
     if (grid) grid.innerHTML = '<p class="section-desc">불러오지 못했어요. 잠시 후 다시 시도해주세요.</p>';
   });
 }
-/* ---- 리포트 해금 전 소셜프루프(후기) 스트립 ----
-   실제 서비스 오픈 전이라 아직 진짜 후기가 없어서, 지금은 구조 검증용 예시 문구를 넣어둔 상태.
-   관리자 패널에 후기 입력 기능을 붙이거나, 실제 사용자 후기가 쌓이면 이 배열을 교체하면 됨.
-   잠금 해제 버튼 바로 위에 붙여서 "이미 열어본 사람들" 느낌으로 구매 직전 신뢰를 보강한다. */
-var SAMPLE_REPORT_REVIEWS = [
-  { gan:'경금일간', ganEmoji:'⚔️', who:'k***', time:'1시간 전', repeat:0, q:'친구 관계 부분이 진짜 제 요즘 고민이었어요. 어떻게 알았지 싶을 정도로 소름.' },
-  { gan:'계수일간', ganEmoji:'💧', who:'jr******', time:'어제', repeat:3, q:'그림도 예쁘고 내용도 구체적이어서 벌써 세 번째 이야기 열어봤어요.' },
-  { gan:'무토일간', ganEmoji:'⛰️', who:'m***', time:'3일 전', repeat:0, q:'친구랑 같이 보다가 둘 다 소리질렀어요. 너무 제 얘기라서 ㅋㅋ' }
-];
-function reviewStripHtml(){
-  return '<div class="card review-strip">'+
-      '<div class="review-strip-head">'+
-        '<span class="review-stars">★★★★★</span><span class="review-score">4.9</span>'+
-        '<span class="review-count">먼저 열어본 분들의 후기</span>'+
-      '</div>'+
-      '<div class="review-list">'+
-        SAMPLE_REPORT_REVIEWS.map(function(r){
-          return '<div class="review-item">'+
-            '<div class="review-item-head">'+
-              '<span class="gan-badge">'+r.ganEmoji+' '+r.gan+'</span>'+
-              (r.repeat ? '<span class="repeat-badge">'+r.repeat+'번째 구매</span>' : '')+
-              '<span class="time">'+r.time+'</span>'+
-            '</div>'+
-            '<p class="q">“'+esc(r.q)+'”</p>'+
-            '<p class="meta"><span class="stars">★★★★★</span>'+esc(r.who)+'</p>'+
-          '</div>';
-        }).join('')+
-      '</div>'+
-    '</div>';
-}
+   /* ---- 리포트 해금 전 소셜프루프(후기) 스트립 ----
+      실제 서비스 오픈 전이라 아직 진짜 후기가 없어서, 지금은 구조 검증용 예시 문구를 넣어둔 상태.
+      관리자 패널에 후기 입력 기능을 붙이거나, 실제 사용자 후기가 쌓이면 이 배열을 교체하면 됨.
+      잠금 해제 버튼 바로 위에 붙여서 "이미 열어본 사람들" 느낌으로 구매 직전 신뢰를 보강한다.
+      예전에는 모든 이야기(컨셉)에 똑같은 후기 3개만 고정으로 떴음 — 이제는 후기마다 tags를
+      붙여서, 지금 보고 있는 이야기의 제목/소개와 겹치는 태그가 많은 후기를 우선 골라 보여주고,
+      컨셉 id로 시드를 줘서 "같은 이야기는 항상 같은 조합, 다른 이야기는 다른 조합"이 뜨게 한다. */
+   var REPORT_REVIEW_POOL = [
+   { gan:'경금일간', ganEmoji:'⚔️', who:'k***', time:'1시간 전', repeat:0, tags:['친구','인간관계'], q:'친구 관계 부분이 진짜 제 요즘 고민이었어요. 어떻게 알았지 싶을 정도로 소름.' },
+   { gan:'계수일간', ganEmoji:'💧', who:'jr******', time:'어제', repeat:3, tags:['일반','성격'], q:'그림도 예쁘고 내용도 구체적이어서 벌써 세 번째 이야기 열어봤어요.' },
+   { gan:'무토일간', ganEmoji:'⛰️', who:'m***', time:'3일 전', repeat:0, tags:['친구','인간관계'], q:'친구랑 같이 보다가 둘 다 소리질렀어요. 너무 제 얘기라서 ㅋㅋ' },
+     { gan:'갑목일간', ganEmoji:'🌳', who:'y****', time:'2시간 전', repeat:1, tags:['연애','썸'], q:'소개팅남 계속 생각나서 봤는데, 왜 자꾸 엇갈리는지 진짜 제 얘기였어요.' },
+   { gan:'병화일간', ganEmoji:'🔥', who:'hj****', time:'5시간 전', repeat:0, tags:['연애'], q:'좋아하는 사람 생겼을 때 봤는데 고백 타이밍까지 콕 집어줘서 소름 돋았어요.' },
+     { gan:'기토일간', ganEmoji:'🌾', who:'s***', time:'어제', repeat:0, tags:['가족','인간관계'], q:'가족이랑 자꾸 부딪히는 이유를 이렇게 풀어줄 줄 몰랐어요. 마음이 좀 편해졌어요.' },
+   { gan:'신금일간', ganEmoji:'💎', who:'d******', time:'2일 전', repeat:2, tags:['돈','재물'], q:'이직하고 돈 관리가 계속 꼬였었는데, 왜 그랬는지 타이밍까지 짚어줘서 놀랐어요.' },
+   { gan:'임수일간', ganEmoji:'🌊', who:'w***', time:'3시간 전', repeat:0, tags:['돈','재물'], q:'곧 목돈 들어올 시기라고 해서 반신반의했는데 진짜 그 무렵에 일이 풀렸어요.' },
+   { gan:'을목일간', ganEmoji:'🌿', who:'c****', time:'6시간 전', repeat:0, tags:['진로','직장'], q:'이직 고민될 때 봤는데, 지금 움직여야 하는 이유를 구체적으로 알려줘서 결정에 도움 됐어요.' },
+   { gan:'정화일간', ganEmoji:'🕯️', who:'n***', time:'어제', repeat:1, tags:['직장','진로'], q:'팀 옮기고 적응 안 될 때 봤는데, 제 성향이랑 지금 자리가 왜 안 맞는지 콕 짚어줬어요.' },
+   { gan:'경금일간', ganEmoji:'⚔️', who:'ej*****', time:'4일 전', repeat:0, tags:['미래','타이밍'], q:'올해 안에 큰 변화 온다고 해서 긴가민가했는데, 진짜 그 시기에 이사하게 됐어요.' },
+   { gan:'무토일간', ganEmoji:'⛰️', who:'b***', time:'12시간 전', repeat:0, tags:['성격','일반'], q:'제 성격을 이렇게 구체적으로 짚어주는 건 처음이라 신기했어요.' },
+   { gan:'계수일간', ganEmoji:'💧', who:'r****', time:'2일 전', repeat:0, tags:['일반'], q:'반신반의하고 봤는데 지금 제 상황이랑 너무 맞아떨어져서 믿게 됐어요.' }
+   ];
+   function pickReportReviews(concept){
+     var text = (((concept&&concept.title)||'')+' '+((concept&&concept.tagline)||''));
+     var seed = 0;
+     var sid = String((concept&&concept.id)||'');
+     for (var i=0;i<sid.length;i++) seed = (seed*31 + sid.charCodeAt(i)) >>> 0;
+     function rand(){ seed = (seed*1664525 + 1013904223) >>> 0; return seed / 4294967296; }
+     var scored = REPORT_REVIEW_POOL.map(function(r, idx){
+       var score = r.tags.reduce(function(s,t){ return s + (text.indexOf(t)!==-1 ? 1 : 0); }, 0);
+       return { r:r, score:score, rnd: rand(), idx: idx };
+   });
+     scored.sort(function(a,b){ return (b.score - a.score) || (a.rnd - b.rnd); });
+     return scored.slice(0, 3).map(function(x){ return x.r; });
+   }
+   function reviewStripHtml(concept){
+     var reviews = pickReportReviews(concept);
+     return '<div class="card review-strip">'+
+         '<div class="review-strip-head">'+
+           '<span class="review-stars">★★★★★</span><span class="review-score">4.9</span>'+
+           '<span class="review-count">먼저 열어본 분들의 후기</span>'+
+         '</div>'+
+         '<div class="review-list">'+
+           reviews.map(function(r){
+             return '<div class="review-item">'+
+               '<div class="review-item-head">'+
+                 '<span class="gan-badge">'+r.ganEmoji+' '+r.gan+'</span>'+
+                 (r.repeat ? '<span class="repeat-badge">'+r.repeat+'번째 구매</span>' : '')+
+                 '<span class="time">'+r.time+'</span>'+
+               '</div>'+
+               '<p class="q">"'+esc(r.q)+'"</p>'+
+               '<p class="meta"><span class="stars">★★★★★</span>'+esc(r.who)+'</p>'+
+             '</div>';
+           }).join('')+
+         '</div>'+
+            '</div>';
+   }
 function reportSectionHtml(panel, result){
   var hasImg = !!panel.img_url;
   var imgHtml = hasImg ? '<span class="report-section-img"><img src="'+panel.img_url+'" alt=""></span>' : '';
@@ -3509,19 +3536,22 @@ function reportSectionHtml(panel, result){
       '<p class="report-caption">'+fillReportTemplate(panel.caption_template, result)+'</p>'+
     '</div>';
 }
-function reportMiniTeaserHtml(){
-     return '<div class="mini-teaser-card">'+
-              '<span class="mini-teaser-lock">\u{1F512}</span>'+
-              '<div>'+
-                '<p class="mini-teaser-title">+ 이런 풀이를 더 해드려요</p>'+
-                '<ul class="mini-teaser-list">'+
-                  '<li>지금 이 흐름이 이어지는 다음 장면</li>'+
-                  '<li>당신만을 위한 구체적인 해석</li>'+
-                  '<li>지금 놓치면 안 되는 포인트</li>'+
-                '</ul>'+
-              '</div>'+
-            '</div>';
-}
+   function reportMiniTeaserHtml(){
+           /* 여기는 아직 무료 구간(중간 지점)이라 자물쇄를 붙이면 "막힌 것처럼" 오해를 사서,
+                   잠금 아이콘은 빼고 "이 아래부터 실제로 유료 결제 시 보게 될 내용"을 구체적으로
+                           예고만 해준다. 진짜 자물쇄는 reportLockedCardHtml(실제 결제 카드)에만 있다. */
+           return '<div class="mini-teaser-card">'+
+                            '<span class="mini-teaser-lock">✨</span>'+
+                            '<div>'+
+                              '<p class="mini-teaser-title">+ 결제하면 이렇게 구체적으로 더 알려드려요</p>'+
+                              '<ul class="mini-teaser-list">'+
+                                '<li>지금 흐름이 앞으로 몇 달간 어떻게 이어지는지 구체적 시기</li>'+
+                                '<li>이 사주만의 특징이 지금 상황에 미치는 영향</li>'+
+                                '<li>지금 당장 뭘 조심하고 뭘 챙겨야 하는지 실전 조언</li>'+
+                              '</ul>'+
+                            '</div>'+
+                          '</div>';
+   }
    reportSectionHtml = function(panel, result){
         var hasImg = !!panel.img_url;
         var imgHtml = hasImg ? '<span class="report-section-img"><img src="'+panel.img_url+'" alt=""></span>' : '';
@@ -3615,7 +3645,7 @@ function renderReportPanels(concept, panels, unlocked){
     html += '<div class="report-article-fade-wrap"><div class="report-article">'+
         panels.slice(freeCount).map(function(p){ return reportSectionHtml(p, result); }).join('')+
       '</div></div>';
-    html += reviewStripHtml();
+    html += reviewStripHtml(concept);
     html += reportLockedCardHtml(concept);
   }
   if (unlocked){
@@ -3658,7 +3688,7 @@ renderReportPanels = function(concept, panels, unlocked){
             html += '<div class="report-article-fade-wrap"><div class="report-article">'+
                        panels.slice(freeCount).map(function(p){ return reportSectionHtml(p, result); }).join('')+
                      '</div></div>';
-            html += reviewStripHtml();
+            html += reviewStripHtml(concept);
             html += reportLockedCardHtml(concept);
      }
      list.innerHTML = html;
