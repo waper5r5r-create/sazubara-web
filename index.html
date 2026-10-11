@@ -1929,6 +1929,31 @@ function doShare(){
   }
   });
 }
+   /* 궁합보기 탭에서 "상대방 정보를 내가 직접 입력" 대신 쓰는 경로 — 상대방의 생년월일시를
+      내가 외우고 있을 리 없으니, 같은 초대 링크(shareUrl)를 궁합 맥락의 문구로 보낸다.
+      상대방이 그 링크로 들어와 자기 사주를 등록하면(=기존 초대 적립 로직 그대로) 내 마이룸에
+         그 친구와의 궁합 카드가 뜨고, 상대방 쪽 마이룸에도 "나를 초대한 친구"로 내가 뜨면서
+            궁합이 계산된다 — 그래서 양쪽 다 결과를 볼 수 있다. */
+   function doShareCompatInvite(resA){
+        var url = shareUrl();
+        var myName = (resA && resA.name) || (STATE.mySaju&&STATE.mySaju.name) || '';
+        var text = (myName? myName+'님이 ':'')+'당신과의 궁합이 궁금해서 보내요 💕 링크 열고 본인 사주만 입력하면 바로 궁합을 확인할 수 있어요!';
+        kakaoShare(text, url, '궁합 확인하러 가기').then(function(){
+               maybeAwardShareBonus();
+               showToast('초대를 보냈어요! 상대방이 입력하면 마이룸에서 궁합을 확인할 수 있어요.');
+        }).catch(function(){
+               if (navigator.share){
+                        navigator.share({ title:'사주바라 궁합', text:text, url:url }).then(function(){
+                                   maybeAwardShareBonus();
+                                   showToast('초대를 보냈어요! 상대방이 입력하면 마이룸에서 궁합을 확인할 수 있어요.');
+                        }).catch(function(){});
+               } else {
+                        copyToClipboard(text+'\n'+url);
+                        showToast('초대 링크가 복사됐어요. 카카오톡에 붙여넣어 보내보세요!');
+                        maybeAwardShareBonus();
+               }
+        });
+   }
 
 /* ---- 크레딧 시트(모달) ---- */
 
@@ -2927,55 +2952,83 @@ function refreshCompatPersonA(){
   if (window._compatToggleA) window._compatToggleA();
 }
 
-function initCompatView(){
-  var root = $('#view-compat');
-  root.innerHTML =
-    '<form class="card" id="compat-form">'+
-      '<div><p class="eyebrow">궁합보기</p><h1 class="section-title">우리, 진짜 잘 맞는 걸까?</h1>'+
-      '<p class="section-desc">두 사람의 생년월일시만 입력하면, 일주(日柱) 오행과 지지 관계로 찐 궁합을 풀어드려요.</p></div>'+
-      '<label class="check-row" id="c-use-my-saju-row" hidden><input type="checkbox" id="c-use-my-saju" checked>내 사주 정보 사용 (A)</label>'+
-      '<div id="person-a-wrap">'+personFieldsHtml('a','나')+'</div>'+
-      '<hr class="sep">'+
-      personFieldsHtml('b','상대방')+
-      '<button type="submit" class="btn-primary">궁합 확인하기</button>'+
-    '</form>'+
-    '<div id="compat-result" hidden></div>'+
-    '<div class="card" id="myroom-card-wrap"></div>';
+   function initCompatView(){
+     var root = $('#view-compat');
+     root.innerHTML =
+       '<form class="card" id="compat-form">'+
+         '<div><p class="eyebrow">궁합보기</p><h1 class="section-title">우리, 진짜 잘 맞는 걸까?</h1>'+
+         '<p class="section-desc">두 사람의 생년월일시만 있으면, 일주(日柱) 오행과 지지 관계로 찐 궁합을 풀어드려요.</p></div>'+
+         '<label class="check-row" id="c-use-my-saju-row" hidden><input type="checkbox" id="c-use-my-saju" checked>내 사주 정보 사용 (A)</label>'+
+         '<div id="person-a-wrap">'+personFieldsHtml('a','나')+'</div>'+
+         '<hr class="sep">'+
+         '<div class="field">'+
+           '<label>상대방 정보</label>'+
+           '<div class="seg" id="c-b-mode"><button type="button" data-val="kakao" class="active">카카오톡으로 받기</button><button type="button" data-val="manual">직접 입력</button></div>'+
+         '</div>'+
+         '<div id="c-b-kakao-pane">'+
+           '<p class="section-desc">상대방의 생년월일시를 내가 몰라도 괜찮아요. 카카오톡으로 링크를 보내면 상대방이 직접 입력하고, 결과는 마이룸에서 둘 다 확인할 수 있어요.</p>'+
+           '<button type="button" class="btn-primary" id="btn-compat-kakao-invite">카카오톡으로 궁합 물어보기</button>'+
+         '</div>'+
+         '<div id="c-b-manual-pane" hidden>'+
+           personFieldsHtml('b','상대방')+
+           '<button type="submit" class="btn-primary">궁합 확인하기</button>'+
+         '</div>'+
+       '</form>'+
+       '<div id="compat-result" hidden></div>'+
+       '<div class="card" id="myroom-card-wrap"></div>';
 
-  ['a','b'].forEach(function(suf){
-    wireSeg($('#c-gender-'+suf));
-    wireSeg($('#c-calendar-'+suf), function(val){
-      $('#c-leap-row-'+suf).hidden = (val!=='lunar');
-    });
-    $('#c-unknown-'+suf).addEventListener('change', function(e){
-      $('#c-time-'+suf).disabled = e.target.checked;
-    });
-  });
+     ['a','b'].forEach(function(suf){
+       wireSeg($('#c-gender-'+suf));
+       wireSeg($('#c-calendar-'+suf), function(val){
+         $('#c-leap-row-'+suf).hidden = (val!=='lunar');
+   });
+       $('#c-unknown-'+suf).addEventListener('change', function(e){
+         $('#c-time-'+suf).disabled = e.target.checked;
+   });
+   });
 
-  var useMyBox = $('#c-use-my-saju');
-  var toggleA = function(){ $('#person-a-wrap').hidden = (!$('#c-use-my-saju-row').hidden && useMyBox.checked); };
-  useMyBox.addEventListener('change', toggleA);
-  window._compatToggleA = toggleA;
-  refreshCompatPersonA();
+     wireSeg($('#c-b-mode'), function(val){
+       $('#c-b-kakao-pane').hidden = (val!=='kakao');
+       $('#c-b-manual-pane').hidden = (val!=='manual');
+   });
 
-  $('#compat-form').addEventListener('submit', function(e){
-    e.preventDefault();
-    try{
-      var resA = (STATE.mySaju && $('#c-use-my-saju') && $('#c-use-my-saju').checked) ?
-        STATE.mySaju : readPersonForm('a');
-      var resB = readPersonForm('b');
-      var compat = computeCompat(resA, resB);
-      showReveal('궁합을 점치는 중', '두 사람의 기운이 만나는 지점을 짚어보고 있어요', function(){
-        renderCompatResult(resA, resB, compat);
-        var rw = $('#compat-result'); if (rw) rw.classList.add('reveal-fadeup');
-      });
-    }catch(err){
-      alertInline('입력값을 다시 확인해주세요. ('+err.message+')');
-    }
-  });
+     var useMyBox = $('#c-use-my-saju');
+     var toggleA = function(){ $('#person-a-wrap').hidden = (!$('#c-use-my-saju-row').hidden && useMyBox.checked); };
+     useMyBox.addEventListener('change', toggleA);
+     window._compatToggleA = toggleA;
+     refreshCompatPersonA();
 
-  renderMyRoom();
-}
+     $('#btn-compat-kakao-invite').addEventListener('click', function(){
+       var resA;
+       try{
+         resA = (STATE.mySaju && $('#c-use-my-saju') && $('#c-use-my-saju').checked) ?
+           STATE.mySaju : readPersonForm('a');
+       }catch(err){
+         alertInline('내 정보를 먼저 입력해주세요. ('+err.message+')');
+         return;
+       }
+       doShareCompatInvite(resA);
+   });
+
+     $('#compat-form').addEventListener('submit', function(e){
+       e.preventDefault();
+       if (segValue($('#c-b-mode')) === 'kakao') return;
+       try{
+         var resA = (STATE.mySaju && $('#c-use-my-saju') && $('#c-use-my-saju').checked) ?
+           STATE.mySaju : readPersonForm('a');
+         var resB = readPersonForm('b');
+         var compat = computeCompat(resA, resB);
+         showReveal('궁합을 점치는 중', '두 사람의 기운이 만나는 지점을 짚어보고 있어요', function(){
+           renderCompatResult(resA, resB, compat);
+           var rw = $('#compat-result'); if (rw) rw.classList.add('reveal-fadeup');
+         });
+   }catch(err){
+         alertInline('입력값을 다시 확인해주세요. ('+err.message+')');
+       }
+     });
+
+     renderMyRoom();
+   }
 
 /* ---- 마이룸: 궁합 확인 기록 갈러리 ---- */
 var MYROOM_TIERS = [
