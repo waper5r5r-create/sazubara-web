@@ -9,7 +9,7 @@
 //
 // POST /api/reports/unlock  body:{paymentKey, orderId, amount, deviceId, conceptId}
 //   리포트(유료 상세 풀이) 건별(원화) 결제 승인 — 크레딧 장부와는 완전히 별개 경로다.
-//   토스페이먼츠 결제 승인 API를 "서버에서만" 호출하고(/api/toss/confirm과 동일한 패턴),
+//   토스페이먼츠 결제 승인 API를 "서버에서만" 호출하고(/api/unlock과 동일한 패턴),
 //   결제가 끝나면 report_unlocks에 (device_id, concept_id) 한 줄을 남긴다.
 //   금액 검증: 클라이언트가 보낸 amount가 아니라, 토스가 실제로 승인한 결제금액(KRW)을
 //   서버가 report_concepts.price_krw와 직접 대조해서 확인한다.
