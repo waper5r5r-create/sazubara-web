@@ -705,6 +705,66 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 #saju-form{padding:0;overflow:hidden;gap:0;}.saju-guide-art{position:relative;height:280px;background:#101c32;overflow:hidden;}.saju-guide-art>img{width:100%;height:100%;object-fit:cover;object-position:center 26%;display:block;}.saju-guide-shade{position:absolute;inset:0;background:linear-gradient(0deg,#121b30 0%,transparent 65%);}.guide-bubble{position:absolute;left:20px;right:20px;bottom:17px;padding:15px 18px;border-radius:18px 18px 18px 4px;background:#f7f1e7;color:#252736;font-size:.87rem;line-height:1.8;box-shadow:0 4px 20px #080d2244;word-break:keep-all;}.guide-bubble:before{content:'';position:absolute;top:-11px;left:25px;border-style:solid;border-width:0 0 12px 12px;border-color:transparent transparent #f7f1e7 transparent;}
 .saju-story-head{padding:22px 22px 16px;}.saju-story-head h1{font-size:1.25rem;margin:7px 0 20px;}.saju-step-track{display:flex;justify-content:space-between;border-bottom:1px solid #2c3a53;}.saju-step-track>span{padding:0 0 12px;font-size:.7rem;color:#8999b2;border-bottom:2px solid transparent;}.saju-step-track .current{color:#f2d39a;border-bottom-color:#e8b96d;}.saju-step-track .done{color:#c6b593;}.saju-form-step{padding:10px 22px;display:flex;flex-direction:column;gap:18px;}.saju-story-controls{display:flex;gap:10px;padding:18px 22px 0;}.saju-story-controls button{flex:1;margin:0;}.saju-story-controls .share-btn{flex:.45;}#saju-form>button[type=submit]{width:calc(100% - 44px);margin:18px 22px 0;}.saju-form-toggle{font-size:.73rem;color:#99a9c2;background:none;border:0;padding:17px 12px 24px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}#saju-form>.form-error{margin:14px 22px;}
 @media(max-width:374px){.saju-guide-art{height:255px;}.saju-story-head,.saju-form-step{padding-left:18px;padding-right:18px;}.guide-bubble{left:16px;right:16px;font-size:.82rem;}}
+.destiny-card[data-polarity="yin"] .destiny-foil{background:linear-gradient(125deg,transparent 15%,#9cbaff 35%,#d6c7ff 47%,transparent 65%);}
+.destiny-card[data-polarity="yang"] .destiny-foil{background:linear-gradient(125deg,transparent 15%,#fff2b0 35%,#ffc796 47%,transparent 65%);}
+/* Collectible destiny cards: readable HTML overlays on generated symbolic art. */
+.myroom-grid{gap:16px;padding:8px 2px;}
+.destiny-card.myroom-card{aspect-ratio:2/3;display:block;padding:0;border:2px solid var(--tier-color);border-radius:13px;text-align:left;background:#0b1020;isolation:isolate;box-shadow:0 8px 22px #0008,inset 0 0 0 3px #182034;transition:transform .2s,box-shadow .2s;}
+.destiny-card.myroom-card::before{inset:5px;height:auto;border:1px solid var(--tier-color);background:none;box-shadow:none;border-radius:8px;z-index:3;opacity:.65;pointer-events:none;}
+.destiny-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px #000a,0 0 16px var(--tier-soft);}
+.destiny-art,.destiny-foil{position:absolute;inset:0;pointer-events:none;}
+.destiny-art img{width:100%;height:100%;object-fit:cover;display:block;}
+.destiny-art::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#060c2038 0%,transparent 36%,#080d20b0 65%,#080c20 100%);}
+.destiny-foil{z-index:2;opacity:.12;background:linear-gradient(125deg,transparent 20%,#b8eaff 32%,#fcdebd 40%,transparent 50%,#cfbcff 70%,transparent 80%);mix-blend-mode:screen;}
+.tier-s .destiny-foil{opacity:.38;background-size:220% 220%;animation:cardFoil 8s ease-in-out infinite;}
+.tier-a .destiny-foil{opacity:.23;}.tier-s{box-shadow:0 8px 24px #0009,0 0 16px #e0ad5530!important;}
+.destiny-top{position:absolute;inset:13px 14px auto;display:flex;justify-content:space-between;align-items:center;z-index:4;color:#fff4d0;}
+.destiny-grade{font:800 29px/1 Georgia,serif;text-shadow:0 2px 8px #000;background:#0a1020c9;border:1px solid var(--tier-color);border-radius:5px;padding:5px 9px;color:var(--tier-color);}
+.destiny-element{font:700 23px/1 serif;text-shadow:0 2px 8px #000;}
+.destiny-seal{position:absolute;right:16px;bottom:105px;font-size:26px;color:var(--tier-color);text-shadow:0 0 8px #000;z-index:4;}
+.destiny-copy{position:absolute;inset:auto 15px 14px;display:flex;flex-direction:column;gap:5px;color:#f4ebd7;z-index:4;}
+.destiny-title{font-size:.65rem;letter-spacing:.13em;color:var(--tier-color);font-weight:700;}
+.destiny-card .nm{font-size:1.06rem;line-height:1.35;color:#fff4de;}
+.destiny-stats{display:flex;justify-content:space-between;gap:5px;font-size:.6rem;color:#c2bfca;border-top:1px solid #ffffff25;padding-top:6px;}
+.destiny-stats b{color:var(--tier-color);font-size:.9rem;margin-left:3px;}
+.destiny-caption{font-size:.59rem;line-height:1.5;color:#ccc4b5;}
+.destiny-corner{position:absolute;width:20px;height:20px;border:2px solid var(--tier-color);z-index:4;pointer-events:none;}.tl{top:4px;left:4px;border-right:0;border-bottom:0;border-radius:7px 0 0 0;}.tr{top:4px;right:4px;border-left:0;border-bottom:0;border-radius:0 7px 0 0;}.bl{bottom:4px;left:4px;border-right:0;border-top:0;border-radius:0 0 0 7px;}.br{bottom:4px;right:4px;border-left:0;border-top:0;border-radius:0 0 7px 0;}
+.destiny-card.myroom-card.is-preview{width:260px;max-width:100%;min-height:390px;padding:0;margin:8px auto 16px;cursor:default;}
+.album-intro{margin:10px 0 14px;padding:16px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2);}.album-intro p{font-size:.85rem;color:var(--fg);margin:0 0 12px;}.album-intro small{font-size:.69rem;color:var(--fg-muted);}.album-grade-counts{display:flex;gap:8px;margin-bottom:10px;}.album-grade-counts span{flex:1;border:1px solid var(--border);border-radius:7px;padding:7px;text-align:center;color:var(--fg-muted);font-size:.75rem;}.album-grade-counts b{font-family:Georgia,serif;color:var(--accent);margin-right:5px;}
+.card-symbol-guide{margin-top:16px;}.card-symbol-guide h3{font-size:.95rem;margin-bottom:8px;}.card-symbol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}.card-symbol-grid div{display:flex;flex-direction:column;gap:5px;}.card-symbol-grid img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:9px;border:1px solid #e0ad5560;}.card-symbol-grid b{font-size:.72rem;}.card-symbol-grid small{font-size:.62rem;color:var(--fg-muted);}
+@keyframes cardFoil{0%,100%{background-position:0% 0%;}50%{background-position:100% 100%;}}
+@media(max-width:374px){.destiny-copy{left:11px;right:11px;}.destiny-card .nm{font-size:.92rem;}.destiny-stats{flex-direction:column;gap:0;}.destiny-caption{font-size:.54rem;}.destiny-seal{bottom:105px;}.myroom-grid{gap:10px;}}
+@media(prefers-reduced-motion:reduce){.destiny-card,.destiny-card:hover{transition:none;transform:none;}.tier-s .destiny-foil{animation:none;}}
+
+/* Soft collectible cards: quiet pastel frames and illustrated companions. */
+.destiny-card.myroom-card{border-width:1px;border-color:#d9d0bf;background:#fffaf0;box-shadow:0 4px 12px #0002;border-radius:17px;}
+.destiny-card.myroom-card::before{border-color:#fff9ef;opacity:1;inset:4px;border-radius:13px;}
+.destiny-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px #0003;}
+.destiny-card.tier-s{border-color:#c8b175;box-shadow:0 4px 12px #0002!important;}.destiny-card.tier-a{border-color:#d8b1b9;}.destiny-card.tier-b{border-color:#aec6b4;}.destiny-card.tier-c{border-color:#adc2d5;}
+.destiny-card .destiny-art::after{background:linear-gradient(180deg,transparent 0%,transparent 65%,#fffaf0cc 78%,#fffaf0 100%);}
+.destiny-card .destiny-foil,.destiny-card .destiny-corner{display:none!important;animation:none!important;}
+.destiny-card .destiny-top{inset:12px 13px auto;color:#655a47;}
+.destiny-card .destiny-grade{font:800 16px/1 var(--font-body);padding:7px 9px;border:0;border-radius:9px;color:#61523d;background:#efe2be;box-shadow:none;text-shadow:none;}
+.destiny-card.tier-a .destiny-grade{background:#f5dee2;color:#785158;}.destiny-card.tier-b .destiny-grade{background:#dceadf;color:#496452;}.destiny-card.tier-c .destiny-grade{background:#dde8f0;color:#4b6276;}
+.destiny-card .destiny-element{font-size:16px;text-shadow:none;color:#83765f;background:#fffaf0c9;border-radius:50%;padding:7px;}
+.destiny-card .destiny-copy{color:#615744;gap:5px;bottom:14px;}
+.destiny-card .destiny-title{color:#948169;font-size:.61rem;letter-spacing:.06em;}
+.destiny-card .nm{color:#413c33;font-size:.98rem;}
+.destiny-card .destiny-stats{color:#756e63;border-color:#e4dbca;font-size:.6rem;}.destiny-card .destiny-stats b{color:#554c3d;}
+.destiny-card .destiny-caption{color:#827867;font-size:.57rem;}
+.destiny-card .destiny-seal{font-size:18px;color:#97886f;text-shadow:none;bottom:108px;right:16px;}
+.destiny-card[data-frame="gold"]{border-color:#c8b175;}.destiny-card[data-frame="rose"]{border-color:#d8b1b9;}.destiny-card[data-frame="aurora"]{border-color:#aec6b4;}.destiny-card[data-frame="holo"]{border-color:#bdb5cd;}.destiny-card[data-frame]::after{display:none;}
+.card-symbol-grid img{border-color:#e8ddc9;border-radius:14px;}
+.destiny-card[data-polarity="yin"] .destiny-element{background:#e8e5f4;}.destiny-card[data-polarity="yang"] .destiny-element{background:#f5e6c9;}
+
+.destiny-card.destiny-elegant{background:#111725;border-color:#c6a969;}
+.destiny-card.destiny-elegant .destiny-art::after{background:linear-gradient(180deg,#0b102030,transparent 30%,#0b10209c 64%,#0b1020 100%);}
+.destiny-card.destiny-elegant .destiny-copy,.destiny-card.destiny-elegant .nm{color:#fff2d6;}
+.destiny-card.destiny-elegant .destiny-title,.destiny-card.destiny-elegant .destiny-stats b{color:#dcc38c;}
+.destiny-card.destiny-elegant .destiny-stats,.destiny-card.destiny-elegant .destiny-caption{color:#d0c5b4;border-color:#ffffff25;}
+.destiny-card.destiny-elegant .destiny-element{background:#111725cc;color:#eedab1;}
+.destiny-card.destiny-elegant .destiny-seal{color:#e4cd93;}
+
 </style>
 <style>
 /* 독립 웹 배포용 베이스 리셋 (claude.ai Artifact 스켈레톤이 제공하던 부분을 대신함) */
@@ -3062,39 +3122,26 @@ function myroomShinsalChipsHtml(entry){
      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260">'+motif+'</svg>';
      return 'data:image/svg+xml,'+encodeURIComponent(svg);
    }
-   function myroomCardHtml(entry, rank){
-     var tier = myroomTier(entry.score);
-     /* fromInviter: 내가 초대받아서 가입했을 때, 나를 초대해준 사람 쪽에서 자동으로 뜨는 카드.
-        entry.ownerName(공개 갤러리의 "소유자" 표시)과 같은 자리를 쓰지만 의미가 다르므로 겹치지 않게 처리. */
-     var ownerTag = entry.ownerName ? '<span class="owner-tag">'+esc(entry.ownerName)+'님의 룸</span>' :
-       (entry.fromInviter ? '<span class="owner-tag">나를 초대함</span>' :
-       (entry.isCharacter ? '<span class="owner-tag char-tag">✨ 캐릭터</span>' : ''));
-     var isNew = entry.at && (Date.now()-entry.at < 24*3600*1000);
-     var newBadge = (isNew && !ownerTag) ? '<span class="myroom-new">NEW</span>' : '';
-     var sparkle = (tier.key==='s') ? '<span class="myroom-sparkle">✨</span>' : '';
-     var rankBadge = (rank!=null && rank<=3 && !ownerTag) ? '<span class="myroom-rank">'+RANK_MEDAL[rank-1]+'</span>' :
-       (rank!=null && rank<=3) ? '<span class="myroom-rank" style="top:26px;">'+RANK_MEDAL[rank-1]+'</span>' : '';
-     var chemi = (entry.dayGanWxA && entry.dayGanWxB) ? coupleTodayInfo(entry.dayGanWxA, entry.dayGanWxB) : null;
-     var chemiBadge = chemi ? '<span class="myroom-chemi" style="color:'+chemi.tier.color+';">'+chemi.tier.icon+' 오늘 '+chemi.tier.short+'</span>' : '';
-     var curFrame = getMyRoomFrame(entry.id);
-     var frameAttr = curFrame ? ' data-frame="'+curFrame+'"' : '';
-     var legendCls = (tier.key==='s') ? ' is-legend' : '';
-     var pct = Math.max(4, Math.min(100, entry.score||0));
-     var cardArt = wxCardArtUrl(entry.dayGanWxB);
-     return '<div class="myroom-card'+legendCls+'" tabindex="0" role="button" aria-label="'+esc(entry.nameB||'상대방')+'님과의 궁합 자세히 보기"'+frameAttr+' style="--tier-color:'+tier.color+'; --tier-soft:'+tier.soft+'; background:url(\''+cardArt+'\') center/cover no-repeat, linear-gradient(165deg,var(--surface-2),var(--surface-3)); '+frameStyleVars(curFrame)+'">'+
-         sparkle+
-         rankBadge+
-         ownerTag+
-         newBadge+
-         myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB, entry.charImg)+
-         '<span class="nm">'+esc(entry.nameB||'상대방')+'</span>'+
-         '<span class="sc">궁합 '+entry.score+'점</span>'+
-         '<div class="myroom-score-bar"><div class="myroom-score-fill" style="width:'+pct+'%;"></div></div>'+
-         '<span class="myroom-badge">'+tier.icon+' <b>'+(tier.grade||'')+'</b> · '+tier.label+'</span>'+
-         chemiBadge+
-         myroomShinsalChipsHtml(entry)+
-       '</div>';
-   }
+var CARD_SPIRITS={목:{key:'wood',title:'파릇용',tag:'성장 · 생명',symbol:'木'},화:{key:'fire',title:'불꽃새',tag:'열정 · 빛',symbol:'火'},토:{key:'earth',title:'모래사슴',tag:'안정 · 대지',symbol:'土'},금:{key:'metal',title:'구름호랑',tag:'결단 · 수호',symbol:'金'},수:{key:'water',title:'물방울용',tag:'지혜 · 흐름',symbol:'水'}};
+function cardSpirit(entry){return CARD_SPIRITS[entry.dayGanWxB]||{key:'',title:'아직 드러나지 않은 기운',tag:'사주 정보 확인 필요',symbol:'?'};}
+function collectibleCardHtml(entry,preview){
+ var tier=myroomTier(Number(entry.score)||0),spirit=cardSpirit(entry),elegant=tier.key==='s',frame=getMyRoomFrame(entry.id),sal=entry.shinsalB||[];
+ var seal=sal.indexOf('dohwa')>=0?'✿':sal.indexOf('yeokma')>=0?'➶':sal.indexOf('hwagae')>=0?'✧':'◇';
+ var sealName=sal.indexOf('dohwa')>=0?'꽃의 인장':sal.indexOf('yeokma')>=0?'바람의 인장':sal.indexOf('hwagae')>=0?'별의 인장':'오행의 인장';
+ var nobleNames={wood:'청림의 용',fire:'홍염의 봉황',earth:'황원의 사슴',metal:'백은의 호랑이',water:'심해의 용'};var artTitle=elegant?(nobleNames[spirit.key]||spirit.title):spirit.title;
+ var gan=entry.dayGanB||'',polarity=entry.cardPolarity==='yang'?'양의 기운':entry.cardPolarity==='yin'?'음의 기운':'일간의 기운';
+ return '<div class="myroom-card destiny-card'+(preview?' is-preview':'')+' tier-'+tier.key+(elegant?' destiny-elegant':'')+'" '+(preview?'':'tabindex="0" role="button"')+' data-grade="'+tier.grade+'" data-polarity="'+esc(entry.cardPolarity||'unknown')+'" data-element="'+spirit.key+'"'+(frame?' data-frame="'+esc(frame)+'"':'')+' aria-label="'+esc(entry.nameB||'상대방')+' · '+tier.grade+'등급 궁합 카드 · '+spirit.title+'" style="--tier-color:'+tier.color+';--tier-soft:'+tier.soft+';'+frameStyleVars(frame)+'">'+
+ '<div class="destiny-art">'+(spirit.key?'<img src="/assets/cards/'+(elegant?'premium/':'')+spirit.key+'.webp" alt="'+artTitle+' · '+spirit.tag+'" loading="lazy" decoding="async">':'')+'</div><div class="destiny-foil"></div><span class="destiny-corner tl"></span><span class="destiny-corner tr"></span><span class="destiny-corner bl"></span><span class="destiny-corner br"></span>'+
+ '<div class="destiny-top"><span class="destiny-grade">'+tier.grade+'</span><span class="destiny-element">'+spirit.symbol+'</span></div><span class="destiny-seal" aria-label="'+sealName+'">'+seal+'</span>'+
+ '<div class="destiny-copy"><span class="destiny-title">'+artTitle+'</span><span class="nm">'+esc(entry.nameB||'상대방')+'</span><div class="destiny-stats"><span>나와의 궁합 <b>'+Math.max(0,Math.min(100,Number(entry.score)||0))+'</b></span><span>'+esc(gan||spirit.symbol)+' · '+polarity+'</span></div><span class="destiny-caption">'+tier.label+' · '+spirit.tag+'</span></div></div>';
+}
+function myroomCardHtml(entry,rank){return collectibleCardHtml(entry,false);}
+function cardAlbumIntro(list){var counts={S:0,A:0,B:0,C:0};list.forEach(function(e){counts[myroomTier(e.score).grade]++;});return '<div class="album-intro"><p>인연이 모이면, 나만의 카드첩이 됩니다.</p><div class="album-grade-counts">'+['S','A','B','C'].map(function(g){return '<span><b>'+g+'</b> '+counts[g]+'</span>';}).join('')+'</div><small>궁합 등급은 나와의 조화를, 상징은 상대의 일간을 나타내요.</small></div>';}
+function cardSymbolGuideHtml(){return '<section class="card-symbol-guide"><button type="button" class="share-btn" data-card-preview>등급별 카드 미리보기</button><h3>다섯 기운의 작은 친구들</h3><p class="section-desc">상대의 일간에 맞는 일러스트가 카드에 담겨요.</p><div class="card-symbol-grid">'+Object.keys(CARD_SPIRITS).map(function(wx){var x=CARD_SPIRITS[wx];return '<div><img src="/assets/cards/'+x.key+'.webp" alt="'+x.title+'" loading="lazy"><b>'+x.title+'</b><small>'+wx+' · '+x.tag+'</small></div>';}).join('')+'</div><p class="disclaimer">S 90점 이상 · A 70~89점 · B 50~69점 · C 49점 이하. 등급은 사람의 가치나 카드의 소유 가능성을 뜻하지 않아요. 기본 카드는 귀여운 오행 친구, S등급은 고급스러운 수호신으로 표현됩니다. 음양·신살에 따라 문양과 인장이 달라집니다.</p></section>';}
+function openCardDesignPreview(){var root=$('#myroom-sheet-root');if(!root)return;root.innerHTML='<div class="sheet-backdrop" id="card-design-preview"><div class="sheet" style="gap:14px"><div class="sheet-head"><h2 class="section-title">인연 카드 · 디자인 미리보기</h2><button type="button" class="sheet-close" id="card-preview-close" aria-label="카드 미리보기 닫기">✕</button></div><p class="section-desc">아래는 디자인 견본이에요. 실제 수집 카드에는 친구의 이름과 나와의 궁합이 담겨요.</p>'+[{score:95,dayGanWxB:'목'},{score:80,dayGanWxB:'화'},{score:60,dayGanWxB:'금'},{score:40,dayGanWxB:'수'}].map(function(e,i){return collectibleCardHtml(Object.assign({id:'design-sample-'+i,nameB:'디자인 견본',cardPolarity:i%2?'yin':'yang',shinsalB:i%2?['dohwa']:['hwagae']},e),true);}).join('')+'</div></div>';$('#card-preview-close').addEventListener('click',function(){root.innerHTML='';});$('#card-design-preview').addEventListener('click',function(e){if(e.target.id==='card-design-preview')root.innerHTML='';});}
+document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-card-preview]'))openCardDesignPreview();});
+
+
 /* score 기준 상위 3개의 랭크를 ownerId+id 키로 매핑 (표시 순서와 무관하게 항상 궁합점수 기준) */
 function myroomRankMap(list){
   var sorted = list.slice().sort(function(a,b){ return (b.score||0)-(a.score||0); });
@@ -3148,13 +3195,7 @@ function openMyroomDetail(entry){
           '<p class="section-title" style="font-size:1rem;">'+esc(entry.nameB||'상대방')+'님과의 궁합</p>'+
           '<button type="button" class="sheet-close" id="myroom-detail-close">✕</button>'+
         '</div>'+
-        '<div class="myroom-card is-preview'+legendCls+'" tabindex="-1"'+frameAttr+' style="--tier-color:'+tier.color+'; --tier-soft:'+tier.soft+'; background:url(\''+wxCardArtUrl(entry.dayGanWxB)+'\') center/cover no-repeat, linear-gradient(165deg,var(--surface-2),var(--surface-3)); '+frameStyleVars(curFrame)+'">'+
-          myroomPairDotsHtml(entry.dayGanWxA, entry.dayGanWxB, entry.genderA, entry.genderB, entry.charImg)+
-          '<span class="nm">'+esc(entry.nameB||'상대방')+'님과의 궁합</span>'+
-          '<span class="sc">궁합 '+entry.score+'점</span>'+
-          '<div class="myroom-score-bar" style="max-width:160px;"><div class="myroom-score-fill" style="width:'+pct+'%;"></div></div>'+
-          '<span class="myroom-badge" style="position:static;">'+tier.icon+' <b>'+(tier.grade||'')+'</b> · '+tier.label+'</span>'+
-        '</div>'+
+        collectibleCardHtml(entry,true)+
         (chemi ?
           '<div class="detail-block"><p class="ttl">오늘의 케미</p>'+
             '<span class="couple-today-badge" style="--tier-color:'+chemi.tier.color+'; --tier-soft:'+chemi.tier.soft+';">'+
@@ -3274,7 +3315,7 @@ function wireMyroomDexBtn(){
 }
 var SHINSAL_DEX_KEYS = ['dohwa','yeokma','hwagae'];
 function openMyroomDex(){
-  var list = loadMyRoomList();
+  var list = INVITE_MYROOM_CACHE || loadMyRoomList();
   var counts = {};
   list.forEach(function(e){ var t = myroomTier(e.score); counts[t.key] = (counts[t.key]||0)+1; });
   var gotTierCount = MYROOM_TIERS.filter(function(t){ return counts[t.key]>0; }).length;
@@ -3328,7 +3369,7 @@ function openMyroomDex(){
           '<p class="section-desc">지금까지 '+gotTierCount+' / '+MYROOM_TIERS.length+'개 등급을 만나봤어요 ('+pct+'%)</p>'+
           '<div class="bar"><div class="fill" style="width:'+pct+'%;"></div></div>'+
         '</div>'+
-        '<div class="dex-grid">'+cellsHtml+'</div>'+
+        '<div class="dex-grid">'+cellsHtml+'</div>'+cardSymbolGuideHtml()+
         '<p class="dex-subhead">신살 도감</p>'+
         '<div class="dex-progress">'+
           '<p class="section-desc">지금까지 '+gotShinsalCount+' / '+SHINSAL_DEX_KEYS.length+'개 신살을 가진 인연을 만나봤어요 ('+shinsalPct+'%)</p>'+
@@ -3409,7 +3450,7 @@ function reportCardHtml(c){
   return '<button type="button" class="report-card" data-report-id="'+esc(String(c.id))+'" data-cat="'+esc(c.category||'')+'">'+
       '<span class="report-cover">'+coverInner+'</span>'+
       '<span class="report-text"><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc(c.tagline||'')+'</span>'+
-        '<span class="report-card-footer"><span class="report-preview-label">도입부 무료</span>'+
+        '<span class="report-card-footer">'+
         (unlocked?'<span class="report-price">이야기 보유</span>':'')+'</span>'+
       '</span>'+
     '</button>';
@@ -4060,7 +4101,7 @@ function renderMyRoomLocal(root){
     root.innerHTML =
       '<p class="eyebrow">나의 카드첩</p>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>먼저 내 사주를 입력하면, 초대한 친구가 등록했을 때 이곳에 카드가 모여요.</span></div>';
+      '<span>먼저 내 사주를 입력하면, 초대한 친구가 등록했을 때 이곳에 카드가 모여요.</span></div>'+cardSymbolGuideHtml();
     return;
   }
   if (INVITE_MYROOM_CACHE === null){
@@ -4076,7 +4117,7 @@ function renderMyRoomLocal(root){
       '<div class="myroom-head"><p class="eyebrow">나의 카드첩</p>'+
       '</div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>친구를 초대하면 이곳에 카드가 모여요.</span></div>';
+      '<span>친구를 초대하면 이곳에 카드가 모여요.</span></div>'+cardSymbolGuideHtml();
     return;
   }
   var rankMap = myroomRankMap(list);
@@ -4085,7 +4126,7 @@ function renderMyRoomLocal(root){
     '<div class="myroom-head"><p class="eyebrow">나의 카드첩</p>'+
       '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
     '</div>'+
-    '<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
+    cardAlbumIntro(list)+'<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
     '<p class="disclaimer">내가 초대해서 실제로 사주를 등록한 친구들이 모이는 갤러리예요.</p>';
   wireMyroomSortSeg();
   wireMyroomCardClicks($('.myroom-grid', root), displayList);
@@ -4114,7 +4155,7 @@ function fetchInviteMyRoom(){
       var compat = computeCompat(STATE.mySaju, resB);
       return {
         id:'invite-'+row.invitee_device_id, _otherId:row.invitee_device_id, nameB:row.invitee_name||resB.name||'상대방',
-        dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx,
+        dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx, dayGanB:resB.day.ganKr, cardPolarity:['甲','丙','戊','庚','壬'].indexOf(resB.day.gan)>=0?'yang':'yin',
         shinsalA:STATE.mySaju.shinsal||[], shinsalB:resB.shinsal||[],
         zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:compat.scores.total,
         at:row.created_at ? new Date(row.created_at).getTime() : Date.now()
@@ -4126,7 +4167,7 @@ function fetchInviteMyRoom(){
       var compat = computeCompat(STATE.mySaju, resB);
       return {
         id:'invited-by-'+row.inviter_device_id, _otherId:row.inviter_device_id, nameB:resB.name||'초대한 친구', fromInviter:true,
-        dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx,
+        dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx, dayGanB:resB.day.ganKr, cardPolarity:['甲','丙','戊','庚','壬'].indexOf(resB.day.gan)>=0?'yang':'yin',
         shinsalA:STATE.mySaju.shinsal||[], shinsalB:resB.shinsal||[],
         zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:compat.scores.total,
         at:row.created_at ? new Date(row.created_at).getTime() : Date.now()
@@ -4990,7 +5031,7 @@ function saveMyRoomEntry(resA, resB, compat, total, extra){
   var id = (extra && extra.id) ? extra.id : ('compat-'+resA.day.gan+resA.day.zhi+'-'+resB.day.gan+resB.day.zhi);
   var entry = Object.assign({
     id:id, nameB:resB.name||'상대방', dayGanWxA:resA.dayGanWx, dayGanWxB:resB.dayGanWx,
-    genderA:resA.gender, genderB:resB.gender,
+    genderA:resA.gender, genderB:resB.gender, dayGanB:resB.day.ganKr, cardPolarity:['甲','丙','戊','庚','壬'].indexOf(resB.day.gan)>=0?'yang':'yin',
     shinsalA:resA.shinsal||[], shinsalB:resB.shinsal||[],
     zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:total, at:Date.now()
   }, extra||{});
