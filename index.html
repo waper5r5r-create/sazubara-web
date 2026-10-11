@@ -2097,7 +2097,7 @@ function pullPaidUnlocks(){
    반영한다. 매번 전체 목록 — 리포트는 가짓수가 적어 가볍다. */
 function pullReportUnlocks(){
   if (!DEVICE.shareCode) return;
-  fetch('/api/reports/unlock?device_id='+encodeURIComponent(DEVICE.shareCode))
+  return fetch('/api/reports/unlock?device_id='+encodeURIComponent(DEVICE.shareCode))
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data || !data.ok || !data.rows) return;
