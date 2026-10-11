@@ -11,14 +11,12 @@
 //   inviter가 saju_opts를 아직 올리지 않았으면 그 카드는 내려주지 않습니다.
 // POST /api/invite?action=redeem  body:{code, inviteeDeviceId, inviteeName, sajuOpts}
 //   친구가 초대 링크로 들어와서 "자기 사주를 직접 입력"했을 때 호출됩니다.
-//   - 이 기기(invitee)가 과거에 이미 어떤 초대로든 보너스를 적립해준 적이 있으면(=invitee_device_id unique 제약),
-//     다시 호출돼도 또 적립되지 않습니다.
-//   - 자기 자신의 초대코드로는 적립되지 않습니다(자기 초대 방지).
-//   - 실제로 친구가 사주를 등록한 경우에만 초대한 사람(inviter)에게 +3 크레딧이 적립됩니다.
+//   - 이 기기(invitee)가 과거에 이미 어떤 초대로든 등록된 적이 있으면(=invitee_device_id unique 제약),
+//     다시 호출돼도 중복 등록되지 않습니다.
+//   - 자기 자신의 초대코드로는 등록되지 않습니다(자기 초대 방지).
+//   - 크레딧 폐지 이후로는 보너스 지급 없이, 서로의 마이룸(카드첩)에 카드가 생기는 것만 합니다.
 
-const { ensureDevice, insertLedger, sbFetch, getQuery, readJsonBody } = require('./_supabase');
-
-const INVITE_BONUS = 3;
+const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('./_supabase');
 
 async function handleList(req, res) {
   if (req.method !== 'GET') {
@@ -137,8 +135,8 @@ async function handleRedeem(req, res) {
     });
 
     if (insRes.status === 409) {
-      // 이 기기는 이미 예전에 (이 초대든 다른 초대든) 등록 보너스를 적립해줬음 — 정상, 중복 지급만 막음.
-      res.status(200).json({ ok: true, credited: false, already: true });
+      // 이 기기는 이미 예전에 (이 초대든 다른 초대든) 등록된 적이 있음 — 정상, 중복 등록만 막음.
+      res.status(200).json({ ok: true, registered: false, already: true });
       return;
     }
     if (!insRes.ok) {
@@ -147,9 +145,7 @@ async function handleRedeem(req, res) {
       return;
     }
 
-    await insertLedger({ deviceId: code, amount: INVITE_BONUS, reason: '친구 초대 등록 보너스' });
-
-    res.status(200).json({ ok: true, credited: true });
+    res.status(200).json({ ok: true, registered: true });
   } catch (e) {
     res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
   }
