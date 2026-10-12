@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyReviewsHtml,storyAtlasArt,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -55,3 +55,28 @@ test('card detail uses two short relationship metaphors instead of design explan
 
 
 test('story reader is outside the app disabled while reading',()=>{assert.match(html, /id="toast-root"><\/div>\s*<\/div>\s*<!--[\s\S]*?-->\s*<div id="report-sheet-root">/);assert.equal((html.match(/id="report-sheet-root"/g)||[]).length,1);assert.ok(html.includes('touch-action:pan-y'));});
+
+
+test('continuous reader shows short opening then two gates separated by reviews',()=>{
+ const data={access:{story:false,detail:false},rows:[{caption_template:'PRIVATE_SENTENCE'}]};
+ const text=api.storyFlowHtml(concept,data,result);
+ assert.equal(api.readerStepsHtml(data,'story'),'');
+ assert.equal((text.match(/class="story-frame /g)||[]).length,2);
+ assert.ok(!text.includes('PRIVATE_SENTENCE'));
+ assert.ok(text.indexOf('data-gate="story"')<text.indexOf('class="story-reviews"'));
+ assert.ok(text.indexOf('class="story-reviews"')<text.indexOf('data-gate="detail"'));
+ assert.ok(!text.includes('01 ·'));assert.ok(text.includes('4,900'));assert.ok(text.includes('12,900'));
+});
+test('paid story keeps all personal interpretation in ten distinct illustrated scenes',()=>{
+ const rows=Array.from({length:23},(_,i)=>({caption_template:'UNIQUE_'+i+'_END'}));
+ const text=api.storyPaidScenes(concept,{rows},result);
+ for(const row of rows)assert.equal(text.split(row.caption_template).length-1,1);
+ assert.equal((text.match(/class="story-frame /g)||[]).length,10);
+ assert.equal(new Set([...text.matchAll(/src="([^"]+)"/g)].map(x=>x[1])).size,10);
+ assert.ok(api.storyAtlasArt(concept,{...result,gender:'m'},0).includes('love-m-0'));
+});
+test('reviews show only verified supplied entries and no invented proof',()=>{
+ const blank=api.storyReviewsHtml({});assert.ok(blank.includes('아직 등록된 후기가 없어요'));assert.ok(!blank.includes('별점'));
+ const rendered=api.storyReviewsHtml({reviews:[{verified:false,text:'UNVERIFIED'},{verified:true,text:'REAL_REVIEW',displayName:'Reader'}]});
+ assert.ok(!rendered.includes('UNVERIFIED'));assert.ok(rendered.includes('REAL_REVIEW'));
+});

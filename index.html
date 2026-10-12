@@ -19,7 +19,7 @@
 <title>사주바라 — 나의 사주, 오늘의 흐름</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600&display=swap" rel="stylesheet">
 <style>
 /* 레이아웃: 상단 고정 헤더 + 스크롤 콘텐츠 + 하단 고정 3탭 바를 가진 모바일 앱 셸.
    웹툰 포스터풍 다크 테마 — 짙은 자정 보라 배경 + 비비드 마젠타 액센트. */
@@ -952,6 +952,21 @@ body{background:radial-gradient(ellipse at 50% 0,rgba(61,72,117,.32),transparent
 .destiny-card .tier-art-sheet::after{background:linear-gradient(180deg,transparent 0%,transparent 62%,#fffaf099 78%,#fffaf0 100%);}
 .destiny-card.tier-s .tier-art-sheet::after{background:linear-gradient(180deg,transparent 0%,transparent 62%,#10172bbd 80%,#10172b 100%);}
 </style>
+<style>
+/* A continuous illustrated reader: dialogue is separate from explanatory narration. */
+.report-page{background:#10131c;}.report-page-body{padding:0 24px 64px;flex:none;}.report-page-topbar{background:#10131cf2;border-color:#ffffff10;}#reader-steps:empty{display:none;}
+.reader-cover{min-height:230px;padding:30px 24px 22px;background:#171d2b;}.reader-cover:after{background:linear-gradient(0deg,#10131c,rgba(16,19,28,.25));}.reader-cover h1{font-family:'Noto Serif KR',serif;font-weight:600;font-size:1.65rem;line-height:1.55;letter-spacing:-.04em;}.reader-cover .reader-kicker{font-size:.62rem!important;letter-spacing:.1em;}.reader-cover p:not(.reader-kicker){font-size:.8rem;line-height:1.8;color:#c6c4c8;}
+.story-opening-v2{padding:36px 0 32px;text-align:center;}.story-opening-v2 h2,.story-gate h2,.story-reviews h2,.detail-bridge h2,.story-epilogue h2{font-family:'Noto Serif KR',serif;font-weight:500;font-size:1.45rem;line-height:1.75;letter-spacing:-.035em;margin:12px 0 18px;}.report-page .reader-kicker{font-family:'Noto Sans KR',sans-serif;font-size:.65rem!important;font-weight:500;letter-spacing:.07em;color:#d6b785!important;}
+.story-frame{margin:0 0 42px;}.story-illustration{position:relative;aspect-ratio:3/4;overflow:hidden;width:calc(100% + 48px);margin:0 -24px;background:#1b2030;}.story-illustration img{position:absolute;width:200%;height:300%;max-width:none;left:calc(var(--scene-x)*-100%);top:calc(var(--scene-y)*-100%);object-fit:fill;}.story-illustration:after{content:'';position:absolute;inset:72% 0 0;background:linear-gradient(transparent,#10131c);}
+.story-dialogue{position:relative;width:fit-content;max-width:90%;margin:-34px auto 0;background:#fbf7ef;border:1px solid #e8dfd1;padding:18px 24px 18px 30px;border-radius:28px;box-shadow:0 8px 28px #0003;color:#292731;z-index:1;}.story-dialogue:before{content:'';position:absolute;top:-8px;right:29px;width:16px;height:16px;background:#fbf7ef;transform:rotate(45deg);border-top:1px solid #e8dfd1;border-left:1px solid #e8dfd1;}.story-dialogue p{font-family:'Noto Sans KR',sans-serif;font-size:.91rem;font-weight:500;line-height:1.9;margin:0;letter-spacing:-.02em;word-break:keep-all;}.dialogue-mark{position:absolute;left:13px;top:8px;color:#b39b76;font-family:Georgia,serif;font-size:1.35rem;}.story-frame:nth-child(even) .story-dialogue{margin-left:6%;}.story-frame:nth-child(odd) .story-dialogue{margin-right:6%;}.story-voice{padding:28px 4px 0;font-family:'Noto Sans KR',sans-serif;font-size:.86rem;line-height:2.05;color:#c9c8d1;word-break:keep-all;}.story-voice p{margin:0;}.story-voice p+p{margin-top:20px;}.story-voice:empty{display:none;}.story-opening-v2+.story-frame .story-voice{text-align:center;}
+.story-locked-preview{height:200px;overflow:hidden;position:relative;margin:0 -24px -45px;pointer-events:none;}.story-locked-preview .story-illustration{width:100%;margin:0;filter:blur(9px);opacity:.5;}.story-locked-preview:after{content:'';position:absolute;inset:0;background:linear-gradient(transparent,#10131c 90%);}.story-locked-preview>span{position:absolute;inset:60px 0 auto;text-align:center;color:#e3d4b8;font-size:.82rem;z-index:1;}
+.story-gate.reader-offer{position:relative;margin:0 0 24px;text-align:center;border:1px solid #cfb1814d;border-radius:24px;padding:32px 22px 24px;background:linear-gradient(160deg,#222838,#171c28);}.story-lock{display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin:0 auto 18px;border-radius:50%;background:#d6b78515;color:#d6b785;}.story-lock svg{width:20px;height:20px;}.story-gate>p:not(.reader-kicker):not(.reader-price-note){font-size:.83rem;line-height:1.9;color:#c3c1c9;}.gate-features{display:flex;flex-direction:column;gap:9px;margin:24px 0;color:#ded6c7;font-size:.76rem;}.story-gate .btn-primary{background:linear-gradient(120deg,#f2d5a8,#dcb479);border-radius:14px;min-height:54px;font-weight:600;}.story-gate .reader-price-note{font-size:.67rem;line-height:1.9;color:#9d9daa;}
+.story-reviews{margin:70px 0 64px;padding:0 0 38px;border-bottom:1px solid #ffffff12;}.story-reviews h2{font-size:1.27rem;}.story-reviews blockquote{margin:20px 0 0;padding:22px;background:#1b202d;border-radius:18px;font-size:.85rem;line-height:1.9;}.story-reviews footer{margin-top:14px;font-size:.69rem;color:#a7a5af;}.review-awaiting{padding:24px;border:1px solid #ffffff12;border-radius:18px;color:#aaa8b2;text-align:center;}.review-awaiting>span{display:block;margin-bottom:10px;}.review-awaiting svg{width:22px;height:22px;}.review-awaiting p{font-size:.83rem;margin:0 0 7px;}.review-awaiting small{font-size:.71rem;line-height:1.8;}
+.detail-bridge{text-align:center;}.detail-bridge>p:last-of-type,.story-epilogue>p:last-child{font-size:.82rem;line-height:2;color:#bcbac6;}.detail-sample{position:relative;text-align:left;background:#eee7da;border-radius:18px;padding:30px 28px;color:#403a35;margin:30px 0 26px;overflow:hidden;}.detail-sample>span:first-child{font-size:.65rem;color:#8c7557;}.detail-sample h3{font-family:'Noto Serif KR',serif;font-size:1rem;font-weight:500;margin:12px 0 26px;}.report-sample-lines{filter:blur(3px);display:grid;gap:10px;}.report-sample-lines i{display:block;height:6px;background:#b2a99b;border-radius:4px;}.report-sample-lines i:nth-child(2){width:83%;}.report-sample-lines i:nth-child(4){width:61%;}.sample-lock{position:absolute;bottom:24px;right:28px;}.sample-lock svg{width:20px;height:20px;}.detail-prerequisite{text-align:center;font-size:.72rem;color:#aaa7b5;line-height:1.8;}.story-epilogue{text-align:center;padding:32px 0 5px;}.story-epilogue h2{font-size:1.3rem;}#owned-detail-report{margin-top:40px;}.report-analysis{scroll-margin-top:80px;}
+@media(max-width:374px){.report-page-body{padding-left:20px;padding-right:20px;}.story-illustration{width:calc(100% + 40px);margin-left:-20px;margin-right:-20px;}.story-locked-preview{margin-left:-20px;margin-right:-20px;}.story-dialogue{padding:15px 20px 15px 26px;max-width:94%;}.story-dialogue p{font-size:.84rem;}.story-gate.reader-offer{padding:28px 18px 22px;}.story-opening-v2 h2,.story-gate h2{font-size:1.28rem;}}
+</style>
+<style>.story-illustration{aspect-ratio:auto;}.story-illustration img{position:relative;display:block;width:100%;height:auto;max-width:100%;left:auto;top:auto;object-fit:contain;}</style>
+<style>.story-review-form{margin-top:24px;padding:22px;border:1px solid #ffffff12;border-radius:18px;}.story-review-form>label:first-child{display:block;font-size:.85rem;color:#ded6c7;margin-bottom:14px;}.story-review-form textarea{display:block;width:100%;min-height:120px;resize:vertical;background:#121722;color:#eee;border:1px solid #ffffff25;border-radius:12px;padding:14px;font:inherit;font-size:.8rem;line-height:1.9;}.review-consent{display:flex;align-items:center;gap:8px;font-size:.71rem;line-height:1.9;margin-top:15px;color:#bcbac5;}.review-privacy{font-size:.65rem;line-height:1.8;color:#a5a1b1;}.story-review-form .share-btn{width:100%;margin-top:15px;}#review-submit-status{font-size:.75rem;line-height:1.8;color:#d6b785;}</style>
 </head>
 <body>
 
@@ -2403,7 +2418,7 @@ var REVEAL_SPARK_SVG = personaIconSvg('#f3ece0',
 function personaWrap(sectionType, innerHtml){ return innerHtml; }
 
 /* 하단 탭바 아이콘 (currentColor 선, 22x22) */
-var UI_ICON_PATHS={share:'M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7',palette:'M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-3.7 2 2 0 0 1 1-3.8h2a4 4 0 0 0 4-4A8 8 0 0 0 12 3ZM7 9h.01M11 6h.01M16 8h.01M6 14h.01',compass:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM16 8l-3 5-5 3 3-5 5-3Z',spark:'m12 3 2.7 6.3L21 12l-6.3 2.7L12 21l-2.7-6.3L3 12l6.3-2.7L12 3Z',arrow:'m9 5 7 7-7 7',moon:'M19 15a8 8 0 1 1-10-10 8 8 0 0 0 10 10Z'};
+var UI_ICON_PATHS={lock:'M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5ZM12 14v3',chat:'M4 4h16v12H9l-5 4ZM8 8h8M8 12h5',share:'M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7',palette:'M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-3.7 2 2 0 0 1 1-3.8h2a4 4 0 0 0 4-4A8 8 0 0 0 12 3ZM7 9h.01M11 6h.01M16 8h.01M6 14h.01',compass:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM16 8l-3 5-5 3 3-5 5-3Z',spark:'m12 3 2.7 6.3L21 12l-6.3 2.7L12 21l-2.7-6.3L3 12l6.3-2.7L12 3Z',arrow:'m9 5 7 7-7 7',moon:'M19 15a8 8 0 1 1-10-10 8 8 0 0 0 10 10Z'};
 function uiIcon(name){return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="'+(UI_ICON_PATHS[name]||UI_ICON_PATHS.spark)+'" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';}
 var TAB_ICON_SAJU = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">'+
   '<rect x="2.3" y="8" width="3" height="13" rx="1.1" stroke="currentColor" stroke-width="1.5"/>'+
@@ -3564,43 +3579,6 @@ function renderReportsTabView(){
     if(grid){grid.innerHTML='<div class="card" style="grid-column:1/-1"><p class="section-desc">이야기를 불러오지 못했어요.</p><button type="button" class="btn-secondary" id="retry-reports">다시 불러오기</button></div>';$('#retry-reports').addEventListener('click',renderReportsTabView);}
   });
 }
-   /* ---- 리포트 해금 전 소셜프루프(후기) 스트립 ----
-      실제 서비스 오픈 전이라 아직 진짜 후기가 없어서, 지금은 구조 검증용 예시 문구를 넣어둔 상태.
-      관리자 패널에 후기 입력 기능을 붙이거나, 실제 사용자 후기가 쌓이면 이 배열을 교체하면 됨.
-      잠금 해제 버튼 바로 위에 붙여서 "이미 열어본 사람들" 느낌으로 구매 직전 신뢰를 보강한다.
-      예전에는 모든 이야기(컨셉)에 똑같은 후기 3개만 고정으로 떴음 — 이제는 후기마다 tags를
-      붙여서, 지금 보고 있는 이야기의 제목/소개와 겹치는 태그가 많은 후기를 우선 골라 보여주고,
-      컨셉 id로 시드를 줘서 "같은 이야기는 항상 같은 조합, 다른 이야기는 다른 조합"이 뜨게 한다. */
-   var REPORT_REVIEW_POOL = [
-   { gan:'경금일간', ganEmoji:'⚔️', who:'k***', time:'1시간 전', repeat:0, tags:['친구','인간관계'], q:'친구 관계 부분이 진짜 제 요즘 고민이었어요. 어떻게 알았지 싶을 정도로 소름.' },
-   { gan:'계수일간', ganEmoji:'💧', who:'jr******', time:'어제', repeat:3, tags:['일반','성격'], q:'분위기도 좋고 내용도 구체적이어서 벌써 세 번째 이야기 열어봤어요.' },
-   { gan:'무토일간', ganEmoji:'⛰️', who:'m***', time:'3일 전', repeat:0, tags:['친구','인간관계'], q:'친구랑 같이 보다가 둘 다 소리질렀어요. 너무 제 얘기라서 ㅋㅋ' },
-     { gan:'갑목일간', ganEmoji:'🌳', who:'y****', time:'2시간 전', repeat:1, tags:['연애','썸'], q:'소개팅남 계속 생각나서 봤는데, 왜 자꾸 엇갈리는지 진짜 제 얘기였어요.' },
-   { gan:'병화일간', ganEmoji:'🔥', who:'hj****', time:'5시간 전', repeat:0, tags:['연애'], q:'좋아하는 사람 생겼을 때 봤는데 고백 타이밍까지 콕 집어줘서 소름 돋았어요.' },
-     { gan:'기토일간', ganEmoji:'🌾', who:'s***', time:'어제', repeat:0, tags:['가족','인간관계'], q:'가족이랑 자꾸 부딪히는 이유를 이렇게 풀어줄 줄 몰랐어요. 마음이 좀 편해졌어요.' },
-   { gan:'신금일간', ganEmoji:'💎', who:'d******', time:'2일 전', repeat:2, tags:['돈','재물'], q:'이직하고 돈 관리가 계속 꼬였었는데, 왜 그랬는지 타이밍까지 짚어줘서 놀랐어요.' },
-   { gan:'임수일간', ganEmoji:'🌊', who:'w***', time:'3시간 전', repeat:0, tags:['돈','재물'], q:'곧 목돈 들어올 시기라고 해서 반신반의했는데 진짜 그 무렵에 일이 풀렸어요.' },
-   { gan:'을목일간', ganEmoji:'🌿', who:'c****', time:'6시간 전', repeat:0, tags:['진로','직장'], q:'이직 고민될 때 봤는데, 지금 움직여야 하는 이유를 구체적으로 알려줘서 결정에 도움 됐어요.' },
-   { gan:'정화일간', ganEmoji:'🕯️', who:'n***', time:'어제', repeat:1, tags:['직장','진로'], q:'팀 옮기고 적응 안 될 때 봤는데, 제 성향이랑 지금 자리가 왜 안 맞는지 콕 짚어줬어요.' },
-   { gan:'경금일간', ganEmoji:'⚔️', who:'ej*****', time:'4일 전', repeat:0, tags:['미래','타이밍'], q:'올해 안에 큰 변화 온다고 해서 긴가민가했는데, 진짜 그 시기에 이사하게 됐어요.' },
-   { gan:'무토일간', ganEmoji:'⛰️', who:'b***', time:'12시간 전', repeat:0, tags:['성격','일반'], q:'제 성격을 이렇게 구체적으로 짚어주는 건 처음이라 신기했어요.' },
-   { gan:'계수일간', ganEmoji:'💧', who:'r****', time:'2일 전', repeat:0, tags:['일반'], q:'반신반의하고 봤는데 지금 제 상황이랑 너무 맞아떨어져서 믿게 됐어요.' }
-   ];
-   function pickReportReviews(concept){
-     var text = (((concept&&concept.title)||'')+' '+((concept&&concept.tagline)||''));
-     var seed = 0;
-     var sid = String((concept&&concept.id)||'');
-     for (var i=0;i<sid.length;i++) seed = (seed*31 + sid.charCodeAt(i)) >>> 0;
-     function rand(){ seed = (seed*1664525 + 1013904223) >>> 0; return seed / 4294967296; }
-     var scored = REPORT_REVIEW_POOL.map(function(r, idx){
-       var score = r.tags.reduce(function(s,t){ return s + (text.indexOf(t)!==-1 ? 1 : 0); }, 0);
-       return { r:r, score:score, rnd: rand(), idx: idx };
-   });
-     scored.sort(function(a,b){ return (b.score - a.score) || (a.rnd - b.rnd); });
-     return scored.slice(0, 3).map(function(x){ return x.r; });
-   }
-   function reviewStripHtml(concept){ return ''; }
-
 var REPORT_STAGE_PRICE={story:4900,detail:12900};
 var REPORT_READER={concept:null,data:null,stage:'story',previousOverflow:'',previousFocus:null};
 function reportStageKey(c,stage){return 'report-'+stage+'-'+c.id;}
@@ -3646,13 +3624,8 @@ function storyPrologueHtml(c){
     '<p class="prologue-bridge">이제, 이 이야기의 주인공을 당신의 사주로 바꿔볼게요.</p></section>';
 }
 function stageOfferHtml(concept,stage){
-  var detail=stage==='detail';
-  return '<section class="reader-offer"><span class="reader-kicker">'+(detail?'02 · 나의 세부 리포트':'01 · 나의 이야기')+'</span>'+
-    '<h2>'+(detail?'이야기 속 내 모습,<br>이유까지 알고 싶다면.':'이 다음은,<br>당신의 사주가 이끄는 이야기.')+'</h2>'+
-    '<p>'+(detail?'타고난 성향, 반복되는 패턴, 관계와 선택의 힌트를 항목별로 정리해드려요.':'나의 기운에 따라 달라지는 성향과 선택을 웹툰으로 편하게 따라가 보세요.')+'</p>'+
-    '<ul>'+(detail?'<li>나의 사주에서 읽히는 성향과 근거</li><li>반복되는 패턴과 놓치기 쉬운 신호</li><li>지금 실천해볼 수 있는 선택의 힌트</li>':'<li>나의 사주에 맞춘 장면과 짧은 내레이션</li><li>성향부터 선택까지 이어지는 완결 이야기</li>')+'</ul>'+
-    '<button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'세부 리포트':'이야기')+' 열기 · '+(detail?'12,900':'4,900')+'원</button>'+
-    '<p class="reader-price-note">'+(detail?'선택 구매 · 이야기와 별도 결제 · 1회 결제':'1회 결제 · 이 이야기 소장<br>세부 리포트는 선택 시 별도 12,900원 · 모두 구매 시 총 17,800원')+'</p></section>';
+ var detail=stage==='detail';
+ return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'나를 더 깊이 이해하는 시간':'이야기는 여기서부터')+'</p><h2>'+(detail?'왜 이런 마음이 드는지,<br>사주의 근거까지.':'이 다음 이야기는,<br>당신의 사주로 이어집니다.')+'</h2><p>'+(detail?'웹툰에서 발견한 내 모습을 길고 자세한 해석으로 연결해보세요.':'당신이 끌리는 순간과 망설이는 이유.<br>나를 닮은 주인공의 이야기를 이어 읽어보세요.')+'</p><div class="gate-features">'+(detail?'<span>12개 주제의 깊이 있는 풀이</span><span>관계와 선택의 패턴 · 실천의 힌트</span>':'<span>성향에 따라 달라지는 이야기</span><span>처음부터 끝까지 이어지는 한 편의 이야기</span>')+'</div><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'세부 리포트':'이야기')+' 열기 · '+(detail?'12,900':'4,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 이야기와 별도 결제 · 1회 결제':'1회 결제 · 이 이야기 소장<br>세부 리포트는 선택 시 별도 12,900원 · 모두 구매 시 총 17,800원')+'</p></section>';
 }
 function startReportUnlock(concept,stage){
   if(['story','detail'].indexOf(stage)===-1)return;
@@ -3673,13 +3646,9 @@ function startReportUnlock(concept,stage){
 function loadReportReader(concept){
   return fetch('/api/reports/list?conceptId='+encodeURIComponent(concept.id)+'&device_id='+encodeURIComponent(DEVICE.shareCode))
     .then(function(r){if(!r.ok)throw new Error('READER_FAILED');return r.json();})
-    .then(function(data){if(!data.ok||!Array.isArray(data.rows)||!data.access)throw new Error('READER_FAILED');return data;});
+    .then(function(data){if(!data.ok||!Array.isArray(data.rows)||!data.access)throw new Error('READER_FAILED');return fetch('/api/reports/reviews?conceptId='+encodeURIComponent(concept.id)).then(function(r){if(!r.ok)throw new Error('REVIEWS_FAILED');return r.json();}).then(function(reviews){data.reviews=reviews.ok?reviews.rows:[];return data;}).catch(function(){data.reviews=[];data.reviewsUnavailable=true;return data;});});
 }
-function readerStepsHtml(data,stage){
-  return '<div class="reader-steps" role="group" aria-label="이야기 읽기 단계">'+
-    '<button type="button" data-reader-stage="story" aria-pressed="'+(stage==='story')+'"><span>01</span> 나의 이야기 <small>'+(data.access.story?'보유':'웹툰')+'</small></button>'+
-    '<button type="button" data-reader-stage="detail" aria-pressed="'+(stage==='detail')+'"><span>02</span> 세부 리포트 <small>'+(data.access.detail?'보유':'심화 풀이')+'</small></button></div>';
-}
+function readerStepsHtml(){return '';}
 function readerKeydown(e){
   var root=$('#report-page-root');if(!root)return;
   if(e.key==='Escape'){e.preventDefault();closeReportSheet();return;}
@@ -3699,7 +3668,7 @@ function openReportViewer(concept,stage){
   root.innerHTML='<div class="report-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title">'+
     '<div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="이야기 목록으로 돌아가기">‹</button>'+
     '<span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div>'+
-    '<div class="reader-cover">'+(concept.cover_img_url?'<img src="'+esc(concept.cover_img_url)+'" alt="" decoding="async">':'')+
+    '<div class="reader-cover"><img src="/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+((STATE.mySaju.gender==='m'||STATE.mySaju.gender==='male')?'m':'f')+'-0.webp" alt="" decoding="async">'+
     '<div><p class="reader-kicker">'+esc(concept.category||'나의 사주')+' · SAZUBARA STORY</p><h1>'+esc(concept.title)+'</h1><p>'+esc(concept.tagline||'')+'</p></div></div>'+
     '<div id="reader-steps"></div><div class="report-page-body" id="report-panel-list"><p class="section-desc" role="status">이야기를 불러오는 중...</p></div></div>';
   $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
@@ -3778,28 +3747,52 @@ function detailReportHtml(concept,panels,result){
     '<section class="report-action"><p class="reader-kicker">읽고 난 뒤, 한 가지</p><h2>'+(money?'돈의 흐름을 기록해보세요.':'마음의 흐름을 기록해보세요.')+'</h2><p>'+(money?'최근 한 달의 지출 중 만족했던 선택과 아쉬웠던 선택을 하나씩 적어보세요. 반복되는 이유를 찾는 데서 다음 선택이 시작됩니다.':'편안했던 관계와 지쳤던 관계를 하나씩 떠올려보세요. 그때 내가 표현한 마음과 참았던 마음을 나눠 적어보면 반복되는 패턴을 살펴볼 수 있어요.')+'</p></section>'+
     '<p class="disclaimer">명리학의 오행·신강·신약을 바탕으로 한 참고용 콘텐츠입니다. 특정 사건이나 수익, 만남의 시기를 보장하지 않습니다.</p>';
 }
+
+function storyAtlasArt(concept,result,index){
+ var gender=(result.gender==='m'||result.gender==='male')?'m':'f';
+ return '<div class="story-illustration"><img src="/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+gender+'-'+index+'.webp" alt="'+(storyCategory(concept)==='wealth'?'돈과 선택을 돌아보는':'마음과 관계를 돌아보는')+' 이야기 장면" loading="'+(index<2?'eager':'lazy')+'" decoding="async"></div>';
+}
+function storySceneHtml(concept,result,index,dialogue,caption){
+ return '<section class="story-frame scene-'+index+'">'+storyAtlasArt(concept,result,index)+'<div class="story-dialogue"><span class="dialogue-mark" aria-hidden="true">“</span><p>'+esc(dialogue)+'</p></div>'+(caption?'<div class="story-voice">'+caption+'</div>':'')+'</section>';
+}
+function storyOpeningV2(concept,result){
+ var money=storyCategory(concept)==='wealth',voices=prologueDialogue(concept,result);
+ return '<section class="story-opening-v2"><p class="reader-kicker">'+(money?'돈이 머무는 마음':'인연이 시작되는 마음')+'</p><h2>'+(money?'돈을 대하는 마음에도,<br>나만의 흐름이 있다.':'마음이 움직이는 순간,<br>나는 어떤 사람이 될까.')+'</h2></section>'+storySceneHtml(concept,result,0,voices[0],'<p>'+(money?'좋은 기회를 놓치고 싶지 않은 마음.<br>그 마음은 어디에서 시작됐을까요?':'보낼까, 조금 더 기다릴까.<br>짧은 메시지 앞에서 마음은 길어집니다.')+'</p>')+storySceneHtml(concept,result,1,voices[1],'<p>'+(money?'벌고, 쓰고, 남기는 선택.<br>당신에게 익숙한 흐름을 따라가 봅니다.':'좋아하는 마음은 비슷해도,<br>표현하는 방식은 저마다 다르니까요.')+'</p>');
+}
+function storyPaidScenes(concept,data,result){
+ var rows=data.rows||[],count=10,html='',voices=prologueDialogue(concept,result);
+ var fallback=storyCategory(concept)==='wealth'?['새로운 기회 앞에서, 내 마음이 먼저 반응한다.','원하는 것과 필요한 것은 다를 수 있어.','잠깐 멈춰서, 내 기준을 확인해볼까.','쌓아온 선택에도 나만의 이유가 있다.','내가 놓치는 신호는 어디에 있을까.','불안해서 서두르진 않았을까.','정보보다 먼저, 내 마음을 살펴보자.','익숙한 선택에도 다른 길은 있다.','작은 기준 하나가 흐름을 바꾼다.','이제는, 나의 속도로 선택해보려 해.']:['누군가를 좋아하게 되는 데는 나만의 이유가 있다.','설렘이 지나간 뒤에도, 내 마음은 남아 있을까.','말하지 않은 마음은 어디로 갔을까.','서로의 속도가 같을 필요는 없으니까.','이 관계에서 나는 어떤 모습일까.','가까워지고 싶은 마음과 지키고 싶은 마음.','기다리는 대신, 한마디 건네볼까.','내가 원하는 관계를 이제는 알 것 같아.','이번엔, 조금 다른 선택을 해보고 싶어.','이야기 다음은 내가 써 내려갈 시간.'];
+ for(var i=0;i<count;i++){
+  var group=rows.slice(Math.floor(i*rows.length/count),Math.floor((i+1)*rows.length/count));
+  var narration=group.map(function(row){return fillReportTemplate(row.caption_template,result);}).filter(Boolean);
+  var dialogue=i===0?voices[2]:i===8?voices[3]:fallback[i];
+  var body=narration.map(function(text){return '<p>'+esc(text)+'</p>';}).join('');
+  html+=storySceneHtml(concept,result,i+2,dialogue,body);
+ }
+ return '<div class="story-sequence">'+html+'</div>';
+}
+function storyReviewsHtml(data){
+ var reviews=(data.reviews||[]).filter(function(r){return r.verified===true&&typeof r.text==='string';}).slice(0,3);
+ return '<section class="story-reviews"><p class="reader-kicker">이야기를 읽은 뒤</p><h2>다른 사람들에게는<br>어떻게 남았을까요?</h2>'+(reviews.length?reviews.map(function(r){return '<blockquote><p>'+esc(r.text)+'</p><footer>'+esc(r.displayName||'이야기를 읽은 분')+' · 구매 확인</footer></blockquote>';}).join(''):'<div class="review-awaiting"><span aria-hidden="true">'+uiIcon('chat')+'</span><p>'+(data.reviewsUnavailable?'후기를 잠시 불러오지 못했어요.':'아직 등록된 후기가 없어요.')+'</p><small>'+(data.reviewsUnavailable?'잠시 후 이야기를 다시 열어주세요.':'이야기를 읽은 분들의 첫 감상을 기다리고 있어요.')+'</small></div>')+(data.access&&data.access.story?'<form class="story-review-form" id="story-review-form"><label for="story-review-text">마음에 남은 장면이 있었나요?</label><textarea id="story-review-text" minlength="10" maxlength="500" required placeholder="이 이야기를 읽고 느낀 점을 10~500자로 남겨주세요."></textarea><label class="review-consent"><input id="story-review-consent" type="checkbox" required> 이름 없이 감상이 공개되는 데 동의해요.</label><p class="review-privacy">연락처나 다른 사람의 개인정보는 적지 말아주세요.</p><button class="share-btn" type="submit">감상 남기기</button><p id="review-submit-status" role="status"></p></form>':'')+'</section>';
+}
+function storyFlowHtml(concept,data,result){
+ var html=storyOpeningV2(concept,result);
+ if(data.access.story)html+=storyPaidScenes(concept,data,result)+'<section class="story-epilogue"><p class="reader-kicker">이야기를 마치며</p><h2>나를 아는 만큼,<br>다음 선택이 달라집니다.</h2><p>가장 마음에 남은 순간이 있었나요?<br>그 장면의 이유를 더 깊이 들여다볼 수 있어요.</p></section>';
+ else html+='<div class="story-locked-preview" aria-hidden="true">'+storyAtlasArt(concept,result,2)+'<span>아직 꺼내지 않은, 나의 이야기</span></div>'+stageOfferHtml(concept,'story');
+ html+=storyReviewsHtml(data)+'<section class="detail-bridge"><p class="reader-kicker">이야기에서 발견한 나, 그 다음</p><h2>마음에 남은 장면의<br>이유를 알고 싶다면.</h2><p>일간과 오행의 균형부터 반복되는 관계의 패턴까지.<br>웹툰에서 만난 내 모습을 사주의 근거와 연결합니다.</p><div class="detail-sample"><span>나의 세부 리포트</span><h3>타고난 성향과 반복되는 선택</h3><div class="report-sample-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div><span class="sample-lock">'+uiIcon('lock')+'</span></div></section>';
+ if(data.access.detail)html+='<section id="owned-detail-report">'+detailReportHtml(concept,data.detailRows||[],result)+'</section>'+reportShareBtnHtml();
+ else html+=stageOfferHtml(concept,'detail')+(!data.access.story?'<p class="detail-prerequisite">세부 리포트는 이야기를 연 뒤 선택할 수 있어요.</p>':'');
+ return html;
+}
 function renderReportPanels(concept,data,stage){
-  var list=$('#report-panel-list');if(!list)return;
-  REPORT_READER.stage=stage;
-  $('#reader-steps').innerHTML=readerStepsHtml(data,stage);
-  $all('[data-reader-stage]',$('#reader-steps')).forEach(function(btn){btn.addEventListener('click',function(){renderReportPanels(concept,data,btn.dataset.readerStage);$('#report-page-root').scrollTo({top:$('#reader-steps').offsetTop-60,behavior:'smooth'});});});
-  var result=STATE.mySaju,html='';
-  if(stage==='detail'){
-    if(data.access.detail)html=detailReportHtml(concept,data.detailRows||[],result)+'<button type="button" class="share-btn" id="reader-back-story">이야기로 돌아가기</button>';
-    else if(data.access.story)html='<section class="report-analysis"><p class="reader-kicker">이야기 다음, 나를 더 깊이</p><h2>이런 내 모습은<br>어디서 시작됐을까요?</h2><p class="report-caption">이야기에서 만난 성향을 사주의 근거와 연결해 살펴봅니다. 일간, 오행의 균형, 신강·신약, 십신을 바탕으로 반복되는 반응과 선택을 차근차근 풀어드려요.</p><p class="report-caption">세부 리포트는 12개 항목으로 구성됩니다. 타고난 성향과 생활 속 패턴부터 상황별 질문, 일주일 실천 계획까지 한 흐름으로 읽을 수 있어요.</p><p class="report-caption">실제 경험과 맞는 부분을 찾아 표시하고, 반복되는 상황에서 다른 선택을 시도할 수 있도록 구체적인 질문과 예시를 함께 정리했습니다.</p></section>'+stageOfferHtml(concept,'detail');
-    else html='<section class="reader-intro"><p class="reader-kicker">두 단계로 만나는 나의 사주</p><h2>이야기를 먼저 읽어보세요.</h2><p>웹툰형 이야기를 읽은 뒤, 더 자세한 설명이 필요하면 세부 리포트를 선택할 수 있어요.</p></section>'+stageOfferHtml(concept,'story');
-  }else{
-    html=storyPrologueHtml(concept)+'<div class="webtoon-chapter"><p class="reader-kicker">'+(data.access.story?'나의 이야기':'이야기의 시작')+'</p><h2>사주 속 나는, 어떤 사람일까요?</h2></div>'+
-      '<div class="webtoon-scroll">'+data.rows.map(function(p){return reportSectionHtml(p,result);}).join('')+'</div>';
-    if(!data.access.story)html+=stageOfferHtml(concept,'story');
-    else html+='<section class="story-ending"><p class="reader-kicker">EPILOGUE</p><h2>다음 장면은,<br>당신의 선택으로.</h2><p>나의 패턴을 알아차리는 것만으로도<br>같은 상황에서 다른 선택을 시작할 수 있어요.</p></section>'+(data.access.detail?'<button type="button" class="btn-primary" id="reader-open-detail">보유한 세부 리포트 읽기</button>':stageOfferHtml(concept,'detail'))+reportShareBtnHtml();
-  }
-  list.innerHTML=html;
-  $all('.report-stage-buy',list).forEach(function(btn){btn.addEventListener('click',function(){startReportUnlock(concept,btn.dataset.stage);});});
-  var detailBtn=$('#reader-open-detail');if(detailBtn)detailBtn.addEventListener('click',function(){renderReportPanels(concept,data,'detail');$('#report-page-root').scrollTo({top:$('#reader-steps').offsetTop-60,behavior:'smooth'});});
-  var back=$('#reader-back-story');if(back)back.addEventListener('click',function(){renderReportPanels(concept,data,'story');$('#report-page-root').scrollTo({top:$('#reader-steps').offsetTop-60,behavior:'smooth'});});
-  var share=$('#btn-share-report');if(share)share.addEventListener('click',function(){doShareReport(concept,data.rows,result);});
-  $all('.report-toc a',list).forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var target=$(a.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});});
+ var list=$('#report-panel-list');if(!list)return;
+ REPORT_READER.stage=stage;$('#reader-steps').innerHTML='';
+ list.innerHTML=storyFlowHtml(concept,data,STATE.mySaju);
+ $all('.report-stage-buy',list).forEach(function(btn){btn.addEventListener('click',function(){if(btn.dataset.stage==='detail'&&!data.access.story){showToast('이야기를 먼저 열면 세부 리포트를 선택할 수 있어요.');var gate=$('[data-gate="story"]',list);if(gate)gate.scrollIntoView({behavior:'smooth',block:'center'});return;}startReportUnlock(concept,btn.dataset.stage);});});
+ var reviewForm=$('#story-review-form');if(reviewForm)reviewForm.addEventListener('submit',function(e){e.preventDefault();var button=$('button',reviewForm),status=$('#review-submit-status');button.disabled=true;status.textContent='감상을 저장하고 있어요.';fetch('/api/reports/reviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({conceptId:concept.id,deviceId:DEVICE.shareCode,text:$('#story-review-text').value,publishConsent:$('#story-review-consent').checked})}).then(function(r){return r.json().then(function(value){if(!r.ok||!value.ok)throw new Error(value.message||'저장하지 못했어요.');return value;});}).then(function(){status.textContent='감상을 남겨주셔서 고마워요.';var empty=$('.review-awaiting',reviewForm.parentNode);if(empty)empty.remove();var quote=document.createElement('blockquote'),text=document.createElement('p'),footer=document.createElement('footer');text.textContent=$('#story-review-text').value.trim();footer.textContent='이야기를 읽은 분 · 구매 확인';quote.append(text,footer);reviewForm.before(quote);button.hidden=true;$('#story-review-text').disabled=true;$('#story-review-consent').disabled=true;}).catch(function(error){status.textContent=error.message;button.disabled=false;});});
+ var share=$('#btn-share-report');if(share)share.addEventListener('click',function(){doShareReport(concept,data.rows,STATE.mySaju);});
+ $all('.report-toc a',list).forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var target=$(a.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});});
+ if(stage==='detail'&&data.access.detail){var detail=$('#owned-detail-report');if(detail)setTimeout(function(){detail.scrollIntoView({behavior:'smooth',block:'start'});},100);}
 }
 
    /* ---- 리포트 관리자(비밀번호로 보호) — 컨셉/컷 직접 추가·수정·삭제 ---- */
