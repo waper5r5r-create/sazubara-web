@@ -765,6 +765,36 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .destiny-card.destiny-elegant .destiny-element{background:#111725cc;color:#eedab1;}
 .destiny-card.destiny-elegant .destiny-seal{color:#e4cd93;}
 
+.destiny-card.myroom-card.is-preview:hover,.destiny-card.myroom-card.is-preview:active{box-shadow:0 4px 12px #0002;transform:none;}
+.card-design-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.card-design-grid .destiny-card.myroom-card.is-preview{width:100%;max-width:none;min-height:0;margin:0;aspect-ratio:2/3;}
+.card-design-grid .destiny-copy{inset:auto 11px 12px;}.card-design-grid .destiny-card .nm{font-size:.85rem;}.card-design-grid .destiny-stats{font-size:.54rem;}.card-design-grid .destiny-title{font-size:.55rem;}.card-design-grid .destiny-caption{font-size:.51rem;}.card-design-grid .destiny-seal{bottom:94px;}
+
+/* Three-pocket album pages; collected fronts and uncollected backs. */
+.myroom-grid,.card-design-grid,.card-dex-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.myroom-grid{padding:16px 10px 16px 17px;border:1px solid #35405b;border-left:5px solid #596179;border-radius:13px;background:repeating-linear-gradient(0deg,transparent 0 19px,#ffffff02 19px 20px),#131b2b;box-shadow:inset 4px 0 0 #101626;}
+.myroom-grid .destiny-card,.card-dex-grid .destiny-card,.card-design-grid .destiny-card{border-radius:10px;}
+.myroom-grid .destiny-top,.card-dex-grid .destiny-top,.card-design-grid .destiny-top{inset:8px 8px auto;}
+.myroom-grid .destiny-grade,.card-dex-grid .destiny-grade,.card-design-grid .destiny-grade{font-size:11px;padding:5px 6px;border-radius:5px;}
+.myroom-grid .destiny-element,.card-dex-grid .destiny-element,.card-design-grid .destiny-element{font-size:10px;padding:5px;}
+.myroom-grid .destiny-copy,.card-dex-grid .destiny-copy,.card-design-grid .destiny-copy{inset:auto 8px 9px;gap:3px;}
+.myroom-grid .destiny-title,.card-dex-grid .destiny-title,.card-design-grid .destiny-title{font-size:.48rem;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.myroom-grid .destiny-card .nm,.card-dex-grid .destiny-card .nm,.card-design-grid .destiny-card .nm{font-size:.69rem;}
+.myroom-grid .destiny-stats,.card-dex-grid .destiny-stats,.card-design-grid .destiny-stats{font-size:.48rem;padding-top:4px;}
+.myroom-grid .destiny-stats b,.card-dex-grid .destiny-stats b,.card-design-grid .destiny-stats b{font-size:.68rem;}
+.myroom-grid .destiny-caption,.card-dex-grid .destiny-caption,.card-design-grid .destiny-caption,.myroom-grid .destiny-stats span:last-child,.card-dex-grid .destiny-stats span:last-child,.card-design-grid .destiny-stats span:last-child{display:none;}
+.myroom-grid .destiny-seal,.card-dex-grid .destiny-seal,.card-design-grid .destiny-seal{bottom:69px;right:9px;font-size:12px;}
+.card-dex-grid .destiny-card.myroom-card.is-preview{width:100%;max-width:none;min-height:0;margin:0;aspect-ratio:2/3;}
+.card-back{position:relative;aspect-ratio:2/3;border-radius:10px;border:1px solid #64718a;background:repeating-linear-gradient(45deg,#0000 0 12px,#ffffff03 12px 13px),linear-gradient(145deg,#253247,#172336);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;color:#9daac0;box-shadow:0 2px 8px #0002;}
+.card-back::before{content:'';position:absolute;inset:5px;border:1px solid #8090ab50;border-radius:6px;pointer-events:none;}
+.card-back-mark{width:32px;display:block;opacity:.6;}.card-back-mark svg{width:100%;height:auto;}.card-back-brand{font-size:.47rem;letter-spacing:.12em;color:#b2bbcc;}.card-back small{font-size:.54rem;}.card-back-grade{position:absolute;left:9px;top:8px;font-size:.7rem;color:#a4afc1;}.card-back-label{font-size:.45rem;position:absolute;bottom:12px;left:5px;right:5px;text-align:center;}
+.dex-card-slot{padding:0;border:0;background:none;text-align:left;min-width:0;cursor:pointer;}.dex-card-slot:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:10px;}.dex-card-id{display:block;text-align:center;color:var(--fg-muted);font-size:.6rem;padding-top:6px;}
+.card-dex-grid{padding:14px 9px;border-radius:12px;background:#172033;border:1px solid #34415b;gap:12px 10px;}
+.card-dex-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;}.card-dex-summary strong{font-size:1.45rem;color:var(--accent);}.card-dex-summary small{font-size:.78rem;color:var(--fg-muted);}.card-dex-summary span{font-size:.68rem;color:var(--fg-muted);}.card-dex-progress{height:4px;background:#29324a;border-radius:5px;overflow:hidden;}.card-dex-progress i{display:block;height:100%;background:var(--accent);}
+.card-dex-filters{display:flex;gap:6px;}.card-dex-filters button{padding:8px 10px;font-size:.72rem;border:1px solid var(--border);border-radius:9px;background:var(--surface-2);color:var(--fg-muted);}.card-dex-filters button[aria-pressed="true"]{color:var(--fg);border-color:#c6ab72;background:#e0ad5515;}.card-dex-empty{grid-column:1/-1;font-size:.82rem;color:var(--fg-muted);padding:20px 6px;line-height:1.7;}
+.myroom-dex-btn{padding:5px 9px;font-size:.69rem;}.myroom-dex-btn svg{width:12px;height:12px;}.card-symbol-guide h3{font-size:.84rem;}.card-symbol-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+@media(max-width:374px){.myroom-grid,.card-dex-grid,.card-design-grid{gap:8px;padding-left:8px;padding-right:8px;}.myroom-grid .destiny-copy,.card-dex-grid .destiny-copy,.card-design-grid .destiny-copy{left:6px;right:6px;}.myroom-grid .destiny-card .nm,.card-dex-grid .destiny-card .nm,.card-design-grid .destiny-card .nm{font-size:.62rem;}.card-back-label{font-size:.4rem;}}
+
 </style>
 <style>
 /* 독립 웹 배포용 베이스 리셋 (claude.ai Artifact 스켈레톤이 제공하던 부분을 대신함) */
@@ -3125,20 +3155,20 @@ function myroomShinsalChipsHtml(entry){
 var CARD_SPIRITS={목:{key:'wood',title:'파릇용',tag:'성장 · 생명',symbol:'木'},화:{key:'fire',title:'불꽃새',tag:'열정 · 빛',symbol:'火'},토:{key:'earth',title:'모래사슴',tag:'안정 · 대지',symbol:'土'},금:{key:'metal',title:'구름호랑',tag:'결단 · 수호',symbol:'金'},수:{key:'water',title:'물방울용',tag:'지혜 · 흐름',symbol:'水'}};
 function cardSpirit(entry){return CARD_SPIRITS[entry.dayGanWxB]||{key:'',title:'아직 드러나지 않은 기운',tag:'사주 정보 확인 필요',symbol:'?'};}
 function collectibleCardHtml(entry,preview){
- var tier=myroomTier(Number(entry.score)||0),spirit=cardSpirit(entry),elegant=tier.key==='s',frame=getMyRoomFrame(entry.id),sal=entry.shinsalB||[];
+ var type=cardTypeOf(entry),tier=myroomTier(Number(entry.score)||0),spirit=cardSpirit(entry),elegant=tier.key==='s',frame=getMyRoomFrame(entry.id),sal=entry.shinsalB||[];
  var seal=sal.indexOf('dohwa')>=0?'✿':sal.indexOf('yeokma')>=0?'➶':sal.indexOf('hwagae')>=0?'✧':'◇';
  var sealName=sal.indexOf('dohwa')>=0?'꽃의 인장':sal.indexOf('yeokma')>=0?'바람의 인장':sal.indexOf('hwagae')>=0?'별의 인장':'오행의 인장';
- var nobleNames={wood:'청림의 용',fire:'홍염의 봉황',earth:'황원의 사슴',metal:'백은의 호랑이',water:'심해의 용'};var artTitle=elegant?(nobleNames[spirit.key]||spirit.title):spirit.title;
+ var nobleNames={wood:'청림의 용',fire:'홍염의 봉황',earth:'황원의 사슴',metal:'백은의 호랑이',water:'심해의 용'};var artTitle=elegant?(nobleNames[spirit.key]||spirit.title):(type?type.title:spirit.title);
  var gan=entry.dayGanB||'',polarity=entry.cardPolarity==='yang'?'양의 기운':entry.cardPolarity==='yin'?'음의 기운':'일간의 기운';
- return '<div class="myroom-card destiny-card'+(preview?' is-preview':'')+' tier-'+tier.key+(elegant?' destiny-elegant':'')+'" '+(preview?'':'tabindex="0" role="button"')+' data-grade="'+tier.grade+'" data-polarity="'+esc(entry.cardPolarity||'unknown')+'" data-element="'+spirit.key+'"'+(frame?' data-frame="'+esc(frame)+'"':'')+' aria-label="'+esc(entry.nameB||'상대방')+' · '+tier.grade+'등급 궁합 카드 · '+spirit.title+'" style="--tier-color:'+tier.color+';--tier-soft:'+tier.soft+';'+frameStyleVars(frame)+'">'+
- '<div class="destiny-art">'+(spirit.key?'<img src="/assets/cards/'+(elegant?'premium/':'')+spirit.key+'.webp" alt="'+artTitle+' · '+spirit.tag+'" loading="lazy" decoding="async">':'')+'</div><div class="destiny-foil"></div><span class="destiny-corner tl"></span><span class="destiny-corner tr"></span><span class="destiny-corner bl"></span><span class="destiny-corner br"></span>'+
+ return '<div class="myroom-card destiny-card'+(preview?' is-preview':'')+' tier-'+tier.key+(elegant?' destiny-elegant':'')+'" '+(preview?'':'tabindex="0" role="button"')+' data-grade="'+tier.grade+'" data-polarity="'+esc(entry.cardPolarity||'unknown')+'" data-element="'+spirit.key+'"'+(frame?' data-frame="'+esc(frame)+'"':'')+' aria-label="'+esc(entry.nameB||'상대방')+' · '+tier.grade+'등급 궁합 카드 · '+artTitle+'" style="--tier-color:'+tier.color+';--tier-soft:'+tier.soft+';'+frameStyleVars(frame)+'">'+
+ '<div class="destiny-art">'+(spirit.key?'<img src="/assets/cards/'+(elegant?'premium/'+spirit.key:(type?type.asset:spirit.key))+'.webp" alt="'+artTitle+' · '+spirit.tag+'" loading="lazy" decoding="async">':'')+'</div><div class="destiny-foil"></div><span class="destiny-corner tl"></span><span class="destiny-corner tr"></span><span class="destiny-corner bl"></span><span class="destiny-corner br"></span>'+
  '<div class="destiny-top"><span class="destiny-grade">'+tier.grade+'</span><span class="destiny-element">'+spirit.symbol+'</span></div><span class="destiny-seal" aria-label="'+sealName+'">'+seal+'</span>'+
  '<div class="destiny-copy"><span class="destiny-title">'+artTitle+'</span><span class="nm">'+esc(entry.nameB||'상대방')+'</span><div class="destiny-stats"><span>나와의 궁합 <b>'+Math.max(0,Math.min(100,Number(entry.score)||0))+'</b></span><span>'+esc(gan||spirit.symbol)+' · '+polarity+'</span></div><span class="destiny-caption">'+tier.label+' · '+spirit.tag+'</span></div></div>';
 }
 function myroomCardHtml(entry,rank){return collectibleCardHtml(entry,false);}
 function cardAlbumIntro(list){var counts={S:0,A:0,B:0,C:0};list.forEach(function(e){counts[myroomTier(e.score).grade]++;});return '<div class="album-intro"><p>인연이 모이면, 나만의 카드첩이 됩니다.</p><div class="album-grade-counts">'+['S','A','B','C'].map(function(g){return '<span><b>'+g+'</b> '+counts[g]+'</span>';}).join('')+'</div><small>궁합 등급은 나와의 조화를, 상징은 상대의 일간을 나타내요.</small></div>';}
-function cardSymbolGuideHtml(){return '<section class="card-symbol-guide"><button type="button" class="share-btn" data-card-preview>등급별 카드 미리보기</button><h3>다섯 기운의 작은 친구들</h3><p class="section-desc">상대의 일간에 맞는 일러스트가 카드에 담겨요.</p><div class="card-symbol-grid">'+Object.keys(CARD_SPIRITS).map(function(wx){var x=CARD_SPIRITS[wx];return '<div><img src="/assets/cards/'+x.key+'.webp" alt="'+x.title+'" loading="lazy"><b>'+x.title+'</b><small>'+wx+' · '+x.tag+'</small></div>';}).join('')+'</div><p class="disclaimer">S 90점 이상 · A 70~89점 · B 50~69점 · C 49점 이하. 등급은 사람의 가치나 카드의 소유 가능성을 뜻하지 않아요. 기본 카드는 귀여운 오행 친구, S등급은 고급스러운 수호신으로 표현됩니다. 음양·신살에 따라 문양과 인장이 달라집니다.</p></section>';}
-function openCardDesignPreview(){var root=$('#myroom-sheet-root');if(!root)return;root.innerHTML='<div class="sheet-backdrop" id="card-design-preview"><div class="sheet" style="gap:14px"><div class="sheet-head"><h2 class="section-title">인연 카드 · 디자인 미리보기</h2><button type="button" class="sheet-close" id="card-preview-close" aria-label="카드 미리보기 닫기">✕</button></div><p class="section-desc">아래는 디자인 견본이에요. 실제 수집 카드에는 친구의 이름과 나와의 궁합이 담겨요.</p>'+[{score:95,dayGanWxB:'목'},{score:80,dayGanWxB:'화'},{score:60,dayGanWxB:'금'},{score:40,dayGanWxB:'수'}].map(function(e,i){return collectibleCardHtml(Object.assign({id:'design-sample-'+i,nameB:'디자인 견본',cardPolarity:i%2?'yin':'yang',shinsalB:i%2?['dohwa']:['hwagae']},e),true);}).join('')+'</div></div>';$('#card-preview-close').addEventListener('click',function(){root.innerHTML='';});$('#card-design-preview').addEventListener('click',function(e){if(e.target.id==='card-design-preview')root.innerHTML='';});}
+function cardSymbolGuideHtml(){return '<section class="card-symbol-guide"><button type="button" class="share-btn" data-card-preview>등급별 카드 미리보기</button><h3>열 가지 기운의 작은 친구들</h3><p class="section-desc">일간의 오행과 음양에 따라 만나는 친구가 달라져요.</p><div class="card-symbol-grid">'+CARD_TYPES.map(function(t){return '<div><img src="/assets/cards/'+t.asset+'.webp" alt="'+t.title+'" loading="lazy"><b>'+t.title+'</b><small>'+t.stem+' · '+t.wx+' · '+(t.polarity==='yang'?'양':'음')+'</small></div>';}).join('')+'</div><p class="disclaimer">10가지 상징 × S·A·B·C = 40종. S는 90점 이상, A는 70~89점, B는 50~69점, C는 49점 이하예요. 기본 카드는 귀여운 친구, S는 오행별 수호신 일러스트로 표현됩니다. 신살은 작은 인장에 반영돼요.</p></section>';}
+function openCardDesignPreview(){var root=$('#myroom-sheet-root');if(!root)return;root.innerHTML='<div class="sheet-backdrop" id="card-design-preview"><div class="sheet" role="dialog" aria-label="인연 카드 디자인 미리보기" style="gap:14px"><div class="sheet-head"><h2 class="section-title">인연 카드 · 디자인 미리보기</h2><button type="button" class="sheet-close" id="card-preview-close" aria-label="카드 미리보기 닫기">✕</button></div><p class="section-desc">아래는 디자인 견본이에요. 실제 수집 카드에는 친구의 이름과 나와의 궁합이 담겨요.</p><div class="card-design-grid">'+[{score:95,dayGanWxB:'목'},{score:80,dayGanWxB:'화'},{score:60,dayGanWxB:'금'},{score:40,dayGanWxB:'수'}].map(function(e,i){return collectibleCardHtml(Object.assign({id:'design-sample-'+i,nameB:'디자인 견본',cardPolarity:i%2?'yin':'yang',shinsalB:i%2?['dohwa']:['hwagae']},e),true);}).join('')+'</div></div></div>';$('#card-preview-close').addEventListener('click',function(){root.innerHTML='';});$('#card-design-preview').addEventListener('click',function(e){if(e.target.id==='card-design-preview')root.innerHTML='';});}
 document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-card-preview]'))openCardDesignPreview();});
 
 
@@ -3314,75 +3344,34 @@ function wireMyroomDexBtn(){
   if (b) b.addEventListener('click', openMyroomDex);
 }
 var SHINSAL_DEX_KEYS = ['dohwa','yeokma','hwagae'];
+var CARD_TYPES=[
+ {id:'wood-yang',wx:'목',polarity:'yang',stem:'갑',title:'파릇용',asset:'wood'},
+ {id:'wood-yin',wx:'목',polarity:'yin',stem:'을',title:'새싹토끼',asset:'wood-yin'},
+ {id:'fire-yang',wx:'화',polarity:'yang',stem:'병',title:'불꽃새',asset:'fire'},
+ {id:'fire-yin',wx:'화',polarity:'yin',stem:'정',title:'온기여우',asset:'fire-yin'},
+ {id:'earth-yang',wx:'토',polarity:'yang',stem:'무',title:'모래사슴',asset:'earth'},
+ {id:'earth-yin',wx:'토',polarity:'yin',stem:'기',title:'포근곰',asset:'earth-yin'},
+ {id:'metal-yang',wx:'금',polarity:'yang',stem:'경',title:'구름호랑',asset:'metal'},
+ {id:'metal-yin',wx:'금',polarity:'yin',stem:'신',title:'별빛고양',asset:'metal-yin'},
+ {id:'water-yang',wx:'수',polarity:'yang',stem:'임',title:'물방울용',asset:'water'},
+ {id:'water-yin',wx:'수',polarity:'yin',stem:'계',title:'이슬수달',asset:'water-yin'}
+];
+function cardTypeOf(entry){return CARD_TYPES.find(function(t){return t.stem===entry.dayGanB;})||CARD_TYPES.find(function(t){return t.wx===entry.dayGanWxB&&t.polarity===entry.cardPolarity;})||null;}
+function cardDexEntries(list){return CARD_TYPES.reduce(function(out,type){MYROOM_TIERS.forEach(function(tier){var matches=list.filter(function(e){var t=cardTypeOf(e);return t&&t.id===type.id&&myroomTier(e.score).key===tier.key;});out.push({id:type.id+'-'+tier.key,type:type,tier:tier,entry:matches[0]||null,count:matches.length});});return out;},[]);}
+function cardBackHtml(row,extra){return '<div class="card-back '+(extra||'')+'" aria-label="미보유 · '+esc(row.type.title)+' · '+row.tier.grade+'등급"><span class="card-back-grade">'+row.tier.grade+'</span><span class="card-back-mark">'+BRAND_MARK_SVG+'</span><span class="card-back-brand">SAZUBARA</span><small>'+esc(row.type.wx)+' · '+(row.type.polarity==='yang'?'양':'음')+'</small><span class="card-back-label">아직 만나지 않은 인연</span></div>';}
+function cardAlbumEmptyHtml(){var rows=cardDexEntries([]).filter(function(r){return r.tier.key==='a';}).slice(0,6);return '<div class="myroom-grid card-album-empty">'+rows.map(function(r){return cardBackHtml(r);}).join('')+'</div>';} 
+function closeMyroomDex(){var root=$('#myroom-sheet-root');if(root)root.innerHTML='';}
 function openMyroomDex(){
-  var list = INVITE_MYROOM_CACHE || loadMyRoomList();
-  var counts = {};
-  list.forEach(function(e){ var t = myroomTier(e.score); counts[t.key] = (counts[t.key]||0)+1; });
-  var gotTierCount = MYROOM_TIERS.filter(function(t){ return counts[t.key]>0; }).length;
-  var cellsHtml = MYROOM_TIERS.map(function(t){
-    var n = counts[t.key]||0;
-    var locked = n===0;
-    return '<div class="dex-cell'+(locked?' locked':' got')+'" style="--tier-color:'+t.color+'; --tier-soft:'+t.soft+';">'+
-        '<span class="ic">'+(locked?'?':t.icon)+'</span>'+
-        '<span class="lbl">'+(locked?'???':t.label)+'</span>'+
-        '<span class="ct">'+(locked?'아직 없어요':n+'명 모음')+'</span>'+
-      '</div>';
-  }).join('');
-  var pct = Math.round(gotTierCount/MYROOM_TIERS.length*100);
-
-  /* 신살 미니 도감 — 모은 상대들 중 도화살/역마살/화개살을 하나라도 가진 사람을 몇 명 만났는지 */
-  var shinsalCounts = {};
-  list.forEach(function(e){ myroomShinsalKeys(e).forEach(function(k){ shinsalCounts[k] = (shinsalCounts[k]||0)+1; }); });
-  var gotShinsalCount = SHINSAL_DEX_KEYS.filter(function(k){ return shinsalCounts[k]>0; }).length;
-  var shinsalPct = Math.round(gotShinsalCount/SHINSAL_DEX_KEYS.length*100);
-  var shinsalCellsHtml = SHINSAL_DEX_KEYS.map(function(k){
-    var s = SHINSAL_TEXT[k];
-    var n = shinsalCounts[k]||0;
-    var locked = n===0;
-    return '<div class="dex-cell'+(locked?' locked':' got')+'" style="--tier-color:'+s.color+'; --tier-soft:'+s.soft+';">'+
-        '<span class="ic">'+(locked?'?':s.icon)+'</span>'+
-        '<span class="lbl">'+(locked?'???':s.label)+'</span>'+
-        '<span class="ct">'+(locked?'아직 없어요':n+'명 보유')+'</span>'+
-      '</div>';
-  }).join('');
-
-  var scores = list.map(function(e){ return e.score||0; });
-  var avgScore = scores.length ? Math.round(scores.reduce(function(a,b){ return a+b; },0)/scores.length) : 0;
-  var maxScore = scores.length ? Math.max.apply(null, scores) : 0;
-  var statsHtml =
-    '<div class="dex-stats-row">'+
-      '<div class="dex-stat"><span class="v">'+list.length+'</span><span class="k">모은 인연</span></div>'+
-      '<div class="dex-stat"><span class="v">'+avgScore+'점</span><span class="k">평균 궁합</span></div>'+
-      '<div class="dex-stat"><span class="v">'+maxScore+'점</span><span class="k">최고 궁합</span></div>'+
-    '</div>';
-
-  var root = $('#myroom-sheet-root');
-  if (!root) return;
-  root.innerHTML =
-    '<div class="sheet-backdrop" id="myroom-dex-backdrop">'+
-      '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
-        '<div class="sheet-handle"></div>'+
-        '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">인연 도감</p>'+
-          '<button type="button" class="sheet-close" id="myroom-dex-close">✕</button></div>'+
-        statsHtml+
-        '<div class="dex-progress">'+
-          '<p class="section-desc">지금까지 '+gotTierCount+' / '+MYROOM_TIERS.length+'개 등급을 만나봤어요 ('+pct+'%)</p>'+
-          '<div class="bar"><div class="fill" style="width:'+pct+'%;"></div></div>'+
-        '</div>'+
-        '<div class="dex-grid">'+cellsHtml+'</div>'+cardSymbolGuideHtml()+
-        '<p class="dex-subhead">신살 도감</p>'+
-        '<div class="dex-progress">'+
-          '<p class="section-desc">지금까지 '+gotShinsalCount+' / '+SHINSAL_DEX_KEYS.length+'개 신살을 가진 인연을 만나봤어요 ('+shinsalPct+'%)</p>'+
-          '<div class="bar"><div class="fill" style="width:'+shinsalPct+'%;"></div></div>'+
-        '</div>'+
-        '<div class="dex-grid">'+shinsalCellsHtml+'</div>'+
-        '<p class="disclaimer">궁합을 확인할 때마다 새로운 등급·신살의 인연을 만날 수 있어요. 더 다양한 상대와 궁합을 확인해서 도감을 채워보세요.</p>'+
-      '</div>'+
-    '</div>';
-  $('#myroom-dex-backdrop').addEventListener('click', function(e){ if (e.target.id==='myroom-dex-backdrop') closeMyroomDex(); });
-  $('#myroom-dex-close').addEventListener('click', closeMyroomDex);
+ var list=INVITE_MYROOM_CACHE||loadMyRoomList(),rows=cardDexEntries(list),owned=rows.filter(function(r){return r.entry;}).length;
+ var root=$('#myroom-sheet-root');if(!root)return;
+ root.innerHTML='<div class="sheet-backdrop" id="myroom-dex-backdrop"><div class="sheet card-dex-sheet" role="dialog" aria-label="나의 인연 카드 도감"><div class="sheet-head"><h2 class="section-title">인연 카드 도감</h2><button type="button" class="sheet-close" id="myroom-dex-close" aria-label="카드 도감 닫기">✕</button></div><div class="card-dex-summary"><strong>'+owned+' <small>/ 40종</small></strong><span>10가지 일간 상징 · 4가지 궁합 등급</span></div><div class="card-dex-progress"><i style="width:'+(owned/40*100)+'%"></i></div><div class="card-dex-filters" role="group" aria-label="카드 도감 필터"><button type="button" data-dex-filter="all" aria-pressed="true">전체 40</button><button type="button" data-dex-filter="owned" aria-pressed="false">모은 카드 '+owned+'</button><button type="button" data-dex-filter="missing" aria-pressed="false">없는 카드 '+(40-owned)+'</button></div><p class="section-desc" style="font-size:.75rem">모은 인연은 앞면으로, 아직 만나지 않은 인연은 뒷면으로 남겨두었어요.</p><div class="card-dex-grid" id="card-dex-grid"></div><p class="disclaimer">등급은 나와의 궁합을 기준으로 해요. 같은 종류의 친구를 여러 명 만나도 도감은 한 종류로 집계합니다. 실제로 초대해 등록한 친구들이 카드첩에 모입니다.</p><div id="dex-card-note" role="status"></div></div></div>';
+ function paint(mode){var visible=rows.filter(function(r){return mode==='owned'?!!r.entry:mode==='missing'?!r.entry:true;});$('#card-dex-grid').innerHTML=visible.length?visible.map(function(r){return '<button type="button" class="dex-card-slot" data-card-sku="'+r.id+'" aria-label="'+esc(r.type.title)+' '+r.tier.grade+'등급 · '+(r.entry?'보유 '+r.count+'명':'미보유')+'">'+(r.entry?collectibleCardHtml(r.entry,true):cardBackHtml(r))+'<span class="dex-card-id">'+r.type.stem+' · '+r.tier.grade+(r.entry?' · '+r.count+'명':'')+'</span></button>';}).join(''):'<p class="card-dex-empty">아직 모은 카드가 없어요. 친구를 초대해 첫 인연을 만나보세요.</p>';
+ $all('.dex-card-slot',root).forEach(function(button){button.addEventListener('click',function(){var row=rows.find(function(r){return r.id===button.dataset.cardSku;});if(row.entry)openMyroomDetail(row.entry);else $('#dex-card-note').textContent=row.type.title+' · '+row.tier.grade+'등급은 아직 모으지 않았어요.';});});
+ $all('[data-dex-filter]',root).forEach(function(button){button.setAttribute('aria-pressed',String(button.dataset.dexFilter===mode));});}
+ paint('all');$all('[data-dex-filter]',root).forEach(function(button){button.addEventListener('click',function(){paint(button.dataset.dexFilter);});});
+ $('#myroom-dex-close').addEventListener('click',closeMyroomDex);$('#myroom-dex-backdrop').addEventListener('click',function(e){if(e.target.id==='myroom-dex-backdrop')closeMyroomDex();});$('#myroom-dex-close').focus();
 }
-function closeMyroomDex(){ var r = $('#myroom-sheet-root'); if (r) r.innerHTML=''; }
+
 
 /* ============================================================
    일러스트 상세 리포트 — 컨셉별(연애/커리어/힐링 등) 웹툰형 상세 풀이.
@@ -3500,7 +3489,7 @@ function renderReportsTabView(){
   view.innerHTML =
     '<div class="tab-intro"><p class="eyebrow">당신만 모르고 있던 이야기</p>'+
     '<h1>어떤 이야기가 궁금하세요?</h1>'+
-    '<p class="section-desc">끌리는 이야기 하나 골라봐요. 도입부는 무료로 볼 수 있어요.</p></div>'+
+    '<p class="section-desc">끌리는 이야기 하나 골라봐요. 당신의 사주가 주인공이 됩니다.</p></div>'+
     '<div class="chip-row report-cat-chips" id="report-cat-chips" hidden></div>'+
     '<div class="report-grid" id="report-grid"><p class="section-desc">불러오는 중...</p></div>';
   loadReportList().then(function(list){
@@ -3750,7 +3739,7 @@ function renderReportPanels(concept,data,stage){
     else if(data.access.story)html='<section class="report-analysis"><p class="reader-kicker">이야기 다음, 나를 더 깊이</p><h2>이런 내 모습은<br>어디서 시작됐을까요?</h2><p class="report-caption">이야기에서 만난 성향을 사주의 근거와 연결해 살펴봅니다. 일간, 오행의 균형, 신강·신약, 십신을 바탕으로 반복되는 반응과 선택을 차근차근 풀어드려요.</p><p class="report-caption">세부 리포트는 12개 항목으로 구성됩니다. 타고난 성향과 생활 속 패턴부터 상황별 질문, 일주일 실천 계획까지 한 흐름으로 읽을 수 있어요.</p><p class="report-caption">실제 경험과 맞는 부분을 찾아 표시하고, 반복되는 상황에서 다른 선택을 시도할 수 있도록 구체적인 질문과 예시를 함께 정리했습니다.</p></section>'+stageOfferHtml(concept,'detail');
     else html='<section class="reader-intro"><p class="reader-kicker">두 단계로 만나는 나의 사주</p><h2>이야기를 먼저 읽어보세요.</h2><p>웹툰형 이야기를 읽은 뒤, 더 자세한 설명이 필요하면 세부 리포트를 선택할 수 있어요.</p></section>'+stageOfferHtml(concept,'story');
   }else{
-    html=storyPrologueHtml(concept)+'<div class="webtoon-chapter"><p class="reader-kicker">'+(data.access.story?'나의 이야기':'무료 도입부')+'</p><h2>사주 속 나는, 어떤 사람일까요?</h2></div>'+
+    html=storyPrologueHtml(concept)+'<div class="webtoon-chapter"><p class="reader-kicker">'+(data.access.story?'나의 이야기':'이야기의 시작')+'</p><h2>사주 속 나는, 어떤 사람일까요?</h2></div>'+
       '<div class="webtoon-scroll">'+data.rows.map(function(p){return reportSectionHtml(p,result);}).join('')+'</div>';
     if(!data.access.story)html+=stageOfferHtml(concept,'story');
     else html+='<section class="story-ending"><p class="reader-kicker">EPILOGUE</p><h2>다음 장면은,<br>당신의 선택으로.</h2><p>나의 패턴을 알아차리는 것만으로도<br>같은 상황에서 다른 선택을 시작할 수 있어요.</p></section>'+(data.access.detail?'<button type="button" class="btn-primary" id="reader-open-detail">보유한 세부 리포트 읽기</button>':stageOfferHtml(concept,'detail'))+reportShareBtnHtml();
@@ -4099,9 +4088,10 @@ var INVITE_MYROOM_CACHE = null; /* 초대해서 실제 등록한 친구 목록(�
 function renderMyRoomLocal(root){
   if (!STATE.mySaju){
     root.innerHTML =
-      '<p class="eyebrow">나의 카드첩</p>'+
+      '<div class="myroom-head"><p class="eyebrow">나의 카드첩</p>'+myroomDexBtnHtml()+'</div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>먼저 내 사주를 입력하면, 초대한 친구가 등록했을 때 이곳에 카드가 모여요.</span></div>'+cardSymbolGuideHtml();
+      '<span>먼저 내 사주를 입력하면, 초대한 친구가 등록했을 때 이곳에 카드가 모여요.</span></div>'+cardAlbumEmptyHtml()+cardSymbolGuideHtml();
+    wireMyroomDexBtn();
     return;
   }
   if (INVITE_MYROOM_CACHE === null){
@@ -4114,10 +4104,10 @@ function renderMyRoomLocal(root){
   var list = hiddenIds.length ? INVITE_MYROOM_CACHE.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : INVITE_MYROOM_CACHE;
   if (!list.length){
     root.innerHTML =
-      '<div class="myroom-head"><p class="eyebrow">나의 카드첩</p>'+
-      '</div>'+
+      '<div class="myroom-head"><p class="eyebrow">나의 카드첩</p>'+myroomDexBtnHtml()+'</div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>친구를 초대하면 이곳에 카드가 모여요.</span></div>'+cardSymbolGuideHtml();
+      '<span>친구를 초대하면 이곳에 카드가 모여요.</span></div>'+cardAlbumEmptyHtml()+cardSymbolGuideHtml();
+    wireMyroomDexBtn();
     return;
   }
   var rankMap = myroomRankMap(list);
