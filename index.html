@@ -3668,7 +3668,7 @@ function openReportViewer(concept,stage){
   root.innerHTML='<div class="report-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title">'+
     '<div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="이야기 목록으로 돌아가기">‹</button>'+
     '<span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div>'+
-    '<div class="reader-cover"><img src="/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+((STATE.mySaju.gender==='m'||STATE.mySaju.gender==='male')?'m':'f')+'-0.webp" alt="" decoding="async">'+
+    '<div class="reader-cover"><img src="/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+((STATE.mySaju.gender==='m'||STATE.mySaju.gender==='male')?'m':'f')+'-0.webp?v=reader-2.1" alt="" decoding="async">'+
     '<div><p class="reader-kicker">'+esc(concept.category||'나의 사주')+' · SAZUBARA STORY</p><h1>'+esc(concept.title)+'</h1><p>'+esc(concept.tagline||'')+'</p></div></div>'+
     '<div id="reader-steps"></div><div class="report-page-body" id="report-panel-list"><p class="section-desc" role="status">이야기를 불러오는 중...</p></div></div>';
   $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
@@ -3750,7 +3750,7 @@ function detailReportHtml(concept,panels,result){
 
 function storyAtlasArt(concept,result,index){
  var gender=(result.gender==='m'||result.gender==='male')?'m':'f';
- return '<div class="story-illustration"><img src="/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+gender+'-'+index+'.webp" alt="'+(storyCategory(concept)==='wealth'?'돈과 선택을 돌아보는':'마음과 관계를 돌아보는')+' 이야기 장면" loading="'+(index<2?'eager':'lazy')+'" decoding="async"></div>';
+ return '<div class="story-illustration"><img src="/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+gender+'-'+index+'.webp?v=reader-2.1" alt="'+(storyCategory(concept)==='wealth'?'돈과 선택을 돌아보는':'마음과 관계를 돌아보는')+' 이야기 장면" loading="'+(index<2?'eager':'lazy')+'" decoding="async"></div>';
 }
 function storySceneHtml(concept,result,index,dialogue,caption){
  return '<section class="story-frame scene-'+index+'">'+storyAtlasArt(concept,result,index)+'<div class="story-dialogue"><span class="dialogue-mark" aria-hidden="true">“</span><p>'+esc(dialogue)+'</p></div>'+(caption?'<div class="story-voice">'+caption+'</div>':'')+'</section>';
