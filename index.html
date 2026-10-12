@@ -918,6 +918,22 @@ body{background:radial-gradient(ellipse at 50% 0,rgba(61,72,117,.32),transparent
 @media(max-width:374px){.app-header{padding:12px 14px;}.header-actions{gap:5px;}.header-icon-btn,.sound-toggle{width:36px;height:36px;padding:8px;}.app-header .mark{font-size:1.12rem;}.content{padding-left:14px;padding-right:14px;}.site-menu{padding-left:16px;padding-right:16px;}.check-row{font-size:.77rem;}.report-card .report-text{padding:13px 10px;}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}}
 </style>
+<style>
+/* Match album controls and keep mobile sheets within the visible viewport. */
+.myroom-head{align-items:center;gap:10px;margin-bottom:14px;}
+.myroom-head .eyebrow{margin:0;}
+.myroom-head-right{align-items:center;gap:8px;}
+.myroom-head-right .myroom-dex-btn,.myroom-head>.myroom-dex-btn{height:34px;min-height:34px;padding:0 11px;line-height:1;border-radius:9px;font-size:.72rem;}
+.myroom-head-right .myroom-sort-seg{padding:2px;gap:2px;height:34px;min-height:34px;border-radius:9px;}
+.myroom-head-right .myroom-sort-seg button{padding:0 10px;min-height:28px;height:28px;line-height:1;font-size:.72rem;border-radius:6px;}
+.myroom-head-right .myroom-count{font-size:.7rem;line-height:34px;}
+#myroom-sheet-root .sheet-backdrop{max-width:none;width:100%;margin:0;justify-content:center;}
+#myroom-sheet-root .sheet{width:min(100%,520px);max-width:520px;max-height:calc(100dvh - env(safe-area-inset-top,0px) - 16px);overflow-x:hidden;overscroll-behavior:contain;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));}
+#myroom-sheet-root .sheet-head{gap:12px;flex-shrink:0;}
+#myroom-sheet-root .sheet-head .section-title{min-width:0;margin:0;line-height:1.4;}
+#myroom-sheet-root .sheet-close{width:34px;height:34px;flex:0 0 34px;padding:0;display:grid;place-items:center;border:1px solid var(--border);border-radius:9px;}
+@media(max-width:374px){.myroom-head{align-items:flex-start;}.myroom-head-right{gap:6px;}.myroom-head-right .myroom-sort-seg button{padding:0 8px;}.myroom-head-right .myroom-count{font-size:.65rem;}#myroom-sheet-root .sheet{padding-left:12px;padding-right:12px;}}
+</style>
 </head>
 <body>
 
@@ -3166,7 +3182,7 @@ function collectibleCardHtml(entry,preview){
  '<div class="destiny-copy"><span class="destiny-title">'+artTitle+'</span><span class="nm">'+esc(entry.nameB||'상대방')+'</span><div class="destiny-stats"><span>나와의 궁합 <b>'+Math.max(0,Math.min(100,Number(entry.score)||0))+'</b></span><span>'+esc(gan||spirit.symbol)+' · '+polarity+'</span></div><span class="destiny-caption">'+tier.label+' · '+spirit.tag+'</span></div></div>';
 }
 function myroomCardHtml(entry,rank){return collectibleCardHtml(entry,false);}
-function cardAlbumIntro(list){var counts={S:0,A:0,B:0,C:0};list.forEach(function(e){counts[myroomTier(e.score).grade]++;});return '<div class="album-intro"><p>인연이 모이면, 나만의 카드첩이 됩니다.</p><div class="album-grade-counts">'+['S','A','B','C'].map(function(g){return '<span><b>'+g+'</b> '+counts[g]+'</span>';}).join('')+'</div><small>궁합 등급은 나와의 조화를, 상징은 상대의 일간을 나타내요.</small></div>';}
+function cardAlbumIntro(list){return '';}
 function cardSymbolGuideHtml(){return '<section class="card-symbol-guide"><button type="button" class="share-btn" data-card-preview>등급별 카드 미리보기</button><h3>열 가지 기운의 작은 친구들</h3><p class="section-desc">일간의 오행과 음양에 따라 만나는 친구가 달라져요.</p><div class="card-symbol-grid">'+CARD_TYPES.map(function(t){return '<div><img src="/assets/cards/'+t.asset+'.webp" alt="'+t.title+'" loading="lazy"><b>'+t.title+'</b><small>'+t.stem+' · '+t.wx+' · '+(t.polarity==='yang'?'양':'음')+'</small></div>';}).join('')+'</div><p class="disclaimer">10가지 상징 × S·A·B·C = 40종. S는 90점 이상, A는 70~89점, B는 50~69점, C는 49점 이하예요. 기본 카드는 귀여운 친구, S는 오행별 수호신 일러스트로 표현됩니다. 신살은 작은 인장에 반영돼요.</p></section>';}
 function openCardDesignPreview(){var root=$('#myroom-sheet-root');if(!root)return;root.innerHTML='<div class="sheet-backdrop" id="card-design-preview"><div class="sheet" role="dialog" aria-label="인연 카드 디자인 미리보기" style="gap:14px"><div class="sheet-head"><h2 class="section-title">인연 카드 · 디자인 미리보기</h2><button type="button" class="sheet-close" id="card-preview-close" aria-label="카드 미리보기 닫기">✕</button></div><p class="section-desc">아래는 디자인 견본이에요. 실제 수집 카드에는 친구의 이름과 나와의 궁합이 담겨요.</p><div class="card-design-grid">'+[{score:95,dayGanWxB:'목'},{score:80,dayGanWxB:'화'},{score:60,dayGanWxB:'금'},{score:40,dayGanWxB:'수'}].map(function(e,i){return collectibleCardHtml(Object.assign({id:'design-sample-'+i,nameB:'디자인 견본',cardPolarity:i%2?'yin':'yang',shinsalB:i%2?['dohwa']:['hwagae']},e),true);}).join('')+'</div></div></div>';$('#card-preview-close').addEventListener('click',function(){root.innerHTML='';});$('#card-design-preview').addEventListener('click',function(e){if(e.target.id==='card-design-preview')root.innerHTML='';});}
 document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-card-preview]'))openCardDesignPreview();});

@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -46,3 +46,5 @@ test('collectible grades use compatibility boundaries and symbolic art uses the 
 test('ordinary tiers stay cute while S is a premium guardian',()=>{const e={id:'sample',nameB:'친구',dayGanWxB:'목'};assert.ok(api.collectibleCardHtml({...e,score:80},false).includes('/assets/cards/wood.webp'));assert.ok(api.collectibleCardHtml({...e,score:95},false).includes('destiny-elegant'));});
 
 test('codex has 40 unique types, missing backs, and duplicate ownership counts',()=>{const empty=api.cardDexEntries([]);assert.equal(empty.length,40);assert.equal(new Set(empty.map(r=>r.id)).size,40);assert.equal(empty.filter(r=>r.entry).length,0);assert.ok(api.cardBackHtml(empty[0]).includes('미보유'));assert.ok(!api.cardBackHtml(empty[0]).includes('<img'));const e={id:'friend',score:80,dayGanWxB:'목',dayGanB:'을',cardPolarity:'yin',nameB:'친구'};const rows=api.cardDexEntries([e,{...e,id:'another'}]);assert.equal(rows.filter(r=>r.entry).length,1);assert.equal(rows.find(r=>r.entry).count,2);assert.equal(rows.find(r=>r.entry).id,'wood-yin-a');assert.ok(api.collectibleCardHtml(e,false).includes('/assets/cards/wood-yin.webp'));});
+
+test('album omits tier collection status panel',()=>{assert.equal(api.cardAlbumIntro([{score:90},{score:70}]),'');});
