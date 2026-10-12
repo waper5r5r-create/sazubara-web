@@ -80,3 +80,6 @@ test('reviews show only verified supplied entries and no invented proof',()=>{
  const rendered=api.storyReviewsHtml({reviews:[{verified:false,text:'UNVERIFIED'},{verified:true,text:'REAL_REVIEW',displayName:'Reader'}]});
  assert.ok(!rendered.includes('UNVERIFIED'));assert.ok(rendered.includes('REAL_REVIEW'));
 });
+
+
+test('story interpretation escapes markup once and preserves readable punctuation',()=>{const text=api.storyPaidScenes(concept,{rows:[{caption_template:"'나 자신' <script>alert(1)</script>"}]},result);assert.ok(text.includes('&#39;나 자신&#39;'));assert.ok(text.includes('&lt;script&gt;'));assert.ok(!text.includes('&amp;#39;'));assert.ok(!text.includes('<script>'));});

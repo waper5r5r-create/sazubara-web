@@ -3766,7 +3766,7 @@ function storyPaidScenes(concept,data,result){
   var group=rows.slice(Math.floor(i*rows.length/count),Math.floor((i+1)*rows.length/count));
   var narration=group.map(function(row){return fillReportTemplate(row.caption_template,result);}).filter(Boolean);
   var dialogue=i===0?voices[2]:i===8?voices[3]:fallback[i];
-  var body=narration.map(function(text){return '<p>'+esc(text)+'</p>';}).join('');
+  var body=narration.map(function(text){return '<p>'+text+'</p>';}).join('');
   html+=storySceneHtml(concept,result,i+2,dialogue,body);
  }
  return '<div class="story-sequence">'+html+'</div>';
