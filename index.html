@@ -945,6 +945,12 @@ body{background:radial-gradient(ellipse at 50% 0,rgba(61,72,117,.32),transparent
 .myroom-grid .card-tier-emblems,.card-dex-grid .card-tier-emblems,.card-design-grid .card-tier-emblems{font-size:10px;left:7px;right:7px;}.myroom-grid .tier-s .card-tier-emblems,.card-dex-grid .tier-s .card-tier-emblems,.card-design-grid .tier-s .card-tier-emblems{font-size:13px;}
 </style>
 <style>.card-meaning{padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2);}.card-meaning h3{font-size:1rem;margin:6px 0 14px;}.card-meaning h4{font-size:.85rem;margin:20px 0 8px;}.card-meaning p{font-size:.84rem;line-height:1.85;color:var(--fg-muted);}.card-meaning blockquote{margin:0 0 12px;padding-left:12px;border-left:2px solid var(--accent);color:var(--accent);font-size:.9rem;}.card-meaning-basis{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;}.card-meaning-basis span{padding:5px 8px;border-radius:6px;background:var(--surface-3);font-size:.7rem;color:var(--fg);}.card-meaning small{font-size:.65rem;color:var(--fg-faint);line-height:1.7;display:block;margin-top:12px;}</style>
+<style>
+.destiny-card .tier-art-sheet{overflow:hidden;}
+.destiny-card .tier-art-sheet img{position:absolute;top:0;left:calc(var(--art-panel)*-100%);width:300%;max-width:none;height:100%;object-fit:fill;}
+.destiny-card .tier-art-sheet::after{background:linear-gradient(180deg,transparent 0%,transparent 62%,#fffaf099 78%,#fffaf0 100%);}
+.destiny-card.tier-s .tier-art-sheet::after{background:linear-gradient(180deg,transparent 0%,transparent 62%,#10172bbd 80%,#10172b 100%);}
+</style>
 </head>
 <body>
 
@@ -3186,10 +3192,11 @@ function collectibleCardHtml(entry,preview){
  var seal=sal.indexOf('dohwa')>=0?'✿':sal.indexOf('yeokma')>=0?'➶':sal.indexOf('hwagae')>=0?'✧':'◇';
  var sealName=sal.indexOf('dohwa')>=0?'꽃의 인장':sal.indexOf('yeokma')>=0?'바람의 인장':sal.indexOf('hwagae')>=0?'별의 인장':'오행의 인장';
  var artTitle=type?type.title:spirit.title;
+ var asset=type?type.asset:spirit.key,evolved=tier.key!=='c',panel={b:0,a:1,s:2}[tier.key]||0;
  var emblem={s:'✦',a:'✧',b:'❧',c:''}[tier.key];
  var gan=entry.dayGanB||'',polarity=entry.cardPolarity==='yang'?'양의 기운':entry.cardPolarity==='yin'?'음의 기운':'일간의 기운';
  return '<div class="myroom-card destiny-card'+(preview?' is-preview':'')+' tier-'+tier.key+'" '+(preview?'':'tabindex="0" role="button"')+' data-grade="'+tier.grade+'" data-polarity="'+esc(type?type.polarity:(entry.cardPolarity||'unknown'))+'" data-element="'+spirit.key+'"'+(frame?' data-frame="'+esc(frame)+'"':'')+' aria-label="'+esc(entry.nameB||'상대방')+' · '+tier.grade+'등급 궁합 카드 · '+artTitle+'" style="--card-strength:'+(score/100).toFixed(2)+';--tier-color:'+tier.color+';--tier-soft:'+tier.soft+';'+frameStyleVars(frame)+'">'+
- '<div class="destiny-art">'+(spirit.key?'<img src="/assets/cards/'+(type?type.asset:spirit.key)+'.webp" alt="'+artTitle+' · '+spirit.tag+'" loading="lazy" decoding="async">':'')+'</div><div class="destiny-foil"></div><span class="destiny-corner tl"></span><span class="destiny-corner tr"></span><span class="destiny-corner bl"></span><span class="destiny-corner br"></span>'+
+ '<div class="destiny-art'+(evolved?' tier-art-sheet':'')+'" style="--art-panel:'+panel+'">'+(spirit.key?'<img src="/assets/cards/'+(evolved?'evolved/':'')+asset+'.webp" alt="'+artTitle+' · '+spirit.tag+'" loading="lazy" decoding="async">':'')+'</div><div class="destiny-foil"></div><span class="destiny-corner tl"></span><span class="destiny-corner tr"></span><span class="destiny-corner bl"></span><span class="destiny-corner br"></span>'+
  '<span class="card-tier-ribbon"></span><span class="card-tier-emblems" aria-hidden="true"><i>'+emblem+'</i><i>'+emblem+'</i></span><div class="destiny-top"><span class="destiny-grade">'+tier.grade+'</span><span class="destiny-element">'+spirit.symbol+'</span></div><span class="destiny-seal" aria-label="'+sealName+'">'+seal+'</span>'+
  '<div class="destiny-copy"><span class="destiny-title">'+artTitle+'</span><span class="nm">'+esc(entry.nameB||'상대방')+'</span><div class="destiny-stats"><span>나와의 궁합 <b>'+Math.max(0,Math.min(100,Number(entry.score)||0))+'</b></span><span>'+esc(gan||spirit.symbol)+' · '+polarity+'</span></div><span class="destiny-caption">'+tier.label+' · '+spirit.tag+'</span></div></div>';
 }
