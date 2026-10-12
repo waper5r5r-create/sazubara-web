@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   if(!['GET','POST'].includes(req.method))return res.status(405).json({ok:false});
   const body=req.method==='POST'?(req.body||{}):getQuery(req);
   const conceptId=typeof body.conceptId==='string'?body.conceptId:'';
-  if(!/^[a-zA-Z0-9_-]{1,100}$/.test(conceptId))return res.status(400).json({ok:false,message:'이야기를 확인해주세요.'});
+  if(!/^[\p{L}\p{N}_-]{1,100}$/u.test(conceptId))return res.status(400).json({ok:false,message:'이야기를 확인해주세요.'});
   try {
     const concepts=await rowsAt('/report_concepts?id=eq.'+encodeURIComponent(conceptId)+'&active=eq.true&select=id');
     if(!concepts.length)return res.status(404).json({ok:false});
