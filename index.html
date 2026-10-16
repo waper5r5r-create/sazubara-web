@@ -4256,7 +4256,7 @@ var INVITE_MYROOM_CACHE = null; /* 초대해서 실제 등록한 친구 목록(�
 function renderMyRoomLocal(root){
   if (!STATE.mySaju){
     root.innerHTML =
-      '<div class="myroom-head"><div><p class="eyebrow">OUR LITTLE COLLECTION</p><h2 class="album-heading">인연을 담은 카드첩</h2></div>'+myroomDexBtnHtml()+'</div>'+
+      '<div class="myroom-head"><div><p class="eyebrow">OUR LITTLE COLLECTION</p><h2 class="album-heading">인연이 깃든 카드첩</h2></div>'+myroomDexBtnHtml()+'</div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
       '<span>먼저 내 사주를 입력하면, 초대한 친구가 등록했을 때 이곳에 카드가 모여요.</span></div>'+cardAlbumEmptyHtml()+cardSymbolGuideHtml();
     wireMyroomDexBtn();
@@ -4272,7 +4272,7 @@ function renderMyRoomLocal(root){
   var list = hiddenIds.length ? INVITE_MYROOM_CACHE.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : INVITE_MYROOM_CACHE;
   if (!list.length){
     root.innerHTML =
-      '<div class="myroom-head"><div><p class="eyebrow">OUR LITTLE COLLECTION</p><h2 class="album-heading">인연을 담은 카드첩</h2></div>'+myroomDexBtnHtml()+'</div>'+
+      '<div class="myroom-head"><div><p class="eyebrow">OUR LITTLE COLLECTION</p><h2 class="album-heading">인연이 깃든 카드첩</h2></div>'+myroomDexBtnHtml()+'</div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
       '<span>아직 비어 있는 첫 페이지.<br>친구에게 링크를 보내, 우리만의 인연 카드를 남겨보세요.</span></div>'+cardAlbumEmptyHtml()+cardSymbolGuideHtml();
     wireMyroomDexBtn();
@@ -4281,7 +4281,7 @@ function renderMyRoomLocal(root){
   var rankMap = myroomRankMap(list);
   var displayList = myroomSortedForDisplay(list, STATE.myroomSort);
   root.innerHTML =
-    '<div class="myroom-head"><div><p class="eyebrow">OUR LITTLE COLLECTION</p><h2 class="album-heading">인연을 담은 카드첩</h2></div>'+
+    '<div class="myroom-head"><div><p class="eyebrow">OUR LITTLE COLLECTION</p><h2 class="album-heading">인연이 깃든 카드첩</h2></div>'+
       '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
     '</div>'+
     cardAlbumIntro(list)+'<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
