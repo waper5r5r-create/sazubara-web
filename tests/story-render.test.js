@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -82,3 +82,14 @@ test('owned content has no purchase gate or misleading locked report sample',()=
 test('opening develops a personal conflict and ends with an unanswered saju question',()=>{const plan=api.storyNarrativePlan(concept,result);assert.equal(plan.length,12);assert.ok(plan[2][1].includes('임(수)'));assert.ok(plan[3][1].includes('왜 설레는 순간'));const fire=api.storyNarrativePlan(concept,{...result,dayGanWx:'화'});assert.notEqual(plan[2][0],fire[2][0]);});
 test('reader removes reviews and exposes purchased interpretation without disclosures',()=>{const text=api.storyFlowHtml(concept,{access:{story:true,detail:false},rows:[{caption_template:'PRIVATE_INTERPRETATION'}]},result);assert.ok(text.includes('PRIVATE_INTERPRETATION'));assert.ok(!text.includes('<details'));assert.ok(!text.includes('story-reviews'));assert.ok(!text.includes('후기'));});
 test('report adds eight actionable scenario guides with examples and cautions',()=>{for(const c of [concept,{...concept,category:'재물'}]){const text=api.reportSituationGuides(c,result);assert.equal((text.match(/class="report-analysis situation-guide"/g)||[]).length,8);assert.equal((text.match(/<dt>주의할 점<\/dt>/g)||[]).length,8);assert.ok(text.includes('내 성향에 맞춰'));assert.ok(text.includes('premium-15'));}});
+
+const birth={year:1990,month:5,day:15,hour:14,minute:30,isLunar:false,unknownTime:false,useCorrection:false,gender:'f',name:'홍길동'};
+test('depth uses calculated hidden stems and excludes unknown time',()=>{
+ const r=api.computeSaju(birth);assert.equal(r.deepPillars.length,4);
+ for(const p of r.deepPillars){assert.ok(p.hidden.length>0);assert.equal(p.hidden.length,p.hiddenSS.length);assert.ok(p.hidden.every(x=>/^[가-힣]+$/.test(x)));}
+ const text=api.sajuDepthHtml(r);assert.ok(text.includes('지장간'));assert.ok(text.includes('간이 분류'));assert.ok(text.includes('성명학 분석은 제공하지 않습니다'));
+ const unknown=api.computeSaju({...birth,unknownTime:true});assert.equal(unknown.deepPillars.length,3);assert.ok(api.sajuDepthHtml(unknown).includes('시주의 지장간은 제외'));
+});
+test('name changes salutation only and input explains its scope',()=>{
+ const a=api.computeSaju(birth),b=api.computeSaju({...birth,name:'다른이름'});assert.deepEqual(a.deepPillars,b.deepPillars);assert.equal(api.sajuDepthHtml(a),api.sajuDepthHtml(b));assert.ok(html.includes('이름을 입력해주세요 (예: 홍길동)'));assert.ok(!html.includes('어떤 이름으로 불러드릴까요?'));assert.ok(!html.includes('내 이야기를 시작해볼까요?'));
+});

@@ -796,6 +796,8 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .myroom-dex-btn{padding:5px 9px;font-size:.69rem;}.myroom-dex-btn svg{width:12px;height:12px;}.card-symbol-guide h3{font-size:.84rem;}.card-symbol-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
 @media(max-width:374px){.myroom-grid,.card-dex-grid,.card-design-grid{gap:8px;padding-left:8px;padding-right:8px;}.myroom-grid .destiny-copy,.card-dex-grid .destiny-copy,.card-design-grid .destiny-copy{left:6px;right:6px;}.myroom-grid .destiny-card .nm,.card-dex-grid .destiny-card .nm,.card-design-grid .destiny-card .nm{font-size:.62rem;}.card-back-label{font-size:.4rem;}}
 
+
+.saju-intro-symbol{display:flex;justify-content:center;gap:12px;padding:32px 20px 6px;background:radial-gradient(ellipse at center,rgba(224,173,85,.08),transparent 70%)}.saju-intro-symbol span{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--border);border-radius:50%;color:var(--accent);font-family:serif;font-size:19px}.saju-intro-symbol span:nth-child(2n){transform:translateY(-6px)}.saju-story-head h1{font-size:1.6rem;letter-spacing:-.04em}.saju-intro-desc{color:var(--fg-muted);font-size:.9rem;line-height:1.8;margin:12px 0 22px}.saju-input-guide{font-size:.82rem;line-height:1.7;color:var(--fg-muted);margin:18px 0 0}.saju-depth h3:before{content:"✧";margin-right:8px;color:var(--accent)}.saju-depth h3{font-size:.95rem;margin:24px 0 10px;color:var(--accent)}.saju-depth p{font-size:.87rem;line-height:1.9;word-break:keep-all;color:var(--fg-muted)}.saju-depth strong{color:var(--fg)}.depth-table-wrap{overflow-x:auto}.depth-table{width:100%;border-collapse:collapse;font-size:.8rem;text-align:left}.depth-table caption{text-align:left;margin:12px 0;color:var(--fg-muted)}.depth-table th,.depth-table td{padding:12px 7px;border-bottom:1px solid var(--border);line-height:1.7}.depth-table th{white-space:nowrap}
 </style>
 <style>
 /* 독립 웹 배포용 베이스 리셋 (claude.ai Artifact 스켈레톤이 제공하던 부분을 대신함) */
@@ -1003,7 +1005,8 @@ body{background:radial-gradient(ellipse at 50% 0,rgba(61,72,117,.32),transparent
 
         <div class="field">
           <label for="f-name">이름 <span class="hint">(선택)</span></label>
-          <input type="text" id="f-name" placeholder="불리고 싶은 이름" maxlength="12" autocomplete="off">
+          <input type="text" id="f-name" placeholder="이름을 입력해주세요 (예: 홍길동)" maxlength="12" autocomplete="name" aria-describedby="name-help">
+          <p class="hint" id="name-help">풀이를 볼 분의 이름을 입력해주세요. 이름은 결과의 호칭으로만 사용하며, 한자·획수를 보는 성명학 풀이는 포함하지 않아요.</p>
         </div>
 
         <div class="two-col">
@@ -1633,6 +1636,9 @@ function computeSaju(opts){
   var dayP = pillar(ec.getDayGan(), ec.getDayZhi());
   var timeP = opts.unknownTime ? null : pillar(ec.getTimeGan(), ec.getTimeZhi());
 
+  var deepPillars=['Year','Month','Day'].concat(opts.unknownTime?[]:['Time']).map(function(key,i){
+    return {label:['연주','월주','일주','시주'][i],hidden:ec['get'+key+'HideGan']().map(function(g){return GAN_KR[g]||g;}),hiddenSS:ec['get'+key+'ShiShenZhi']().map(function(v){return SS_KR[v]||v;})};
+  });
   var dayGanWxZh = LunarUtil.WU_XING_GAN[ec.getDayGan()];
   var yearSS = SS_KR[ec.getYearShiShenGan()] || '일주';
   var monthSS = SS_KR[ec.getMonthShiShenGan()] || '일주';
@@ -1658,7 +1664,7 @@ function computeSaju(opts){
   return {
     solar:correctedSolar, originalSolar:solar, correctionMin:correctionMin,
     year:yearP, month:monthP, day:dayP, time:timeP,
-    yearSS:yearSS, monthSS:monthSS, timeSS:timeSS,
+    deepPillars:deepPillars, yearSS:yearSS, monthSS:monthSS, timeSS:timeSS,
     dayGanWx:dayWxKr, wxCount:wxCount, totalCount:totalCount,
     strength:strength, strengthRatio:strengthRatio, shinsal:shinsal,
     unknownTime: !!opts.unknownTime, gender:opts.gender, name:opts.name||''
@@ -2541,6 +2547,18 @@ function sajuQuickSummaryHtml(result){
     '<div><dt>기억할 한 가지</dt><dd>'+esc(summary.tip)+'</dd></div></dl>'+
     '<p class="hint">일간 오행을 바탕으로 정리한 요약이에요.</p></div>';
 }
+
+function sajuDepthHtml(result){
+ var rows=result.deepPillars||[], month=result.month;
+ var heading='<p class="eyebrow">원국을 더 깊이 읽기</p><h2 class="section-title">내 사주를 이렇게 해석해요</h2>';
+ var stemText={갑:'큰 나무처럼 방향을 세우고 성장하는 모습',을:'풀과 덩굴처럼 환경에 맞춰 유연하게 이어가는 모습',병:'태양처럼 드러내고 주변에 활력을 전하는 모습',정:'등불처럼 한곳에 집중하고 섬세하게 살피는 모습',무:'큰 산처럼 중심을 지키고 기반을 만드는 모습',기:'밭의 흙처럼 필요한 것을 돌보고 조율하는 모습',경:'다듬기 전 쇠처럼 결단하고 구조를 바꾸는 모습',신:'보석처럼 세부를 다듬고 기준을 세우는 모습',임:'큰 물처럼 넓게 탐색하고 흐름을 읽는 모습',계:'비와 이슬처럼 작은 변화를 감지하고 스며드는 모습'};
+ var html='<section class="card saju-depth">'+heading+'<h3>일간 · 나를 읽는 기준</h3><p>'+esc(result.day.ganKr)+' 일간은 '+esc(stemText[result.day.ganKr]||'자신의 기본 반응')+'에 비유해요. 같은 '+esc(result.dayGanWx)+' 오행이라도 일간이 다르면 표현 방식의 비유가 달라집니다. 아래 월주와 십신을 함께 읽어보세요.</p>';
+ if(month)html+='<h3>월지 · 태어난 계절의 배경</h3><p>나의 월지는 <strong>'+esc(month.zhiKr)+'</strong>, 월지의 대표 오행은 <strong>'+esc(month.wxZhi)+'</strong>입니다. 월지는 절기를 기준으로 정하는 계절의 배경이에요. 일간의 기운이 어떤 환경에 놓였는지 함께 살펴보는 기준이며, 오행의 단순 개수와는 구분해서 읽습니다.</p>';
+ if(rows.length)html+='<h3>지장간 · 지지 안에 담긴 기운</h3><p>겉에 드러난 천간과 달리, 지장간은 각 지지 안에 담긴 천간이에요. 아래 십신은 그 기운을 내 일간과 비교한 관계입니다.</p><div class="depth-table-wrap"><table class="depth-table"><caption>기둥별 지장간과 십신</caption><thead><tr><th scope="col">기둥</th><th scope="col">지장간</th><th scope="col">십신</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><th scope="row">'+esc(r.label)+'</th><td>'+r.hidden.map(esc).join(' · ')+'</td><td>'+r.hiddenSS.map(esc).join(' · ')+'</td></tr>';}).join('')+'</tbody></table></div><p>예를 들어 식신·상관은 표현과 생산, 정재·편재는 자원과 관리, 정관·편관은 규칙과 책임, 정인·편인은 배움과 수용, 비견·겁재는 자율성과 동료 관계를 살펴보는 실마리예요. 한 글자만으로 직업이나 재산, 관계의 결과를 단정하지 않습니다.</p>';
+ html+='<h3>신강·신약 · 계산한 범위</h3><p>현재 표시는 일간과 같은 오행 및 일간을 생하는 오행이 전체 글자에서 차지하는 비율'+(Number.isFinite(result.strengthRatio)?' <strong>'+Math.round(result.strengthRatio*100)+'%</strong>':'')+'을 이용한 간이 분류입니다. 월령·통근·지장간의 가중치를 종합한 판정은 아니므로, 이를 바탕으로 용신·희신을 확정하지 않아요.</p><h3>이름은 사주에 어떻게 쓰이나요?</h3><p>현재 이름은 호칭에만 사용해요. 사주 원국은 생년월일시로 계산하며, 이름의 한자·획수·발음 등을 별도로 보는 성명학 분석은 제공하지 않습니다. 이름을 바꿔도 같은 출생 정보의 사주 계산과 해석은 같아요.</p>'+(result.unknownTime?'<p class="hint">출생시간을 몰라 시주와 시주의 지장간은 제외했어요. 시간에 따라 달라질 수 있는 부분은 확정할 수 없습니다.</p>':'')+'</section>';
+ return html;
+}
+
 function renderSajuResult(result){
   var wrap = $('#saju-result');
   var pillarsHtml = '<div class="pillars no-time">'+
@@ -2587,7 +2605,7 @@ function renderSajuResult(result){
       '</div>'+
       sajuQuickSummaryHtml(result) +
       pillarsHtml + corrNote +
-    '</div>'+
+    '</div>'+sajuDepthHtml(result)+
 
     '<div class="card">'+
       '<p class="section-title" style="font-size:.98rem;">오행 분포</p>'+
@@ -3774,7 +3792,7 @@ function detailReportHtml(concept,panels,result){
   var evidence='<section class="report-evidence"><p class="reader-kicker">나의 사주 · 해석 기준</p><h2>'+esc(result.name?result.name+'님의':'나의')+' 세부 리포트</h2>'+
     '<dl><div><dt>일간</dt><dd>'+esc(result.day.ganKr)+' · '+esc(result.dayGanWx)+'</dd></div><div><dt>가장 강한 기운</dt><dd>'+esc(vars.domWx)+'</dd></div><div><dt>보완할 기운</dt><dd>'+esc(vars.weakWx)+'</dd></div><div><dt>신강·신약</dt><dd>'+esc(vars.strength)+' 기운</dd></div></dl></section>';
   var content=ranges.map(function(range,i){var items=panels.slice(range[0],range[1]);if(!items.length)return '';return '<section class="report-analysis" id="analysis-'+i+'"><span class="reader-kicker">0'+(i+1)+'</span><h2>'+headings[i]+'</h2>'+items.map(function(p){return '<div class="report-analysis-text">'+reportCaptionParasHtml(fillReportTemplate(p.caption_template,result))+'</div>';}).join('')+'</section>';}).join('');
-  return evidence+'<nav class="report-toc" aria-label="세부 리포트 목차">'+headings.map(function(h,i){return panels.length>ranges[i][0]?'<a href="#analysis-'+i+'">'+h+'</a>':'';}).join('')+['해석 기준과 오행 분포','나의 기본 반응','강점과 보완할 습관','신강·신약과 선택의 속도','십신과 생활 패턴','상황별 점검 질문','일주일 실천 계획'].map(function(h,i){return '<a href="#premium-'+String(i+1).padStart(2,'0')+'">'+h+'</a>';}).join('')+'<a href="#premium-08">'+(money?'구매·제안·돈 거래 등 8가지 행동 가이드':'연락·고백·갈등 등 8가지 행동 가이드')+'</a>'+'</nav>'+content+premiumReportHtml(concept,result)+reportSituationGuides(concept,result)+
+  return evidence+'<nav class="report-toc" aria-label="세부 리포트 목차">'+headings.map(function(h,i){return panels.length>ranges[i][0]?'<a href="#analysis-'+i+'">'+h+'</a>':'';}).join('')+['해석 기준과 오행 분포','나의 기본 반응','강점과 보완할 습관','신강·신약과 선택의 속도','십신과 생활 패턴','상황별 점검 질문','일주일 실천 계획'].map(function(h,i){return '<a href="#premium-'+String(i+1).padStart(2,'0')+'">'+h+'</a>';}).join('')+'<a href="#premium-08">'+(money?'구매·제안·돈 거래 등 8가지 행동 가이드':'연락·고백·갈등 등 8가지 행동 가이드')+'</a>'+'</nav>'+sajuDepthHtml(result)+content+premiumReportHtml(concept,result)+reportSituationGuides(concept,result)+
     '<section class="report-action"><p class="reader-kicker">읽고 난 뒤, 한 가지</p><h2>'+(money?'돈의 흐름을 기록해보세요.':'마음의 흐름을 기록해보세요.')+'</h2><p>'+(money?'최근 한 달의 지출 중 만족했던 선택과 아쉬웠던 선택을 하나씩 적어보세요. 반복되는 이유를 찾는 데서 다음 선택이 시작됩니다.':'편안했던 관계와 지쳤던 관계를 하나씩 떠올려보세요. 그때 내가 표현한 마음과 참았던 마음을 나눠 적어보면 반복되는 패턴을 살펴볼 수 있어요.')+'</p></section>'+
     '<p class="disclaimer">명리학의 오행·신강·신약을 바탕으로 한 참고용 콘텐츠입니다. 특정 사건이나 수익, 만남의 시기를 보장하지 않습니다.</p>';
 }
@@ -5183,7 +5201,7 @@ function initSajuStoryForm(){
   var originalIntro=form.firstElementChild;
   originalIntro.hidden=true;
   var welcome=document.createElement('div');welcome.className='saju-story-welcome';
-  welcome.innerHTML='<div class="saju-guide-art"><img src="/assets/webtoon/saju-guide.webp" alt="나의 사주 이야기를 안내하는 풀이자" width="1024" height="1536" fetchpriority="high"><div class="saju-guide-shade"></div><p class="guide-bubble" id="saju-guide-line" aria-live="polite"></p></div><div class="saju-story-head"><p class="eyebrow">나의 이야기 · 무료 사주풀이</p><h1>내 이야기를 시작해볼까요?</h1><div class="saju-step-track" aria-label="사주 입력 진행 단계"><span data-form-progress="0">나</span><span data-form-progress="1">태어난 날</span><span data-form-progress="2">태어난 순간</span></div></div>';
+  welcome.innerHTML='<div class="saju-intro-symbol" aria-hidden="true"><span>木</span><span>火</span><span>土</span><span>金</span><span>水</span></div><div class="saju-story-head"><p class="eyebrow">나를 이해하는 첫걸음</p><h1>나의 사주 알아보기</h1><p class="saju-intro-desc">태어난 날과 시간을 바탕으로<br>타고난 성향과 삶의 흐름을 살펴보세요.</p><div class="saju-step-track" aria-label="사주 입력 진행 단계"><span data-form-progress="0">01 기본 정보</span><span data-form-progress="1">02 생년월일</span><span data-form-progress="2">03 출생 정보</span></div><p id="saju-guide-line" class="saju-input-guide" aria-live="polite"></p></div>';
   form.insertBefore(welcome,form.firstChild);
   var groups=[0,1,2].map(function(i){var g=document.createElement('div');g.className='saju-form-step';g.dataset.formStep=i;form.insertBefore(g,submit);return g;});
   groups[0].appendChild($('#f-name').closest('.field'));
@@ -5197,12 +5215,12 @@ function initSajuStoryForm(){
   groups[2].appendChild($('#f-time').closest('.two-col'));
   groups[2].appendChild($('#f-city').closest('.field'));
   var controls=document.createElement('div');controls.className='saju-story-controls';
-  controls.innerHTML='<button type="button" class="share-btn" id="saju-step-back">이전</button><button type="button" class="btn-primary" id="saju-step-next">다음 이야기로</button>';
+  controls.innerHTML='<button type="button" class="share-btn" id="saju-step-back">이전</button><button type="button" class="btn-primary" id="saju-step-next">다음으로</button>';
   form.insertBefore(controls,submit);
   var toggle=document.createElement('button');toggle.type='button';toggle.className='saju-form-toggle';toggle.id='saju-form-toggle';toggle.textContent='한 화면으로 입력하기';form.appendChild(toggle);
   $('#saju-step-next').addEventListener('click',advanceSajuStep);
   $('#saju-step-back').addEventListener('click',function(){showSajuStep(Math.max(0,SAJU_FORM_STEP-1),true);});
-  toggle.addEventListener('click',function(){SAJU_FORM_FULL=!SAJU_FORM_FULL;toggle.textContent=SAJU_FORM_FULL?'이야기 따라 입력하기':'한 화면으로 입력하기';showSajuStep(SAJU_FORM_STEP,false);});
+  toggle.addEventListener('click',function(){SAJU_FORM_FULL=!SAJU_FORM_FULL;toggle.textContent=SAJU_FORM_FULL?'단계별로 입력하기':'한 화면으로 입력하기';showSajuStep(SAJU_FORM_STEP,false);});
   $('#f-name').addEventListener('input',function(){showSajuStep(SAJU_FORM_STEP,false);});
   form.noValidate=true;showSajuStep(0,false);
 }
@@ -5213,7 +5231,7 @@ function advanceSajuStep(){
 function showSajuStep(step,focus){
   SAJU_FORM_STEP=step;var form=$('#saju-form');if(!$('#saju-guide-line'))return;
   var name=$('#f-name').value.trim(),hello=name?name+'님, ':'당신의 ';
-  var lines=[name?name+'님이 주인공인 이야기를 함께 읽어볼게요.':'사주는 당신을 알아가는 이야기예요. 어떤 이름으로 불러드릴까요?',hello+'이야기가 시작된 날은 언제인가요?',name?name+'님이 태어난 순간까지 살펴볼게요. 정확한 시간을 몰라도 괜찮아요.':'태어난 순간까지 살펴볼게요. 정확한 시간을 몰라도 괜찮아요.'];
+  var lines=['풀이를 볼 분의 이름과 성별을 입력해주세요. 이름은 생략할 수 있어요.','양력·음력을 확인하고 생년월일을 입력해주세요.','출생시간과 태어난 지역을 입력해주세요. 시간을 모르면 ‘모름’을 선택하세요.'];
   $('#saju-guide-line').textContent=lines[step];
   $all('[data-form-step]',form).forEach(function(g){g.hidden=!SAJU_FORM_FULL&&Number(g.dataset.formStep)!==step;});
   $all('[data-form-progress]',form).forEach(function(el){var i=Number(el.dataset.formProgress);el.classList.toggle('current',i===step);el.classList.toggle('done',i<step);if(i===step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});
