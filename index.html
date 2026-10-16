@@ -983,6 +983,8 @@ body{background:#ece7e5;letter-spacing:-.025em}.app{background:var(--bg);box-sha
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media(min-width:400px){.orbit-charm{right:3px;opacity:.85}.journal-hero-copy>p:last-child{max-width:270px}}
 @media(max-width:374px){.journal-hero{padding-left:19px}.journal-hero h1{font-size:1.45rem}.orbit-charm{opacity:.3;right:-30px}.myroom-grid{gap:13px 9px;padding-left:17px}.album-heading{font-size:1rem}}
+
+.saju-step-track{display:flex;border:0;justify-content:initial;padding:0;margin-top:16px}.saju-step-track span{flex:1;text-align:center;padding:9px 3px;border-radius:8px;border-bottom:0;font-size:.59rem}.myroom-grid>.destiny-card{animation:album-arrive .55s ease both}.myroom-grid>.destiny-card:nth-child(3n+2){animation-delay:.06s}.myroom-grid>.destiny-card:nth-child(3n+3){animation-delay:.12s}@keyframes album-arrive{from{opacity:0;transform:translateY(9px) rotate(-2deg)}to{opacity:1;transform:translateY(0) rotate(0)}}@media(prefers-reduced-motion:reduce){.myroom-grid>.destiny-card{animation:none!important}}
 </style>
 </head>
 <body>
@@ -2680,7 +2682,7 @@ function renderSajuResult(result){
   wrap.innerHTML = everydaySajuHtml(result)+html;
   var evidence=document.createElement('details');evidence.className='technical-details';
   evidence.innerHTML='<summary><span>'+uiIcon('compass')+'<b>내 사주의 근거도 궁금하다면</b><small>원국 · 오행 · 지장간 · 십신</small></span>'+uiIcon('arrow')+'</summary>';
-  Array.from(wrap.children).slice(1,5).forEach(function(card){evidence.appendChild(card);});
+  Array.from(wrap.children).slice(1,6).forEach(function(card){evidence.appendChild(card);});
   wrap.appendChild(evidence);
   $all('[data-everyday-cat]',wrap).forEach(function(btn){btn.addEventListener('click',function(){var target=$all('#worry-chips .chip-btn').find(function(chip){return chip.dataset.cat===btn.dataset.everydayCat;});if(target){target.click();target.closest('.card').scrollIntoView({behavior:'smooth',block:'start'});}});});
   wrap.hidden = false;
@@ -3468,7 +3470,7 @@ var CARD_TYPES=[
 function cardTypeOf(entry){return CARD_TYPES.find(function(t){return t.stem===entry.dayGanB;})||CARD_TYPES.find(function(t){return t.wx===entry.dayGanWxB&&t.polarity===entry.cardPolarity;})||null;}
 function cardDexEntries(list){return CARD_TYPES.reduce(function(out,type){MYROOM_TIERS.forEach(function(tier){var matches=list.filter(function(e){var t=cardTypeOf(e);return t&&t.id===type.id&&myroomTier(e.score).key===tier.key;});out.push({id:type.id+'-'+tier.key,type:type,tier:tier,entry:matches[0]||null,count:matches.length});});return out;},[]);}
 function cardBackHtml(row,extra){return '<div class="card-back '+(extra||'')+'" aria-label="미보유 · '+esc(row.type.title)+' · '+row.tier.grade+'등급"><span class="card-back-grade">'+row.tier.grade+'</span><span class="card-back-mark">'+BRAND_MARK_SVG+'</span><span class="card-back-brand">SAZUBARA</span><small>'+esc(row.type.wx)+' · '+(row.type.polarity==='yang'?'양':'음')+'</small><span class="card-back-label">아직 만나지 않은 인연</span></div>';}
-function cardAlbumEmptyHtml(){var rows=cardDexEntries([]).filter(function(r){return r.tier.key==='a';}).slice(0,6);return '<div class="album-page-label"><span>MY CONNECTIONS</span><span>01 / ∞</span></div><div class="myroom-grid card-album-empty">'+rows.map(function(r){return cardBackHtml(r);}).join('')+'</div>';} 
+function cardAlbumEmptyHtml(){var rows=cardDexEntries([]).filter(function(r){return r.tier.key==='a';}).slice(0,6);return '<div class="album-page-label"><span>MY CONNECTIONS</span><span>01 / ∞</span></div><div class="myroom-grid card-album-empty">'+rows.map(function(r){return cardBackHtml(r);}).join('')+'</div>';}
 function closeMyroomDex(){var root=$('#myroom-sheet-root');if(root)root.innerHTML='';}
 function openMyroomDex(){
  var list=INVITE_MYROOM_CACHE||loadMyRoomList(),rows=cardDexEntries(list),owned=rows.filter(function(r){return r.entry;}).length;
@@ -5299,7 +5301,7 @@ function initSajuForm(){
       var result = computeSaju(opts);
       STATE.mySaju = result; STATE._mySajuOpts = opts; STATE.lastForm = opts;
       saveState();
-      showReveal('사주를 풀이하는 중', '하늘의 간지가 그려내는 결을 살피고 있어요', function(){
+      showReveal('사주를 풀이하는 중', '입력한 정보에서 나를 이해할 힌트를 찾고 있어요', function(){
         renderSajuResult(result);
         refreshCompatPersonA();
         var rw = $('#saju-result'); if (rw) rw.classList.add('reveal-fadeup');
