@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -92,4 +92,14 @@ test('depth uses calculated hidden stems and excludes unknown time',()=>{
 });
 test('name changes salutation only and input explains its scope',()=>{
  const a=api.computeSaju(birth),b=api.computeSaju({...birth,name:'다른이름'});assert.deepEqual(a.deepPillars,b.deepPillars);assert.equal(api.sajuDepthHtml(a),api.sajuDepthHtml(b));assert.ok(html.includes('이름을 입력해주세요 (예: 홍길동)'));assert.ok(!html.includes('어떤 이름으로 불러드릴까요?'));assert.ok(!html.includes('내 이야기를 시작해볼까요?'));
+});
+
+test('summary has three distinct traits grounded in the chart',()=>{
+ const text=api.everydayTraitsHtml(result);assert.equal((text.match(/<li>/g)||[]).length,3);assert.ok(text.includes('기본 성향'));assert.ok(text.includes('발휘하기 쉬운 강점'));assert.ok(text.includes('균형을 위한 힌트'));
+ assert.notEqual(text,api.everydayTraitsHtml({...result,dayGanWx:'화',wxCount:{목:1,화:6,토:0,금:0,수:1}}));
+});
+test('all five topics have a personalised free reading before checkout',()=>{
+ for(const cat of ['연애','직장','재물','건강','인간관계']){const a=api.worryPreviewHtml(result,cat),b=api.worryPreviewHtml({...result,dayGanWx:'화'},cat);assert.ok(a.includes(cat+' 무료 맛보기'));assert.ok(a.replace(/<[^>]*>/g,'').length>230);assert.notEqual(a,b);assert.ok(!a.includes('unlock-btn'));}
+ assert.equal(api.worryPreviewHtml(result,'invalid'),'');assert.ok(api.worryPreviewHtml(result,'건강').includes('건강은 사주로 판단할 수 없어요'));
+ const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('나의 연애와 인연'));
 });
