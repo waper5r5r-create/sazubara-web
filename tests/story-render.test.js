@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -26,7 +26,7 @@ test('speech slots stay short and report includes full interpretation',()=>{
 });
 test('separate prices are disclosed before the first checkout',()=>{
  const offer=api.stageOfferHtml(concept,'story');assert.ok(offer.includes('별도 12,900원'));assert.ok(offer.includes('총 17,800원'));
- const detail=api.stageOfferHtml(concept,'detail');assert.ok(detail.includes('이야기와 별도 결제'));
+ const detail=api.stageOfferHtml(concept,'detail');assert.ok(detail.includes('콘텐츠와 별도 결제'));
 });
 test('a category purchase opens only that category, historic bundle opens all',()=>{
  api.DEVICE.unlocked={'feature-saju-deep:연애':true};assert.equal(api.isWorryUnlocked('연애'),true);assert.equal(api.isWorryUnlocked('재물'),false);
@@ -63,7 +63,7 @@ test('reader keeps free opening and separate purchase gates without reviews',()=
  assert.equal(api.readerStepsHtml(data,'story'),'');
  assert.equal((text.match(/class="story-frame /g)||[]).length,4);
  assert.ok(!text.includes('PRIVATE_SENTENCE'));
- assert.ok(text.indexOf('data-gate="story"')<text.indexOf('data-gate="detail"'));
+ assert.ok(text.includes('data-gate="story"'));assert.ok(!text.includes('data-gate="detail"'));
  assert.ok(!text.includes('story-reviews'));
  assert.ok(!text.includes('01 ·'));assert.ok(text.includes('4,900'));assert.ok(text.includes('12,900'));
 });
@@ -79,7 +79,7 @@ test('story interpretation escapes markup once and preserves readable punctuatio
 
 
 test('owned content has no purchase gate or misleading locked report sample',()=>{const data={access:{story:true,detail:true},rows:[],detailRows:[]};const full=api.storyFlowHtml(concept,data,result);assert.ok(full.includes('reader-owned-badge'));assert.ok(!full.includes('data-gate='));assert.ok(!full.includes('sample-lock'));assert.ok(!full.includes('story-locked-preview'));const story=api.storyFlowHtml(concept,{...data,access:{story:true,detail:false}},result);assert.ok(!story.includes('data-gate="story"'));assert.ok(story.includes('data-gate="detail"'));});
-test('opening develops a personal conflict and ends with an unanswered saju question',()=>{const plan=api.storyNarrativePlan(concept,result);assert.equal(plan.length,12);assert.ok(plan[2][1].includes('임(수)'));assert.ok(plan[3][1].includes('왜 설레는 순간'));const fire=api.storyNarrativePlan(concept,{...result,dayGanWx:'화'});assert.notEqual(plan[2][0],fire[2][0]);});
+test('opening provides a broad personal question without assuming hesitation',()=>{const plan=api.storyNarrativePlan(concept,result);assert.equal(plan.length,12);assert.ok(plan[2][1].includes('임(수)'));assert.ok(plan[3][0].endsWith('?'));const fire=api.storyNarrativePlan(concept,{...result,dayGanWx:'화'});assert.notEqual(plan[1][0],fire[1][0]);assert.notEqual(plan[8][1],fire[8][1]);});
 test('reader removes reviews and exposes purchased interpretation without disclosures',()=>{const text=api.storyFlowHtml(concept,{access:{story:true,detail:false},rows:[{caption_template:'PRIVATE_INTERPRETATION'}]},result);assert.ok(text.includes('PRIVATE_INTERPRETATION'));assert.ok(!text.includes('<details'));assert.ok(!text.includes('story-reviews'));assert.ok(!text.includes('후기'));});
 test('report adds eight actionable scenario guides with examples and cautions',()=>{for(const c of [concept,{...concept,category:'재물'}]){const text=api.reportSituationGuides(c,result);assert.equal((text.match(/class="report-analysis situation-guide"/g)||[]).length,8);assert.equal((text.match(/<dt>주의할 점<\/dt>/g)||[]).length,8);assert.ok(text.includes('내 성향에 맞춰'));assert.ok(text.includes('premium-15'));}});
 
@@ -107,4 +107,20 @@ test('all five topics have a personalised free reading before checkout',()=>{
 test('compatibility guidance includes all relationships without assuming romance',()=>{
  for(const data of [api.ZHI_REL_TEXT,api.GAN_REL_TEXT,api.ZHI_REL_MARRIAGE_TEXT,api.DATE_GUIDE_TEXT,api.GAN_REL_TALK_TEXT,api.CONFLICT_TEXT,api.COUPLE_TODAY_DETAIL])assert.ok(!/결혼|신혼|데이트|스킨십|커플/.test(JSON.stringify(data)));
  assert.equal(Object.keys(api.DATE_GUIDE_TEXT).length,8);assert.equal(Object.keys(api.ZHI_REL_MARRIAGE_TEXT).length,8);assert.equal(api.scoreLabel('love'),'친밀감');assert.equal(api.scoreLabel('money'),'금전 성향');assert.ok(html.includes('우리, 진짜 잘 맞는 걸까?'));assert.ok(!html.includes('친구·가족·동료·지인·연인, 누구와도.'));
+});
+
+test('each element changes the response and concrete next action across both themes',()=>{
+ for(const category of ['연애','재물']){const plans=['목','화','토','금','수'].map(wx=>api.storyNarrativePlan({...concept,category},{...result,dayGanWx:wx}));assert.equal(new Set(plans.map(p=>p[1][0])).size,5);assert.equal(new Set(plans.map(p=>p[8][1])).size,5);for(const p of plans)assert.equal(p.length,12);}
+ const base=api.storyNarrativePlan(concept,result),diff=api.storyNarrativePlan(concept,{...result,yearSS:'정관',monthSS:'정인',timeSS:'비견',strength:'weak',wxCount:{목:4,화:2,토:1,금:0,수:1}});for(const i of [5,6,7,9])assert.notEqual(base[i][1],diff[i][1]);
+});
+test('second offer follows the full story and a real personalised sample',()=>{
+ const owned=api.storyFlowHtml(concept,{access:{story:true,detail:false},rows:[]},result);assert.ok(owned.indexOf('scene-11')<owned.indexOf('report-real-sample'));assert.ok(owned.indexOf('report-real-sample')<owned.indexOf('data-gate="detail"'));assert.ok(owned.includes('수 6개'));assert.ok(!owned.includes('report-sample-lines'));assert.ok(!owned.includes('sample-lock'));
+ const free=api.storyFlowHtml(concept,{access:{story:false,detail:false},rows:[]},result);assert.ok(!free.includes('data-gate="detail"'));assert.ok(free.includes('총 17,800원'));
+});
+test('new categories cannot silently reuse the romance story',()=>{assert.equal(api.storyCategory({category:'직장'}),'unsupported');const card=api.reportCardHtml({id:'new',title:'직장 이야기',category:'직장'});assert.ok(card.includes(' disabled'));assert.ok(card.includes('준비 중'));assert.ok(!card.includes('4,900'));});
+
+test('content navigation and cards are neutral about format and future themes',()=>{
+ assert.ok(html.includes('<span>콘텐츠</span>'));assert.ok(!html.includes('<span>사주 이야기</span>'));
+ const card=api.reportCardHtml({...concept,title:'나만의 제목'});assert.ok(card.includes('나만의 제목'));assert.ok(!card.includes('웹툰'));assert.ok(!card.includes(' · 콘텐츠'));
+ const offer=api.stageOfferHtml({...concept,title:'나만의 제목'},'story');assert.ok(offer.includes('나만의 제목 이어보기'));assert.ok(!offer.includes('웹툰'));
 });
