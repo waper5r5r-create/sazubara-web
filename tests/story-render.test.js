@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyReviewsHtml,storyAtlasArt,storyNarrativePlan,storyResonanceHtml,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -57,14 +57,14 @@ test('card detail uses two short relationship metaphors instead of design explan
 test('story reader is outside the app disabled while reading',()=>{assert.match(html, /id="toast-root"><\/div>\s*<\/div>\s*<!--[\s\S]*?-->\s*<div id="report-sheet-root">/);assert.equal((html.match(/id="report-sheet-root"/g)||[]).length,1);assert.ok(html.includes('touch-action:pan-y'));});
 
 
-test('continuous reader shows short opening then two gates separated by reviews',()=>{
+test('reader keeps free opening and separate purchase gates without reviews',()=>{
  const data={access:{story:false,detail:false},rows:[{caption_template:'PRIVATE_SENTENCE'}]};
  const text=api.storyFlowHtml(concept,data,result);
  assert.equal(api.readerStepsHtml(data,'story'),'');
  assert.equal((text.match(/class="story-frame /g)||[]).length,4);
  assert.ok(!text.includes('PRIVATE_SENTENCE'));
- assert.ok(text.indexOf('data-gate="story"')<text.indexOf('class="story-reviews"'));
- assert.ok(text.indexOf('class="story-reviews"')<text.indexOf('data-gate="detail"'));
+ assert.ok(text.indexOf('data-gate="story"')<text.indexOf('data-gate="detail"'));
+ assert.ok(!text.includes('story-reviews'));
  assert.ok(!text.includes('01 ·'));assert.ok(text.includes('4,900'));assert.ok(text.includes('12,900'));
 });
 test('paid story keeps all personal interpretation in eight distinct illustrated scenes',()=>{
@@ -75,16 +75,10 @@ test('paid story keeps all personal interpretation in eight distinct illustrated
  assert.equal(new Set([...text.matchAll(/src="([^"]+)"/g)].map(x=>x[1])).size,8);
  assert.ok(api.storyAtlasArt(concept,{...result,gender:'m'},0).includes('love-m-0'));
 });
-test('reviews show only verified supplied entries and no invented proof',()=>{
- const blank=api.storyReviewsHtml({});assert.ok(blank.includes('아직 등록된 후기가 없어요'));assert.ok(!blank.includes('별점'));
- const rendered=api.storyReviewsHtml({reviews:[{verified:false,text:'UNVERIFIED'},{verified:true,text:'REAL_REVIEW',displayName:'Reader'}]});
- assert.ok(!rendered.includes('UNVERIFIED'));assert.ok(rendered.includes('REAL_REVIEW'));
-});
-
-
 test('story interpretation escapes markup once and preserves readable punctuation',()=>{const text=api.storyPaidScenes(concept,{rows:[{caption_template:"'나 자신' <script>alert(1)</script>"}]},result);assert.ok(text.includes('&#39;나 자신&#39;'));assert.ok(text.includes('&lt;script&gt;'));assert.ok(!text.includes('&amp;#39;'));assert.ok(!text.includes('<script>'));});
 
 
 test('owned content has no purchase gate or misleading locked report sample',()=>{const data={access:{story:true,detail:true},rows:[],detailRows:[]};const full=api.storyFlowHtml(concept,data,result);assert.ok(full.includes('reader-owned-badge'));assert.ok(!full.includes('data-gate='));assert.ok(!full.includes('sample-lock'));assert.ok(!full.includes('story-locked-preview'));const story=api.storyFlowHtml(concept,{...data,access:{story:true,detail:false}},result);assert.ok(!story.includes('data-gate="story"'));assert.ok(story.includes('data-gate="detail"'));});
 test('opening develops a personal conflict and ends with an unanswered saju question',()=>{const plan=api.storyNarrativePlan(concept,result);assert.equal(plan.length,12);assert.ok(plan[2][1].includes('임(수)'));assert.ok(plan[3][1].includes('왜 설레는 순간'));const fire=api.storyNarrativePlan(concept,{...result,dayGanWx:'화'});assert.notEqual(plan[2][0],fire[2][0]);});
-test('resonance examples are identified as examples without fabricated review dates',()=>{const examples=api.storyResonanceHtml(concept,result);assert.ok(examples.includes('실제 이용 후기가 아닙니다'));assert.ok(examples.includes('임(수)'));assert.ok(!examples.includes('시간 전'));assert.ok(!examples.includes('구매 확인'));assert.ok(!examples.includes('별점'));});
+test('reader removes reviews and exposes purchased interpretation without disclosures',()=>{const text=api.storyFlowHtml(concept,{access:{story:true,detail:false},rows:[{caption_template:'PRIVATE_INTERPRETATION'}]},result);assert.ok(text.includes('PRIVATE_INTERPRETATION'));assert.ok(!text.includes('<details'));assert.ok(!text.includes('story-reviews'));assert.ok(!text.includes('후기'));});
+test('report adds eight actionable scenario guides with examples and cautions',()=>{for(const c of [concept,{...concept,category:'재물'}]){const text=api.reportSituationGuides(c,result);assert.equal((text.match(/class="report-analysis situation-guide"/g)||[]).length,8);assert.equal((text.match(/<dt>주의할 점<\/dt>/g)||[]).length,8);assert.ok(text.includes('내 성향에 맞춰'));assert.ok(text.includes('premium-15'));}});
