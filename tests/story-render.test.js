@@ -106,5 +106,5 @@ test('all five topics have a personalised free reading before checkout',()=>{
 
 test('compatibility guidance includes all relationships without assuming romance',()=>{
  for(const data of [api.ZHI_REL_TEXT,api.GAN_REL_TEXT,api.ZHI_REL_MARRIAGE_TEXT,api.DATE_GUIDE_TEXT,api.GAN_REL_TALK_TEXT,api.CONFLICT_TEXT,api.COUPLE_TODAY_DETAIL])assert.ok(!/결혼|신혼|데이트|스킨십|커플/.test(JSON.stringify(data)));
- assert.equal(Object.keys(api.DATE_GUIDE_TEXT).length,8);assert.equal(Object.keys(api.ZHI_REL_MARRIAGE_TEXT).length,8);assert.equal(api.scoreLabel('love'),'친밀감');assert.equal(api.scoreLabel('money'),'금전 성향');assert.ok(html.includes('친구·가족·동료·지인·연인, 누구와도.'));
+ assert.equal(Object.keys(api.DATE_GUIDE_TEXT).length,8);assert.equal(Object.keys(api.ZHI_REL_MARRIAGE_TEXT).length,8);assert.equal(api.scoreLabel('love'),'친밀감');assert.equal(api.scoreLabel('money'),'금전 성향');assert.ok(html.includes('우리, 진짜 잘 맞는 걸까?'));assert.ok(!html.includes('친구·가족·동료·지인·연인, 누구와도.'));
 });
