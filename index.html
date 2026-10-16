@@ -4,18 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="사주팔자 분석, 오늘의 운세, 궁합보기를 한 곳에서 — SAZUBARA">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=5">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=5">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="사주바라">
 <meta property="og:title" content="사주바라 — 사주풀이 · 오늘의 운세 · 궁합보기">
-<meta property="og:description" content="생년월일로 풀어보는 사주, 오늘의 운세, 궁합. 신비로운 풀이자들과 함께 확인해보세요.">
-<meta property="og:image" content="https://sazubara-web.vercel.app/og-image.jpg">
+<meta property="og:description" content="나의 성향부터 오늘의 흐름, 서로의 궁합까지. 사주바라에서 만나보세요.">
+<meta property="og:image" content="https://sazubara-web.vercel.app/og-image-v2.jpg">
+<meta property="og:image:alt" content="라벤더빛 카드와 사주바라 로고">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="사주바라 — 사주풀이 · 오늘의 운세 · 궁합보기">
-<meta name="twitter:image" content="https://sazubara-web.vercel.app/og-image.jpg">
+<meta name="twitter:image" content="https://sazubara-web.vercel.app/og-image-v2.jpg">
 <title>사주바라 — 나의 사주, 오늘의 흐름</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2152,7 +2153,7 @@ function loadKakaoSdk(){
   });
   return _kakaoSdkPromise;
 }
-var KAKAO_SHARE_IMAGE = 'https://sazubara-web.vercel.app/og-image.jpg';
+var KAKAO_SHARE_IMAGE = 'https://sazubara-web.vercel.app/og-image-v2.jpg';
 function kakaoShare(text, url, buttonTitle){
   return loadKakaoSdk().then(function(Kakao){
     Kakao.Share.sendDefault({
