@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -102,4 +102,9 @@ test('all five topics have a personalised free reading before checkout',()=>{
  for(const cat of ['연애','직장','재물','건강','인간관계']){const a=api.worryPreviewHtml(result,cat),b=api.worryPreviewHtml({...result,dayGanWx:'화'},cat);assert.ok(a.includes(cat+' 무료 맛보기'));assert.ok(a.replace(/<[^>]*>/g,'').length>230);assert.notEqual(a,b);assert.ok(!a.includes('unlock-btn'));}
  assert.equal(api.worryPreviewHtml(result,'invalid'),'');assert.ok(api.worryPreviewHtml(result,'건강').includes('건강은 사주로 판단할 수 없어요'));
  const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('나의 연애와 인연'));
+});
+
+test('compatibility guidance includes all relationships without assuming romance',()=>{
+ for(const data of [api.ZHI_REL_TEXT,api.GAN_REL_TEXT,api.ZHI_REL_MARRIAGE_TEXT,api.DATE_GUIDE_TEXT,api.GAN_REL_TALK_TEXT,api.CONFLICT_TEXT,api.COUPLE_TODAY_DETAIL])assert.ok(!/결혼|신혼|데이트|스킨십|커플/.test(JSON.stringify(data)));
+ assert.equal(Object.keys(api.DATE_GUIDE_TEXT).length,8);assert.equal(Object.keys(api.ZHI_REL_MARRIAGE_TEXT).length,8);assert.equal(api.scoreLabel('love'),'친밀감');assert.equal(api.scoreLabel('money'),'금전 성향');assert.ok(html.includes('친구·가족·동료·지인·연인, 누구와도.'));
 });
