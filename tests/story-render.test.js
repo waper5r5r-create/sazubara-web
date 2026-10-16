@@ -124,3 +124,15 @@ test('content navigation and cards are neutral about format and future themes',(
  const card=api.reportCardHtml({...concept,title:'나만의 제목'});assert.ok(card.includes('나만의 제목'));assert.ok(!card.includes('웹툰'));assert.ok(!card.includes(' · 콘텐츠'));
  const offer=api.stageOfferHtml({...concept,title:'나만의 제목'},'story');assert.ok(offer.includes('나만의 제목 이어보기'));assert.ok(!offer.includes('웹툰'));
 });
+
+test('pocha opening, owned story and detail respect separate gates with career-specific text',()=>{
+ const {concept:c,panels}=require('../api/_pocha-content');
+ const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[{caption_template:'DO_NOT_LEAK'}]},result);
+ assert.equal((free.match(/class="pocha-scene"/g)||[]).length,4);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('총 17,800원'));assert.ok(!free.includes('data-gate="detail"'));
+ const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels.slice(0,12)},result);
+ assert.equal((paid.match(/class="pocha-scene"/g)||[]).length,12);assert.ok(paid.includes('오늘 챙겨갈 것'));assert.ok(!paid.includes('data-gate="story"'));assert.ok(paid.indexOf('오늘 챙겨갈 것')<paid.indexOf('data-gate="detail"'));
+ const full=api.storyFlowHtml(c,{access:{story:true,detail:true},rows:panels.slice(0,12),detailRows:panels},result);
+ assert.equal((full.match(/id="pocha-detail-/g)||[]).length,20);assert.ok(!full.includes('data-gate='));assert.ok(!full.includes('연애'));assert.ok(!full.includes('love-'));assert.ok(!full.includes('{{branch:'));assert.ok(full.includes('이직을 살펴볼 때'));
+ const all=['목','화','토','금','수'].map(wx=>api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[]},{...result,dayGanWx:wx}));assert.equal(new Set(all).size,5);
+ assert.equal(api.storyCategory({...c,id:'unknown'}),'unsupported');
+});

@@ -1,3 +1,4 @@
+const pocha = require('../_pocha-content');
 // Two independent purchases; historic report_unlocks still grants both stages.
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('../_supabase');
 const { STAGE_PRICE, STAGES, stageKey, rowsAt, reportAccess } = require('../_report-access');
@@ -17,7 +18,7 @@ async function prepareCheckout(body,res){
   const {deviceId,conceptId,stage}=body;
   if(typeof deviceId!=='string'||!deviceId||typeof conceptId!=='string'||!conceptId||!STAGES.includes(stage)) return res.status(400).json({ok:false,error:'MISSING_FIELDS'});
   if(!process.env.TOSS_SECRET_KEY) return res.status(503).json({ok:false,error:'PAYMENT_UNAVAILABLE',message:'결제 연결을 준비 중이에요.'});
-  const concepts=await rowsAt('/report_concepts?id=eq.'+encodeURIComponent(conceptId)+'&select=id,title,active');
+  const concepts=conceptId===pocha.concept.id ? [pocha.concept] : await rowsAt('/report_concepts?id=eq.'+encodeURIComponent(conceptId)+'&select=id,title,active');
   if(!concepts[0]||!concepts[0].active) return res.status(400).json({ok:false,error:'UNKNOWN_CONCEPT'});
   const access=await reportAccess(deviceId,conceptId);
   if(stage==='detail'&&!access.story) return res.status(409).json({ok:false,error:'STORY_REQUIRED',message:'이야기를 먼저 열어주세요.'});
@@ -39,7 +40,8 @@ async function handlePost(req, res) {
   const price = legacy ? 4900 : STAGE_PRICE[stage];
   if(!legacy&&!verifyQuote(quote,{orderId,deviceId,conceptId,stage,amount:price})) return res.status(400).json({ok:false,error:'INVALID_CHECKOUT',message:'상품 화면에서 결제를 다시 시작해주세요.'});
   if (amount !== price) return res.status(400).json({ ok: false, error: 'AMOUNT_MISMATCH', message: '결제 금액이 올바르지 않아요. 상품 화면에서 다시 시작해주세요.' });
-  const concepts = await rowsAt('/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,active');
+  const concepts = conceptId===pocha.concept.id ? [pocha.concept] : await rowsAt('/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,active');
+  if (legacy && conceptId===pocha.concept.id) return res.status(400).json({ok:false,error:'INVALID_STAGE'});
   if (!concepts[0] || !concepts[0].active) return res.status(400).json({ ok: false, error: 'UNKNOWN_CONCEPT' });
   const key = stageKey(conceptId, stage);
   const table = legacy ? 'report_unlocks' : 'paid_unlocks';

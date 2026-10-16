@@ -1,3 +1,4 @@
+const pocha = require('../_pocha-content');
 const { sbFetch, getQuery, checkAdminSecret } = require('../_supabase');
 const { STAGE_PRICE, rowsAt, reportAccess } = require('../_report-access');
 
@@ -18,6 +19,10 @@ module.exports = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
   const q = getQuery(req), conceptId = q.conceptId || '';
   try {
+    if (conceptId === pocha.concept.id) {
+      const access = await reportAccess(q.device_id || '', conceptId);
+      return res.status(200).json({ok:true, rows:access.story ? pocha.panels.slice(0,12) : pocha.panels.slice(0,1), detailRows:access.detail ? pocha.panels : [], access, preview:!access.story, storyCount:12});
+    }
     if (conceptId) {
       const concepts = await rowsAt('/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,active');
       const admin = checkAdminSecret(req);
@@ -40,6 +45,6 @@ module.exports = async (req, res) => {
     const r = await sbFetch('/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,price_krw,category&order=sort_order.asc');
     if (!r.ok) throw new Error('QUERY_FAILED');
     const rows = (await r.json()).map(c => ({ ...c, price_krw: STAGE_PRICE.story, detail_price_krw: STAGE_PRICE.detail }));
-    res.status(200).json({ ok: true, rows });
+    res.status(200).json({ ok: true, rows: rows.concat([pocha.concept]) });
   } catch (e) { res.status(500).json({ ok: false, error: 'SERVER_ERROR' }); }
 };

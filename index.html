@@ -799,6 +799,11 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 
 
 .saju-intro-symbol{display:flex;justify-content:center;gap:12px;padding:32px 20px 6px;background:radial-gradient(ellipse at center,rgba(224,173,85,.08),transparent 70%)}.saju-intro-symbol span{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--border);border-radius:50%;color:var(--accent);font-family:serif;font-size:19px}.saju-intro-symbol span:nth-child(2n){transform:translateY(-6px)}.saju-story-head h1{font-size:1.6rem;letter-spacing:-.04em}.saju-intro-desc{color:var(--fg-muted);font-size:.9rem;line-height:1.8;margin:12px 0 22px}.saju-input-guide{font-size:.82rem;line-height:1.7;color:var(--fg-muted);margin:18px 0 0}.saju-depth h3:before{content:"✧";margin-right:8px;color:var(--accent)}.saju-depth h3{font-size:.95rem;margin:24px 0 10px;color:var(--accent)}.saju-depth p{font-size:.87rem;line-height:1.9;word-break:keep-all;color:var(--fg-muted)}.saju-depth strong{color:var(--fg)}.depth-table-wrap{overflow-x:auto}.depth-table{width:100%;border-collapse:collapse;font-size:.8rem;text-align:left}.depth-table caption{text-align:left;margin:12px 0;color:var(--fg-muted)}.depth-table th,.depth-table td{padding:12px 7px;border-bottom:1px solid var(--border);line-height:1.7}.depth-table th{white-space:nowrap}
+/* 퇴근길 포장마차: warm evening light, quiet dialogue, a paper receipt. */
+.report-card[data-cat="일·진로"] .report-cover{background:#383447}.report-card[data-cat="일·진로"] .report-cover img{object-fit:cover}
+.pocha-cover{position:relative;background:#36364d;min-height:360px;color:#fff4df;overflow:hidden}.pocha-cover>img{width:100%;height:420px;object-fit:cover;opacity:.75}.pocha-cover>div{position:absolute;inset:auto 0 0;padding:70px 28px 30px;background:linear-gradient(transparent,#302c3de8)}.pocha-cover h1{font-family:'Noto Serif KR',serif;font-size:30px;color:#fff4df;margin:8px 0}.pocha-cover p{color:#f0d8b8;margin:6px 0}.pocha-cover .reader-kicker{color:#e5bd8e}
+.pocha-reader{--pocha-ink:#584438;color:var(--pocha-ink)}.pocha-scene{margin:0 0 44px;background:#fcf7ef;border:1px solid #e7d8c7;border-radius:22px;overflow:hidden}.pocha-art{position:relative;background:#393649;overflow:hidden}.pocha-art img{display:block;width:100%;height:auto;aspect-ratio:600/540;object-fit:cover}.pocha-dialogue{padding:20px 24px 0}.pocha-dialogue>span{display:block;font-size:11px;letter-spacing:.08em;color:#9d6853;margin-bottom:8px}.pocha-dialogue>p{display:inline-block;margin:0;background:#fff;border:1px solid #eddfce;border-radius:3px 18px 18px 18px;padding:14px 18px;font-size:18px;font-weight:600;line-height:1.7;color:#493d37}.pocha-narration{padding:8px 24px 24px;font-size:15px;line-height:1.95;word-break:keep-all;overflow-wrap:anywhere}.pocha-narration .scene-insight{background:#f3ece1;border-color:#dfd0bd}.pocha-offer{background:#faf3e8;border-color:#e5d2b9}.pocha-offer h2{color:#584438}.pocha-offer .btn-primary{background:#86604e}.pocha-receipt{max-width:360px;margin:36px auto 50px;padding:32px 26px;background:#fffdfa;box-shadow:0 10px 30px #58443812;border-top:4px dotted #d9caba;border-bottom:4px dotted #d9caba;text-align:center}.pocha-receipt h2{font-size:21px}.pocha-receipt p{line-height:1.9}.pocha-receipt>span{display:block;border-top:1px dashed #cdbca7;padding-top:18px;font-size:13px;color:#8d7566}.pocha-steam{position:absolute;left:38%;top:42%;display:flex;gap:18px;pointer-events:none}.pocha-steam i{display:block;width:12px;height:50px;border-left:3px solid #fff2d4;border-radius:50%;opacity:0;animation:pochaSteam 4s ease-in-out infinite}.pocha-steam i:nth-child(2){animation-delay:1.3s}.pocha-steam i:nth-child(3){animation-delay:2.6s}@keyframes pochaSteam{0%{opacity:0;transform:translateY(12px)}40%{opacity:.4}100%{opacity:0;transform:translateY(-30px)}}@media(prefers-reduced-motion:reduce){.pocha-steam{display:none}}@media(max-width:420px){.pocha-dialogue{padding:18px 18px 0}.pocha-narration{padding:8px 18px 22px}.pocha-dialogue>p{font-size:17px}.pocha-cover h1{font-size:27px}}
+
 </style>
 <style>
 /* 독립 웹 배포용 베이스 리셋 (claude.ai Artifact 스켈레톤이 제공하던 부분을 대신함) */
@@ -3669,7 +3674,7 @@ var reportSectionHtml=function(panel,result){
     '<p class="scene-result-bubble">'+esc(bubble)+'</p></div>'+(parts.length?'<div class="webtoon-narration">'+parts.map(function(part){return '<p class="report-caption">'+esc(part)+'</p>';}).join('')+'</div>':'')+'</section>';
 };
 function reportShareBtnHtml(){return '<button type="button" class="share-btn" id="btn-share-report">'+uiIcon('share')+' 이 이야기 공유하기</button>';}
-function storyCategory(c){return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
+function storyCategory(c){if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
 function prologueDialogue(c,result){
   var v=reportVariables(result),money=storyCategory(c)==='wealth';
   var loveVoice={목:'함께라면, 조금 더 나다운 사람이 될 것 같아.',화:'좋아하는 마음은, 숨기고 싶지 않아.',토:'설렘보다 오래 남는 편안함이 좋아.',금:'쉽게 마음을 주진 않아. 그래서 더 신중해.',수:'생각은 깊은데, 마음은 쉽게 꺼내지 못해.'};
@@ -3687,6 +3692,7 @@ function storyPrologueHtml(c){
     '<p class="prologue-bridge">이제, 이 이야기의 주인공을 당신의 사주로 바꿔볼게요.</p></section>';
 }
 function stageOfferHtml(concept,stage){
+ if(isPocha(concept))return pochaOffer(concept,stage);
  var detail=stage==='detail',money=storyCategory(concept)==='wealth';
  var features=detail?(money?['일간·오행·재성으로 살펴보는 수입과 소비 성향','충동구매·수입 감소·지인과의 돈 거래 등 8가지 상황별 대응','결정 전 체크리스트, 주의할 점, 일주일 실천 계획']:['일간·오행·십신으로 살펴보는 연애와 관계의 패턴','연락·고백·갈등·거리 두기 등 8가지 상황별 대응','바로 써볼 대화 예시, 주의할 점, 일주일 실천 계획']):(money?['기회를 잡거나 지출할 때 드러나는 나의 성향','돈을 쓰고 남길 때 중요하게 여기는 기준','나의 성향을 이해하고 다음 선택에 참고할 해석']:['내가 끌리는 사람과 마음을 표현하는 방식','관계를 알아가는 속도와 편안함을 느끼는 기준','나의 성향을 이해하고 다음 선택에 참고할 해석']);
  return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'이야기를 끝까지 읽으면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내 사주에 맞춘 주인공의 선택을 따라가며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내 사주에 맞춘 주인공의 이야기를 따라가며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기':esc(concept.title)+' 이어보기')+' · '+(detail?'12,900':'4,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>심층 리포트는 선택 시 별도 12,900원 · 모두 구매 시 총 17,800원')+'</p></section>';
@@ -3734,8 +3740,9 @@ function openReportViewer(concept,stage){
   root.innerHTML='<div class="report-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title">'+
     '<div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="이야기 목록으로 돌아가기">‹</button>'+
     '<span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div>'+
+    (isPocha(concept)?'<div class="pocha-cover"><img src="/assets/pocha/scene-0.svg" alt="불이 켜진 퇴근길 포장마차"><div><p class="reader-kicker">일·진로</p><h1>'+esc(concept.title)+'</h1><p>'+esc(concept.tagline||'')+'</p></div></div>':
     '<div class="reader-cover"><img src="/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+((STATE.mySaju.gender==='m'||STATE.mySaju.gender==='male')?'m':'f')+'-0.webp?v=reader-2.1" alt="" decoding="async">'+
-    '<div><p class="reader-kicker">'+esc(concept.category||'나의 사주')+' · SAZUBARA STORY</p><h1>'+esc(concept.title)+'</h1><p>'+esc(concept.tagline||'')+'</p></div></div>'+
+    '<div><p class="reader-kicker">'+esc(concept.category||'나의 사주')+' · SAZUBARA STORY</p><h1>'+esc(concept.title)+'</h1><p>'+esc(concept.tagline||'')+'</p></div></div>')+
     '<div id="reader-steps"></div><div class="report-page-body" id="report-panel-list"><p class="section-desc" role="status">이야기를 불러오는 중...</p></div></div>';
   $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
   document.removeEventListener('keydown',readerKeydown);document.addEventListener('keydown',readerKeydown);
@@ -3828,6 +3835,7 @@ function reportSituationGuides(concept,result){
 }
 
 function detailReportHtml(concept,panels,result){
+ if(isPocha(concept))return pochaDetail(panels,result);
   var vars=reportVariables(result),money=storyCategory(concept)==='wealth';
   var headings=money?['내 재물운의 출발점','돈을 대하는 나의 방식','기회와 소비의 균형','반복되는 재물 패턴','실천할 수 있는 선택']:['내 연애 성향의 출발점','관계를 이끄는 나의 방식','끌림과 표현의 차이','반복되는 관계 패턴','다가오는 인연을 대하는 선택'];
   var ranges=[[0,4],[4,8],[8,13],[13,17],[17,20]];
@@ -3846,6 +3854,62 @@ function storyAtlasArt(concept,result,index){
 function reportEmphasis(html){return String(html).replace(/(상대의 반응|내 마음|반복되는 선택|생활 방식|가치관|결정 시한|고정 지출|지출 한도|중단 기준|손실 한도|주의할 점|정재|편재|신강·신약|일간|오행|실천 계획)/g,'<strong>$1</strong>');}
 function storySceneHtml(concept,result,index,dialogue,caption){
  return '<section class="story-frame scene-'+index+'">'+storyAtlasArt(concept,result,index)+'<div class="story-dialogue"><span class="dialogue-mark" aria-hidden="true">“</span><p>'+esc(dialogue)+'</p></div>'+(caption?'<div class="story-voice">'+caption+'</div>':'')+'</section>';
+}
+
+var POCHA_ID='7c5db9e6-59cb-4a81-8b0a-73da4db7b051';
+function isPocha(c){return c&&c.id===POCHA_ID;}
+var POCHA_LENS={
+ 목:{line:'새로운 일 해볼 때는 어때요?',work:'새로운 방법을 찾거나 일을 시작하는 과정',environment:'배울 기회와 직접 시도할 여지가 있는 환경',watch:'할 일을 늘리기 전에 이번에 마무리할 범위부터 정해보세요.',question:'최근에 새로 해본 일 중 다시 해보고 싶은 것은 무엇인가요?',action:'이번 주에 해볼 작은 시도 하나와 끝낼 날짜를 적어보세요.'},
+ 화:{line:'사람들이랑 같이할 때는 어때요?',work:'생각을 표현하고 반응을 주고받는 과정',environment:'의견을 나누고 결과를 확인할 기회가 있는 환경',watch:'의욕이 생겼을 때도 일정과 맡을 수 있는 양을 먼저 확인해보세요.',question:'내 의견을 나눌 때와 혼자 집중할 때, 어느 쪽에서 힘이 났나요?',action:'해보고 싶은 일 하나를 짧게 설명하고 구체적인 의견을 받아보세요.'},
+ 토:{line:'꾸준히 맡아온 일도 있을 거 아니에요.',work:'일의 흐름을 유지하고 사람 사이를 조율하는 과정',environment:'역할과 일정이 안정적이고 신뢰가 쌓이는 환경',watch:'익숙하다는 이유만으로 계속 맡고 있는 일은 없는지도 살펴보세요.',question:'계속 하고 싶은 일과 익숙해서 하고 있는 일은 어떻게 다른가요?',action:'유지하고 싶은 업무 하나와 바꾸고 싶은 조건 하나를 적어보세요.'},
+ 금:{line:'일할 때 꼭 지키는 기준이 있어요?',work:'기준을 세우고 결과물을 정리하는 과정',environment:'목표와 평가 기준이 분명하고 완성도를 인정하는 환경',watch:'꼭 필요한 기준과 이번에는 조정해도 되는 부분을 나눠보세요.',question:'최근 결과가 좋았던 일에서 내가 세운 기준은 무엇이었나요?',action:'다음 업무의 완료 기준을 두 가지로 정하고 시작해보세요.'},
+ 수:{line:'좀 알아보고 시작하는 편이에요?',work:'정보를 살피고 상황을 이해하는 과정',environment:'집중해서 검토할 시간과 유연하게 조정할 여지가 있는 환경',watch:'더 알아볼 내용과 직접 해봐야 알 수 있는 부분을 구분해보세요.',question:'지금 더 필요한 것은 정보인가요, 작은 경험인가요?',action:'확인할 질문 하나를 적고, 답을 얻은 뒤 해볼 행동까지 정해보세요.'}
+};
+function pochaPlan(result){
+ var p=storyProfile(result),l=POCHA_LENS[p.wx],dom=POCHA_LENS[p.dom],weak=POCHA_LENS[p.weak];
+ return [
+ ['어서 와요. 여기 앉아요.','집으로 가는 길, 불이 켜진 포장마차에 들렀어요. 사장님이 어묵 국물부터 한 컵 내줍니다.'],
+ ['일은 요즘 어때요?','잘하고 있는 건지, 앞으로 뭘 해보고 싶은지. 오늘은 일 이야기를 조금 해보기로 했어요. 일을 쉬고 있거나 새로 시작할 준비를 하는 중이어도 괜찮아요.'],
+ [l.line,'사주에서 일간 '+result.day.ganKr+'('+p.wx+')은 '+EVERYDAY_TRAITS[p.wx][0]+'으로 읽어요. 일에서는 '+l.work+'에 어떻게 반응하는지 살펴볼 수 있어요. 최근 경험과 맞는지 떠올려보세요.'],
+ ['잘하는 거랑 하고 싶은 건 좀 다르죠.','누가 시키지 않아도 관심이 가는 일, 익숙해서 수월하게 하는 일. 둘이 같을 수도, 다를 수도 있어요. '+l.question],
+ ['떡볶이 좀 드릴까요?','사장님이 떡볶이를 작은 접시에 덜어줍니다. 새로운 메뉴도 조금 먹어봐야 입에 맞는지 알듯, 관심 있는 일도 작게 경험해보면 생각과 실제가 어떻게 다른지 알 수 있어요.'],
+ ['어떤 데서 일하느냐도 중요해요.','일간을 기준으로는 '+l.environment+'을 살펴볼 수 있어요. 표면 오행에서 '+p.dom+' 기운이 상대적으로 두드러지는 점은 '+dom.work+'도 함께 돌아볼 근거예요. 직업 하나를 정해주는 해석은 아니에요.'],
+ ['혼자 다 하려고 하면 바쁘죠.','어묵을 건지던 사장님이 잠깐 불을 줄입니다. '+(p.strong?'간이 신강·신약 분류에서는 자기 방향을 유지하는 쪽에 무게가 실려요. 추진력이 도움이 된 순간과 다른 의견을 놓친 순간을 함께 확인해보세요.':'간이 신강·신약 분류에서는 주변 조건에 맞춰 조정하는 쪽에 무게가 실려요. 의견을 듣는 것과 내 몫까지 넘겨주는 것은 구분해보세요.')],
+ ['같이 일하는 사람은 어때요?','표면에 드러난 십신 '+(p.ss.length?p.ss.join('·'):'정보')+'을 참고하면 '+(p.roles.length?p.roles.join(', '):'업무에서 맡는 역할')+'을 살펴볼 수 있어요. 실제로 자주 맡는 역할과 앞으로 하고 싶은 역할을 나눠보세요.'],
+ ['바꾸고 싶은 게 뭔지부터 봐요.','업무 자체인지, 함께 일하는 방식인지, 시간이나 보상인지 나눠보세요. '+l.watch+' 오행 분포에서 상대적으로 적은 '+p.weak+' 기운은 능력이 없다는 뜻이 아니라 다른 방식을 연습해볼 질문으로 참고해요.'],
+ ['바로 정할 필요는 없어요.','이직이나 새로운 시작을 고민한다면 원하는 조건을 적고 실제 기회와 비교해보세요. 사주만으로 합격 여부나 이직 시점을 정할 수는 없어요. '+weak.action],
+ ['일단 하나만 해봐요.','사장님이 빈 접시를 정리합니다. '+l.action+' 해본 뒤 괜찮았던 점과 불편했던 점을 적으면 다음 선택에 쓸 기준이 생겨요.'],
+ ['잘 먹었어요? 조심히 가요.','계산을 마치고 자리에서 일어났어요. 오늘 이야기 중 내 경험과 맞았던 것 하나만 챙겨 가기로 합니다.']
+ ];
+}
+function pochaArt(index){
+ return '<div class="pocha-art"><img src="/assets/pocha/scene-'+([0,2,1,4,3,2,0,4,1,2,3,5][index%12])+'.svg" alt="'+(index%2?'따뜻한 분식과 포장마차 안 풍경':'음식을 준비하는 포장마차 사장님')+'" loading="'+(index<2?'eager':'lazy')+'" decoding="async"><span class="pocha-steam" aria-hidden="true"><i></i><i></i><i></i></span></div>';
+}
+function pochaScene(result,plan,i,rows){
+ var extra=rows&&rows.length?'<div class="scene-insight"><span class="insight-label">내 사주에 비춰보면</span>'+rows.map(function(row){return reportCaptionParasHtml(fillReportTemplate(row.caption_template,result));}).join('')+'</div>':'';
+ return '<section class="pocha-scene">'+pochaArt(i)+'<div class="pocha-dialogue"><span>사장님</span><p>'+esc(plan[i][0])+'</p></div><div class="pocha-narration"><p>'+reportEmphasis(esc(plan[i][1]))+'</p>'+extra+'</div></section>';
+}
+function pochaOffer(concept,stage){
+ var detail=stage==='detail';
+ var benefits=detail?['일간·오행·십신으로 풀이의 근거 확인','이직·새 분야·협업·보상 등 20개 주제','상황별 점검 질문과 일주일 실천 방법']:['내 강점이 드러나는 일과 편한 업무 환경','일할 때 반복되는 방식과 보완할 습관','다음 선택을 위해 확인할 조건과 작은 실천'];
+ return '<section class="reader-offer pocha-offer" data-gate="'+stage+'"><p class="reader-kicker">'+(detail?'일·진로 심층 리포트':'퇴근길 포장마차')+'</p><h2>'+(detail?'내 상황에 맞춰 더 살펴보기':'나에게 맞는 일은 어떤 모습일까요?')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기 · 12,900원':'이어서 읽기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>심층 리포트는 선택 시 별도 12,900원 · 모두 구매 시 총 17,800원')+'</p></section>';
+}
+function pochaSample(result){
+ var p=storyProfile(result),l=POCHA_LENS[p.wx];
+ return '<section class="report-real-sample"><p class="reader-kicker">심층 리포트 · 내 해석 미리 읽기</p><h2>나에게 편한 업무 환경</h2><p>일간 <strong>'+esc(result.day.ganKr)+'('+esc(p.wx)+')</strong>을 기준으로 '+esc(l.environment)+'에 주목해요. 실제로 집중이 잘됐던 업무의 조건과 비교해보세요.</p><p>표면 오행에서는 <strong>'+esc(p.dom)+' '+(Number(result.wxCount[p.dom])||0)+'개</strong>가 나타나요. '+esc(EVERYDAY_TRAITS[p.dom][1])+'이 어떤 업무에서 드러났는지도 함께 살펴보세요. 일간과 오행 개수는 서로 다른 기준이며, 동률일 때는 대표 기운 하나가 표시돼요.</p><div class="sample-question"><b>생각해볼 질문</b><p>'+esc(l.question)+'</p></div><div class="sample-action"><b>먼저 해볼 일</b><p>'+esc(l.action)+'</p></div></section>';
+}
+function pochaDetail(panels,result){
+ var p=storyProfile(result),l=POCHA_LENS[p.wx];
+ return '<section class="report-evidence"><p class="reader-kicker">일·진로 심층 리포트</p><h2>내가 일하는 방식</h2><p>일간 '+esc(result.day.ganKr)+'('+esc(p.wx)+'), 표면 오행 분포, 간이 신강·신약과 십신을 참고해 읽어요. 출생시간을 모르면 시주는 제외해요. 직업의 적합성이나 이직 결과를 확정하는 해석은 아니에요.</p></section>'+sajuDepthHtml(result)+'<nav class="report-toc" aria-label="일·진로 리포트 목차">'+panels.map(function(row,i){return '<a href="#pocha-detail-'+i+'">'+esc(row.title)+'</a>';}).join('')+'</nav>'+panels.map(function(row,i){return '<section class="report-analysis" id="pocha-detail-'+i+'"><p class="reader-kicker">'+String(i+1).padStart(2,'0')+'</p><h2>'+esc(row.title)+'</h2>'+reportCaptionParasHtml(fillReportTemplate(row.caption_template,result))+(i===3?'<div class="guide-personal"><b>내 성향에 맞춰</b><p>'+esc(l.watch)+'</p></div>':'')+(i===19?'<div class="guide-personal"><b>이번 주에 해볼 일</b><p>'+esc(l.action)+'</p></div>':'')+'</section>';}).join('');
+}
+function pochaFlow(concept,data,result){
+ var plan=pochaPlan(result),html='<div class="pocha-reader">'+plan.slice(0,4).map(function(_,i){return pochaScene(result,plan,i);}).join('');
+ if(!data.access.story)return html+pochaOffer(concept,'story')+'</div>';
+ html+=plan.slice(4).map(function(_,j){var i=j+4,rows=data.rows||[];return pochaScene(result,plan,i,rows.slice(Math.floor(j*rows.length/8),Math.floor((j+1)*rows.length/8)));}).join('');
+ html+='<section class="pocha-receipt"><p class="reader-kicker">퇴근길 포장마차</p><h2>오늘 챙겨갈 것</h2><p>'+esc(POCHA_LENS[storyProfile(result).wx].action)+'</p><span>다음에 또 들러요.</span></section>';
+ if(data.access.detail)html+='<section id="owned-detail-report">'+pochaDetail(data.detailRows||[],result)+'</section>';
+ else html+=pochaSample(result)+pochaOffer(concept,'detail');
+ return html+'</div>';
 }
 
 var STORY_RESPONSE={
@@ -3908,6 +3972,7 @@ function reportSampleHtml(concept,result){
  return '<section class="report-real-sample"><p class="reader-kicker">심층 리포트 · 내 해석 미리 읽기</p><h2>'+(money?'나의 선택을 읽는 기준':'나의 관계를 읽는 기준')+'</h2><p>일간 <strong>'+esc(result.day.ganKr)+'('+esc(p.wx)+')</strong>은 '+esc(EVERYDAY_TRAITS[p.wx][0])+'으로 읽습니다. '+esc(money?'새로운 기회와 지출을 마주할 때 무엇을 먼저 살피는지':'마음을 표현하고 상대를 알아가는 과정에서 무엇을 중요하게 느끼는지')+' 돌아보는 기준이에요.</p><p>분포에서 <strong>'+esc(p.dom)+' '+(Number(result.wxCount[p.dom])||0)+'개</strong>가 나타나요. '+esc(EVERYDAY_TRAITS[p.dom][1])+'을 살펴볼 수 있습니다. 일간과 분포는 서로 다른 기준이므로 한 가지 설명으로 나를 단정하지 말고 함께 읽어보세요.</p><div class="sample-question"><b>내 경험에 비춰볼 질문</b><p>'+esc(r.question)+'</p></div><div class="sample-action"><b>먼저 해볼 한 가지</b><p>'+esc(r.action)+'</p></div><p class="sample-method">입력한 일간과 표면 오행 분포를 참고한 해석입니다. 출생시간을 모르는 경우 시주는 제외해요.</p></section>';
 }
 function storyFlowHtml(concept,data,result){
+ if(isPocha(concept))return pochaFlow(concept,data,result);
  var html=(data.access.story?'<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>':'')+storyOpeningV2(concept,result);
  if(!data.access.story)return html+'<div class="story-locked-preview" aria-hidden="true">'+storyAtlasArt(concept,result,4)+'<span>이어서 알아가는, 나의 이야기</span></div>'+stageOfferHtml(concept,'story');
  html+=storyPaidScenes(concept,data,result)+'<section class="story-epilogue"><p class="reader-kicker">콘텐츠를 마치며</p><h2>내게 맞는 해석은,<br>경험과 함께 선명해집니다.</h2><p>마음에 남은 선택이 있었나요?<br>그 이유와 일상에서 해볼 방법을 더 살펴볼 수 있어요.</p></section>';
