@@ -144,7 +144,9 @@ test('career story maps twenty independent assets in order and keeps every paid 
  assert.equal(new Set(manifest.map(x=>x.sha256)).size,20);
  for(const [i,p] of panels.entries()){
   assert.equal(p.sort_order,i);assert.equal(p.img_url,'/assets/pocha/cinematic/scene-'+String(i+1).padStart(2,'0')+'.webp');
-  assert.ok(fs.existsSync(path.join(__dirname,'..',p.img_url)));assert.ok(manifest[i].width>=1400);assert.ok(manifest[i].height>=1024);
+  const asset=fs.readFileSync(path.join(__dirname,'..',p.img_url));
+  assert.ok(asset.length>0);assert.equal(require('node:crypto').createHash('sha256').update(asset).digest('hex'),manifest[i].sha256);
+  assert.ok(manifest[i].width>=1400);assert.ok(manifest[i].height>=1024);
  }
  const rows=panels.map((p,i)=>({...p,caption_template:'PERSONAL_'+i+'_END'}));
  const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows},result);
