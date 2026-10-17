@@ -1032,6 +1032,7 @@ body{background:#ece7e5;letter-spacing:-.025em}.app{background:var(--bg);box-sha
 .reading-preview{padding:30px 0 20px;color:#d5d6df}.reading-preview>h2{font-size:22px;line-height:1.6;margin:10px 0 12px;color:#f3ebdc;word-break:keep-all}.reading-basis{font-size:12px;color:#b9b4c2;line-height:1.8}.reading-point{padding:24px 0;border-bottom:1px solid #ffffff12}.reading-point h3{font-size:17px;color:#f1e6d5;line-height:1.7;margin:0 0 14px;word-break:keep-all}.reading-point p{font-size:14px;line-height:2;margin:10px 0;word-break:keep-all;overflow-wrap:anywhere}.reading-point strong{font-weight:700;color:#f3d29e;background:none}.reading-note{font-size:11px;line-height:1.8;color:#a9a5b0;margin:20px 0 0}.pocha-reader .reading-preview{padding:30px 0 20px}
 @media(max-width:374px){.report-page .reader-cover,.report-page .pocha-cover{grid-template-columns:76px minmax(0,1fr);gap:14px;padding:18px 20px}.report-page .reader-cover>img,.report-page .pocha-cover>img{width:76px;height:104px}.report-page .reader-cover h1,.report-page .pocha-cover h1{font-size:18px}}
 </style>
+<link rel="stylesheet" href="/assets/ui/celestial.css?v=1">
 </head>
 <body>
 
@@ -2085,7 +2086,7 @@ function getAudioCtx(){
   if (!isSoundOn()) return null;
   try{
     if (!_audioCtx) _audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-    if (_audioCtx.state==='suspended') _audioCtx.resume();
+    if (_audioCtx.state==='suspended') _audioCtx.resume().catch(function(){});
     return _audioCtx;
   }catch(e){ return null; }
 }
@@ -2108,11 +2109,12 @@ function playTone(freqs, opts){
 }
 function hapticPulse(pattern){ try{ if (navigator.vibrate) navigator.vibrate(pattern); }catch(e){} }
 /* 풀이/결과 공개 — 은은한 2음 차임 */
-function soundReveal(){ playTone([660,880], {stagger:0.09, dur:0.5, gain:0.07}); hapticPulse(12); }
+function soundReveal(){ playTone([660,880], {stagger:0.085, dur:0.38, gain:0.04}); hapticPulse(12); }
 /* 크레딧으로 잠금 해제 — 상승하는 3음 벨 */
-function soundUnlock(){ playTone([523,659,784], {stagger:0.07, dur:0.4, gain:0.09, type:'triangle'}); hapticPulse([10,30,18]); }
+function soundUnlock(){ playTone([523,659,784], {stagger:0.075, dur:0.38, gain:0.045, type:'sine'}); hapticPulse([10,30,18]); }
 /* 가벼운 탭/선택 피드백 */
-function soundTap(){ playTone([880], {dur:0.12, gain:0.05}); hapticPulse(8); }
+var lastTapSound=0;
+function soundTap(){var now=Date.now();if(now-lastTapSound<110)return;lastTapSound=now;playTone([740],{dur:0.075,gain:0.018});if(isSoundOn())hapticPulse(5);}
 
 /* 토스 건별(원화) 결제로 잠금 해제. isUnlocked(unlockKey)가 서버 기록(paid_unlocks)을 반영한 캐시라서,
    이미 결제했으면 바로 onSuccess, 아니면 결제창을 띄운다 — 결제 승인/지급은 전부 서버가 한다
@@ -5362,9 +5364,26 @@ function alertInline(msg){
 /* ============================================================
    탭 전환
    ============================================================ */
+function initVisualFeedback(){
+ var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)');
+ document.addEventListener('click',function(event){
+  var button=event.target.closest&&event.target.closest('button');
+  if(!event.isTrusted||!button||button.disabled||button.id==='btn-sound-toggle')return;
+  if(button.matches('.tab-btn,.seg button,.chip-btn,.header-icon-btn,.report-card,.btn-primary'))soundTap();
+  if((reduce&&reduce.matches)||!button.matches('.btn-primary,.report-card'))return;
+  var box=button.getBoundingClientRect(),dot=document.createElement('span');dot.className='ui-ripple';dot.setAttribute('aria-hidden','true');
+  dot.style.setProperty('--ripple-x',(event.clientX?event.clientX-box.left:box.width/2)+'px');dot.style.setProperty('--ripple-y',(event.clientY?event.clientY-box.top:box.height/2)+'px');
+  button.appendChild(dot);setTimeout(function(){dot.remove();},600);
+ },true);
+ if(!('IntersectionObserver' in window)||!('MutationObserver' in window))return;
+ var seen=new WeakSet(),selector='.journal-hero,.card,.report-card,.personal-traits,.reading-point';
+ var observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(!entry.isIntersecting)return;if(!reduce||!reduce.matches)entry.target.classList.add('ui-arrive');observer.unobserve(entry.target);});},{threshold:.08});
+ function scan(node){if(node.nodeType!==1)return;var nodes=Array.from(node.querySelectorAll(selector));if(node.matches(selector))nodes.unshift(node);nodes.forEach(function(el){if(seen.has(el))return;seen.add(el);observer.observe(el);});}
+ scan(document.body);new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(scan);});}).observe(document.body,{childList:true,subtree:true});
+}
 function switchTab(name){
   $all('.view').forEach(function(v){ v.hidden = true; });
-  var target=$('#view-'+name);if(!target)return;target.hidden=false;
+  var target=$('#view-'+name);if(!target)return;target.hidden=false;target.classList.remove('ui-enter');void target.offsetWidth;target.classList.add('ui-enter');
   $all('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===name);if(b.dataset.tab===name)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current'); });
   if (name==='today') renderTodayView();
   if (name==='compat') refreshCompatPersonA();
@@ -5644,6 +5663,7 @@ function init(){
   loadState();
   initSajuForm();
   initSajuStoryForm();
+  initVisualFeedback();
   initCompatView();
   var dateNow=new Date(),maxBirthday=dateNow.getFullYear()+'-'+String(dateNow.getMonth()+1).padStart(2,'0')+'-'+String(dateNow.getDate()).padStart(2,'0');
   $all('input[type="date"]').forEach(function(input){input.max=maxBirthday;});
