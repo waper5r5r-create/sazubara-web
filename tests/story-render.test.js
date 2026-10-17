@@ -25,7 +25,7 @@ test('speech slots stay short and report includes full interpretation',()=>{
  assert.ok(full.includes('세 번째는 리포트에 남아요.'));assert.ok(full.includes('report-evidence'));assert.equal((full.match(/class="report-analysis"/g)||[]).length,12);
 });
 test('separate prices are disclosed before the first checkout',()=>{
- const offer=api.stageOfferHtml(concept,'story');assert.ok(offer.includes('별도 12,900원'));assert.ok(offer.includes('총 17,800원'));
+ const offer=api.stageOfferHtml(concept,'story');assert.ok(offer.includes('별도 선택 구매 · 12,900원'));assert.ok(offer.includes('별도 선택 구매 · 12,900원'));
  const detail=api.stageOfferHtml(concept,'detail');assert.ok(detail.includes('콘텐츠와 별도 결제'));
 });
 test('a category purchase opens only that category, historic bundle opens all',()=>{
@@ -115,7 +115,7 @@ test('each element changes the response and concrete next action across both the
 });
 test('second offer follows the full story and a real personalised sample',()=>{
  const owned=api.storyFlowHtml(concept,{access:{story:true,detail:false},rows:[]},result);assert.ok(owned.indexOf('scene-11')<owned.indexOf('report-real-sample'));assert.ok(owned.indexOf('report-real-sample')<owned.indexOf('data-gate="detail"'));assert.ok(owned.includes('수 6개'));assert.ok(!owned.includes('report-sample-lines'));assert.ok(!owned.includes('sample-lock'));
- const free=api.storyFlowHtml(concept,{access:{story:false,detail:false},rows:[]},result);assert.ok(!free.includes('data-gate="detail"'));assert.ok(free.includes('총 17,800원'));
+ const free=api.storyFlowHtml(concept,{access:{story:false,detail:false},rows:[]},result);assert.ok(!free.includes('data-gate="detail"'));assert.ok(free.includes('별도 선택 구매 · 12,900원'));
 });
 test('new categories cannot silently reuse the romance story',()=>{assert.equal(api.storyCategory({category:'직장'}),'unsupported');const card=api.reportCardHtml({id:'new',title:'직장 이야기',category:'직장'});assert.ok(card.includes(' disabled'));assert.ok(card.includes('준비 중'));assert.ok(!card.includes('4,900'));});
 
@@ -128,7 +128,7 @@ test('content navigation and cards are neutral about format and future themes',(
 test('pocha opening, owned story and detail respect separate gates with career-specific text',()=>{
  const {concept:c,panels}=require('../api/_pocha-content');
  const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[{caption_template:'DO_NOT_LEAK'}]},result);
- assert.equal((free.match(/class="pocha-scene"/g)||[]).length,0);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('총 17,800원'));assert.ok(!free.includes('data-gate="detail"'));
+ assert.equal((free.match(/class="pocha-scene"/g)||[]).length,0);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('별도 선택 구매 · 12,900원'));assert.ok(!free.includes('data-gate="detail"'));
  const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels},result);
  assert.equal((paid.match(/class="pocha-scene"/g)||[]).length,20);assert.ok(paid.includes('오늘 챙겨갈 것'));assert.ok(!paid.includes('data-gate="story"'));assert.ok(paid.indexOf('오늘 챙겨갈 것')<paid.indexOf('data-gate="detail"'));
  const full=api.storyFlowHtml(c,{access:{story:true,detail:true},rows:panels,detailRows:panels},result);
@@ -155,7 +155,7 @@ test('career story maps twenty independent assets in order and keeps every paid 
   assert.ok(paid.indexOf('data-scene="'+(i+1)+'"')<paid.indexOf(row.caption_template));
  }
  const art=[...paid.matchAll(/<img src="([^"]+)"/g)].map(m=>m[1]);
- assert.deepEqual(art,panels.map(p=>p.img_url));assert.ok(!paid.includes('사장님'));
+ assert.deepEqual(art.slice(1),panels.map(p=>p.img_url));assert.equal(art[0],'/assets/pocha/cinematic/scene-08.webp');assert.ok(!paid.includes('사장님'));
  const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows},result);
  assert.ok(!free.includes('PERSONAL_'));assert.ok(!free.includes('scene-07.webp'));
  assert.equal((free.match(/class="pocha-scene"/g)||[]).length,0);

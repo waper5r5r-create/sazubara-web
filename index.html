@@ -2623,7 +2623,7 @@ function everydayTraitsHtml(result){
 }
 function everydaySajuHtml(result){
  var items=[['연애','heart','나의 연애와 인연','마음을 나누는 방식과 관계의 흐름'],['직장','briefcase','일과 나의 가능성','나에게 맞는 방향과 발휘할 강점'],['재물','wallet','나의 재물과 선택','돈을 대하는 성향과 균형 잡는 방법']];
- return '<section class="everyday-saju"><p class="editorial-tag">YOUR PERSONAL JOURNAL</p><div class="everyday-title"><h1>'+esc(result.name?result.name+'님을':'나를')+' 조금 더<br>이해하는 시간</h1><span class="title-symbol" aria-hidden="true">'+uiIcon('spark')+'</span></div><p>나의 성향부터 일과 관계까지, 궁금한 이야기를 살펴보세요.</p>'+everydayTraitsHtml(result)+'<h2>어떤 이야기가 궁금하세요?</h2><div class="everyday-questions">'+items.map(function(row){return '<button type="button" data-everyday-cat="'+row[0]+'"><span class="question-icon">'+uiIcon(row[1])+'</span><span><b>'+row[2]+'</b><small>'+row[3]+'</small></span>'+uiIcon('arrow')+'</button>';}).join('')+'</div><p class="hint">주제를 선택하면 내 사주에 맞춘 맛보기를 무료로 읽을 수 있어요.</p></section>';
+ return '<section class="everyday-saju"><p class="editorial-tag">YOUR PERSONAL JOURNAL</p><div class="everyday-title"><h1>'+esc(result.name?result.name+'님을':'나를')+' 조금 더<br>이해하는 시간</h1><span class="title-symbol" aria-hidden="true"><img src="/assets/ui/saju-orbit.svg" alt=""></span></div><p>나의 성향부터 일과 관계까지, 궁금한 이야기를 살펴보세요.</p>'+everydayTraitsHtml(result)+'<h2>어떤 이야기가 궁금하세요?</h2><div class="everyday-questions">'+items.map(function(row){return '<button type="button" data-everyday-cat="'+row[0]+'"><span class="question-icon">'+uiIcon(row[1])+'</span><span><b>'+row[2]+'</b><small>'+row[3]+'</small></span>'+uiIcon('arrow')+'</button>';}).join('')+'</div><p class="hint">주제를 선택하면 내 사주에 맞춘 맛보기를 무료로 읽을 수 있어요.</p></section>';
 }
 var WORRY_PREVIEW_LENS={
  목:{연애:'서로의 가능성을 알아가고 함께 경험을 넓히는 관계',직장:'새로운 역할을 배우고 시도하며 방향을 만드는 과정',재물:'새로운 기회를 발견하고 자원을 활용하는 과정',건강:'활동과 회복 사이에 지속 가능한 리듬을 만드는 과정',인간관계:'새로운 만남과 기존 관계를 함께 넓혀가는 과정'},
@@ -3656,10 +3656,7 @@ function renderReportsTabView(){
   var view = $('#view-reports');
   if (!view) return;
   view.innerHTML =
-    '<div class="tab-intro">'+
-    '<h1>콘텐츠</h1>'+
-    '</div>'+
-    '<div class="chip-row report-cat-chips" id="report-cat-chips" hidden></div>'+
+        '<div class="chip-row report-cat-chips" id="report-cat-chips" hidden></div>'+
     '<div class="report-grid" id="report-grid"><p class="section-desc">불러오는 중...</p></div>';
   loadReportList().then(function(list){
     var cats = reportCategoriesFrom(list);
@@ -3731,7 +3728,7 @@ function stageOfferHtml(concept,stage){
  if(isPocha(concept))return pochaOffer(concept,stage);
  var detail=stage==='detail',money=storyCategory(concept)==='wealth';
  var features=detail?(money?['일간·오행·재성으로 살펴보는 수입과 소비 성향','충동구매·수입 감소·지인과의 돈 거래 등 8가지 상황별 대응','결정 전 체크리스트, 주의할 점, 일주일 실천 계획']:['일간·오행·십신으로 살펴보는 연애와 관계의 패턴','연락·고백·갈등·거리 두기 등 8가지 상황별 대응','바로 써볼 대화 예시, 주의할 점, 일주일 실천 계획']):(money?['기회를 잡거나 지출할 때 드러나는 나의 성향','돈을 쓰고 남길 때 중요하게 여기는 기준','나의 성향을 이해하고 다음 선택에 참고할 해석']:['내가 끌리는 사람과 마음을 표현하는 방식','관계를 알아가는 속도와 편안함을 느끼는 기준','나의 성향을 이해하고 다음 선택에 참고할 해석']);
- return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'내 사주를 더 읽어보면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내가 돈을 쓰고 기회를 고르는 모습을 돌아보며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내가 끌리고 마음을 표현하는 모습을 돌아보며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기':esc(concept.title)+' 이어보기')+' · '+(detail?'12,900':'4,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>심층 리포트는 선택 시 별도 12,900원 · 모두 구매 시 총 17,800원')+'</p></section>';
+ return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'내 사주를 더 읽어보면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내가 돈을 쓰고 기회를 고르는 모습을 돌아보며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내가 끌리고 마음을 표현하는 모습을 돌아보며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기':esc(concept.title)+' 이어보기')+' · '+(detail?'12,900':'4,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>더 자세한 세부 리포트는 별도 선택 구매 · 12,900원')+'</p></section>';
 }
 function startReportUnlock(concept,stage){
   if(['story','detail'].indexOf(stage)===-1)return;
@@ -3905,7 +3902,7 @@ function readingPreviewHtml(concept,result){
  var tension=p.strong?'내 판단을 유지하는 힘이 도움이 되기도 하지만, 다른 조건을 놓치지는 않았는지 살펴볼 수 있어요.':'상황을 살피며 조정하는 힘이 도움이 되기도 하지만, 내가 원하는 것을 미루지는 않았는지 살펴볼 수 있어요.';
  var next=career?'강점이 잘 드러나는 업무 환경, 부담이 커지는 습관, 이직 전에 확인할 조건':money?'기회와 소비를 대하는 습관, 반복되는 지출의 이유, 다음 선택에서 지킬 기준':'내가 끌리는 관계, 마음을 표현하는 방식, 서운함이 반복될 때 확인할 점';
  return '<section class="reading-preview" data-reading-topic="'+kind+'"><p class="reader-kicker">내 사주 무료 풀이</p><h2>'+esc(result.name?result.name+'님의 사주부터 살펴볼게요.':'내 사주부터 살펴볼게요.')+'</h2><p class="reading-basis">일간 '+esc(result.day.ganKr)+'('+esc(p.wx)+') · 표면 오행 '+esc(p.dom)+' '+(Number(result.wxCount[p.dom])||0)+'개 기준</p>'+
- '<section class="reading-point"><h3>'+headline+'</h3><p>일간 '+esc(result.day.ganKr)+'('+esc(p.wx)+')을 기준으로는 <strong>'+esc(t[kind])+'</strong>에 주목해요.</p><p>'+esc(career?'최근 일이 잘 풀렸던 순간에 내가 맡았던 역할과 비교해보세요.':money?'최근 만족했던 지출이나 제안에서 무엇이 좋았는지 떠올려보세요.':'최근 마음이 갔던 사람과 함께 있을 때 무엇이 좋았는지 떠올려보세요.')+'</p></section>'+
+ '<figure class="reading-intro-art"><img src="'+esc(career?'/assets/pocha/cinematic/scene-08.webp':reportCoverSource(concept,result))+'" alt="'+(career?'일과 진로의 방향을 살펴보는 사주 상담':money?'돈과 선택을 돌아보는 장면':'마음과 관계를 돌아보는 장면')+'" decoding="async"></figure><section class="reading-point"><h3>'+headline+'</h3><p>일간 '+esc(result.day.ganKr)+'('+esc(p.wx)+')을 기준으로는 <strong>'+esc(t[kind])+'</strong>에 주목해요.</p><p>'+esc(career?'최근 일이 잘 풀렸던 순간에 내가 맡았던 역할과 비교해보세요.':money?'최근 만족했던 지출이나 제안에서 무엇이 좋았는지 떠올려보세요.':'최근 마음이 갔던 사람과 함께 있을 때 무엇이 좋았는지 떠올려보세요.')+'</p></section>'+
  '<section class="reading-point"><h3>'+question+'</h3><p><strong>'+esc(watch)+'</strong></p><p>'+esc(tension)+' 이 부분은 간이 신강·신약 분류와 실제 경험을 함께 참고해요.</p></section>'+
  '<section class="reading-point"><h3>내 사주를 더 읽어보면</h3><p>입력한 사주의 오행 분포와 십신을 함께 살펴보면 <strong>'+role+'</strong>도 살펴볼 수 있어요.</p><p>이어서 '+esc(next)+'을 내 사주에 맞춰 구체적으로 읽어보세요.</p></section><p class="reading-note">입력한 출생정보를 바탕으로 한 해석이에요. 실제 경험과 비교하며 읽어보세요.</p></section>';
 }
@@ -3963,7 +3960,7 @@ function pochaScene(result,plan,i,rows){
 function pochaOffer(concept,stage){
  var detail=stage==='detail';
  var benefits=detail?['일간·오행·십신으로 풀이의 근거 확인','이직·새 분야·협업·보상 등 20개 주제','상황별 점검 질문과 일주일 실천 방법']:['내 강점이 드러나는 일과 편한 업무 환경','일할 때 반복되는 방식과 보완할 습관','다음 선택을 위해 확인할 조건과 작은 실천'];
- return '<section class="reader-offer pocha-offer" data-gate="'+stage+'"><p class="reader-kicker">'+(detail?'일·진로 심층 리포트':'퇴근길 포장마차')+'</p><h2>'+(detail?'내 상황에 맞춰 더 살펴보기':'나에게 맞는 일은 어떤 모습일까요?')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기 · 12,900원':'이어서 읽기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>심층 리포트는 선택 시 별도 12,900원 · 모두 구매 시 총 17,800원')+'</p></section>';
+ return '<section class="reader-offer pocha-offer" data-gate="'+stage+'"><p class="reader-kicker">'+(detail?'일·진로 심층 리포트':'일·진로 사주 풀이')+'</p><h2>'+(detail?'내 상황에 맞춰 더 살펴보기':'나에게 맞는 일은 어떤 모습일까요?')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기 · 12,900원':'이어서 읽기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>더 자세한 세부 리포트는 별도 선택 구매 · 12,900원')+'</p></section>';
 }
 function pochaSample(result){
  var p=storyProfile(result),l=POCHA_LENS[p.wx];
@@ -3978,7 +3975,7 @@ function pochaFlow(concept,data,result){
  if(!owned)return '<div class="pocha-reader">'+readingPreviewHtml(concept,result)+pochaOffer(concept,'story')+'</div>';
  var html='<div class="pocha-reader">'+readingPreviewHtml(concept,result)+plan.slice(0,20).map(function(_,i){return pochaScene(result,plan,i,owned?rows.slice(i,i+1):[]);}).join('');
 
- html+='<section class="pocha-receipt"><p class="reader-kicker">퇴근길 포장마차</p><h2>오늘 챙겨갈 것</h2><p>'+esc(POCHA_LENS[storyProfile(result).wx].action)+'</p><span>나에게 맞는 방식인지, 직접 확인해보세요.</span></section>';
+ html+='<section class="pocha-receipt"><p class="reader-kicker">내 일과 진로의 방향</p><h2>오늘 챙겨갈 것</h2><p>'+esc(POCHA_LENS[storyProfile(result).wx].action)+'</p><span>나에게 맞는 방식인지, 직접 확인해보세요.</span></section>';
  if(data.access.detail)html+='<section id="owned-detail-report">'+pochaDetail(data.detailRows||[],result)+'</section>';
  else html+=pochaSample(result)+pochaOffer(concept,'detail');
  return html+'</div>';
