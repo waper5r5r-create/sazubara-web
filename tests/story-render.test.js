@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -175,4 +175,34 @@ test('career reader speaks to the reader and never labels them as a fictional pr
  const unsafe=render({...result,name:'<script>악성</script>'});
  assert.ok(!unsafe.includes('<script>악성</script>'));assert.ok(unsafe.includes('&lt;script&gt;'));
  for(const row of panels)assert.ok(!row.caption_template.includes('\n\n'));
+});
+
+test('all three catalogue covers match reader art and never load the retired auntie cover',()=>{
+ const {presentConcept}=require('../api/_report-presentation'),{concept:c}=require('../api/_pocha-content');
+ const love=presentConcept({id:'운명의-사람은-언제-올까-fyq1z',category:'연애'});
+ const money=presentConcept({id:'타고난-재물복은-얼마나-될까-k7dxw',category:'재물'});
+ assert.equal(love.title,'나는 왜 이런 사랑을 할까?');assert.equal(money.title,'나는 돈 앞에서 왜 이럴까?');
+ for(const row of [love,money,c]){
+  const cover=api.reportCoverSource(row,result);assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',cover)));
+  assert.ok(api.reportCardHtml(row).includes(cover));assert.ok(!row.tagline.includes('타이밍'));
+ }
+ assert.ok(api.reportCoverSource(love,{...result,gender:'m'}).includes('love-m-2'));
+ assert.ok(api.reportCoverSource(money,{...result,gender:'m'}).includes('wealth-m-0'));
+ assert.ok(!html.includes('/assets/pocha/auntie-'));assert.ok(html.includes('esc(reportCoverSource(concept,STATE.mySaju))'));
+});
+
+test('forty stored interpretation slots use reviewed copy while preserving panel identities and personal branches',()=>{
+ const {editPanel}=require('../api/_report-editorial');
+ for(const id of ['운명의-사람은-언제-올까-fyq1z','타고난-재물복은-얼마나-될까-k7dxw']){
+  for(let i=1;i<=20;i++){
+   const row=editPanel(id,{id:'original-'+i,sort_order:i,img_url:'keep.webp',caption_template:'OLD_COPY'});
+   assert.equal(row.id,'original-'+i);assert.equal(row.img_url,'keep.webp');assert.notEqual(row.caption_template,'OLD_COPY');
+   for(const wx of ['목','화','토','금','수']){
+    const text=api.fillReportTemplate(row.caption_template,{...result,dayGanWx:wx,wxCount:{목:0,화:0,토:0,금:0,수:0,[wx]:8}});
+    assert.ok(!text.includes('{{branch:'));assert.ok(!text.includes('undefined'));assert.ok(text.length>35);
+    assert.ok(!/베팅|사주에 새겨진|겉으로는.*척/.test(text));
+   }
+  }
+ }
+ const original={sort_order:1,caption_template:'OTHER_STORY'};assert.equal(editPanel('other',original),original);
 });

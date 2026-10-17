@@ -1,3 +1,5 @@
+const { editPanel } = require('../_report-editorial');
+const { presentConcept } = require('../_report-presentation');
 const pocha = require('../_pocha-content');
 const { sbFetch, getQuery, checkAdminSecret } = require('../_supabase');
 const { STAGE_PRICE, rowsAt, reportAccess } = require('../_report-access');
@@ -27,7 +29,7 @@ module.exports = async (req, res) => {
       const concepts = await rowsAt('/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,active');
       const admin = checkAdminSecret(req);
       if (!concepts[0] || (!concepts[0].active && !admin)) return res.status(404).json({ ok: false, error: 'UNKNOWN_CONCEPT' });
-      const panels = await rowsAt('/report_panels?concept_id=eq.' + encodeURIComponent(conceptId) + '&select=id,sort_order,img_url,caption_template,tone,img_variants&order=sort_order.asc');
+      const panels = (await rowsAt('/report_panels?concept_id=eq.' + encodeURIComponent(conceptId) + '&select=id,sort_order,img_url,caption_template,tone,img_variants&order=sort_order.asc')).map(panel=>editPanel(conceptId,panel));
       if (admin) return res.status(200).json({ ok: true, rows: panels, access: { story: true, detail: true, legacy: true } });
       const access = await reportAccess(q.device_id || '', conceptId);
       // Preserve every original scene and its complete narrative in the paid webtoon.
@@ -44,7 +46,7 @@ module.exports = async (req, res) => {
     }
     const r = await sbFetch('/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,price_krw,category&order=sort_order.asc');
     if (!r.ok) throw new Error('QUERY_FAILED');
-    const rows = (await r.json()).map(c => ({ ...c, price_krw: STAGE_PRICE.story, detail_price_krw: STAGE_PRICE.detail }));
+    const rows = (await r.json()).map(c => ({ ...presentConcept(c), price_krw: STAGE_PRICE.story, detail_price_krw: STAGE_PRICE.detail }));
     res.status(200).json({ ok: true, rows: rows.concat([pocha.concept]) });
   } catch (e) { res.status(500).json({ ok: false, error: 'SERVER_ERROR' }); }
 };
