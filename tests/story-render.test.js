@@ -160,3 +160,19 @@ test('career story maps twenty independent assets in order and keeps every paid 
  assert.ok(!free.includes('PERSONAL_'));assert.ok(!free.includes('scene-07.webp'));
  assert.equal((free.match(/class="pocha-scene"/g)||[]).length,6);
 });
+
+test('career reader speaks to the reader and never labels them as a fictional protagonist',()=>{
+ const {concept:c,panels}=require('../api/_pocha-content');
+ const render=r=>api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels},r);
+ const text=render({...result,name:'지민'});
+ assert.ok(!text.includes('주인공'));assert.ok(!text.includes('서재가 그려'));
+ assert.ok(text.includes('지민님은 어떤 방식으로 일할 때 편한지'));
+ assert.ok(text.includes('지민님의 사주 풀이'));
+ assert.ok(text.includes('<span>서도윤</span>'));
+ assert.ok(text.includes('나, 앞으로 뭐 해 먹고 살지?'));
+ const water=render({...result,name:''}),fire=render({...result,name:'',dayGanWx:'화'});
+ assert.notEqual(water,fire);assert.ok(!water.includes('undefined'));assert.ok(!water.includes('님은 어떤'));
+ const unsafe=render({...result,name:'<script>악성</script>'});
+ assert.ok(!unsafe.includes('<script>악성</script>'));assert.ok(unsafe.includes('&lt;script&gt;'));
+ for(const row of panels)assert.ok(!row.caption_template.includes('\n\n'));
+});
