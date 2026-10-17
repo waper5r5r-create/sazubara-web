@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -61,7 +61,7 @@ test('reader keeps free opening and separate purchase gates without reviews',()=
  const data={access:{story:false,detail:false},rows:[{caption_template:'PRIVATE_SENTENCE'}]};
  const text=api.storyFlowHtml(concept,data,result);
  assert.equal(api.readerStepsHtml(data,'story'),'');
- assert.equal((text.match(/class="story-frame /g)||[]).length,4);
+ assert.equal((text.match(/class="story-frame /g)||[]).length,0);
  assert.ok(!text.includes('PRIVATE_SENTENCE'));
  assert.ok(text.includes('data-gate="story"'));assert.ok(!text.includes('data-gate="detail"'));
  assert.ok(!text.includes('story-reviews'));
@@ -128,7 +128,7 @@ test('content navigation and cards are neutral about format and future themes',(
 test('pocha opening, owned story and detail respect separate gates with career-specific text',()=>{
  const {concept:c,panels}=require('../api/_pocha-content');
  const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[{caption_template:'DO_NOT_LEAK'}]},result);
- assert.equal((free.match(/class="pocha-scene"/g)||[]).length,6);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('총 17,800원'));assert.ok(!free.includes('data-gate="detail"'));
+ assert.equal((free.match(/class="pocha-scene"/g)||[]).length,0);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('총 17,800원'));assert.ok(!free.includes('data-gate="detail"'));
  const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels},result);
  assert.equal((paid.match(/class="pocha-scene"/g)||[]).length,20);assert.ok(paid.includes('오늘 챙겨갈 것'));assert.ok(!paid.includes('data-gate="story"'));assert.ok(paid.indexOf('오늘 챙겨갈 것')<paid.indexOf('data-gate="detail"'));
  const full=api.storyFlowHtml(c,{access:{story:true,detail:true},rows:panels,detailRows:panels},result);
@@ -158,7 +158,7 @@ test('career story maps twenty independent assets in order and keeps every paid 
  assert.deepEqual(art,panels.map(p=>p.img_url));assert.ok(!paid.includes('사장님'));
  const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows},result);
  assert.ok(!free.includes('PERSONAL_'));assert.ok(!free.includes('scene-07.webp'));
- assert.equal((free.match(/class="pocha-scene"/g)||[]).length,6);
+ assert.equal((free.match(/class="pocha-scene"/g)||[]).length,0);
 });
 
 test('career reader speaks to the reader and never labels them as a fictional protagonist',()=>{
@@ -205,4 +205,24 @@ test('forty stored interpretation slots use reviewed copy while preserving panel
   }
  }
  const original={sort_order:1,caption_template:'OTHER_STORY'};assert.equal(editPanel('other',original),original);
+});
+
+test('all three free openings lead with personalised readings instead of illustrated stories',()=>{
+ const {concept:career}=require('../api/_pocha-content');
+ for(const c of [concept,{...concept,category:'재물'},career]){
+  const render=wx=>api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[{caption_template:'PAID_ONLY'}]},{...result,dayGanWx:wx});
+  const text=render('수');
+  assert.ok(text.includes('내 사주 무료 풀이'));assert.ok(text.includes('임(수)'));
+  assert.equal((text.match(/class="reading-point"/g)||[]).length,3);
+  assert.ok(!text.includes('class="story-frame'));assert.ok(!text.includes('class="pocha-scene'));
+  assert.ok(!text.includes('PAID_ONLY'));assert.ok(!text.includes('story-locked-preview'));
+  assert.ok(text.indexOf('reading-preview')<text.indexOf('data-gate="story"'));
+  assert.equal(new Set(['목','화','토','금','수'].map(render)).size,5);
+ }
+});
+
+test('highlights require an authored phrase and never trigger on isolated astrology keywords',()=>{
+ assert.equal(api.reportEmphasis('일간과 오행으로 내 마음을 읽어요.'),'일간과 오행으로 내 마음을 읽어요.');
+ assert.equal(api.reportEmphasis('지금은 **꼭 필요한 조건부터 확인해보세요.**'),'지금은 <strong>꼭 필요한 조건부터 확인해보세요.</strong>');
+ assert.equal(api.reportEmphasis('<strong>핵심 해석</strong>'),'<strong>핵심 해석</strong>');
 });

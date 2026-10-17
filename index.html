@@ -1021,6 +1021,17 @@ body{background:#ece7e5;letter-spacing:-.025em}.app{background:var(--bg);box-sha
 <style id="story-edition">
 #view-reports .tab-intro{padding:22px 6px 8px}#view-reports .tab-intro h1{font-family:'Noto Serif KR',serif;font-size:1.5rem;font-weight:500;line-height:1.65;margin:10px 0 14px}#view-reports .tab-intro .section-desc{font-size:.78rem}.report-grid{gap:24px}.report-card{aspect-ratio:auto;display:flex;flex-direction:column;text-align:left;background:#fffdfa;border:1px solid #e6dce9;border-radius:23px;box-shadow:0 8px 22px #61457509;padding:0}.report-card:after{display:none}.report-card .report-cover{position:relative;aspect-ratio:4/3;height:auto;overflow:hidden}.report-card .report-cover img{object-position:center 28%}.report-card .report-text{position:relative;inset:auto;padding:22px;gap:10px}.report-card .nm{font-family:'Noto Serif KR',serif;color:#584064;text-shadow:none;font-size:1.12rem;line-height:1.7;font-weight:500}.report-card .tagline{font-size:.76rem;line-height:1.9;color:#96809f}.report-format{font-size:.59rem;letter-spacing:.09em;color:#a68bb4}.report-card-footer{margin-top:9px}.report-discover{font-size:.7rem;color:#896798;display:flex;align-items:center;gap:7px}.report-discover svg{width:15px;height:15px}.report-card:disabled{opacity:.6;cursor:default}.report-price{color:#896798}.report-real-sample{margin:28px 0 12px;background:#f3edf6;color:#61516c;padding:26px 23px;border-radius:21px;border:1px solid #d1bbdf}.report-real-sample h2{font-family:'Noto Serif KR',serif;font-size:1.22rem;font-weight:500;line-height:1.8;margin:12px 0 20px}.report-real-sample>p:not(.reader-kicker){font-size:.82rem;line-height:2.05;margin:14px 0;word-break:keep-all}.report-real-sample .reader-kicker{color:#9674a7}.report-real-sample strong{color:#754a8b}.sample-question,.sample-action{background:#fffafc;border:1px solid #e2d2e9;padding:16px;border-radius:13px;margin-top:14px}.sample-question b,.sample-action b{font-size:.68rem;font-weight:600;color:#9b7baa}.sample-question p,.sample-action p{font-size:.79rem;line-height:1.95;margin-top:7px}.report-real-sample .sample-method{font-size:.62rem!important;color:#a38cac;padding-top:12px;border-top:1px solid #decfe7}.report-sample-toc{padding:20px 8px 30px;color:#bfb3c9}.report-sample-toc h3{font-size:.82rem;color:#dbc8e4}.report-sample-toc ul{padding-left:18px;font-size:.76rem;line-height:2.2;margin:14px 0}.reader-offer .offer-benefits{text-align:left}.reader-price-note{line-height:1.95}.report-page .story-opening-v2{padding-top:25px}.report-page .report-real-sample .reader-kicker{color:#9674a7}.report-page .story-locked-preview{max-height:260px}.tab-btn{font-size:.64rem}
 </style>
+<style>
+.report-page .reader-cover,.report-page .pocha-cover{display:grid;grid-template-columns:96px minmax(0,1fr);gap:18px;align-items:center;min-height:0;padding:20px 24px;background:#151e2d;overflow:visible;isolation:auto}
+.report-page .reader-cover>img,.report-page .pocha-cover>img{position:static;inset:auto;z-index:auto;display:block;width:96px;height:120px;aspect-ratio:auto;object-fit:contain;object-position:center;opacity:1;border-radius:8px;background:#101523}
+.report-page .reader-cover>div,.report-page .pocha-cover>div{position:static;inset:auto;padding:0;background:none;min-width:0}.report-page .reader-cover:after,.report-page .pocha-cover:after{display:none}
+.report-page .reader-cover h1,.report-page .pocha-cover h1{font-size:20px;line-height:1.6;margin:6px 0;word-break:keep-all;overflow-wrap:anywhere}.report-page .reader-cover p,.report-page .pocha-cover p{font-size:12px;line-height:1.7}
+.report-page .story-illustration,.report-page .pocha-art{width:100%;margin:0;aspect-ratio:auto;overflow:visible;border-radius:12px;background:#151e2d}
+.report-page .story-illustration img,.report-page .pocha-art img{position:static;display:block;width:100%;height:auto;max-width:100%;left:auto;top:auto;object-fit:contain;aspect-ratio:auto;border-radius:12px}
+.report-page .story-illustration:after,.report-page .pocha-art:after{display:none}.report-page .story-dialogue{position:static;margin:18px 0 14px;max-width:none;border-radius:12px;padding:16px 18px}.report-page .pocha-dialogue{margin:0;padding:20px 0 0}.report-page .pocha-narration{padding:16px 0 0}.report-page .story-voice{padding:0}.report-page .story-frame,.report-page .pocha-scene{margin:0 0 36px}
+.reading-preview{padding:30px 0 20px;color:#d5d6df}.reading-preview>h2{font-size:22px;line-height:1.6;margin:10px 0 12px;color:#f3ebdc;word-break:keep-all}.reading-basis{font-size:12px;color:#b9b4c2;line-height:1.8}.reading-point{padding:24px 0;border-bottom:1px solid #ffffff12}.reading-point h3{font-size:17px;color:#f1e6d5;line-height:1.7;margin:0 0 14px;word-break:keep-all}.reading-point p{font-size:14px;line-height:2;margin:10px 0;word-break:keep-all;overflow-wrap:anywhere}.reading-point strong{font-weight:700;color:#f3d29e;background:none}.reading-note{font-size:11px;line-height:1.8;color:#a9a5b0;margin:20px 0 0}.pocha-reader .reading-preview{padding:30px 0 20px}
+@media(max-width:374px){.report-page .reader-cover,.report-page .pocha-cover{grid-template-columns:76px minmax(0,1fr);gap:14px;padding:18px 20px}.report-page .reader-cover>img,.report-page .pocha-cover>img{width:76px;height:104px}.report-page .reader-cover h1,.report-page .pocha-cover h1{font-size:18px}}
+</style>
 </head>
 <body>
 
@@ -3874,7 +3885,28 @@ function storyAtlasArt(concept,result,index){
  var gender=(result.gender==='m'||result.gender==='male')?'m':'f';
  return '<div class="story-illustration"><img src="/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+gender+'-'+index+'.webp?v=reader-2.1" alt="'+(storyCategory(concept)==='wealth'?'돈과 선택을 돌아보는':'마음과 관계를 돌아보는')+' 이야기 장면" loading="'+(index<2?'eager':'lazy')+'" decoding="async"></div>';
 }
-function reportEmphasis(html){return String(html).replace(/(상대의 반응|내 마음|반복되는 선택|생활 방식|가치관|결정 시한|고정 지출|지출 한도|중단 기준|손실 한도|주의할 점|정재|편재|신강·신약|일간|오행|실천 계획)/g,'<strong>$1</strong>');}
+// Emphasis is authored per sentence; matching a generic keyword never adds a highlight.
+function reportEmphasis(html){return String(html).replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');}
+function readingPreviewHtml(concept,result){
+ var p=storyProfile(result),career=isPocha(concept),money=storyCategory(concept)==='wealth';
+ var traits={
+ 목:{love:'함께 새로운 경험을 할 때 마음이 움직이는 성향',money:'새로운 가능성과 경험에 먼저 눈이 가는 성향',career:'새로운 방법을 찾고 직접 시도할 때 드러나는 강점',watch:'시작할 때의 기대와 꾸준히 이어갈 조건을 함께 확인해보세요.'},
+ 화:{love:'좋아하는 마음을 표현하고 반응을 나누려는 성향',money:'가치가 느껴지는 제안에 빠르게 마음이 움직이는 성향',career:'생각을 표현하고 사람들과 반응을 주고받을 때 드러나는 강점',watch:'마음이 움직이는 속도와 실제로 감당할 수 있는 속도를 함께 살펴보세요.'},
+ 토:{love:'꾸준한 약속과 편안한 일상에서 신뢰를 쌓는 성향',money:'현재 생활을 안정적으로 유지할 조건부터 살피는 성향',career:'일의 흐름을 유지하고 역할을 조율할 때 드러나는 강점',watch:'편안해서 유지하는 것과 익숙해서 바꾸지 못하는 것을 나눠보세요.'},
+ 금:{love:'관계에서 중요하게 여기는 기준을 먼저 살피는 성향',money:'비용과 조건을 비교하고 내 기준에 맞춰 고르는 성향',career:'기준을 세우고 결과물의 완성도를 높일 때 드러나는 강점',watch:'꼭 필요한 기준과 조율해도 되는 조건을 구분해보세요.'},
+ 수:{love:'상대를 충분히 이해한 뒤 마음을 전하려는 성향',money:'정보와 여러 가능성을 살펴본 뒤 결정하려는 성향',career:'정보를 살피고 문제의 원인을 이해할 때 드러나는 강점',watch:'더 알아봐야 할 것과 직접 해봐야 알 수 있는 것을 나눠보세요.'}
+ },t=traits[p.wx],kind=career?'career':money?'money':'love';
+ var headline=career?'나는 어떤 일을 할 때 힘이 날까?':money?'돈 앞에서 나는 무엇부터 볼까?':'나는 어떤 사람에게 마음이 갈까?';
+ var question=career?'잘하는 일인데도 왜 지칠까요?':money?'왜 비슷한 소비를 반복할까요?':'좋아하는데 왜 같은 고민을 할까요?';
+ var role=career?'일과 관계를 조율하는 방식':money?'돈과 기회를 선택하는 방식':'내 마음과 상대의 속도를 조율하는 방식';
+ var tension=p.strong?'내 판단을 유지하는 힘이 도움이 되기도 하지만, 다른 조건을 놓치지는 않았는지 살펴볼 수 있어요.':'상황을 살피며 조정하는 힘이 도움이 되기도 하지만, 내가 원하는 것을 미루지는 않았는지 살펴볼 수 있어요.';
+ var next=career?'강점이 잘 드러나는 업무 환경, 부담이 커지는 습관, 이직 전에 확인할 조건':money?'기회와 소비를 대하는 습관, 반복되는 지출의 이유, 다음 선택에서 지킬 기준':'내가 끌리는 관계, 마음을 표현하는 방식, 서운함이 반복될 때 확인할 점';
+ return '<section class="reading-preview" data-reading-topic="'+kind+'"><p class="reader-kicker">내 사주 무료 풀이</p><h2>'+esc(result.name?result.name+'님의 사주부터 살펴볼게요.':'내 사주부터 살펴볼게요.')+'</h2><p class="reading-basis">일간 '+esc(result.day.ganKr)+'('+esc(p.wx)+') · 표면 오행 '+esc(p.dom)+' '+(Number(result.wxCount[p.dom])||0)+'개 기준</p>'+
+ '<section class="reading-point"><h3>'+headline+'</h3><p>일간 '+esc(result.day.ganKr)+'('+esc(p.wx)+')을 기준으로는 <strong>'+esc(t[kind])+'</strong>에 주목해요.</p><p>'+esc(career?'최근 일이 잘 풀렸던 순간에 내가 맡았던 역할과 비교해보세요.':money?'최근 만족했던 지출이나 제안에서 무엇이 좋았는지 떠올려보세요.':'최근 마음이 갔던 사람과 함께 있을 때 무엇이 좋았는지 떠올려보세요.')+'</p></section>'+
+ '<section class="reading-point"><h3>'+question+'</h3><p><strong>'+esc(t.watch)+'</strong></p><p>'+esc(tension)+' 이 부분은 간이 신강·신약 분류와 실제 경험을 함께 참고해요.</p></section>'+
+ '<section class="reading-point"><h3>내 사주를 더 읽어보면</h3><p>표면 오행에서 상대적으로 두드러지는 '+esc(p.dom)+' 기운과 십신 '+esc(p.ss.length?p.ss.join('·'):'정보')+'을 함께 보면 <strong>'+role+'</strong>도 살펴볼 수 있어요.</p><p>이어서 '+esc(next)+'을 내 사주에 맞춰 구체적으로 읽어보세요.</p></section><p class="reading-note">입력한 출생정보를 바탕으로 한 해석이에요. 실제 경험과 비교하며 읽어보세요.</p></section>';
+}
+
 function storySceneHtml(concept,result,index,dialogue,caption){
  return '<section class="story-frame scene-'+index+'">'+storyAtlasArt(concept,result,index)+'<div class="story-dialogue"><span class="dialogue-mark" aria-hidden="true">“</span><p>'+esc(dialogue)+'</p></div>'+(caption?'<div class="story-voice">'+caption+'</div>':'')+'</section>';
 }
@@ -3940,8 +3972,9 @@ function pochaDetail(panels,result){
 }
 function pochaFlow(concept,data,result){
  var plan=pochaPlan(result),rows=data.rows||[],owned=!!data.access.story;
- var html='<div class="pocha-reader">'+plan.slice(0,owned?20:6).map(function(_,i){return pochaScene(result,plan,i,owned?rows.slice(i,i+1):[]);}).join('');
- if(!owned)return html+pochaOffer(concept,'story')+'</div>';
+ if(!owned)return '<div class="pocha-reader">'+readingPreviewHtml(concept,result)+pochaOffer(concept,'story')+'</div>';
+ var html='<div class="pocha-reader">'+readingPreviewHtml(concept,result)+plan.slice(0,20).map(function(_,i){return pochaScene(result,plan,i,owned?rows.slice(i,i+1):[]);}).join('');
+
  html+='<section class="pocha-receipt"><p class="reader-kicker">퇴근길 포장마차</p><h2>오늘 챙겨갈 것</h2><p>'+esc(POCHA_LENS[storyProfile(result).wx].action)+'</p><span>나에게 맞는 방식인지, 직접 확인해보세요.</span></section>';
  if(data.access.detail)html+='<section id="owned-detail-report">'+pochaDetail(data.detailRows||[],result)+'</section>';
  else html+=pochaSample(result)+pochaOffer(concept,'detail');
@@ -4009,8 +4042,9 @@ function reportSampleHtml(concept,result){
 }
 function storyFlowHtml(concept,data,result){
  if(isPocha(concept))return pochaFlow(concept,data,result);
- var html=(data.access.story?'<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>':'')+storyOpeningV2(concept,result);
- if(!data.access.story)return html+'<div class="story-locked-preview" aria-hidden="true">'+storyAtlasArt(concept,result,4)+'<span>이어서 알아가는, 나의 이야기</span></div>'+stageOfferHtml(concept,'story');
+ if(!data.access.story)return readingPreviewHtml(concept,result)+stageOfferHtml(concept,'story');
+ var html=readingPreviewHtml(concept,result)+(data.access.story?'<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>':'')+storyOpeningV2(concept,result);
+
  html+=storyPaidScenes(concept,data,result)+'<section class="story-epilogue"><p class="reader-kicker">콘텐츠를 마치며</p><h2>내게 맞는 해석은,<br>경험과 함께 선명해집니다.</h2><p>마음에 남은 선택이 있었나요?<br>그 이유와 일상에서 해볼 방법을 더 살펴볼 수 있어요.</p></section>';
  if(data.access.detail)return html+'<section class="owned-report-heading"><p class="reader-kicker">보유한 심층 리포트</p><h2>이제, 나를 더 깊이 읽어볼까요?</h2></section><section id="owned-detail-report">'+detailReportHtml(concept,data.detailRows||[],result)+'</section>'+reportShareBtnHtml();
  html+='<section class="detail-bridge"><p class="reader-kicker">선택한 이유에서, 다음 행동까지</p><h2>더 깊은 풀이가 궁금하다면</h2></section>'+reportSampleHtml(concept,result)+'<section class="report-sample-toc"><h3>이어서 살펴볼 내용</h3><ul><li>내 일간·오행·십신으로 보는 해석의 근거</li><li>강점과 선택 방식, 보완할 습관</li><li>8가지 상황별 행동 지침과 주의할 점</li><li>점검 질문과 일주일 실천 계획</li></ul></section>'+stageOfferHtml(concept,'detail');
