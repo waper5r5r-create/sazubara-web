@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
   try {
     if (conceptId === pocha.concept.id) {
       const access = await reportAccess(q.device_id || '', conceptId);
-      return res.status(200).json({ok:true, rows:access.story ? pocha.panels.slice(0,12) : pocha.panels.slice(0,1), detailRows:access.detail ? pocha.panels : [], access, preview:!access.story, storyCount:12});
+      return res.status(200).json({ok:true, rows:access.story ? pocha.panels : pocha.panels.slice(0,6), detailRows:access.detail ? pocha.panels : [], access, preview:!access.story, storyCount:pocha.panels.length});
     }
     if (conceptId) {
       const concepts = await rowsAt('/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,active');

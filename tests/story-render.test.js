@@ -128,11 +128,33 @@ test('content navigation and cards are neutral about format and future themes',(
 test('pocha opening, owned story and detail respect separate gates with career-specific text',()=>{
  const {concept:c,panels}=require('../api/_pocha-content');
  const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[{caption_template:'DO_NOT_LEAK'}]},result);
- assert.equal((free.match(/class="pocha-scene"/g)||[]).length,4);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('총 17,800원'));assert.ok(!free.includes('data-gate="detail"'));
- const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels.slice(0,12)},result);
- assert.equal((paid.match(/class="pocha-scene"/g)||[]).length,12);assert.ok(paid.includes('오늘 챙겨갈 것'));assert.ok(!paid.includes('data-gate="story"'));assert.ok(paid.indexOf('오늘 챙겨갈 것')<paid.indexOf('data-gate="detail"'));
- const full=api.storyFlowHtml(c,{access:{story:true,detail:true},rows:panels.slice(0,12),detailRows:panels},result);
- assert.equal((full.match(/id="pocha-detail-/g)||[]).length,20);assert.ok(!full.includes('data-gate='));assert.ok(!full.includes('연애'));assert.ok(!full.includes('love-'));assert.ok(!full.includes('{{branch:'));assert.ok(full.includes('이직을 살펴볼 때'));
+ assert.equal((free.match(/class="pocha-scene"/g)||[]).length,6);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('총 17,800원'));assert.ok(!free.includes('data-gate="detail"'));
+ const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels},result);
+ assert.equal((paid.match(/class="pocha-scene"/g)||[]).length,20);assert.ok(paid.includes('오늘 챙겨갈 것'));assert.ok(!paid.includes('data-gate="story"'));assert.ok(paid.indexOf('오늘 챙겨갈 것')<paid.indexOf('data-gate="detail"'));
+ const full=api.storyFlowHtml(c,{access:{story:true,detail:true},rows:panels,detailRows:panels},result);
+ assert.equal((full.match(/id="pocha-detail-/g)||[]).length,20);assert.ok(!full.includes('data-gate='));assert.ok(!full.includes('연애'));assert.ok(!full.includes('love-'));assert.ok(!full.includes('{{branch:'));assert.ok(full.includes('이직보다 먼저 살펴볼 것'));
  const all=['목','화','토','금','수'].map(wx=>api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[]},{...result,dayGanWx:wx}));assert.equal(new Set(all).size,5);
  assert.equal(api.storyCategory({...c,id:'unknown'}),'unsupported');
+});
+
+test('career story maps twenty independent assets in order and keeps every paid interpretation',()=>{
+ const path=require('node:path'),{concept:c,panels}=require('../api/_pocha-content');
+ const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/pocha/cinematic/manifest.json'),'utf8'));
+ assert.equal(panels.length,20);assert.equal(manifest.length,20);
+ assert.equal(new Set(manifest.map(x=>x.sha256)).size,20);
+ for(const [i,p] of panels.entries()){
+  assert.equal(p.sort_order,i);assert.equal(p.img_url,'/assets/pocha/cinematic/scene-'+String(i+1).padStart(2,'0')+'.webp');
+  assert.ok(fs.existsSync(path.join(__dirname,'..',p.img_url)));assert.ok(manifest[i].width>=1400);assert.ok(manifest[i].height>=1024);
+ }
+ const rows=panels.map((p,i)=>({...p,caption_template:'PERSONAL_'+i+'_END'}));
+ const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows},result);
+ for(const [i,row] of rows.entries()){
+  assert.equal(paid.split(row.caption_template).length-1,1);
+  assert.ok(paid.indexOf('data-scene="'+(i+1)+'"')<paid.indexOf(row.caption_template));
+ }
+ const art=[...paid.matchAll(/<img src="([^"]+)"/g)].map(m=>m[1]);
+ assert.deepEqual(art,panels.map(p=>p.img_url));assert.ok(!paid.includes('사장님'));
+ const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows},result);
+ assert.ok(!free.includes('PERSONAL_'));assert.ok(!free.includes('scene-07.webp'));
+ assert.equal((free.match(/class="pocha-scene"/g)||[]).length,6);
 });
