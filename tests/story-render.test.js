@@ -122,7 +122,7 @@ test('new categories cannot silently reuse the romance story',()=>{assert.equal(
 test('content navigation and cards are neutral about format and future themes',()=>{
  assert.ok(html.includes('<span>콘텐츠</span>'));assert.ok(!html.includes('<span>사주 이야기</span>'));
  const card=api.reportCardHtml({...concept,title:'나만의 제목'});assert.ok(card.includes('나만의 제목'));assert.ok(!card.includes('웹툰'));assert.ok(!card.includes(' · 콘텐츠'));
- const offer=api.stageOfferHtml({...concept,title:'나만의 제목'},'story');assert.ok(offer.includes('나만의 제목 이어보기'));assert.ok(!offer.includes('웹툰'));
+ const offer=api.stageOfferHtml({...concept,title:'나만의 제목'},'story');assert.ok(offer.includes('내 연애 패턴 확인하기'));assert.ok(!offer.includes('웹툰'));
 });
 
 test('pocha opening, owned story and detail respect separate gates with career-specific text',()=>{
@@ -226,3 +226,11 @@ test('highlights require an authored phrase and never trigger on isolated astrol
  assert.equal(api.reportEmphasis('지금은 **꼭 필요한 조건부터 확인해보세요.**'),'지금은 <strong>꼭 필요한 조건부터 확인해보세요.</strong>');
  assert.equal(api.reportEmphasis('<strong>핵심 해석</strong>'),'<strong>핵심 해석</strong>');
 });
+
+ test('preview lead precedes art and actual heavenly-stem roles change the explanation',()=>{
+ const render=r=>api.storyFlowHtml(concept,{access:{story:false,detail:false},rows:[]},r);
+ const a=render({...result,yearSS:'정관',monthSS:null,timeSS:null});
+ const b=render({...result,yearSS:'정인',monthSS:null,timeSS:null});
+ assert.notEqual(a,b);assert.ok(a.includes('관계의 약속과 책임'));assert.ok(b.includes('상대의 뜻을 이해'));
+ assert.ok(a.indexOf('<h2>')<a.indexOf('reading-intro-art'));assert.ok(!a.includes('내 사주부터 살펴볼게요'));
+ });
