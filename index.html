@@ -2182,7 +2182,7 @@ function setUnlocked(key){ DEVICE.unlocked[key] = true; saveDevice(); }
    on/off 상태는 localStorage에 저장, 헤더의 종 아이콘으로 토글. */
 var SOUND_KEY = 'mysaju_sound_v1';
 function isSoundOn(){
-  try{ var v = localStorage.getItem(SOUND_KEY); return v===null ? true : v==='1'; }catch(e){ return true; }
+  try{ var v = localStorage.getItem(SOUND_KEY); return v==='1'; }catch(e){ return false; }
 }
 function setSoundOn(on){ try{ localStorage.setItem(SOUND_KEY, on?'1':'0'); }catch(e){} }
 var _audioCtx = null;
@@ -3774,7 +3774,6 @@ function wireReportGridClicks(grid, list){
   $all('.report-card', grid).forEach(function(el){
     el.addEventListener('click', function(){
       var c = list.filter(function(x){ return String(x.id)===el.dataset.reportId; })[0];
-      soundTap();
       if (c) openReportViewer(c);
     });
   });
@@ -3803,7 +3802,6 @@ function renderReportsTabView(){
       $all('.chip-btn', chipsEl).forEach(function(btn){
         btn.addEventListener('click', function(){
           $all('.chip-btn', chipsEl).forEach(function(b){ b.classList.toggle('active', b===btn); });
-          soundTap();
           renderReportGrid(list, btn.dataset.cat);
         });
       });
@@ -5507,7 +5505,6 @@ function initVisualFeedback(){
  document.addEventListener('click',function(event){
   var button=event.target.closest&&event.target.closest('button');
   if(!event.isTrusted||!button||button.disabled||button.id==='btn-sound-toggle')return;
-  if(button.matches('.tab-btn,.seg button,.chip-btn,.header-icon-btn,.report-card,.btn-primary'))soundTap();
   if((reduce&&reduce.matches)||!button.matches('.btn-primary,.report-card'))return;
   var box=button.getBoundingClientRect(),dot=document.createElement('span');dot.className='ui-ripple';dot.setAttribute('aria-hidden','true');
   dot.style.setProperty('--ripple-x',(event.clientX?event.clientX-box.left:box.width/2)+'px');dot.style.setProperty('--ripple-y',(event.clientY?event.clientY-box.top:box.height/2)+'px');
