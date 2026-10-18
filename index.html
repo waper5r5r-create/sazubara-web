@@ -1040,6 +1040,27 @@ body{background:#ece7e5;letter-spacing:-.025em}.app{background:var(--bg);box-sha
 .saju-step-track span,.report-format,.curiosity-strip span,.personal-traits small,.wx-donut-center .lb,.frame-swatch .pr,.frame-swatch .lbl,.report-card .report-play,.myroom-shinsal .chip,.chat-ai-badge,.reader-steps small,.reader-steps button>span,.card-symbol-grid small,.reader-cover .reader-kicker,.report-page .reader-kicker,.daeun-chip .ss,.daeun-chip .age,.app-header .sub,.myroom-chemi,.pack-card .unit,.month-cell,.report-cost-badge,.today-note small,.personal-traits>.hint,.tab-btn,.login-status,.card-meaning small,.detail-sample>span:first-child,.review-privacy,.eyebrow,.worry-preview .eyebrow,.technical-details summary small,.myroom-dex-btn,.repeat-badge,.shinsal-badge .hj,.report-preview-label,.everyday-questions small,.myroom-card .owner-tag,.myroom-new,.dex-card-id,.editorial-tag{font-size:.6875rem}
 .report-real-sample .sample-method,.worry-preview .preview-scope{font-size:.6875rem!important}
 </style>
+<style id="marriage-report">
+/* 결혼 사주: 배우자 별 카드와 10년 타임라인 */
+.spouse-card{margin:28px 0;padding:26px 22px;border-radius:20px;background:linear-gradient(160deg,#2a2140,#171d30);border:1px solid #d6b78533;box-shadow:0 10px 30px #0004}
+.spouse-card h2{font-family:'Noto Serif KR',serif;font-size:1.375rem;color:#f3dfb7;margin:8px 0 18px}
+.spouse-card h3{font-size:.8125rem;color:#d6b785;margin:18px 0 6px}
+.spouse-card p{font-size:.9375rem;line-height:1.8;color:#e4e0ea;margin:0;word-break:keep-all}
+.marriage-timeline{margin:28px 0}.marriage-timeline h2{font-family:'Noto Serif KR',serif;font-size:1.25rem;margin:8px 0 0}
+.marriage-timeline ol{list-style:none;padding:0;margin:16px 0 0}
+.marriage-timeline li{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid #ffffff12;opacity:.62}
+.marriage-timeline li.is-top{opacity:1}
+.marriage-year{flex:none;width:64px;display:flex;flex-direction:column;gap:2px}
+.marriage-year b{font-size:1.125rem;color:#f3dfb7}.marriage-year span{font-size:.75rem;color:#aaa1ba}
+.marriage-year-label{font-weight:600;color:#e7dfcc;font-size:.875rem;margin:0}
+.marriage-timeline li.is-top .marriage-year-label{color:#f3dfb7}
+.marriage-year-body p{font-size:.875rem;line-height:1.8;margin:4px 0 0;color:#d1d3dc;word-break:keep-all}
+.marriage-year-hero{font-size:1rem;margin:4px 0 8px}.marriage-year-hero strong{color:#f3dfb7;font-size:1.375rem;margin-right:4px}
+.marriage-locked-years{display:flex;gap:10px;margin:14px 0 8px}
+.marriage-locked-years span{padding:8px 14px;border-radius:10px;background:#ffffff10;filter:blur(3px);color:#f3dfb7;font-weight:600}
+.marriage-talk{padding:12px 14px;border-left:2px solid #d6b785;background:#d6b7850a;border-radius:0 10px 10px 0;margin:8px 0}
+.marriage-checklist ul{padding-left:18px;margin:8px 0 0}.marriage-checklist li{font-size:.875rem;line-height:1.8;margin:6px 0;color:#d1d3dc;word-break:keep-all}
+</style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=1">
 </head>
 <body>
@@ -3846,7 +3867,7 @@ var reportSectionHtml=function(panel,result){
     '<p class="scene-result-bubble">'+esc(bubble)+'</p></div>'+(parts.length?'<div class="webtoon-narration">'+parts.map(function(part){return '<p class="report-caption">'+esc(part)+'</p>';}).join('')+'</div>':'')+'</section>';
 };
 function reportShareBtnHtml(){return '<button type="button" class="share-btn" id="btn-share-report">'+uiIcon('share')+' 이 이야기 공유하기</button>';}
-function storyCategory(c){if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
+function storyCategory(c){if(isMarriage(c))return 'marriage';if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
 function prologueDialogue(c,result){
   var v=reportVariables(result),money=storyCategory(c)==='wealth';
   var loveVoice={목:'함께라면, 조금 더 나다운 사람이 될 것 같아.',화:'좋아하는 마음은, 숨기고 싶지 않아.',토:'설렘보다 오래 남는 편안함이 좋아.',금:'쉽게 마음을 주진 않아. 그래서 더 신중해.',수:'생각은 깊은데, 마음은 쉽게 꺼내지 못해.'};
@@ -4233,7 +4254,73 @@ function reportSampleHtml(concept,result){
  var p=storyProfile(result),money=storyCategory(concept)==='wealth',r=STORY_RESPONSE[money?'wealth':'love'][p.wx];
  return '<section class="report-real-sample"><p class="reader-kicker">심층 리포트 · 내 해석 미리 읽기</p><h2>'+(money?'나의 선택을 읽는 기준':'나의 관계를 읽는 기준')+'</h2><p>일간 <strong>'+esc(result.day.ganKr)+'('+esc(p.wx)+')</strong>은 '+esc(EVERYDAY_TRAITS[p.wx][0])+'으로 읽어요. '+esc(money?'새로운 기회와 지출을 마주할 때 무엇을 먼저 살피는지':'마음을 표현하고 상대를 알아가는 과정에서 무엇을 중요하게 느끼는지')+' 돌아보는 기준이에요.</p><p>분포에서 <strong>'+esc(p.dom)+' '+(Number(result.wxCount[p.dom])||0)+'개</strong>가 나타나요. '+esc(EVERYDAY_TRAITS[p.dom][1])+'을 살펴볼 수 있어요. 일간과 분포는 서로 다른 기준이라, 두 설명을 함께 읽을 때 내 모습이 더 입체적으로 보여요.</p><div class="sample-question"><b>내 경험에 비춰볼 질문</b><p>'+esc(r.question)+'</p></div><div class="sample-action"><b>먼저 해볼 한 가지</b><p>'+esc(r.action)+'</p></div><p class="sample-method">입력한 일간과 표면 오행 분포를 참고한 해석이에요. 출생시간을 모르는 경우 시주는 제외해요.</p></section>';
 }
+/* ---- 결혼 사주: 배우자 자리(일지)와 앞으로 10년의 연도별 흐름을 읽는 타임라인형 리포트.
+   무료 문구와 계산은 여기, 유료 문구는 api/_marriage-content.js에서 결제 확인 후 내려온다. ---- */
+var MARRIAGE_ID='dc6f87f4-86a7-47ce-ae91-3f6715dee2b0';
+function isMarriage(c){return c&&c.id===MARRIAGE_ID;}
+var SPOUSE_FREE={자:'깊은 대화가 통하는 사람에게 마음이 열리는 배우자 자리예요.',축:'성실하고 약속을 지키는 사람이 든든하게 느껴지는 배우자 자리예요.',인:'함께 도전하며 성장할 수 있는 사람과 잘 맞는 배우자 자리예요.',묘:'일상의 작은 배려에 마음이 움직이는 배우자 자리예요.',진:'큰 그림을 함께 그릴 수 있는 사람과 잘 맞는 배우자 자리예요.',사:'서로의 능력을 알아봐 주는 사람에게 끌리는 배우자 자리예요.',오:'밝고 솔직한 사람과 있을 때 가장 나다워지는 배우자 자리예요.',미:'함께 밥 먹고 쉬는 평범한 시간이 행복한 배우자 자리예요.',신:'대화가 시원하게 통하고 함께 해결책을 찾는 사람과 잘 맞는 배우자 자리예요.',유:'기준과 예의를 지키는 사람에게 안정감을 느끼는 배우자 자리예요.',술:'의리 있고 끝까지 내 편이 되어주는 사람과 잘 맞는 배우자 자리예요.',해:'나의 자유로운 면을 이해해주는 사람과 잘 맞는 배우자 자리예요.'};
+var MARRIAGE_REL_SCORE={liuhe:3,sanhe:2,chong:2,same:1,none:0,xing:-1,hai:-1,yuanjin:-1};
+var MARRIAGE_TG_SCORE={gwanseong:2,jaeseong:2,siksang:1,inseong:1,bigyeop:0};
+var MARRIAGE_TOP_LABEL={liuhe:'가까워지는 해',sanhe:'인연이 모이는 해',chong:'관계가 결정되는 해',same:'기준을 세우는 해'};
+var SS_GROUP={비견:'bigyeop',겁재:'bigyeop',식신:'siksang',상관:'siksang',편재:'jaeseong',정재:'jaeseong',편관:'gwanseong',정관:'gwanseong',편인:'inseong',정인:'inseong'};
+function marriageStartYear(now){now=now||new Date();return now.getFullYear()+(now.getMonth()>=9?1:0);}
+function marriageTimeline(result,fromYear,count){
+ var rows=[],daeun=result.daeun||[];
+ for(var y=fromYear;y<fromYear+(count||10);y++){
+  var g=yearGanZhi(new Date(y,6,1)),rel=zhiRelation(result.day.zhi,g.zhi),tg=dailyFortuneRelation(result.dayGanWx,g.wxGan);
+  var du=daeun.filter(function(d){return y>=d.startYear&&y<=d.endYear;})[0],dg=du?SS_GROUP[du.ss]:null;
+  rows.push({year:y,ganKr:g.ganKr,zhiKr:g.zhiKr,rel:rel,tg:tg,score:MARRIAGE_REL_SCORE[rel]+MARRIAGE_TG_SCORE[tg]+(dg==='jaeseong'||dg==='gwanseong'?1:0),top:0});
+ }
+ rows.slice().sort(function(a,b){return b.score-a.score||a.year-b.year;}).slice(0,3).forEach(function(r,i){r.top=i+1;});
+ return rows;
+}
+function marriageYearLabel(r){return MARRIAGE_TOP_LABEL[r.rel]||(r.tg==='gwanseong'||r.tg==='jaeseong'?'약속이 가까워지는 해':'흐름이 열리는 해');}
+function currentDaeunGroup(result){var d=(result.daeun||[]).filter(function(x){return x.current;})[0];return d?SS_GROUP[d.ss]:null;}
+function marriageOffer(stage){
+ var detail=stage==='detail';
+ var benefits=detail?['일간 오행으로 보는 결혼 생활 패턴: 갈등할 때, 돈 관리, 양가 가족과의 거리','바로 써볼 수 있는 대화 예시','결혼 전 함께 확인할 체크리스트']:['배우자 별 카드: 나와 잘 맞는 사람의 모습과 만남이 풀리는 장면','앞으로 10년, 해마다의 결혼 흐름과 키워드','결혼 흐름이 가장 강한 세 해와 그해의 풀이'];
+ return '<section class="reader-offer marriage-offer" data-gate="'+stage+'"><p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 풀이')+'</p><h2>'+(detail?'함께 살아갈 때,<br>우리는 어떤 모습일까요?':'언제, 어떤 사람과<br>함께하게 될까요?')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기 · 12,900원':'나의 결혼 흐름 확인하기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>결혼 생활 패턴과 체크리스트를 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
+}
+function marriagePreviewHtml(concept,result,rows){
+ var zhi=result.day.zhiKr,zhiLabel=zhi+'('+result.day.zhi+')',first=rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;})[0];
+ var who=result.name?esc(result.name)+'님':'내';
+ return '<section class="reading-preview" data-reading-topic="marriage"><p class="reader-kicker">내 사주 무료 풀이 · 배우자 자리</p><h2>'+esc(SPOUSE_FREE[zhi]||'')+'</h2><p class="reading-basis">일지(배우자 자리) '+esc(zhiLabel)+' · 일간 '+esc(result.day.ganKr)+'('+esc(result.dayGanWx)+')</p>'+
+  '<figure class="reading-intro-art"><img src="'+esc(reportCoverSource(concept,result))+'" alt="두 사람의 손이 닿는 장면" decoding="async"></figure>'+
+  '<section class="reading-point marriage-free-year"><h3>'+who+' 결혼 흐름이 강해지는 해</h3>'+(first?'<p class="marriage-year-hero"><strong>'+first.year+'년</strong> · '+esc(marriageYearLabel(first))+'</p><p>'+first.year+'년('+esc(first.ganKr+first.zhiKr)+'년)의 기운이 배우자 자리 '+esc(zhiLabel)+'와 만나 관계의 흐름이 또렷해지는 해예요.</p>':'')+
+  '<div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div><p class="hint">앞으로 10년 중 결혼 흐름이 강한 해는 모두 세 번이에요.</p></section></section>'+
+  '<section class="reading-cliff" aria-label="이어지는 풀이 미리보기" style="position:relative;margin:8px 0 0;padding:4px 2px 0;-webkit-mask-image:linear-gradient(#000 35%,transparent);mask-image:linear-gradient(#000 35%,transparent)"><p style="font-weight:600;line-height:1.8">그런데 '+who+' 사주에서 배우자 자리가 가장 크게 움직이는 해는 따로 있어요. 그해에 만나는 사람은 …</p></section>';
+}
+function marriageStoryHtml(story,result,rows){
+ var zhi=result.day.zhiKr,card=story.spouseCards[zhi]||{},dg=currentDaeunGroup(result);
+ var html='<section class="spouse-card"><p class="reader-kicker">배우자 별 카드 · 일지 '+esc(zhi+'('+result.day.zhi+')')+'</p><h2>'+esc(card.star||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(card.who||'')+'</p><h3>인연이 풀리는 장면</h3><p>'+esc(card.meet||'')+'</p><h3>오래 가는 조건</h3><p>'+esc(card.keep||'')+'</p></section>';
+ html+='<section class="marriage-timeline"><p class="reader-kicker">앞으로 10년의 결혼 흐름</p><h2>해마다 달라지는 관계의 결</h2><ol>'+rows.map(function(r){
+  var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;
+  return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+(r.top?'★ ':'')+esc(r.top?marriageYearLabel(r):rel.label)+'</p>'+(r.top?'<p>'+esc(rel.text)+' '+esc(story.yearByTenGod[r.tg]||'')+'</p>':'')+'</div></li>';
+ }).join('')+'</ol></section>';
+ if(dg&&story.daeunText[dg])html+='<section class="reading-point"><h3>지금의 10년 큰 흐름</h3><p>'+esc(story.daeunText[dg])+'</p></section>';
+ return html;
+}
+function marriageDetailHtml(detail,result){
+ var wx=result.dayGanWx,d=detail.detailByWx[wx]||{},weak=weakestWx(result.wxCount).wx;
+ var items=detail.checklist.concat(detail.checklistByWeakWx[weak]?[detail.checklistByWeakWx[weak]]:[]);
+ return '<section class="report-evidence"><p class="reader-kicker">결혼 심층 리포트</p><h2>함께 살아갈 때의 나</h2><p>일간 '+esc(result.day.ganKr)+'('+esc(wx)+')과 간이 신강·신약 분류를 기준으로 읽어요.</p></section>'+
+  '<section class="reading-point"><h3>갈등이 생겼을 때</h3><p>'+esc(d.conflict||'')+'</p></section>'+
+  '<section class="reading-point"><h3>돈을 함께 관리할 때</h3><p>'+esc(d.money||'')+'</p></section>'+
+  '<section class="reading-point"><h3>양가 가족과의 거리</h3><p>'+esc(d.family||'')+'</p></section>'+
+  '<section class="reading-point"><h3>관계의 균형</h3><p>'+esc(detail.detailByStrength[result.strength==='strong'?'strong':'weak'])+'</p></section>'+
+  '<section class="reading-point"><h3>바로 써볼 대화</h3>'+(d.talk||[]).map(function(t){return '<p class="marriage-talk">'+esc(t)+'</p>';}).join('')+'</section>'+
+  '<section class="reading-point marriage-checklist"><h3>결혼 전 함께 확인할 것</h3><ul>'+items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></section>';
+}
+function marriageFlow(concept,data,result){
+ var rows=marriageTimeline(result,marriageStartYear());
+ var html=marriagePreviewHtml(concept,result,rows);
+ if(!data.access.story||!data.rows||!data.rows[0])return html+marriageOffer('story');
+ html='<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>'+marriageStoryHtml(data.rows[0],result,rows);
+ if(data.access.detail&&data.detailRows&&data.detailRows[0])return html+'<section id="owned-detail-report">'+marriageDetailHtml(data.detailRows[0],result)+'</section>';
+ return html+marriageOffer('detail');
+}
 function storyFlowHtml(concept,data,result){
+ if(isMarriage(concept))return marriageFlow(concept,data,result);
  if(isPocha(concept))return pochaFlow(concept,data,result);
  if(!data.access.story)return readingPreviewHtml(concept,result)+readingCliffHtml(concept,result)+stageOfferHtml(concept,'story');
  var html=readingPreviewHtml(concept,result)+(data.access.story?'<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>':'')+storyOpeningV2(concept,result);

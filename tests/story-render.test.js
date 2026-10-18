@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -234,3 +234,21 @@ test('highlights require an authored phrase and never trigger on isolated astrol
  assert.notEqual(a,b);assert.ok(a.includes('관계의 약속과 책임'));assert.ok(b.includes('상대의 뜻을 이해'));
  assert.ok(a.indexOf('<h2>')<a.indexOf('reading-intro-art'));assert.ok(!a.includes('내 사주부터 살펴볼게요'));
  });
+
+test('marriage report: timeline picks three strong years, free view hides paid copy, owned stages render server content',()=>{
+ const m=require('../api/_marriage-content');
+ const r=api.computeSaju({year:1995,month:3,day:21,hour:14,minute:30,isLunar:false,isLeapMonth:false,unknownTime:false,gender:'f',name:'지수',city:'seoul',useCorrection:false});
+ assert.ok(api.isMarriage(m.concept));assert.equal(api.storyCategory(m.concept),'marriage');
+ const rows=api.marriageTimeline(r,2027);assert.equal(rows.length,10);assert.equal(rows.filter(x=>x.top).length,3);
+ assert.equal(rows.map(x=>x.year).join(','),'2027,2028,2029,2030,2031,2032,2033,2034,2035,2036');
+ for(const x of rows){assert.ok(x.ganKr&&x.zhiKr);assert.ok(x.rel in m.story.yearByRelation);assert.ok(x.tg in m.story.yearByTenGod);}
+ assert.equal(api.marriageStartYear(new Date(2026,9,18)),2027);assert.equal(api.marriageStartYear(new Date(2026,2,1)),2026);
+ const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
+ assert.ok(free.includes('배우자 자리'));assert.ok(free.includes('4,900원'));assert.ok(!free.includes('undefined'));
+ assert.ok(!free.includes(m.story.spouseCards[r.day.zhiKr].star));
+ const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
+ assert.ok(story.includes(m.story.spouseCards[r.day.zhiKr].star));assert.ok(story.includes('12,900원'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));
+ const full=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},r);
+ assert.ok(full.includes('결혼 전 함께 확인할 것'));assert.ok(full.includes(m.detail.detailByWx[r.dayGanWx].conflict.slice(0,20)));assert.ok(!full.includes('data-gate'));assert.ok(!full.includes('undefined'));
+ for(const z of ['자','축','인','묘','진','사','오','미','신','유','술','해'])assert.ok(m.story.spouseCards[z].star);
+});
