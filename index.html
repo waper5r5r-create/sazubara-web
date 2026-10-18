@@ -950,6 +950,20 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .marriage-locked-years span{padding:8px 14px;border-radius:10px;background:var(--c-white-a06);filter:blur(3px);color:#f3dfb7;font-weight:600}
 .marriage-talk{padding:12px 14px;border-left:2px solid var(--c-gold-muted);background:#d6b7850a;border-radius:0 10px 10px 0;margin:8px 0}
 .marriage-checklist ul{padding-left:18px;margin:8px 0 0}.marriage-checklist li{font-size:.875rem;line-height:1.8;margin:6px 0;color:#d1d3dc;word-break:keep-all}
+/* 결혼 사주: 월하 대화형 화면 */
+.wolha-talk{margin:8px 0 0}
+.wolha-scene{margin:22px -4px 14px;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px #0005;border:1px solid #d6b78526}
+.wolha-scene img{display:block;width:100%;height:auto}
+.wolha-say{display:flex;gap:10px;align-items:flex-start;margin:14px 0}
+.wolha-face{flex:none;width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:center 18%;background:radial-gradient(circle at 50% 35%,#3a2c55,#1a1830);border:2px solid #c8303a66;box-shadow:0 0 0 3px #d6b78522}
+.wolha-bubble{position:relative;flex:1;min-width:0;padding:14px 16px;border-radius:4px 18px 18px 18px;background:#1c1a2e;border:1px solid #c8303a40;color:#ece6f2;word-break:keep-all}
+.wolha-bubble p{margin:0 0 8px;font-size:.9375rem;line-height:1.8}.wolha-bubble p:last-child{margin-bottom:0}
+.wolha-name{display:block;margin-bottom:6px;font-size:.75rem;font-weight:700;letter-spacing:.04em;color:#e4767d}
+.wolha-basis{font-size:.75rem!important;color:#aaa1ba}
+.wolha-year{color:#f3dfb7;font-size:1.125rem}
+.wolha-topic{margin:30px 0 0;font-family:'Noto Serif KR',serif;font-size:1.125rem;color:#f3dfb7}
+.wolha-cliff{-webkit-mask-image:linear-gradient(#000 45%,transparent);mask-image:linear-gradient(#000 45%,transparent)}
+.marriage-offer .wolha-scene{margin:0 0 18px}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=2">
 </head>
@@ -3668,6 +3682,7 @@ function reportCardHtml(c){
   var unlocked = reportStageOwned(c,'story'),available=storyCategory(c)!=='unsupported';
   var coverSrc=reportCoverSource(c,STATE.mySaju);
   if(coverSrc==='/assets/pocha/cinematic/scene-01.webp')coverSrc='/assets/pocha/cinematic/scene-01-thumb.webp';
+  if(coverSrc==='/assets/marriage/scenes/cover.webp')coverSrc='/assets/marriage/scenes/cover-thumb.webp';
   var coverInner = coverSrc ? '<img src="'+esc(coverSrc)+'" alt="" loading="lazy" decoding="async">' : '<span class="report-cover-fallback">'+BRAND_MARK_SVG+'</span>';
   return '<button type="button" class="report-card" data-report-id="'+esc(String(c.id))+'" data-cat="'+esc(c.category||'')+'"'+(available?'':' disabled')+'>'+
       '<span class="report-cover">'+coverInner+'</span>'+
@@ -4144,14 +4159,16 @@ function reportSampleHtml(concept,result){
  var p=storyProfile(result),money=storyCategory(concept)==='wealth',r=STORY_RESPONSE[money?'wealth':'love'][p.wx];
  return '<section class="report-real-sample"><p class="reader-kicker">심층 리포트 · 내 해석 미리 읽기</p><h2>'+(money?'나의 선택을 읽는 기준':'나의 관계를 읽는 기준')+'</h2><p>일간 <strong>'+esc(result.day.ganKr)+'('+esc(p.wx)+')</strong>은 '+esc(EVERYDAY_TRAITS[p.wx][0])+'으로 읽어요. '+esc(money?'새로운 기회와 지출을 마주할 때 무엇을 먼저 살피는지':'마음을 표현하고 상대를 알아가는 과정에서 무엇을 중요하게 느끼는지')+' 돌아보는 기준이에요.</p><p>분포에서 <strong>'+esc(p.dom)+' '+(Number(result.wxCount[p.dom])||0)+'개</strong>가 나타나요. '+esc(EVERYDAY_TRAITS[p.dom][1])+'을 살펴볼 수 있어요. 일간과 분포는 서로 다른 기준이라, 두 설명을 함께 읽을 때 내 모습이 더 입체적으로 보여요.</p><div class="sample-question"><b>내 경험에 비춰볼 질문</b><p>'+esc(r.question)+'</p></div><div class="sample-action"><b>먼저 해볼 한 가지</b><p>'+esc(r.action)+'</p></div><p class="sample-method">입력한 일간과 표면 오행 분포를 참고한 해석이에요. 출생시간을 모르는 경우 시주는 제외해요.</p></section>';
 }
-/* ---- 결혼 사주: 배우자 자리(일지)와 앞으로 10년의 연도별 흐름을 읽는 타임라인형 리포트.
+/* ---- 결혼 사주: 인연 공방의 매듭장 "월하"가 배우자 자리(일지)와 앞으로 10년의 흐름을 대화로 읽어준다.
    무료 문구와 계산은 여기, 유료 문구는 api/_marriage-content.js에서 결제 확인 후 내려온다. ---- */
 var MARRIAGE_ID='dc6f87f4-86a7-47ce-ae91-3f6715dee2b0';
 function isMarriage(c){return c&&c.id===MARRIAGE_ID;}
-var SPOUSE_FREE={자:'깊은 대화가 통하는 사람에게 마음이 열리는 배우자 자리예요.',축:'성실하고 약속을 지키는 사람이 든든하게 느껴지는 배우자 자리예요.',인:'함께 도전하며 성장할 수 있는 사람과 잘 맞는 배우자 자리예요.',묘:'일상의 작은 배려에 마음이 움직이는 배우자 자리예요.',진:'큰 그림을 함께 그릴 수 있는 사람과 잘 맞는 배우자 자리예요.',사:'서로의 능력을 알아봐 주는 사람에게 끌리는 배우자 자리예요.',오:'밝고 솔직한 사람과 있을 때 가장 나다워지는 배우자 자리예요.',미:'함께 밥 먹고 쉬는 평범한 시간이 행복한 배우자 자리예요.',신:'대화가 시원하게 통하고 함께 해결책을 찾는 사람과 잘 맞는 배우자 자리예요.',유:'기준과 예의를 지키는 사람에게 안정감을 느끼는 배우자 자리예요.',술:'의리 있고 끝까지 내 편이 되어주는 사람과 잘 맞는 배우자 자리예요.',해:'나의 자유로운 면을 이해해주는 사람과 잘 맞는 배우자 자리예요.'};
+var WOLHA_ART='/assets/marriage/';
+var SPOUSE_FREE={자:'실 끝이 깊은 물 쪽으로 흘러가 있어요. 말보다 마음이 깊은 사람, 당신 이야기를 끝까지 들어줄 사람과 묶일 실이에요.',축:'실 끝이 너른 들판 쪽에 닿아 있어요. 화려하진 않아도 약속을 끝까지 지키는 사람과 묶일 실이에요.',인:'실 끝이 새벽 숲 쪽으로 뻗어 있어요. 함께 도전하며 같이 자라날 사람과 묶일 실이에요.',묘:'실 끝에서 봄 정원 냄새가 나요. 일상의 작은 배려로 마음을 움직이는 사람과 묶일 실이에요.',진:'실 끝이 큰 호수 쪽에 잠겨 있어요. 함께 큰 그림을 그릴 수 있는 품 넓은 사람과 묶일 실이에요.',사:'실 끝이 따뜻하게 달아올라 있어요. 서로의 능력을 알아봐 주는 사람에게 당겨질 실이에요.',오:'실 끝이 햇살처럼 반짝여요. 밝고 솔직한 사람 곁에서 가장 당신다워질 실이에요.',미:'실 끝이 포근한 언덕 위 작은 집에 닿아 있어요. 같이 밥 먹고 쉬는 평범한 하루가 행복한 사람과 묶일 실이에요.',신:'실 끝이 바람을 타고 있어요. 말이 시원하게 통하고 함께 해결책을 찾는 사람과 묶일 실이에요.',유:'실 끝이 서리처럼 맑아요. 기준과 예의를 지키는 사람에게서 편안함을 느낄 실이에요.',술:'실 끝이 해질녘 돌담에 단단히 걸려 있어요. 끝까지 당신 편이 되어줄 의리 있는 사람과 묶일 실이에요.',해:'실 끝이 밤바다 쪽으로 흘러가 있어요. 당신의 자유로운 면을 그대로 이해해줄 사람과 묶일 실이에요.'};
 var MARRIAGE_REL_SCORE={liuhe:3,sanhe:2,chong:2,same:1,none:0,xing:-1,hai:-1,yuanjin:-1};
 var MARRIAGE_TG_SCORE={gwanseong:2,jaeseong:2,siksang:1,inseong:1,bigyeop:0};
-var MARRIAGE_TOP_LABEL={liuhe:'가까워지는 해',sanhe:'인연이 모이는 해',chong:'관계가 결정되는 해',same:'기준을 세우는 해'};
+var MARRIAGE_TOP_LABEL={liuhe:'실이 저절로 감기는 해',sanhe:'실이 모여드는 해',chong:'실이 크게 출렁이는 해',same:'내 실을 곧게 펴는 해'};
+var MARRIAGE_REL_SCENE={liuhe:['year-closer','smile'],sanhe:['year-gather','cheer'],chong:['year-decide','serious'],same:['year-standard','thinking'],xing:['year-untangle','worried'],hai:['year-untangle','worried'],yuanjin:['year-untangle','worried'],none:['year-rest','smile']};
 var SS_GROUP={비견:'bigyeop',겁재:'bigyeop',식신:'siksang',상관:'siksang',편재:'jaeseong',정재:'jaeseong',편관:'gwanseong',정관:'gwanseong',편인:'inseong',정인:'inseong'};
 function marriageStartYear(now){now=now||new Date();return now.getFullYear()+(now.getMonth()>=9?1:0);}
 function marriageTimeline(result,fromYear,count){
@@ -4164,48 +4181,66 @@ function marriageTimeline(result,fromYear,count){
  rows.slice().sort(function(a,b){return b.score-a.score||a.year-b.year;}).slice(0,3).forEach(function(r,i){r.top=i+1;});
  return rows;
 }
-function marriageYearLabel(r){return MARRIAGE_TOP_LABEL[r.rel]||(r.tg==='gwanseong'||r.tg==='jaeseong'?'약속이 가까워지는 해':'흐름이 열리는 해');}
+function marriageYearLabel(r){return MARRIAGE_TOP_LABEL[r.rel]||(r.tg==='gwanseong'||r.tg==='jaeseong'?'약속이 가까워지는 해':'실이 반짝이는 해');}
 function currentDaeunGroup(result){var d=(result.daeun||[]).filter(function(x){return x.current;})[0];return d?SS_GROUP[d.ss]:null;}
+/* 월하 대화 조각: 장면 그림, 말풍선(얼굴 + 말) */
+function wolhaScene(name,alt){return '<figure class="wolha-scene"><img src="'+WOLHA_ART+'scenes/'+name+'.webp" alt="'+esc(alt||'인연 공방의 월하')+'" loading="lazy" decoding="async"></figure>';}
+function wolhaSay(face,html){return '<div class="wolha-say"><img class="wolha-face" src="'+WOLHA_ART+'faces/wolha-'+face+'.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><div class="wolha-bubble"><span class="wolha-name">월하</span>'+html+'</div></div>';}
+function marriageCallName(result){return result.name?esc(result.name)+'님':'당신';}
 function marriageOffer(stage){
  var detail=stage==='detail';
- var benefits=detail?['일간 오행으로 보는 결혼 생활 패턴: 갈등할 때, 돈 관리, 양가 가족과의 거리','바로 써볼 수 있는 대화 예시','결혼 전 함께 확인할 체크리스트']:['배우자 별 카드: 나와 잘 맞는 사람의 모습과 만남이 풀리는 장면','앞으로 10년, 해마다의 결혼 흐름과 키워드','결혼 흐름이 가장 강한 세 해와 그해의 풀이'];
- return '<section class="reader-offer marriage-offer" data-gate="'+stage+'"><p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 풀이')+'</p><h2>'+(detail?'함께 살아갈 때,<br>우리는 어떤 모습일까요?':'언제, 어떤 사람과<br>함께하게 될까요?')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기 · 12,900원':'나의 결혼 흐름 확인하기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>결혼 생활 패턴과 체크리스트를 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
+ var benefits=detail?['일간 오행으로 읽는 함께 사는 모습: 다툴 때, 돈 관리, 양가 가족과의 거리','바로 꺼내 쓸 수 있는 대화 한마디','결혼 전 둘이 함께 확인할 체크리스트']:['배우자 별 카드: 당신 실 끝에 묶일 사람의 모습과 실이 닿는 장면','앞으로 10년, 해마다 당신 실이 어떻게 움직이는지','가장 크게 빛나는 세 개의 매듭과 그해의 이야기'];
+ return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하의 실 풀이')+'</p><h2>'+(detail?'실이 묶인 다음,<br>함께 사는 이야기':'여기서부터는<br>실을 풀어봐야 알아요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'함께 사는 이야기 열기 · 12,900원':'월하에게 실 풀어달라고 하기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>함께 사는 모습과 체크리스트를 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
 }
 function marriagePreviewHtml(concept,result,rows){
- var zhi=result.day.zhiKr,zhiLabel=zhi+'('+result.day.zhi+')',first=rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;})[0];
- var who=result.name?esc(result.name)+'님':'내';
- return '<section class="reading-preview" data-reading-topic="marriage"><p class="reader-kicker">내 사주 무료 풀이 · 배우자 자리</p><h2>'+esc(SPOUSE_FREE[zhi]||'')+'</h2><p class="reading-basis">일지(배우자 자리) '+esc(zhiLabel)+' · 일간 '+esc(result.day.ganKr)+'('+esc(result.dayGanWx)+')</p>'+
-  '<figure class="reading-intro-art"><img src="'+esc(reportCoverSource(concept,result))+'" alt="두 사람의 손이 닿는 장면" decoding="async"></figure>'+
-  '<section class="reading-point marriage-free-year"><h3>'+who+' 결혼 흐름이 강해지는 해</h3>'+(first?'<p class="marriage-year-hero"><strong>'+first.year+'년</strong> · '+esc(marriageYearLabel(first))+'</p><p>'+first.year+'년('+esc(first.ganKr+first.zhiKr)+'년)의 기운이 배우자 자리 '+esc(zhiLabel)+'와 만나 관계의 흐름이 또렷해지는 해예요.</p>':'')+
-  '<div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div><p class="hint">앞으로 10년 중 결혼 흐름이 강한 해는 모두 세 번이에요.</p></section></section>'+
-  '<section class="reading-cliff" aria-label="이어지는 풀이 미리보기" style="position:relative;margin:8px 0 0;padding:4px 2px 0;-webkit-mask-image:linear-gradient(#000 35%,transparent);mask-image:linear-gradient(#000 35%,transparent)"><p style="font-weight:600;line-height:1.8">그런데 '+who+' 사주에서 배우자 자리가 가장 크게 움직이는 해는 따로 있어요. 그해에 만나는 사람은 …</p></section>';
+ var zhi=result.day.zhiKr,zhiLabel=zhi+'('+result.day.zhi+')',who=marriageCallName(result);
+ var first=rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;})[0];
+ return '<section class="wolha-talk" data-reading-topic="marriage">'+
+  wolhaScene('greeting','공방 문 앞에서 초롱을 들고 맞이하는 월하')+
+  wolhaSay('smile','<p>어서 와요, '+who+'. 달 밝은 밤에 잘 오셨어요. 여긴 사람들의 붉은 실을 살피는 인연 공방이에요.</p><p>당신 실이… 아, 여기 있네요.</p>')+
+  wolhaScene('intro','엉킨 붉은 실타래를 살펴보는 월하')+
+  wolhaSay('thinking','<p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><p class="wolha-basis">일지(배우자 자리) '+esc(zhiLabel)+' · 일간 '+esc(result.day.ganKr)+'('+esc(result.dayGanWx)+')</p>')+
+  (first?wolhaSay('smile','<p><strong class="wolha-year">'+first.year+'년</strong>에 첫 번째 매듭이 빛나요. '+esc(first.ganKr+first.zhiKr)+'년의 기운이 배우자 자리 '+esc(zhiLabel)+'에 닿는, <strong>'+esc(marriageYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div><p class="hint">앞으로 10년 동안 크게 빛나는 매듭은 모두 세 개예요.</p>'):'')+
+  '<div class="wolha-cliff" aria-label="이어지는 풀이 미리보기">'+wolhaSay('wink','<p>그런데… 가장 크게 빛나는 매듭은 따로 있어요. 그해에 당신 실을 당기는 사람은 —</p>')+'</div>'+
+ '</section>';
 }
 function marriageStoryHtml(story,result,rows){
- var zhi=result.day.zhiKr,card=story.spouseCards[zhi]||{},dg=currentDaeunGroup(result);
- var html='<section class="spouse-card"><p class="reader-kicker">배우자 별 카드 · 일지 '+esc(zhi+'('+result.day.zhi+')')+'</p><h2>'+esc(card.star||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(card.who||'')+'</p><h3>인연이 풀리는 장면</h3><p>'+esc(card.meet||'')+'</p><h3>오래 가는 조건</h3><p>'+esc(card.keep||'')+'</p></section>';
- html+='<section class="marriage-timeline"><p class="reader-kicker">앞으로 10년의 결혼 흐름</p><h2>해마다 달라지는 관계의 결</h2><ol>'+rows.map(function(r){
+ var zhi=result.day.zhiKr,card=story.spouseCards[zhi]||{},dg=currentDaeunGroup(result),who=marriageCallName(result);
+ var html='<section class="wolha-talk">'+wolhaScene('thread-end','밤하늘로 뻗은 붉은 실 끝을 올려다보는 월하')+
+  wolhaSay('smile','<p>자, 실을 풀어볼게요. 먼저 '+who+' 실 끝에 묶일 사람부터요.</p>')+
+  '<section class="spouse-card"><p class="reader-kicker">배우자 별 카드 · 일지 '+esc(zhi+'('+result.day.zhi+')')+'</p><h2>'+esc(card.star||'')+'</h2><h3>당신 실 끝에 묶일 사람</h3><p>'+esc(card.who||'')+'</p><h3>실이 닿는 장면</h3><p>'+esc(card.meet||'')+'</p><h3>매듭이 오래가는 조건</h3><p>'+esc(card.keep||'')+'</p></section>'+
+  wolhaScene('timeline','열 개의 매듭 중 세 개가 빛나는 붉은 실')+
+  wolhaSay('smile','<p>이건 앞으로 10년 동안의 당신 실이에요. 매듭마다 그해의 결이 담겨 있고, 금빛으로 빛나는 게 세 개 있어요.</p>');
+ html+='<section class="marriage-timeline"><ol>'+rows.map(function(r){
   var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;
-  return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+(r.top?'★ ':'')+esc(r.top?marriageYearLabel(r):rel.label)+'</p>'+(r.top?'<p>'+esc(rel.text)+' '+esc(story.yearByTenGod[r.tg]||'')+'</p>':'')+'</div></li>';
+  return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+(r.top?'★ ':'')+esc(r.top?marriageYearLabel(r):rel.label)+'</p></div></li>';
  }).join('')+'</ol></section>';
- if(dg&&story.daeunText[dg])html+='<section class="reading-point"><h3>지금의 10년 큰 흐름</h3><p>'+esc(story.daeunText[dg])+'</p></section>';
- return html;
+ rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;}).forEach(function(r){
+  var rel=story.yearByRelation[r.rel]||story.yearByRelation.none,sc=MARRIAGE_REL_SCENE[r.rel]||MARRIAGE_REL_SCENE.none;
+  html+=wolhaScene(sc[0],marriageYearLabel(r)+'의 장면')+wolhaSay(sc[1],'<p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(marriageYearLabel(r))+'</p><p>'+esc(rel.text)+'</p><p>'+esc(story.yearByTenGod[r.tg]||'')+'</p>');
+ });
+ if(dg&&story.daeunText[dg])html+=wolhaSay('thinking','<p>마지막으로, 큰 흐름 하나만 더요.</p><p>'+esc(story.daeunText[dg])+'</p>');
+ return html+'</section>';
 }
 function marriageDetailHtml(detail,result){
- var wx=result.dayGanWx,d=detail.detailByWx[wx]||{},weak=weakestWx(result.wxCount).wx;
+ var wx=result.dayGanWx,d=detail.detailByWx[wx]||{},weak=weakestWx(result.wxCount).wx,who=marriageCallName(result);
  var items=detail.checklist.concat(detail.checklistByWeakWx[weak]?[detail.checklistByWeakWx[weak]]:[]);
- return '<section class="report-evidence"><p class="reader-kicker">결혼 심층 리포트</p><h2>함께 살아갈 때의 나</h2><p>일간 '+esc(result.day.ganKr)+'('+esc(wx)+')과 간이 신강·신약 분류를 기준으로 읽어요.</p></section>'+
-  '<section class="reading-point"><h3>갈등이 생겼을 때</h3><p>'+esc(d.conflict||'')+'</p></section>'+
-  '<section class="reading-point"><h3>돈을 함께 관리할 때</h3><p>'+esc(d.money||'')+'</p></section>'+
-  '<section class="reading-point"><h3>양가 가족과의 거리</h3><p>'+esc(d.family||'')+'</p></section>'+
-  '<section class="reading-point"><h3>관계의 균형</h3><p>'+esc(detail.detailByStrength[result.strength==='strong'?'strong':'weak'])+'</p></section>'+
-  '<section class="reading-point"><h3>바로 써볼 대화</h3>'+(d.talk||[]).map(function(t){return '<p class="marriage-talk">'+esc(t)+'</p>';}).join('')+'</section>'+
-  '<section class="reading-point marriage-checklist"><h3>결혼 전 함께 확인할 것</h3><ul>'+items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></section>';
+ return '<section class="wolha-talk">'+wolhaScene('detail','찻잔 두 개를 붉은 실로 잇는 월하')+
+  wolhaSay('smile','<p>이제 실이 묶인 다음 이야기를 해볼까요. 함께 사는 건, 매듭을 매일 다시 묶는 일이거든요.</p><p class="wolha-basis">일간 '+esc(result.day.ganKr)+'('+esc(wx)+') · 간이 신강·신약 분류 기준</p>')+
+  '<h3 class="wolha-topic">다툼이 생겼을 때</h3>'+wolhaScene('detail-conflict','팽팽한 실을 느슨하게 풀어주는 월하')+wolhaSay('worried','<p>'+esc(d.conflict||'')+'</p>')+
+  '<h3 class="wolha-topic">돈을 함께 관리할 때</h3>'+wolhaScene('detail-money','붉은 실로 묶인 동전 꾸러미')+wolhaSay('smile','<p>'+esc(d.money||'')+'</p>')+
+  '<h3 class="wolha-topic">양가 가족과의 거리</h3>'+wolhaScene('detail-family','두 한옥 사이를 잇는 붉은 실')+wolhaSay('thinking','<p>'+esc(d.family||'')+'</p>')+
+  wolhaSay('serious','<p>'+esc(detail.detailByStrength[result.strength==='strong'?'strong':'weak'])+'</p>')+
+  '<h3 class="wolha-topic">바로 꺼내 쓸 한마디</h3>'+wolhaScene('detail-talk','종이컵 전화기로 귀 기울이는 월하')+wolhaSay('smile','<p>이런 말은 실을 덜 엉키게 해줘요.</p>'+(d.talk||[]).map(function(t){return '<p class="marriage-talk">'+esc(t)+'</p>';}).join(''))+
+  '<section class="reading-point marriage-checklist"><h3>결혼 전, 둘이 함께 확인할 것</h3><ul>'+items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></section>'+
+  wolhaScene('farewell','완성한 매듭을 상자에 넣으며 웃는 월하')+
+  wolhaSay('cheer','<p>'+who+' 실은 잘 보관해둘게요. 언제든 달 뜨는 밤에 다시 와요.</p>')+
+ '</section>';
 }
 function marriageFlow(concept,data,result){
  var rows=marriageTimeline(result,marriageStartYear());
- var html=marriagePreviewHtml(concept,result,rows);
- if(!data.access.story||!data.rows||!data.rows[0])return html+marriageOffer('story');
- html='<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>'+marriageStoryHtml(data.rows[0],result,rows);
+ if(!data.access.story||!data.rows||!data.rows[0])return marriagePreviewHtml(concept,result,rows)+marriageOffer('story');
+ var html='<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>'+marriageStoryHtml(data.rows[0],result,rows);
  if(data.access.detail&&data.detailRows&&data.detailRows[0])return html+'<section id="owned-detail-report">'+marriageDetailHtml(data.detailRows[0],result)+'</section>';
  return html+marriageOffer('detail');
 }
