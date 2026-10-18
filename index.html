@@ -969,6 +969,7 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .locked-peek::after{content:'';position:absolute;inset:0;background:linear-gradient(transparent 15%,#101523 88%)}
 .reader-offer{position:relative;z-index:1}
 .pocha-taste-kicker{margin:28px 0 0}
+.spouse-card-art{display:block;width:100%;max-width:330px;margin:0 auto 18px;border-radius:14px;box-shadow:0 8px 24px #0006}
 .marriage-offer .wolha-scene{margin:0 0 18px}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=2">
@@ -4179,6 +4180,9 @@ function isMarriage(c){return c&&c.id===MARRIAGE_ID;}
 var WOLHA_ART='/assets/marriage/';
 var SPOUSE_FREE={자:'실 끝이 깊은 물 쪽으로 흘러가 있어요. 말보다 마음이 깊은 사람, 당신 이야기를 끝까지 들어줄 사람과 묶일 실이에요.',축:'실 끝이 너른 들판 쪽에 닿아 있어요. 화려하진 않아도 약속을 끝까지 지키는 사람과 묶일 실이에요.',인:'실 끝이 새벽 숲 쪽으로 뻗어 있어요. 함께 도전하며 같이 자라날 사람과 묶일 실이에요.',묘:'실 끝에서 봄 정원 냄새가 나요. 일상의 작은 배려로 마음을 움직이는 사람과 묶일 실이에요.',진:'실 끝이 큰 호수 쪽에 잠겨 있어요. 함께 큰 그림을 그릴 수 있는 품 넓은 사람과 묶일 실이에요.',사:'실 끝이 따뜻하게 달아올라 있어요. 서로의 능력을 알아봐 주는 사람에게 당겨질 실이에요.',오:'실 끝이 햇살처럼 반짝여요. 밝고 솔직한 사람 곁에서 가장 당신다워질 실이에요.',미:'실 끝이 포근한 언덕 위 작은 집에 닿아 있어요. 같이 밥 먹고 쉬는 평범한 하루가 행복한 사람과 묶일 실이에요.',신:'실 끝이 바람을 타고 있어요. 말이 시원하게 통하고 함께 해결책을 찾는 사람과 묶일 실이에요.',유:'실 끝이 서리처럼 맑아요. 기준과 예의를 지키는 사람에게서 편안함을 느낄 실이에요.',술:'실 끝이 해질녘 돌담에 단단히 걸려 있어요. 끝까지 당신 편이 되어줄 의리 있는 사람과 묶일 실이에요.',해:'실 끝이 밤바다 쪽으로 흘러가 있어요. 당신의 자유로운 면을 그대로 이해해줄 사람과 묶일 실이에요.'};
 var SPOUSE_STAR={자:'깊은 물의 별',축:'단단한 들판의 별',인:'새벽 숲의 별',묘:'봄 정원의 별',진:'큰 호수의 별',사:'한낮 불꽃의 별',오:'여름 햇살의 별',미:'포근한 언덕의 별',신:'은빛 바람의 별',유:'맑은 서리의 별',술:'해질녘 성벽의 별',해:'밤바다의 별'};
+/* 배우자 별 카드 그림: 아직 그림이 없는 일지는 비워두면 글자 카드로 나온다. */
+var SPOUSE_ART={축:'chuk',인:'in',묘:'myo',진:'jin',사:'sa',오:'o',미:'mi',신:'sin',유:'yu',술:'sul',해:'hae'};
+function spouseArtHtml(zhi){var k=SPOUSE_ART[zhi];return k?'<img class="spouse-card-art" src="'+WOLHA_ART+'cards/spouse-'+k+'.webp" alt="'+esc((SPOUSE_STAR[zhi]||'')+' 카드')+'" loading="lazy" decoding="async">':'';}
 var MARRIAGE_REL_SCORE={liuhe:3,sanhe:2,chong:2,same:1,none:0,xing:-1,hai:-1,yuanjin:-1};
 var MARRIAGE_TG_SCORE={gwanseong:2,jaeseong:2,siksang:1,inseong:1,bigyeop:0};
 var MARRIAGE_TOP_LABEL={liuhe:'실이 저절로 감기는 해',sanhe:'실이 모여드는 해',chong:'실이 크게 출렁이는 해',same:'내 실을 곧게 펴는 해'};
@@ -4217,14 +4221,14 @@ function marriagePreviewHtml(concept,result,rows){
   (first?wolhaSay('smile','<p><strong class="wolha-year">'+first.year+'년</strong>에 첫 번째 매듭이 빛나요. '+esc(first.ganKr+first.zhiKr)+'년의 기운이 배우자 자리 '+esc(zhiLabel)+'에 닿는, <strong>'+esc(marriageYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div><p class="hint">앞으로 10년 동안 크게 빛나는 매듭은 모두 세 개예요.</p>'):'')+
   wolhaSay('surprised','<p>아, 그리고 당신 실 끝에 걸린 별이 보여요. <strong>「'+esc(SPOUSE_STAR[zhi]||'')+'」</strong>이에요. 어떤 사람인지는 실을 조금 더 풀어봐야 알아요.</p>')+
   '<div class="wolha-cliff" aria-label="이어지는 풀이 미리보기">'+wolhaSay('wink','<p>그런데… 가장 크게 빛나는 매듭은 따로 있어요. 그해에 당신 실을 당기는 사람은 —</p>')+'</div>'+
-  lockedPeekHtml('<section class="spouse-card"><p class="reader-kicker">배우자 별 카드</p><h2>'+esc(SPOUSE_STAR[zhi]||'')+'</h2><h3>당신 실 끝에 묶일 사람</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><h3>실이 닿는 장면</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p></section><section class="marriage-timeline"><ol>'+rows.map(function(r){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+esc(marriageYearLabel(r))+'</p></div></li>';}).join('')+'</ol></section>')+
+  lockedPeekHtml('<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드</p><h2>'+esc(SPOUSE_STAR[zhi]||'')+'</h2><h3>당신 실 끝에 묶일 사람</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><h3>실이 닿는 장면</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p></section><section class="marriage-timeline"><ol>'+rows.map(function(r){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+esc(marriageYearLabel(r))+'</p></div></li>';}).join('')+'</ol></section>')+
  '</section>';
 }
 function marriageStoryHtml(story,result,rows){
  var zhi=result.day.zhiKr,card=story.spouseCards[zhi]||{},dg=currentDaeunGroup(result),who=marriageCallName(result);
  var html='<section class="wolha-talk">'+wolhaScene('thread-end','밤하늘로 뻗은 붉은 실 끝을 올려다보는 월하')+
   wolhaSay('smile','<p>자, 실을 풀어볼게요. 먼저 '+who+' 실 끝에 묶일 사람부터요.</p>')+
-  '<section class="spouse-card"><p class="reader-kicker">배우자 별 카드 · 일지 '+esc(zhi+'('+result.day.zhi+')')+'</p><h2>'+esc(card.star||'')+'</h2><h3>당신 실 끝에 묶일 사람</h3><p>'+esc(card.who||'')+'</p><h3>실이 닿는 장면</h3><p>'+esc(card.meet||'')+'</p><h3>매듭이 오래가는 조건</h3><p>'+esc(card.keep||'')+'</p></section>'+
+  '<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드 · 일지 '+esc(zhi+'('+result.day.zhi+')')+'</p><h2>'+esc(card.star||'')+'</h2><h3>당신 실 끝에 묶일 사람</h3><p>'+esc(card.who||'')+'</p><h3>실이 닿는 장면</h3><p>'+esc(card.meet||'')+'</p><h3>매듭이 오래가는 조건</h3><p>'+esc(card.keep||'')+'</p></section>'+
   wolhaScene('timeline','열 개의 매듭 중 세 개가 빛나는 붉은 실')+
   wolhaSay('smile','<p>이건 앞으로 10년 동안의 당신 실이에요. 매듭마다 그해의 결이 담겨 있고, 금빛으로 빛나는 게 세 개 있어요.</p>');
  html+='<section class="marriage-timeline"><ol>'+rows.map(function(r){
