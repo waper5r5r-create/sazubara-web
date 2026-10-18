@@ -3908,9 +3908,9 @@ function rememberPendingReport(concept,stage){
   switchTab('saju');
   var form=$('#saju-form');if(!form)return;
   var note=$('#pending-report-note');
-  if(!note){note=document.createElement('p');note.id='pending-report-note';note.className='hint';note.setAttribute('role','status');note.style.cssText='margin:0 0 16px;padding:12px 14px;border-radius:12px;background:var(--accent-soft);color:var(--fg);line-height:1.6';form.insertBefore(note,form.firstChild);}
+  if(!note){note=document.createElement('p');note.id='pending-report-note';note.className='hint';note.setAttribute('role','status');note.style.cssText='margin:0 0 16px;padding:12px 14px;border-radius:12px;background:var(--accent-soft);color:var(--fg);line-height:1.6';var welcome=form.querySelector('.saju-story-welcome');form.insertBefore(note,welcome?welcome.nextElementSibling:form.firstChild);}
   note.innerHTML='고른 이야기 <strong>「'+esc(concept.title)+'」</strong><br>생년월일만 입력하면 바로 이어서 열어드릴게요.';
-  form.scrollIntoView({behavior:'instant',block:'start'});
+  var top=note.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top:Math.max(0,top),behavior:'instant'});
 }
 function openPendingReport(){
   if(!PENDING_REPORT||!STATE.mySaju)return;
