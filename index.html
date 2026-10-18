@@ -1010,6 +1010,9 @@ body{background:#ece7e5;letter-spacing:-.025em}.app{background:var(--bg);box-sha
 <style id="journal-refinement">
 /* Consistent journal pictograms and useful free reading. */
 .tab-btn{position:relative;min-height:54px;justify-content:center}.tab-btn.active{background:none!important;box-shadow:none!important}.tab-btn .ico{width:23px;height:23px;display:grid;place-items:center;flex:none}.tab-btn .ico svg{width:23px;height:23px;display:block}.tab-btn.active .ico{background:#eee4f3;box-shadow:0 0 0 6px #eee4f3;border-radius:7px}.tab-btn>span:last-child{margin-top:5px}.title-symbol svg{width:38px;height:38px}.personal-traits{margin:28px 0 32px}.personal-traits h2{font-size:.94rem!important;margin-bottom:16px}.personal-traits ol{list-style:none;padding:0;margin:0;border:1px solid #e8deec;border-radius:20px;overflow:hidden;background:#fffdfa}.personal-traits li{padding:20px 17px;display:flex;align-items:center;gap:14px}.personal-traits li+li{border-top:1px solid #eee6f1}.trait-symbol{width:36px;height:40px;border-radius:12px;display:grid;place-items:center;background:#f2eaf6;flex:none}.trait-symbol svg{width:20px;height:20px;color:#9b7bab}.personal-traits small{display:block;font-size:.61rem;letter-spacing:.02em;color:#9b81a8;margin-bottom:6px}.personal-traits li p{font-size:.8rem;line-height:1.85;color:#65506f}.personal-traits>.hint{margin:11px 3px 0;font-size:.64rem}.worry-preview{padding:23px 20px;background:linear-gradient(135deg,#f5eef9,#fffafc);border:1px solid #e5d7ec;border-radius:19px;margin:18px 0 22px}.worry-preview .eyebrow{display:flex;align-items:center;gap:7px;font-size:.65rem}.worry-preview .eyebrow svg{width:17px;height:17px}.worry-preview h3{font-size:1rem;margin:15px 0}.worry-preview>p:not(.eyebrow){font-size:.81rem;line-height:1.95;color:#7b6886;margin-top:14px;word-break:keep-all;overflow-wrap:anywhere}.worry-preview strong{color:#674878;font-weight:600}.preview-reflection{display:flex;gap:10px;padding:17px 14px;border-radius:12px;background:#fffafc;margin-top:20px}.preview-reflection svg{width:18px;height:18px;flex:none;color:#a58ab2;margin-top:4px}.preview-reflection p{font-size:.77rem;line-height:1.9;color:#7b6886}.worry-preview .preview-scope{font-size:.68rem!important;border-top:1px solid #e8deed;padding-top:16px;color:#a08bad!important}.lock-ic svg{width:22px;height:22px}.locked-card{background:#f6f0f8;border-color:#e6d9ee}.locked-card .section-title{color:#62466e}.locked-card .section-desc{color:#8c7599}.unlock-btn{background:#79558c;color:#fff;border-radius:12px;border:0}.chip-btn svg{width:16px;height:16px;vertical-align:-3px;margin-right:3px}.journal-hero h1{font-size:1.47rem}.journal-hero-copy{max-width:310px}.journal-hero-copy>p:last-child{max-width:280px}.orbit-charm{opacity:.45;right:-22px}@media(max-width:374px){.journal-hero h1{font-size:1.25rem}.orbit-charm{opacity:.25;right:-40px}}
+
+/* Legal notices: present but quiet. */
+.disclaimer{font-size:.62rem;line-height:1.55;color:var(--fg-faint);opacity:.8;margin-top:24px;padding-top:0;border-top:0;letter-spacing:0}
 </style>
 <style id="banner-atelier">
 /* Banner atelier: a fan of illustrated keepsakes, constellation and satin light. */
@@ -3545,7 +3548,7 @@ function openMyroomDetail(entry){
           '</div>' : '')+
         (ZHI_REL_MARRIAGE_TEXT[entry.zhiRel] ? '<div class="detail-block"><p class="ttl">'+uiIcon('people')+' 관계를 이어가는 방법</p>'+autoParas(ZHI_REL_MARRIAGE_TEXT[entry.zhiRel])+'</div>' : '')+
         (GAN_REL_TALK_TEXT[entry.ganRel] ? '<div class="detail-block"><p class="ttl">💬 대화 스타일</p>'+autoParas(GAN_REL_TALK_TEXT[entry.ganRel])+'</div>' : '')+
-        (dateTxt ? '<p class="disclaimer">'+dateTxt+'</p>' : '')+
+        (dateTxt ? '<p class="hint">'+dateTxt+'</p>' : '')+
         '<div class="detail-block"><p class="ttl">'+ICO_GEM+' 카드 꾸미기</p>'+frameSwatchesHtml(entry)+'</div>'+
         '<div class="detail-block" id="myroom-delete-zone">'+myroomDeleteZoneHtml()+'</div>'+
       '</div>'+
@@ -3595,7 +3598,7 @@ function renderChemiDetailSlot(entry, chemi){
       '<button type="button" class="chemi-detail-btn" id="btn-chemi-detail">'+
         '오늘의 케미 자세히 보기 <span class="pr">'+krwFmt(FEATURE_TODAY_PREMIUM_PRICE)+'원</span>'+
       '</button>'+
-      '<p class="disclaimer" style="margin-top:4px;">오늘운세 프리미엄을 한 번 결제하면 평생 매일 볼 수 있어요.</p>';
+      '<p class="hint" style="margin-top:4px;">오늘운세 프리미엄을 한 번 결제하면 평생 매일 볼 수 있어요.</p>';
     $('#btn-chemi-detail', slot).addEventListener('click', function(){
       tryUnlock(key, FEATURE_TODAY_PREMIUM_PRICE, '오늘운세 프리미엄', function(){
         slot.innerHTML = chemiDetailHtml(chemi);
@@ -3626,7 +3629,7 @@ function frameSwatchesHtml(entry){
     '</div>';
   }).join('');
   return '<div class="frame-picker">'+cells+'</div>'+
-    '<p class="disclaimer">프레임은 무료로 자유롭게 바꿔 낄 수 있어요.</p>';
+    '<p class="hint">프레임은 무료로 자유롭게 바꿔 낄 수 있어요.</p>';
 }
 function wireFrameSwatches(entry){
   $all('.frame-swatch', $('#myroom-sheet-root')).forEach(function(el){
@@ -3668,7 +3671,7 @@ function closeMyroomDex(){var root=$('#myroom-sheet-root');if(root)root.innerHTM
 function openMyroomDex(){
  var list=INVITE_MYROOM_CACHE||loadMyRoomList(),rows=cardDexEntries(list),owned=rows.filter(function(r){return r.entry;}).length;
  var root=$('#myroom-sheet-root');if(!root)return;
- root.innerHTML='<div class="sheet-backdrop" id="myroom-dex-backdrop"><div class="sheet card-dex-sheet" role="dialog" aria-label="나의 인연 카드 도감"><div class="sheet-head"><h2 class="section-title">인연 카드 도감</h2><button type="button" class="sheet-close" id="myroom-dex-close" aria-label="카드 도감 닫기">✕</button></div><div class="card-dex-summary"><strong>'+owned+' <small>/ 40종</small></strong><span>10가지 일간 상징 · 4가지 궁합 등급</span></div><div class="card-dex-progress"><i style="width:'+(owned/40*100)+'%"></i></div><div class="card-dex-filters" role="group" aria-label="카드 도감 필터"><button type="button" data-dex-filter="all" aria-pressed="true">전체 40</button><button type="button" data-dex-filter="owned" aria-pressed="false">모은 카드 '+owned+'</button><button type="button" data-dex-filter="missing" aria-pressed="false">없는 카드 '+(40-owned)+'</button></div><p class="section-desc" style="font-size:.75rem">모은 인연은 앞면으로, 아직 만나지 않은 인연은 뒷면으로 남겨두었어요.</p><div class="card-dex-grid" id="card-dex-grid"></div><p class="disclaimer">등급은 나와의 궁합을 기준으로 해요. 같은 종류의 친구를 여러 명 만나도 도감은 한 종류로 집계합니다. 실제로 초대해 등록한 사람들이 카드첩에 모입니다.</p><div id="dex-card-note" role="status"></div></div></div>';
+ root.innerHTML='<div class="sheet-backdrop" id="myroom-dex-backdrop"><div class="sheet card-dex-sheet" role="dialog" aria-label="나의 인연 카드 도감"><div class="sheet-head"><h2 class="section-title">인연 카드 도감</h2><button type="button" class="sheet-close" id="myroom-dex-close" aria-label="카드 도감 닫기">✕</button></div><div class="card-dex-summary"><strong>'+owned+' <small>/ 40종</small></strong><span>10가지 일간 상징 · 4가지 궁합 등급</span></div><div class="card-dex-progress"><i style="width:'+(owned/40*100)+'%"></i></div><div class="card-dex-filters" role="group" aria-label="카드 도감 필터"><button type="button" data-dex-filter="all" aria-pressed="true">전체 40</button><button type="button" data-dex-filter="owned" aria-pressed="false">모은 카드 '+owned+'</button><button type="button" data-dex-filter="missing" aria-pressed="false">없는 카드 '+(40-owned)+'</button></div><p class="section-desc" style="font-size:.75rem">모은 인연은 앞면으로, 아직 만나지 않은 인연은 뒷면으로 남겨두었어요.</p><div class="card-dex-grid" id="card-dex-grid"></div><p class="hint">등급은 나와의 궁합을 기준으로 해요. 같은 종류의 친구를 여러 명 만나도 도감은 한 종류로 집계합니다. 실제로 초대해 등록한 사람들이 카드첩에 모입니다.</p><div id="dex-card-note" role="status"></div></div></div>';
  function paint(mode){var visible=rows.filter(function(r){return mode==='owned'?!!r.entry:mode==='missing'?!r.entry:true;});$('#card-dex-grid').innerHTML=visible.length?visible.map(function(r){return '<button type="button" class="dex-card-slot" data-card-sku="'+r.id+'" aria-label="'+esc(r.type.title)+' '+r.tier.grade+'등급 · '+(r.entry?'보유 '+r.count+'명':'미보유')+'">'+(r.entry?collectibleCardHtml(r.entry,true):cardBackHtml(r))+'<span class="dex-card-id">'+r.type.stem+' · '+r.tier.grade+(r.entry?' · '+r.count+'명':'')+'</span></button>';}).join(''):'<p class="card-dex-empty">아직 모은 카드가 없어요. 함께 볼 사람을 초대해 첫 인연을 만나보세요.</p>';
  $all('.dex-card-slot',root).forEach(function(button){button.addEventListener('click',function(){var row=rows.find(function(r){return r.id===button.dataset.cardSku;});if(row.entry)openMyroomDetail(row.entry);else $('#dex-card-note').textContent=row.type.title+' · '+row.tier.grade+'등급은 아직 모으지 않았어요.';});});
  $all('[data-dex-filter]',root).forEach(function(button){button.setAttribute('aria-pressed',String(button.dataset.dexFilter===mode));});}
@@ -4564,7 +4567,7 @@ function renderMyRoomLocal(root){
       '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
     '</div>'+
     cardAlbumIntro(list)+'<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
-    '<p class="disclaimer">내가 초대해서 실제로 사주를 등록한 사람들이 모이는 갤러리예요.</p>';
+    '<p class="hint">내가 초대해서 실제로 사주를 등록한 사람들이 모이는 갤러리예요.</p>';
   wireMyroomSortSeg();
   wireMyroomCardClicks($('.myroom-grid', root), displayList);
   wireMyroomDexBtn();
@@ -4635,7 +4638,7 @@ function renderMyRoomCloud(root){
       '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+docs.length+'개 모음</span></div>'+
     '</div>'+
     '<div class="myroom-grid" id="myroom-grid-cloud"></div>'+
-    '<p class="disclaimer">다른 사람들이 확인한 궁합 카드가 실시간으로 함께 모이는 공개 갤러리예요. 나도 궁합을 확인하면 내 카드가 여기 추가돼요.</p>';
+    '<p class="hint">다른 사람들이 확인한 궁합 카드가 실시간으로 함께 모이는 공개 갤러리예요. 나도 궁합을 확인하면 내 카드가 여기 추가돼요.</p>';
   wireMyroomSortSeg();
   wireMyroomDexBtn();
   var gridEl = $('#myroom-grid-cloud');
@@ -4716,7 +4719,7 @@ function shinsalCompatHtml(resA, resB){
     '<div class="detail-block"><p class="ttl">'+esc(nmA)+'</p><div class="shinsal-badges">'+shinsalBadgeRowHtml(resA.shinsal)+'</div></div>'+
     '<div class="detail-block"><p class="ttl">'+esc(nmB)+'</p><div class="shinsal-badges">'+shinsalBadgeRowHtml(resB.shinsal)+'</div></div>'+
     sharedHtml +
-    '<p class="disclaimer">각자의 일지를 기준으로 계산한 도화살·역마살·화개살 보유 여부입니다.</p>'+
+    '<p class="hint">각자의 일지를 기준으로 계산한 도화살·역마살·화개살 보유 여부입니다.</p>'+
   '</div>';
 }
 function renderCompatResult(resA, resB, compat){
