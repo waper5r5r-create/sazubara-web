@@ -61,7 +61,7 @@ test('reader keeps free opening and separate purchase gates without reviews',()=
  const data={access:{story:false,detail:false},rows:[{caption_template:'PRIVATE_SENTENCE'}]};
  const text=api.storyFlowHtml(concept,data,result);
  assert.equal(api.readerStepsHtml(data,'story'),'');
- assert.equal((text.match(/class="story-frame /g)||[]).length,0);
+ assert.equal((text.match(/class="story-frame /g)||[]).length,3);assert.ok(text.includes('locked-peek'));
  assert.ok(!text.includes('PRIVATE_SENTENCE'));
  assert.ok(text.includes('data-gate="story"'));assert.ok(!text.includes('data-gate="detail"'));
  assert.ok(!text.includes('story-reviews'));
@@ -122,13 +122,13 @@ test('new categories cannot silently reuse the romance story',()=>{assert.equal(
 test('content navigation and cards are neutral about format and future themes',()=>{
  assert.ok(html.includes('<span>콘텐츠</span>'));assert.ok(!html.includes('<span>사주 이야기</span>'));
  const card=api.reportCardHtml({...concept,title:'나만의 제목'});assert.ok(card.includes('나만의 제목'));assert.ok(!card.includes('웹툰'));assert.ok(!card.includes(' · 콘텐츠'));
- const offer=api.stageOfferHtml({...concept,title:'나만의 제목'},'story');assert.ok(offer.includes('내 연애 패턴 확인하기'));assert.ok(!offer.includes('웹툰'));
+ const offer=api.stageOfferHtml({...concept,title:'나만의 제목'},'story');assert.ok(offer.includes('연애 사주 전체 보기'));assert.ok(!offer.includes('웹툰'));
 });
 
 test('pocha opening, owned story and detail respect separate gates with career-specific text',()=>{
  const {concept:c,panels}=require('../api/_pocha-content');
  const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[{caption_template:'DO_NOT_LEAK'}]},result);
- assert.equal((free.match(/class="pocha-scene"/g)||[]).length,0);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('별도 선택 구매 · <strong>12,900원</strong>'));assert.ok(!free.includes('data-gate="detail"'));
+ assert.equal((free.match(/class="pocha-scene"/g)||[]).length,3);assert.ok(free.includes('locked-peek'));assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('별도 선택 구매 · <strong>12,900원</strong>'));assert.ok(!free.includes('data-gate="detail"'));
  const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels},result);
  assert.equal((paid.match(/class="pocha-scene"/g)||[]).length,20);assert.ok(paid.includes('오늘 챙겨갈 것'));assert.ok(!paid.includes('data-gate="story"'));assert.ok(paid.indexOf('오늘 챙겨갈 것')<paid.indexOf('data-gate="detail"'));
  const full=api.storyFlowHtml(c,{access:{story:true,detail:true},rows:panels,detailRows:panels},result);
@@ -158,7 +158,7 @@ test('career story maps twenty independent assets in order and keeps every paid 
  assert.deepEqual(art.slice(1),panels.map(p=>p.img_url));assert.equal(art[0],'/assets/pocha/cinematic/scene-08.webp');assert.ok(!paid.includes('사장님'));
  const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows},result);
  assert.ok(!free.includes('PERSONAL_'));assert.ok(!free.includes('scene-07.webp'));
- assert.equal((free.match(/class="pocha-scene"/g)||[]).length,0);
+ assert.equal((free.match(/class="pocha-scene"/g)||[]).length,3);
 });
 
 test('career reader speaks to the reader and never labels them as a fictional protagonist',()=>{
@@ -214,7 +214,7 @@ test('all three free openings lead with personalised readings instead of illustr
   const text=render('수');
   assert.ok(text.includes('내 사주 무료 풀이'));assert.ok(text.includes('임(수)'));
   assert.equal((text.match(/class="reading-point"/g)||[]).length,3);
-  assert.ok(!text.includes('class="story-frame'));assert.ok(!text.includes('class="pocha-scene'));
+  assert.ok(text.includes('locked-peek'));assert.ok(text.indexOf('내 사주 무료 풀이')<text.indexOf('locked-peek'));
   assert.ok(!text.includes('PAID_ONLY'));assert.ok(!text.includes('story-locked-preview'));
   assert.ok(text.indexOf('reading-preview')<text.indexOf('data-gate="story"'));
   assert.equal(new Set(['목','화','토','금','수'].map(render)).size,5);
@@ -245,7 +245,7 @@ test('marriage report: timeline picks three strong years, free view hides paid c
  assert.equal(api.marriageStartYear(new Date(2026,9,18)),2027);assert.equal(api.marriageStartYear(new Date(2026,2,1)),2026);
  const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
  assert.ok(free.includes('배우자 자리'));assert.ok(free.includes('4,900원'));assert.ok(!free.includes('undefined'));
- assert.ok(!free.includes(m.story.spouseCards[r.day.zhiKr].star));
+ assert.ok(free.includes(m.story.spouseCards[r.day.zhiKr].star));assert.ok(!free.includes(m.story.spouseCards[r.day.zhiKr].who.slice(0,15)));assert.ok(!free.includes(m.story.spouseCards[r.day.zhiKr].keep.slice(0,15)));assert.ok(free.includes('locked-peek'));assert.ok(free.includes('결혼 사주 전체 보기 · 4,900원'));
  const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
  assert.ok(story.includes(m.story.spouseCards[r.day.zhiKr].star));assert.ok(story.includes('12,900원'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));
  const full=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},r);

@@ -963,6 +963,12 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .wolha-year{color:#f3dfb7;font-size:1.125rem}
 .wolha-topic{margin:30px 0 0;font-family:'Noto Serif KR',serif;font-size:1.125rem;color:#f3dfb7}
 .wolha-cliff{-webkit-mask-image:linear-gradient(#000 45%,transparent);mask-image:linear-gradient(#000 45%,transparent)}
+/* 무료 맛보기 뒤 블러 잠금: 흐린 다음 내용 위로 결제 안내가 겹쳐 올라온다 */
+.locked-peek{position:relative;max-height:320px;overflow:hidden;margin:6px 0 -90px;pointer-events:none;user-select:none}
+.locked-peek-inner{filter:blur(6px);opacity:.85}
+.locked-peek::after{content:'';position:absolute;inset:0;background:linear-gradient(transparent 15%,#101523 88%)}
+.reader-offer{position:relative;z-index:1}
+.pocha-taste-kicker{margin:28px 0 0}
 .marriage-offer .wolha-scene{margin:0 0 18px}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=2">
@@ -3793,7 +3799,7 @@ function stageOfferHtml(concept,stage){
  if(isPocha(concept))return pochaOffer(concept,stage);
  var detail=stage==='detail',money=storyCategory(concept)==='wealth';
  var features=detail?(money?['일간·오행·재성(나를 상징하는 글자와 재물운 기운)으로 살펴보는 수입과 소비 성향','충동구매·수입 감소·지인과의 돈 거래 등 8가지 상황별 대응','결정 전 체크리스트, 주의할 점, 일주일 실천 계획']:['일간·오행·십신(나와 상대를 설명하는 사주 기호)으로 살펴보는 연애와 관계의 패턴','연락·고백·갈등·거리 두기 등 8가지 상황별 대응','바로 써볼 대화 예시, 주의할 점, 일주일 실천 계획']):(money?['돈을 쓰거나 새로운 기회를 고를 때의 습관','만족한 소비와 후회한 소비가 갈리는 기준','돈을 남기기 위해 점검할 나의 선택 방식']:['끌리는 사람의 특징과 마음을 표현하는 방식','편안한 관계의 속도와 서운함이 생기는 지점','반복되는 연애 고민에서 확인할 나의 기준']);
- return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'내 사주를 더 읽어보면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내가 돈을 쓰고 기회를 고르는 모습을 돌아보며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내가 끌리고 마음을 표현하는 모습을 돌아보며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기':money?'내 돈의 선택 기준 확인하기':'내 연애 패턴 확인하기')+' · '+(detail?'12,900':'4,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>풀이 근거·상황별 실천 방법을 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
+ return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'내 사주를 더 읽어보면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내가 돈을 쓰고 기회를 고르는 모습을 돌아보며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내가 끌리고 마음을 표현하는 모습을 돌아보며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기':money?'재물 사주 전체 보기':'연애 사주 전체 보기')+' · '+(detail?'12,900':'4,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>풀이 근거·상황별 실천 방법을 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
 }
 function startReportUnlock(concept,stage){
   if(['story','detail'].indexOf(stage)===-1)return;
@@ -4079,7 +4085,7 @@ function pochaScene(result,plan,i,rows){
 function pochaOffer(concept,stage){
  var detail=stage==='detail';
  var benefits=detail?['일간·오행·십신(나를 설명하는 사주 기호)으로 풀이의 근거 확인','이직·새 분야·협업·보상 등 20개 주제','상황별 점검 질문과 일주일 실천 방법']:['내 강점이 드러나는 일과 편한 업무 환경','일할 때 반복되는 방식과 보완할 습관','다음 선택을 위해 확인할 조건과 작은 실천'];
- return '<section class="reader-offer pocha-offer" data-gate="'+stage+'"><p class="reader-kicker">'+(detail?'일·진로 심층 리포트':'일·진로 사주 풀이')+'</p><h2>'+(detail?'내 상황에 맞춰 더 살펴보기':'나에게 맞는 일은 어떤 모습일까요?')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 열기 · 12,900원':'내게 맞는 업무 환경 확인하기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>풀이 근거·상황별 실천 방법을 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
+ return '<section class="reader-offer pocha-offer" data-gate="'+stage+'"><p class="reader-kicker">'+(detail?'일·진로 심층 리포트':'일·진로 사주 풀이')+'</p><h2>'+(detail?'내 상황에 맞춰 더 살펴보기':'나에게 맞는 일은 어떤 모습일까요?')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'직업 사주 전체 보기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>풀이 근거·상황별 실천 방법을 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
 }
 function pochaSample(result){
  var p=storyProfile(result),l=POCHA_LENS[p.wx];
@@ -4091,7 +4097,7 @@ function pochaDetail(panels,result){
 }
 function pochaFlow(concept,data,result){
  var plan=pochaPlan(result),rows=data.rows||[],owned=!!data.access.story;
- if(!owned)return '<div class="pocha-reader">'+readingPreviewHtml(concept,result)+readingCliffHtml(concept,result)+pochaOffer(concept,'story')+'</div>';
+ if(!owned)return '<div class="pocha-reader">'+readingPreviewHtml(concept,result)+'<p class="reader-kicker pocha-taste-kicker">이야기 맛보기 · 1~2화 무료</p>'+pochaScene(result,plan,0,[])+pochaScene(result,plan,1,[])+readingCliffHtml(concept,result)+lockedPeekHtml(pochaScene(result,plan,2,[]))+pochaOffer(concept,'story')+'</div>';
  var html='<div class="pocha-reader">'+readingPreviewHtml(concept,result)+plan.slice(0,20).map(function(_,i){return pochaScene(result,plan,i,owned?rows.slice(i,i+1):[]);}).join('');
 
  html+='<section class="pocha-receipt"><p class="reader-kicker">내 일과 진로의 방향</p><h2>오늘 챙겨갈 것</h2><p>'+esc(POCHA_LENS[storyProfile(result).wx].action)+'</p><span>나에게 맞는 방식인지, 직접 확인해보세요.</span></section>';
@@ -4144,6 +4150,13 @@ function storyOpeningV2(concept,result){
  var money=storyCategory(concept)==='wealth',plan=storyNarrativePlan(concept,result);
  return '<section class="story-opening-v2"><p class="reader-kicker">'+(money?'돈이 머무는 마음':'인연이 시작되는 마음')+'</p><h2>'+(money?'돈을 대하는 내 방식,<br>어떤 선택으로 이어질까요?':'마음이 움직이는 내 방식,<br>어떤 관계로 이어질까요?')+'</h2></section>'+plan.slice(0,4).map(function(scene,i){return storySceneHtml(concept,result,i,scene[0],'<p>'+reportEmphasis(esc(scene[1]))+'</p>');}).join('')+'<p class="story-cliffhanger">'+(money?'내 사주에는 어떤 소비·선택 성향이 담겨 있을까요?':'내 사주로 보면, 나는 어떤 관계에서 편안할까요?')+'</p>';
 }
+/* 무료 맛보기 뒤에 이어지는 내용을 흐리게 보여주고 결제 안내로 이어 붙인다. 안에는 화면에서 계산한 문장만 넣는다(유료 문구 금지). */
+function lockedPeekHtml(inner){return '<div class="locked-peek" aria-hidden="true"><div class="locked-peek-inner">'+inner+'</div></div>';}
+function storyFreeTaste(concept,result){
+ var money=storyCategory(concept)==='wealth',plan=storyNarrativePlan(concept,result);
+ var scene=function(i){return storySceneHtml(concept,result,i,plan[i][0],'<p>'+reportEmphasis(esc(plan[i][1]))+'</p>');};
+ return '<section class="story-opening-v2"><p class="reader-kicker">이야기 맛보기 · 1~2화 무료</p><h2>'+(money?'돈을 대하는 내 방식,<br>어떤 선택으로 이어질까요?':'마음이 움직이는 내 방식,<br>어떤 관계로 이어질까요?')+'</h2></section>'+scene(0)+scene(1)+readingCliffHtml(concept,result)+lockedPeekHtml(scene(2));
+}
 function storyPaidScenes(concept,data,result){
  var rows=data.rows||[],count=8,html='',plan=storyNarrativePlan(concept,result);
  for(var i=0;i<count;i++){
@@ -4165,6 +4178,7 @@ var MARRIAGE_ID='dc6f87f4-86a7-47ce-ae91-3f6715dee2b0';
 function isMarriage(c){return c&&c.id===MARRIAGE_ID;}
 var WOLHA_ART='/assets/marriage/';
 var SPOUSE_FREE={자:'실 끝이 깊은 물 쪽으로 흘러가 있어요. 말보다 마음이 깊은 사람, 당신 이야기를 끝까지 들어줄 사람과 묶일 실이에요.',축:'실 끝이 너른 들판 쪽에 닿아 있어요. 화려하진 않아도 약속을 끝까지 지키는 사람과 묶일 실이에요.',인:'실 끝이 새벽 숲 쪽으로 뻗어 있어요. 함께 도전하며 같이 자라날 사람과 묶일 실이에요.',묘:'실 끝에서 봄 정원 냄새가 나요. 일상의 작은 배려로 마음을 움직이는 사람과 묶일 실이에요.',진:'실 끝이 큰 호수 쪽에 잠겨 있어요. 함께 큰 그림을 그릴 수 있는 품 넓은 사람과 묶일 실이에요.',사:'실 끝이 따뜻하게 달아올라 있어요. 서로의 능력을 알아봐 주는 사람에게 당겨질 실이에요.',오:'실 끝이 햇살처럼 반짝여요. 밝고 솔직한 사람 곁에서 가장 당신다워질 실이에요.',미:'실 끝이 포근한 언덕 위 작은 집에 닿아 있어요. 같이 밥 먹고 쉬는 평범한 하루가 행복한 사람과 묶일 실이에요.',신:'실 끝이 바람을 타고 있어요. 말이 시원하게 통하고 함께 해결책을 찾는 사람과 묶일 실이에요.',유:'실 끝이 서리처럼 맑아요. 기준과 예의를 지키는 사람에게서 편안함을 느낄 실이에요.',술:'실 끝이 해질녘 돌담에 단단히 걸려 있어요. 끝까지 당신 편이 되어줄 의리 있는 사람과 묶일 실이에요.',해:'실 끝이 밤바다 쪽으로 흘러가 있어요. 당신의 자유로운 면을 그대로 이해해줄 사람과 묶일 실이에요.'};
+var SPOUSE_STAR={자:'깊은 물의 별',축:'단단한 들판의 별',인:'새벽 숲의 별',묘:'봄 정원의 별',진:'큰 호수의 별',사:'한낮 불꽃의 별',오:'여름 햇살의 별',미:'포근한 언덕의 별',신:'은빛 바람의 별',유:'맑은 서리의 별',술:'해질녘 성벽의 별',해:'밤바다의 별'};
 var MARRIAGE_REL_SCORE={liuhe:3,sanhe:2,chong:2,same:1,none:0,xing:-1,hai:-1,yuanjin:-1};
 var MARRIAGE_TG_SCORE={gwanseong:2,jaeseong:2,siksang:1,inseong:1,bigyeop:0};
 var MARRIAGE_TOP_LABEL={liuhe:'실이 저절로 감기는 해',sanhe:'실이 모여드는 해',chong:'실이 크게 출렁이는 해',same:'내 실을 곧게 펴는 해'};
@@ -4190,7 +4204,7 @@ function marriageCallName(result){return result.name?esc(result.name)+'님':'당
 function marriageOffer(stage){
  var detail=stage==='detail';
  var benefits=detail?['일간 오행으로 읽는 함께 사는 모습: 다툴 때, 돈 관리, 양가 가족과의 거리','바로 꺼내 쓸 수 있는 대화 한마디','결혼 전 둘이 함께 확인할 체크리스트']:['배우자 별 카드: 당신 실 끝에 묶일 사람의 모습과 실이 닿는 장면','앞으로 10년, 해마다 당신 실이 어떻게 움직이는지','가장 크게 빛나는 세 개의 매듭과 그해의 이야기'];
- return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하의 실 풀이')+'</p><h2>'+(detail?'실이 묶인 다음,<br>함께 사는 이야기':'여기서부터는<br>실을 풀어봐야 알아요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'함께 사는 이야기 열기 · 12,900원':'월하에게 실 풀어달라고 하기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>함께 사는 모습과 체크리스트를 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
+ return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하의 실 풀이')+'</p><h2>'+(detail?'실이 묶인 다음,<br>함께 사는 이야기':'여기서부터는<br>실을 풀어봐야 알아요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'결혼 사주 전체 보기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>함께 사는 모습과 체크리스트를 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
 }
 function marriagePreviewHtml(concept,result,rows){
  var zhi=result.day.zhiKr,zhiLabel=zhi+'('+result.day.zhi+')',who=marriageCallName(result);
@@ -4201,7 +4215,9 @@ function marriagePreviewHtml(concept,result,rows){
   wolhaScene('intro','엉킨 붉은 실타래를 살펴보는 월하')+
   wolhaSay('thinking','<p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><p class="wolha-basis">일지(배우자 자리) '+esc(zhiLabel)+' · 일간 '+esc(result.day.ganKr)+'('+esc(result.dayGanWx)+')</p>')+
   (first?wolhaSay('smile','<p><strong class="wolha-year">'+first.year+'년</strong>에 첫 번째 매듭이 빛나요. '+esc(first.ganKr+first.zhiKr)+'년의 기운이 배우자 자리 '+esc(zhiLabel)+'에 닿는, <strong>'+esc(marriageYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div><p class="hint">앞으로 10년 동안 크게 빛나는 매듭은 모두 세 개예요.</p>'):'')+
+  wolhaSay('surprised','<p>아, 그리고 당신 실 끝에 걸린 별이 보여요. <strong>「'+esc(SPOUSE_STAR[zhi]||'')+'」</strong>이에요. 어떤 사람인지는 실을 조금 더 풀어봐야 알아요.</p>')+
   '<div class="wolha-cliff" aria-label="이어지는 풀이 미리보기">'+wolhaSay('wink','<p>그런데… 가장 크게 빛나는 매듭은 따로 있어요. 그해에 당신 실을 당기는 사람은 —</p>')+'</div>'+
+  lockedPeekHtml('<section class="spouse-card"><p class="reader-kicker">배우자 별 카드</p><h2>'+esc(SPOUSE_STAR[zhi]||'')+'</h2><h3>당신 실 끝에 묶일 사람</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><h3>실이 닿는 장면</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p></section><section class="marriage-timeline"><ol>'+rows.map(function(r){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+esc(marriageYearLabel(r))+'</p></div></li>';}).join('')+'</ol></section>')+
  '</section>';
 }
 function marriageStoryHtml(story,result,rows){
@@ -4247,7 +4263,7 @@ function marriageFlow(concept,data,result){
 function storyFlowHtml(concept,data,result){
  if(isMarriage(concept))return marriageFlow(concept,data,result);
  if(isPocha(concept))return pochaFlow(concept,data,result);
- if(!data.access.story)return readingPreviewHtml(concept,result)+readingCliffHtml(concept,result)+stageOfferHtml(concept,'story');
+ if(!data.access.story)return readingPreviewHtml(concept,result)+storyFreeTaste(concept,result)+stageOfferHtml(concept,'story');
  var html=readingPreviewHtml(concept,result)+(data.access.story?'<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>':'')+storyOpeningV2(concept,result);
 
  html+=storyPaidScenes(concept,data,result)+'<section class="story-epilogue"><p class="reader-kicker">콘텐츠를 마치며</p><h2>내게 맞는 해석은,<br>경험과 함께 선명해져요.</h2><p>마음에 남은 선택이 있었나요?<br>그 이유와 일상에서 해볼 방법을 더 살펴볼 수 있어요.</p></section>';
