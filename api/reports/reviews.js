@@ -12,8 +12,8 @@ module.exports = async (req, res) => {
     const concepts=await rowsAt('/report_concepts?id=eq.'+encodeURIComponent(conceptId)+'&active=eq.true&select=id');
     if(!concepts.length)return res.status(404).json({ok:false});
     if(req.method==='GET') {
-      const rows=await rowsAt('/report_reviews?concept_id=eq.'+encodeURIComponent(conceptId)+'&select=text,created_at&order=created_at.desc&limit=6');
-      return res.status(200).json({ok:true,rows:rows.map(r=>({text:r.text,createdAt:r.created_at,displayName:'이야기를 읽은 분',verified:true}))});
+      const rows=await rowsAt('/report_reviews?concept_id=eq.'+encodeURIComponent(conceptId)+'&select=text,created_at,reviewer_hash&order=created_at.desc&limit=6');
+      return res.status(200).json({ok:true,rows:rows.map(r=>({text:r.text,createdAt:r.created_at,displayName:'이야기를 읽은 분 · '+(r.reviewer_hash||'').slice(0,4).toUpperCase(),verified:true}))});
     }
     const text=typeof body.text==='string'?body.text.trim():'';
     const deviceId=typeof body.deviceId==='string'?body.deviceId:'';
