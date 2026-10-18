@@ -970,6 +970,46 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .reader-offer{position:relative;z-index:1}
 .pocha-taste-kicker{margin:28px 0 0}
 .spouse-card-art{display:block;width:100%;max-width:330px;margin:0 auto 18px;border-radius:14px;box-shadow:0 8px 24px #0006}
+/* 결혼 사주: 처방전 카드와 12,900원 심층 리포트(밝은 종이 리포트로 읽기 쉽게) */
+.wolha-months{display:flex;gap:8px;flex-wrap:wrap}.wolha-months span{padding:6px 12px;border-radius:999px;background:#c8303a33;color:#ffe3d6;font-weight:700}
+.prescription-card{margin:26px 0;padding:22px 20px;border-radius:16px;background:#fbf6ec;color:#2f2733;border:2px dashed #c8303a66;box-shadow:0 8px 24px #0005}
+.prescription-card .prescription-kicker{margin:0 0 6px;font-size:.75rem;font-weight:700;letter-spacing:.06em;color:#b02a35}
+.prescription-card h3{margin:0 0 12px;font-size:1.125rem;color:#2f2733}
+.prescription-card li{margin:8px 0;font-size:.9375rem;line-height:1.7;color:#3a3140}
+.deep-report{margin:32px -6px 0;padding:24px 18px 28px;border-radius:20px;background:#f8f4ec;color:#2b2533;box-shadow:0 12px 36px #0007}
+.deep-report .wolha-bubble{background:#ffffff;border-color:#c8303a33;color:#2b2533}
+.deep-head{padding-bottom:18px;border-bottom:1px solid #2b253322}
+.deep-kicker{margin:16px 0 4px;font-size:.75rem;font-weight:700;letter-spacing:.08em;color:#b02a35}
+.deep-head h2{margin:0;font-family:'Noto Serif KR',serif;font-size:1.5rem;color:#2b2533}
+.deep-sub,.deep-muted{font-size:.8125rem;line-height:1.7;color:#6c6274}
+.deep-sec{padding:24px 0;border-bottom:1px solid #2b25331a}
+.deep-sec h3{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:1.125rem;color:#2b2533}
+.deep-no{display:inline-grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:#2b2533;color:#f8f4ec;font-size:.8125rem}
+.deep-sec h4{margin:18px 0 6px;font-size:.9375rem;color:#7a2a33}
+.deep-sec p{margin:0 0 10px;font-size:.9375rem;line-height:1.8;color:#3a3140;word-break:keep-all}
+.deep-summary{display:grid;gap:8px;margin:0}.deep-summary div{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:10px;background:#fff}
+.deep-summary dt{font-size:.8125rem;color:#6c6274}.deep-summary dd{margin:0;font-size:.875rem;font-weight:700;color:#2b2533;text-align:right}
+.deep-card-art .spouse-card-art{max-width:220px}
+.deep-two{display:grid;gap:10px}
+.deep-box{margin:10px 0;padding:14px 14px 4px;border-radius:12px;background:#fff;border-left:4px solid #b9aec6}
+.deep-box.good{border-left-color:#3f8f6b}.deep-box.warn{border-left-color:#c8303a}
+.deep-box b{display:block;margin-bottom:6px;font-size:.875rem;color:#2b2533}
+.deep-tips{margin:6px 0 0;padding:0;list-style:none}.deep-tips li{position:relative;margin:8px 0;padding-left:24px;font-size:.9375rem;line-height:1.7;color:#3a3140}
+.deep-tips li:before{content:'✓';position:absolute;left:0;color:#3f8f6b;font-weight:700}
+.deep-years,.deep-months,.deep-road{margin:0;padding:0;list-style:none}
+.deep-years li{padding:12px;margin:8px 0;border-radius:12px;background:#fff;opacity:.85}.deep-years li.is-top{opacity:1;box-shadow:inset 0 0 0 2px #c8303a55}
+.deep-year-head{display:flex;align-items:center;gap:8px}.deep-year-head b{font-size:1rem}.deep-year-head span{font-size:.8125rem;color:#6c6274}
+.deep-stars{margin-left:auto;color:#c8303a;font-size:.8125rem;letter-spacing:1px}.deep-stars i{font-style:normal;color:#d8d0de}
+.deep-year-label{margin:6px 0 4px!important;font-weight:700;color:#7a2a33!important}
+.deep-months{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.deep-months li{padding:10px;border-radius:10px;background:#fff}.deep-months li.is-top{box-shadow:inset 0 0 0 2px #c8303a66}
+.deep-months b{font-size:.9375rem}.deep-months span{margin-left:6px;font-size:.75rem;color:#6c6274}.deep-months p{margin:4px 0 0!important;font-size:.8125rem!important;line-height:1.6!important}
+.deep-label{display:block;margin-bottom:2px;font-size:.75rem;font-weight:700;color:#6c6274}
+.deep-say{padding:10px 12px;border-radius:10px;background:#fbf0ee;color:#5a1f27!important}
+.deep-road li{position:relative;margin:0 0 14px;padding:0 0 0 18px;border-left:2px solid #c8303a55}
+.deep-note{font-size:.875rem!important;color:#7a2a33!important}
+.deep-q{margin:0 0 6px;padding-left:20px}.deep-q li{margin:6px 0;font-size:.9375rem;line-height:1.7;color:#3a3140}
+.deep-foot{padding-top:20px}
 .marriage-offer .wolha-scene{margin:0 0 18px}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=2">
@@ -4205,11 +4245,6 @@ function currentDaeunGroup(result){var d=(result.daeun||[]).filter(function(x){r
 function wolhaScene(name,alt){return '<figure class="wolha-scene"><img src="'+WOLHA_ART+'scenes/'+name+'.webp" alt="'+esc(alt||'인연 공방의 월하')+'" loading="lazy" decoding="async"></figure>';}
 function wolhaSay(face,html){return '<div class="wolha-say"><img class="wolha-face" src="'+WOLHA_ART+'faces/wolha-'+face+'.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><div class="wolha-bubble"><span class="wolha-name">월하</span>'+html+'</div></div>';}
 function marriageCallName(result){return result.name?esc(result.name)+'님':'당신';}
-function marriageOffer(stage){
- var detail=stage==='detail';
- var benefits=detail?['일간 오행으로 읽는 함께 사는 모습: 다툴 때, 돈 관리, 양가 가족과의 거리','바로 꺼내 쓸 수 있는 대화 한마디','결혼 전 둘이 함께 확인할 체크리스트']:['배우자 별 카드: 당신 실 끝에 묶일 사람의 모습과 실이 닿는 장면','앞으로 10년, 해마다 당신 실이 어떻게 움직이는지','가장 크게 빛나는 세 개의 매듭과 그해의 이야기'];
- return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하의 실 풀이')+'</p><h2>'+(detail?'실이 묶인 다음,<br>함께 사는 이야기':'여기서부터는<br>실을 풀어봐야 알아요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'결혼 사주 전체 보기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>함께 사는 모습과 체크리스트를 담은 세부 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
-}
 function marriagePreviewHtml(concept,result,rows){
  var zhi=result.day.zhiKr,zhiLabel=zhi+'('+result.day.zhi+')',who=marriageCallName(result);
  var first=rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;})[0];
@@ -4242,26 +4277,95 @@ function marriageStoryHtml(story,result,rows){
  if(dg&&story.daeunText[dg])html+=wolhaSay('thinking','<p>마지막으로, 큰 흐름 하나만 더요.</p><p>'+esc(story.daeunText[dg])+'</p>');
  return html+'</section>';
 }
-function marriageDetailHtml(detail,result){
- var wx=result.dayGanWx,d=detail.detailByWx[wx]||{},weak=weakestWx(result.wxCount).wx,who=marriageCallName(result);
- var items=detail.checklist.concat(detail.checklistByWeakWx[weak]?[detail.checklistByWeakWx[weak]]:[]);
- return '<section class="wolha-talk">'+wolhaScene('detail','찻잔 두 개를 붉은 실로 잇는 월하')+
+function marriageOffer(stage){
+ var detail=stage==='detail';
+ var benefits=detail?['한눈에 보는 결혼 사주 요약표와 배우자 자리 심층 분석','십신·오행·신강약으로 읽는 나의 결혼 성향과 보완 습관','10년 연도별 할 일, 가장 강한 해의 월별 흐름, 대운 속 결혼','잘 맞는 띠·일지 궁합 가이드와 갈등 상황 6가지 대응법','결혼 준비 5단계 로드맵과 결혼 전 함께 나눌 질문 20개']:['배우자 별 카드: 당신 실 끝에 묶일 사람의 모습과 실이 닿는 장면','앞으로 10년의 결혼 흐름과 가장 크게 빛나는 세 해','가장 강한 해의 좋은 달, 잘 맞는 띠 힌트','함께 살 때의 모습: 다툼, 돈, 양가 가족, 바로 쓸 대화, 체크리스트'];
+ return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하의 실 풀이')+'</p><h2>'+(detail?'내 결혼 사주,<br>13개 항목으로 깊게 읽기':'여기서부터는<br>실을 풀어봐야 알아요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'결혼 사주 전체 보기 · 4,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이 콘텐츠 소장<br>13개 항목의 결혼 심층 리포트는 별도 선택 구매 · <strong>12,900원</strong>')+'</p></section>';
+}
+/* 결혼 사주 계산 보조: 월별 흐름, 궁합 짝, 십신 묶음 */
+var ZHI_ORDER='子丑寅卯辰巳午未申酉戌亥',ZHI_ANIMAL={子:'쥐',丑:'소',寅:'호랑이',卯:'토끼',辰:'용',巳:'뱀',午:'말',未:'양',申:'원숭이',酉:'닭',戌:'개',亥:'돼지'};
+function marriageMonths(result,year){
+ var rows=[];
+ for(var m=1;m<=12;m++){
+  var gz=Solar.fromYmd(year,m,15).getLunar().getMonthInGanZhiExact(),g=gz.charAt(0),z=gz.charAt(1);
+  var rel=zhiRelation(result.day.zhi,z),tg=dailyFortuneRelation(result.dayGanWx,WX_KR[LunarUtil.WU_XING_GAN[g]]);
+  rows.push({month:m,ganKr:GAN_KR[g],zhiKr:ZHI_KR[z],rel:rel,tg:tg,score:MARRIAGE_REL_SCORE[rel]+MARRIAGE_TG_SCORE[tg],top:0});
+ }
+ rows.slice().sort(function(a,b){return b.score-a.score||a.month-b.month;}).slice(0,3).forEach(function(r,i){r.top=i+1;});
+ return rows;
+}
+function marriageMatches(result){
+ var d=result.day.zhi,out={liuhe:[],sanhe:[],chong:[],yuanjin:[]};
+ for(var i=0;i<12;i++){var z=ZHI_ORDER.charAt(i);if(z===d)continue;var k=pairKey(d,z);
+  if(LIUHE[k])out.liuhe.push(z);if(CHONG[k])out.chong.push(z);if(YUANJIN[k])out.yuanjin.push(z);
+  if(SANHE_GROUPS.some(function(g){return g.indexOf(d)>=0&&g.indexOf(z)>=0;}))out.sanhe.push(z);}
+ return out;
+}
+function zhiTag(z){return ZHI_KR[z]+'('+z+') · '+ZHI_ANIMAL[z]+'띠';}
+function marriageTenGods(result){var set={};[result.yearSS,result.monthSS,result.timeSS].forEach(function(s){if(SS_GROUP[s])set[SS_GROUP[s]]=1;});return set;}
+function marriageLifeHtml(story,result,rows){
+ var wx=result.dayGanWx,d=story.detailByWx[wx]||{},weak=weakestWx(result.wxCount).wx,who=marriageCallName(result);
+ var items=story.checklist.concat(story.checklistByWeakWx[weak]?[story.checklistByWeakWx[weak]]:[]);
+ var best=rows.filter(function(r){return r.top===1;})[0],good=best?marriageMonths(result,best.year).filter(function(m){return m.top;}).sort(function(a,b){return a.month-b.month;}):[];
+ var mt=marriageMatches(result),pair=mt.liuhe[0];
+ return '<section class="wolha-talk">'+
+  (best&&good.length?wolhaSay('surprised','<p>하나 더 알려줄게요. 가장 크게 빛나는 <strong class="wolha-year">'+best.year+'년</strong> 안에서도, 실이 특히 잘 당겨지는 달이 있어요.</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>'):'')+
+  (pair?wolhaSay('wink','<p>그리고 당신 실과 저절로 감기는 짝이 있어요. 상대의 일지가 <strong>'+esc(zhiTag(pair))+'</strong>라면 말하지 않아도 통하는 게 많을 거예요.</p>'):'')+
+  wolhaScene('detail','찻잔 두 개를 붉은 실로 잇는 월하')+
   wolhaSay('smile','<p>이제 실이 묶인 다음 이야기를 해볼까요. 함께 사는 건, 매듭을 매일 다시 묶는 일이거든요.</p><p class="wolha-basis">일간 '+esc(result.day.ganKr)+'('+esc(wx)+') · 간이 신강·신약 분류 기준</p>')+
   '<h3 class="wolha-topic">다툼이 생겼을 때</h3>'+wolhaScene('detail-conflict','팽팽한 실을 느슨하게 풀어주는 월하')+wolhaSay('worried','<p>'+esc(d.conflict||'')+'</p>')+
   '<h3 class="wolha-topic">돈을 함께 관리할 때</h3>'+wolhaScene('detail-money','붉은 실로 묶인 동전 꾸러미')+wolhaSay('smile','<p>'+esc(d.money||'')+'</p>')+
   '<h3 class="wolha-topic">양가 가족과의 거리</h3>'+wolhaScene('detail-family','두 한옥 사이를 잇는 붉은 실')+wolhaSay('thinking','<p>'+esc(d.family||'')+'</p>')+
-  wolhaSay('serious','<p>'+esc(detail.detailByStrength[result.strength==='strong'?'strong':'weak'])+'</p>')+
+  wolhaSay('serious','<p>'+esc(story.detailByStrength[result.strength==='strong'?'strong':'weak'])+'</p>')+
   '<h3 class="wolha-topic">바로 꺼내 쓸 한마디</h3>'+wolhaScene('detail-talk','종이컵 전화기로 귀 기울이는 월하')+wolhaSay('smile','<p>이런 말은 실을 덜 엉키게 해줘요.</p>'+(d.talk||[]).map(function(t){return '<p class="marriage-talk">'+esc(t)+'</p>';}).join(''))+
-  '<section class="reading-point marriage-checklist"><h3>결혼 전, 둘이 함께 확인할 것</h3><ul>'+items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></section>'+
+  '<section class="prescription-card"><p class="prescription-kicker">월하의 처방전</p><h3>결혼 전, 둘이 함께 확인할 것</h3><ul>'+items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></section>'+
   wolhaScene('farewell','완성한 매듭을 상자에 넣으며 웃는 월하')+
   wolhaSay('cheer','<p>'+who+' 실은 잘 보관해둘게요. 언제든 달 뜨는 밤에 다시 와요.</p>')+
  '</section>';
 }
+/* 12,900원 결혼 심층 리포트: 리포트 형식, 월하는 시작과 끝에만 */
+function marriageDeepHtml(deep,result,rows){
+ var zhi=result.day.zhiKr,wx=result.dayGanWx,sd=deep.spouseDeep[zhi]||{},who=marriageCallName(result);
+ var strong=result.strength==='strong',st=deep.strengthDeep[strong?'strong':'weak'];
+ var domWx=dominantWx(result.wxCount).wx,weakWx=weakestWx(result.wxCount).wx,es=deep.elementLife.strong[domWx]||{},ew=deep.elementLife.weak[weakWx]||{};
+ var tops=rows.filter(function(r){return r.top;}).sort(function(a,b){return a.top-b.top;}),best=tops[0];
+ var daeun=result.daeun||[],ci=-1;daeun.forEach(function(d,i){if(d.current)ci=i;});var cur=daeun[ci],next=daeun[ci+1];
+ var gods=marriageTenGods(result),mt=marriageMatches(result);
+ var palace=(result.zhiInteractions||[]).filter(function(x){return x.aLabel==='일주'||x.bLabel==='일주';}).map(function(x){return {pos:x.aLabel==='일주'?x.bLabel:x.aLabel,other:x.aLabel==='일주'?x.bZhi:x.aZhi,rel:x.rel,label:x.relLabel};}).filter(function(x){return deep.palacePosition[x.pos]&&deep.palaceRel[x.rel];});
+ var sec=function(n,title,body){return '<section class="deep-sec"><h3><span class="deep-no">'+n+'</span>'+esc(title)+'</h3>'+body+'</section>';};
+ var tips=function(list){return '<ul class="deep-tips">'+(list||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>';};
+ var stars=function(s){var n=s>=5?5:s>=4?4:s>=3?3:s>=1?2:1;return '<span class="deep-stars" aria-label="'+n+'점">'+'★★★★★'.slice(0,n)+'<i>'+'★★★★★'.slice(n)+'</i></span>';};
+ var html='<div class="deep-report">'+
+  '<header class="deep-head">'+wolhaSay('serious','<p>여기부터는 '+who+' 실을 하나하나 풀어서 적어둔 기록이에요. 천천히, 필요한 부분부터 읽어보세요.</p>')+'<p class="deep-kicker">결혼 심층 리포트</p><h2>'+who+'의 결혼 사주</h2><p class="deep-sub">13개 항목 · 일간·일지·오행·십신·대운·세운 기준</p></header>';
+ html+=sec(1,'한눈에 보는 결혼 사주','<dl class="deep-summary">'+
+  '<div><dt>일간 (나)</dt><dd>'+esc(result.day.ganKr+'('+result.day.gan+') · '+wx)+'</dd></div>'+
+  '<div><dt>배우자 자리 (일지)</dt><dd>'+esc(zhi+'('+result.day.zhi+') · '+(SPOUSE_STAR[zhi]||''))+'</dd></div>'+
+  '<div><dt>나의 힘</dt><dd>'+(strong?'신강 · 주도하는 힘이 강함':'신약 · 어우러지는 힘이 큼')+'</dd></div>'+
+  '<div><dt>강한 기운 / 약한 기운</dt><dd>'+esc(domWx+' / '+weakWx)+'</dd></div>'+
+  (cur?'<div><dt>지금의 대운</dt><dd>'+esc(cur.startYear+'~'+cur.endYear+' · '+cur.ganKr+cur.zhiKr+' ('+cur.ss+')')+'</dd></div>':'')+
+  '<div><dt>결혼 흐름이 강한 해</dt><dd>'+tops.slice().sort(function(a,b){return a.year-b.year;}).map(function(r){return r.year+'년';}).join(' · ')+'</dd></div></dl>');
+ html+=sec(2,'배우자 자리 심층 분석',(SPOUSE_ART[zhi]?'<div class="deep-card-art">'+spouseArtHtml(zhi)+'</div>':'')+'<p>'+esc(sd.nature||'')+'</p>'+
+  '<h4>함께 사는 모습</h4><p>'+esc(sd.daily||'')+'</p><h4>이런 사람에게 끌려요</h4><p>'+esc(sd.pull||'')+'</p><h4>부딪히기 쉬운 지점</h4><p>'+esc(sd.friction||'')+'</p>'+
+  '<div class="deep-two"><div class="deep-box good"><b>잘 맞는 상대</b><p>'+esc(sd.fit||'')+'</p></div><div class="deep-box warn"><b>주의할 상대</b><p>'+esc(sd.caution||'')+'</p></div></div>');
+ html+=sec(3,'배우자 자리를 둘러싼 기운',palace.length?palace.map(function(p){return '<div class="deep-box"><b>'+esc(p.pos)+' '+esc(ZHI_KR[p.other]||p.other)+' ↔ 일주 '+esc(zhi)+' · '+esc(p.label)+'</b><p>'+esc(deep.palaceRel[p.rel])+'</p><p class="deep-muted">'+esc(deep.palacePosition[p.pos])+'</p></div>';}).join(''):'<p>'+esc(deep.palaceNone)+'</p>');
+ html+=sec(4,'십신으로 보는 관계 성향','<p class="deep-muted">연·월·시 천간 십신: '+esc([result.yearSS,result.monthSS,result.timeSS].filter(Boolean).join(' · '))+'</p>'+['jaeseong','gwanseong','siksang','inseong','bigyeop'].map(function(k){var t=deep.tenGodPresence[k];return '<div class="deep-box'+(gods[k]?' good':'')+'"><b>'+esc(t.title)+(gods[k]?' · 있음':' · 드러나지 않음')+'</b><p>'+esc(gods[k]?t.has:t.none)+'</p></div>';}).join(''));
+ html+=sec(5,'오행 균형과 결혼 생활','<h4>가장 강한 기운 · '+esc(domWx)+'</h4><p>'+esc(es.text||'')+'</p>'+tips(es.tips)+(weakWx!==domWx?'<h4>가장 약한 기운 · '+esc(weakWx)+'</h4><p>'+esc(ew.text||'')+'</p>'+tips(ew.tips):''));
+ html+=sec(6,st.title,'<p>'+esc(st.text)+'</p>'+tips(st.tips));
+ html+=sec(7,'10년 결혼 흐름 상세','<ol class="deep-years">'+rows.map(function(r){return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'★ ':'')+esc(marriageYearLabel(r))+'</p><p>'+esc(deep.yearAction[r.rel]||deep.yearAction.none)+'</p></li>';}).join('')+'</ol>');
+ if(best){var months=marriageMonths(result,best.year);html+=sec(8,best.year+'년 월별 흐름','<p class="deep-muted">가장 흐름이 강한 '+best.year+'년을 달마다 나눠 봤어요. ★ 표시는 그해에서 가장 좋은 세 달이에요.</p><ol class="deep-months">'+months.map(function(m){return '<li class="'+(m.top?'is-top':'')+'"><b>'+m.month+'월</b><span>'+esc(m.ganKr+m.zhiKr)+'</span><p>'+(m.top?'★ ':'')+esc(deep.monthByRelation[m.rel]||deep.monthByRelation.none)+'</p></li>';}).join('')+'</ol>');}
+ html+=sec(9,'대운 속 결혼',[cur,next].filter(Boolean).map(function(d,i){var g=SS_GROUP[d.ss];return '<div class="deep-box'+(i===0?' good':'')+'"><b>'+(i===0?'지금':'다음')+' 10년 · '+esc(d.startYear+'~'+d.endYear+' '+d.ganKr+d.zhiKr+' ('+d.ss+')')+'</b><p>'+esc(deep.daeunDeep[g]||'')+'</p></div>';}).join('')||'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
+ html+=sec(10,'궁합 가이드',['liuhe','sanhe','chong','yuanjin'].filter(function(k){return mt[k].length;}).map(function(k){var good=k==='liuhe'||k==='sanhe';return '<div class="deep-box '+(good?'good':'warn')+'"><b>'+(good?'잘 맞는 상대 · ':'조율이 필요한 상대 · ')+mt[k].map(zhiTag).join(', ')+'</b><p>'+esc(deep.matchText[k])+'</p></div>';}).join('')+'<p class="deep-muted">'+esc(deep.matchNote)+'</p>');
+ html+=sec(11,'갈등 상황별 대응법','<p class="deep-muted">일간 '+esc(wx)+' 기운의 반응 패턴을 기준으로 정리했어요.</p>'+(deep.conflictGuide[wx]||[]).map(function(c){return '<div class="deep-box"><b>'+esc(c.scene)+'</b><p><span class="deep-label">나의 패턴</span>'+esc(c.pattern)+'</p><p class="deep-say"><span class="deep-label">이렇게 말해보세요</span>'+esc(c.say)+'</p></div>';}).join(''));
+ html+=sec(12,'결혼 준비 로드맵','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b><p>'+esc(r.text)+'</p><p class="deep-note">'+(strong?'신강인 당신에게: ':'신약인 당신에게: ')+esc(strong?r.strong:r.weak)+'</p></li>';}).join('')+'</ol>');
+ html+=sec(13,'결혼 전 함께 나눌 질문 20','<p class="deep-muted">둘이 함께 소리 내어 읽어보세요. 정답보다 서로의 답이 어떻게 다른지가 중요해요.</p>'+deep.questions.map(function(q){return '<h4>'+esc(q.topic)+'</h4><ol class="deep-q">'+q.items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>';}).join(''));
+ html+='<footer class="deep-foot">'+wolhaSay('cheer','<p>여기까지가 '+who+' 실에 대한 기록이에요. 마음이 흔들릴 때 다시 꺼내 읽어요. 실은 언제든 다시 묶을 수 있거든요.</p>')+'<p class="deep-muted">일간·일지·오행 분포·천간 십신·간이 신강약·대운·세운·월운을 바탕으로 한 해석이에요. 출생시간을 모르면 시주는 제외해요.</p></footer></div>';
+ return html;
+}
 function marriageFlow(concept,data,result){
  var rows=marriageTimeline(result,marriageStartYear());
  if(!data.access.story||!data.rows||!data.rows[0])return marriagePreviewHtml(concept,result,rows)+marriageOffer('story');
- var html='<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>'+marriageStoryHtml(data.rows[0],result,rows);
- if(data.access.detail&&data.detailRows&&data.detailRows[0])return html+'<section id="owned-detail-report">'+marriageDetailHtml(data.detailRows[0],result)+'</section>';
+ var html='<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>'+marriageStoryHtml(data.rows[0],result,rows)+marriageLifeHtml(data.rows[0],result,rows);
+ if(data.access.detail&&data.detailRows&&data.detailRows[0])return html+'<section id="owned-detail-report">'+marriageDeepHtml(data.detailRows[0],result,rows)+'</section>';
  return html+marriageOffer('detail');
 }
 function storyFlowHtml(concept,data,result){

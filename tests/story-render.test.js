@@ -251,6 +251,6 @@ test('marriage report: timeline picks three strong years, free view hides paid c
  const full=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},r);
  assert.ok(full.includes('결혼 전, 둘이 함께 확인할 것'));
  for(const html of [free,story,full])for(const m of html.matchAll(new RegExp('src="(/assets/marriage/[^"]+)"','g')))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',m[1])),'missing '+m[1]);
- assert.ok(free.includes('wolha-say'));assert.ok(story.includes('wolha-scene'));assert.ok(full.includes(m.detail.detailByWx[r.dayGanWx].conflict.slice(0,20)));assert.ok(!full.includes('data-gate'));assert.ok(!full.includes('undefined'));
+ assert.ok(free.includes('wolha-say'));assert.ok(story.includes('wolha-scene'));assert.ok(story.includes(m.story.detailByWx[r.dayGanWx].conflict.slice(0,20)));assert.ok(story.includes('결혼 전, 둘이 함께 확인할 것'));assert.ok(!story.includes('deep-report'));assert.equal((full.match(/class="deep-sec"/g)||[]).length,13);assert.ok(full.includes(m.detail.spouseDeep[r.day.zhiKr].nature.slice(0,20)));assert.ok(full.includes(m.detail.conflictGuide[r.dayGanWx][0].scene));assert.ok(!full.includes('NaN'));assert.ok(!full.includes('data-gate'));assert.ok(!full.includes('undefined'));
  for(const z of ['자','축','인','묘','진','사','오','미','신','유','술','해'])assert.ok(m.story.spouseCards[z].star);
 });

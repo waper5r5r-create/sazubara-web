@@ -88,7 +88,9 @@ const checklistByWeakWx = {
   수: '마음 나누기: 힘들 때 기대고 싶은 방식을 서로 알고 있나요?'
 };
 
-const story = {spouseCards, yearByRelation, yearByTenGod, daeunText};
-const detail = {detailByWx, detailByStrength, checklist, checklistByWeakWx};
+// 4,900원: 월하가 들려주는 이야기 전체(배우자 별 카드, 10년 흐름, 함께 사는 모습, 체크리스트)
+const story = {spouseCards, yearByRelation, yearByTenGod, daeunText, detailByWx, detailByStrength, checklist, checklistByWeakWx};
+// 12,900원: 리포트 형식의 결혼 심층 리포트
+const detail = require('./_marriage-deep');
 
 module.exports = {concept, story, detail};
