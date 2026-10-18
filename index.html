@@ -3901,10 +3901,27 @@ function readerKeydown(e){
   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
 }
+/* 사주 없이 리포트를 고르면 기억해뒀다가, 입력이 끝나는 즉시 이어서 연다. */
+var PENDING_REPORT=null;
+function rememberPendingReport(concept,stage){
+  PENDING_REPORT={concept:concept,stage:stage};
+  switchTab('saju');
+  var form=$('#saju-form');if(!form)return;
+  var note=$('#pending-report-note');
+  if(!note){note=document.createElement('p');note.id='pending-report-note';note.className='hint';note.setAttribute('role','status');note.style.cssText='margin:0 0 16px;padding:12px 14px;border-radius:12px;background:var(--accent-soft);color:var(--fg);line-height:1.6';form.insertBefore(note,form.firstChild);}
+  note.innerHTML='고른 이야기 <strong>「'+esc(concept.title)+'」</strong><br>생년월일만 입력하면 바로 이어서 열어드릴게요.';
+  form.scrollIntoView({behavior:'instant',block:'start'});
+}
+function openPendingReport(){
+  if(!PENDING_REPORT||!STATE.mySaju)return;
+  var pr=PENDING_REPORT;PENDING_REPORT=null;
+  var note=$('#pending-report-note');if(note)note.remove();
+  setTimeout(function(){openReportViewer(pr.concept,pr.stage);},400);
+}
 function openReportViewer(concept,stage){
   var root=$('#report-sheet-root');if(!root)return;
   if(storyCategory(concept)==='unsupported'){showToast('이 주제의 콘텐츠를 준비하고 있어요.');return;}
-  if(!STATE.mySaju){showToast('나의 사주를 먼저 등록해주세요.');switchTab('saju');window.scrollTo({top:0,behavior:'instant'});return;}
+  if(!STATE.mySaju){rememberPendingReport(concept,stage);return;}
   var requestId=++reportViewerRequest;
   if(!$('#report-page-root')){REPORT_READER.previousOverflow=document.body.style.overflow;REPORT_READER.previousFocus=document.activeElement;}
   REPORT_READER.concept=concept;REPORT_READER.stage=stage==='detail'?'detail':'story';REPORT_READER.data=null;
@@ -4025,6 +4042,36 @@ function storyAtlasArt(concept,result,index){
 }
 // Emphasis is authored per sentence; matching a generic keyword never adds a highlight.
 function reportEmphasis(html){return String(html).replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');}
+/* 무료 풀이 개인화: 가장 많은 기운과 가장 약한 기운이 일간에게 어떤 십신 영역인지로 조합 문장을 만든다. */
+var WX_ORDER=['목','화','토','금','수'];
+function wxRole(day,x){var d=WX_ORDER.indexOf(day),i=WX_ORDER.indexOf(x);if(d<0||i<0)return null;return ['비겁','식상','재성','관성','인성'][(i-d+5)%5];}
+var READING_COMBO={
+ love:{
+  dom:{비겁:'관계 안에서도 내 영역과 속도를 지키려는 힘이 커서, 맞춰주기만 하는 연애는 오래 버티기 어려워요.',식상:'마음이 생기면 말과 행동으로 먼저 드러내는 편이라, 표현이 막히는 관계에서 가장 답답함을 느껴요.',재성:'상대를 챙기고 관계를 현실적으로 꾸려가는 데 힘을 쓰는 편이라, 주는 만큼 돌아오는지에 민감해질 수 있어요.',관성:'약속과 책임을 중요하게 여겨서, 애매한 관계보다 분명한 관계에서 마음이 편안해져요.',인성:'상대를 이해하는 데 시간을 많이 쓰는 편이라, 마음은 깊은데 표현은 한 박자 늦게 나와요.'},
+  weak:{비겁:'다만 내 기준을 지키는 기운은 약한 편이라, 상대에게 맞추다 내 마음을 놓치지 않는지 살펴볼 필요가 있어요.',식상:'다만 마음을 밖으로 꺼내는 기운은 약한 편이라, 서운함을 말하지 않고 쌓아두기 쉬워요.',재성:'다만 관계를 현실적으로 따져보는 기운은 약한 편이라, 마음이 앞서 조건을 늦게 보게 될 수 있어요.',관성:'다만 관계에 선을 긋는 기운은 약한 편이라, 애매한 관계를 오래 끌고 가기 쉬워요.',인성:'다만 혼자 마음을 정리하는 기운은 약한 편이라, 상대의 반응 하나에 하루 기분이 크게 흔들릴 수 있어요.'}},
+ money:{
+  dom:{비겁:'내 판단으로 결정하려는 힘이 커서, 남의 추천보다 내가 납득한 선택에 돈을 쓰는 편이에요.',식상:'하고 싶은 것과 경험에 돈이 먼저 가는 편이라, 쓰는 즐거움이 분명한 만큼 지출도 빠르게 늘 수 있어요.',재성:'돈의 흐름과 기회를 읽는 감각이 발달한 편이라, 벌 기회에 밝은 대신 한 번에 크게 움직이기 쉬워요.',관성:'정해진 규칙과 계획 안에서 돈을 관리할 때 안정감을 느껴서, 고정 지출과 약속된 돈을 잘 지키는 편이에요.',인성:'충분히 알아보고 확신이 들어야 움직이는 편이라, 후회는 적지만 좋은 기회를 고민하다 놓치기도 해요.'},
+  weak:{비겁:'다만 내 몫을 지키는 기운은 약한 편이라, 분위기나 부탁에 밀려 쓰는 돈을 따로 살펴볼 필요가 있어요.',식상:'다만 돈을 만들어내는 활동 기운은 약한 편이라, 들어오는 돈의 통로를 넓히는 고민이 함께 필요해요.',재성:'다만 돈을 직접 관리하는 기운은 약한 편이라, 어디로 나가는지 기록만 해도 체감이 크게 달라질 수 있어요.',관성:'다만 지출에 선을 긋는 기운은 약한 편이라, 예산 한도를 미리 정해두는 것만으로도 후회가 줄어요.',인성:'다만 결정 전에 한 번 더 따져보는 기운은 약한 편이라, 결제 전 하루 기다리는 습관이 잘 맞아요.'}},
+ career:{
+  dom:{비겁:'내 방식대로 일할 수 있을 때 실력이 가장 잘 나오는 편이라, 재량이 없는 환경에서는 쉽게 답답해져요.',식상:'아이디어를 결과물로 만들어 보여줄 때 힘이 나는 편이라, 표현하고 만드는 일이 잘 맞아요.',재성:'성과와 보상이 분명하게 연결될 때 움직이는 편이라, 숫자로 결과가 보이는 일에서 강해요.',관성:'역할과 책임이 분명한 자리에서 신뢰를 쌓는 편이라, 기준이 명확한 곳에서 오래 인정받아요.',인성:'배우고 이해하는 과정에서 동기가 생기는 편이라, 전문성을 깊게 쌓는 일이 잘 맞아요.'},
+  weak:{비겁:'다만 내 몫을 주장하는 기운은 약한 편이라, 한 만큼 인정받고 있는지 따로 챙겨볼 필요가 있어요.',식상:'다만 내 성과를 드러내는 기운은 약한 편이라, 잘한 일을 말로 정리해 알리는 연습이 도움이 돼요.',재성:'다만 보상을 따져보는 기운은 약한 편이라, 일에 비해 대가가 적은 자리에 오래 머물 수 있어요.',관성:'다만 조직의 틀에 맞추는 기운은 약한 편이라, 규칙이 많은 곳보다 자율적인 환경이 맞을 수 있어요.',인성:'다만 쉬면서 채우는 기운은 약한 편이라, 일하는 만큼 회복하는 시간을 따로 정해둘 필요가 있어요.'}}
+};
+var READING_CLIFF={
+ love:'그런데 이 조합에서 가장 조심할 장면은 따로 있어요. 연락이 뜸해졌을 때, 마음을 먼저 확인하고 싶을 때 {name} 보이는 반응은',
+ money:'그런데 이 조합에서 돈이 가장 크게 새는 장면은 따로 있어요. 충동적으로 결제하고 싶을 때, 지인이 돈 이야기를 꺼낼 때 {name} 보이는 반응은',
+ career:'그런데 이 조합에서 일이 가장 크게 꼬이는 장면은 따로 있어요. 일이 한꺼번에 몰릴 때, 내 몫을 인정받지 못할 때 {name} 보이는 반응은'
+};
+function readingKind(concept){return isPocha(concept)?'career':storyCategory(concept)==='wealth'?'money':'love';}
+function readingComboHtml(concept,result){
+ var p=storyProfile(result),kind=readingKind(concept),dr=wxRole(p.wx,p.dom),wr=p.weak&&p.weak!==p.dom?wxRole(p.wx,p.weak):null;
+ if(!dr)return '';
+ var who=result.name?esc(result.name)+'님':'내';
+ return '<section class="reading-point reading-combo"><h3>'+who+' 사주에서만 보이는 조합</h3><p class="reading-basis">가장 많은 기운 '+esc(p.dom)+'('+dr+')'+(wr?' · 가장 약한 기운 '+esc(p.weak)+'('+wr+')':'')+'</p><p><strong>'+esc(READING_COMBO[kind].dom[dr])+'</strong></p>'+(wr?'<p>'+esc(READING_COMBO[kind].weak[wr])+'</p>':'')+'</section>';
+}
+function readingCliffHtml(concept,result){
+ var who=result.name?esc(result.name)+'님이':'내가';
+ return '<section class="reading-cliff" aria-label="이어지는 풀이 미리보기" style="position:relative;margin:8px 0 0;padding:4px 2px 0;-webkit-mask-image:linear-gradient(#000 35%,transparent);mask-image:linear-gradient(#000 35%,transparent)"><p style="font-weight:600;line-height:1.8">'+READING_CLIFF[readingKind(concept)].replace('{name}',who)+' …</p></section>';
+}
 function readingPreviewHtml(concept,result){
  var p=storyProfile(result),career=isPocha(concept),money=storyCategory(concept)==='wealth';
  var traits={
@@ -4047,7 +4094,7 @@ function readingPreviewHtml(concept,result){
  var answer=career?'내가 힘을 쓰는 방식':money?'내 돈의 선택 기준':'내 마음이 움직이는 방식';
  var next=career?'강점이 드러나는 업무 환경, 일을 떠안거나 지치게 되는 조건, 다음 선택에서 확인할 기준':money?'기회를 고르는 습관, 돈을 쓰고 남길 때의 기준, 만족과 후회가 갈리는 조건':'끌리는 사람의 특징, 편안하게 만나는 속도, 서운함이 반복될 때 확인할 기준';
  return '<section class="reading-preview" data-reading-topic="'+kind+'"><p class="reader-kicker">내 사주 무료 풀이 · 먼저 읽힌 특징</p><h2>'+esc(hook)+'</h2><p class="reading-basis">'+esc(result.name?result.name+'님 · ':'')+'일간 '+esc(result.day.ganKr)+'('+esc(p.wx)+') · 표면 오행 '+esc(p.dom)+' '+(Number(result.wxCount[p.dom])||0)+'개'+(p.ss.length?' · 천간 십신 '+esc(p.ss.join('·')):'')+'</p>'+
- '<figure class="reading-intro-art"><img src="'+esc(career?'/assets/pocha/cinematic/scene-08.webp':reportCoverSource(concept,result))+'" alt="'+(career?'일과 진로의 방향을 살펴보는 사주 상담':money?'돈과 선택을 돌아보는 장면':'마음과 관계를 돌아보는 장면')+'" decoding="async"></figure><section class="reading-point"><h3>'+answer+'</h3><p>일간 '+esc(result.day.ganKr)+'('+esc(p.wx)+')은 <strong>'+esc(t[kind])+'</strong>으로 해석해요.</p><p>표면 오행에서 '+esc(p.dom)+' 기운이 '+(Number(result.wxCount[p.dom])||0)+'개로 나타나는 점도 함께 참고해요. 오행의 개수와 일간은 서로 다른 기준이에요.</p></section>'+
+ '<figure class="reading-intro-art"><img src="'+esc(career?'/assets/pocha/cinematic/scene-08.webp':reportCoverSource(concept,result))+'" alt="'+(career?'일과 진로의 방향을 살펴보는 사주 상담':money?'돈과 선택을 돌아보는 장면':'마음과 관계를 돌아보는 장면')+'" decoding="async"></figure>'+readingComboHtml(concept,result)+'<section class="reading-point"><h3>'+answer+'</h3><p>일간 '+esc(result.day.ganKr)+'('+esc(p.wx)+')은 <strong>'+esc(t[kind])+'</strong>으로 해석해요.</p><p>표면 오행에서 '+esc(p.dom)+' 기운이 '+(Number(result.wxCount[p.dom])||0)+'개로 나타나는 점도 함께 참고해요. 오행의 개수와 일간은 서로 다른 기준이에요.</p></section>'+
  '<section class="reading-point"><h3>'+(career?'잘하는 일인데도 지치는 이유':money?'알아보고 골라도 후회가 남는 이유':'좋아하는데도 같은 고민이 남는 이유')+'</h3><p><strong>'+esc(reason)+'</strong></p><p>'+esc(balance)+'</p></section>'+
  '<section class="reading-point"><h3>내 사주에서 함께 볼 부분</h3><p>'+(role?'입력된 천간 십신 '+esc(p.ss.join('·'))+'에서는 <strong>'+esc(role)+'</strong>도 함께 읽어요.':'일간의 성향과 표면 오행 분포를 함께 읽어 균형을 살펴봐요.')+'</p><p>이 콘텐츠에서는 '+esc(next)+'을 연결해 풀이해요.</p></section><p class="reading-note">일간·표면 오행·확인 가능한 천간 십신과 간이 신강·신약 분류를 활용한 참고 해석이에요. 출생시간을 모르면 시주를 제외하며, 미래의 사건이나 상대의 마음을 확정하지 않아요.</p></section>';
 
@@ -4118,7 +4165,7 @@ function pochaDetail(panels,result){
 }
 function pochaFlow(concept,data,result){
  var plan=pochaPlan(result),rows=data.rows||[],owned=!!data.access.story;
- if(!owned)return '<div class="pocha-reader">'+readingPreviewHtml(concept,result)+pochaOffer(concept,'story')+'</div>';
+ if(!owned)return '<div class="pocha-reader">'+readingPreviewHtml(concept,result)+readingCliffHtml(concept,result)+pochaOffer(concept,'story')+'</div>';
  var html='<div class="pocha-reader">'+readingPreviewHtml(concept,result)+plan.slice(0,20).map(function(_,i){return pochaScene(result,plan,i,owned?rows.slice(i,i+1):[]);}).join('');
 
  html+='<section class="pocha-receipt"><p class="reader-kicker">내 일과 진로의 방향</p><h2>오늘 챙겨갈 것</h2><p>'+esc(POCHA_LENS[storyProfile(result).wx].action)+'</p><span>나에게 맞는 방식인지, 직접 확인해보세요.</span></section>';
@@ -4188,7 +4235,7 @@ function reportSampleHtml(concept,result){
 }
 function storyFlowHtml(concept,data,result){
  if(isPocha(concept))return pochaFlow(concept,data,result);
- if(!data.access.story)return readingPreviewHtml(concept,result)+stageOfferHtml(concept,'story');
+ if(!data.access.story)return readingPreviewHtml(concept,result)+readingCliffHtml(concept,result)+stageOfferHtml(concept,'story');
  var html=readingPreviewHtml(concept,result)+(data.access.story?'<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>':'')+storyOpeningV2(concept,result);
 
  html+=storyPaidScenes(concept,data,result)+'<section class="story-epilogue"><p class="reader-kicker">콘텐츠를 마치며</p><h2>내게 맞는 해석은,<br>경험과 함께 선명해져요.</h2><p>마음에 남은 선택이 있었나요?<br>그 이유와 일상에서 해볼 방법을 더 살펴볼 수 있어요.</p></section>';
@@ -5636,6 +5683,7 @@ function initSajuForm(){
         renderMyRoom();
         attemptInviteRedeem(opts);
         saveMySajuToServer(opts);
+        openPendingReport();
       });
     }catch(err){
       var el=$('#saju-form-error');if(!el){el=document.createElement('p');el.id='saju-form-error';el.className='form-error';el.setAttribute('role','alert');$('#saju-form').appendChild(el);}el.textContent='입력값을 다시 확인해주세요. '+err.message;
