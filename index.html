@@ -3750,6 +3750,7 @@ function reportCoverSource(c,result){
 function reportCardHtml(c){
   var unlocked = reportStageOwned(c,'story'),available=storyCategory(c)!=='unsupported';
   var coverSrc=reportCoverSource(c,STATE.mySaju);
+  if(coverSrc==='/assets/pocha/cinematic/scene-01.webp')coverSrc='/assets/pocha/cinematic/scene-01-thumb.webp';
   var coverInner = coverSrc ? '<img src="'+esc(coverSrc)+'" alt="" loading="lazy" decoding="async">' : '<span class="report-cover-fallback">'+BRAND_MARK_SVG+'</span>';
   return '<button type="button" class="report-card" data-report-id="'+esc(String(c.id))+'" data-cat="'+esc(c.category||'')+'"'+(available?'':' disabled')+'>'+
       '<span class="report-cover">'+coverInner+'</span>'+
