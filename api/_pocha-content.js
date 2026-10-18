@@ -1,4 +1,4 @@
-const concept = {"id": "7c5db9e6-59cb-4a81-8b0a-73da4db7b051", "title": "앞으로 뭐 해 먹고 살지?", "tagline": "내 사주로 살펴보는 일과 진로의 방향", "category": "일·진로", "cover_img_url": "/assets/pocha/cinematic/scene-01.webp", "active": true, "price_krw": 4900, "detail_price_krw": 12900};
+const concept = {"id": "7c5db9e6-59cb-4a81-8b0a-73da4db7b051", "title": "앞으로 뭐 해 먹고 살까?", "tagline": "내 사주로 살펴보는 일과 진로의 방향", "category": "일·진로", "cover_img_url": "/assets/pocha/cinematic/scene-01.webp", "active": true, "price_krw": 4900, "detail_price_krw": 12900};
 const panels = [
   {
     "id": "pocha-0",
