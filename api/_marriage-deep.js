@@ -276,4 +276,5 @@ const questions = [
   {topic: '마음', items: ['다퉜을 때 어떻게 화해하고 싶어?', '어떤 말을 들으면 가장 상처받아?', '나에게 사랑받는다고 느끼는 순간은 언제야?', '서로에게 꼭 지켜줬으면 하는 약속 하나는?']}
 ];
 
-module.exports = {spouseDeep, palacePosition, palaceRel, palaceNone, tenGodPresence, elementLife, strengthDeep, yearAction, monthByRelation, daeunDeep, matchText, matchNote, conflictGuide, roadmap, questions};
+module.exports = {spouseDeep, palacePosition, palaceRel, palaceNone, tenGodPresence, elementLife, strengthDeep, yearAction, monthByRelation, daeunDeep, matchText, matchNote, conflictGuide, roadmap, questions,
+  ...require('./_marriage-deep-view'), ...require('./_marriage-deep-palace'), ...require('./_marriage-deep-more'), ...require('./_marriage-deep-extra')};
