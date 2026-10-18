@@ -25,7 +25,7 @@ test('speech slots stay short and report includes full interpretation',()=>{
  assert.ok(full.includes('세 번째는 리포트에 남아요.'));assert.ok(full.includes('report-evidence'));assert.equal((full.match(/class="report-analysis"/g)||[]).length,12);
 });
 test('separate prices are disclosed before the first checkout',()=>{
- const offer=api.stageOfferHtml(concept,'story');assert.ok(offer.includes('별도 선택 구매 · 12,900원'));assert.ok(offer.includes('별도 선택 구매 · 12,900원'));
+ const offer=api.stageOfferHtml(concept,'story');assert.ok(offer.includes('별도 선택 구매 · <strong>12,900원</strong>'));assert.ok(offer.includes('별도 선택 구매 · <strong>12,900원</strong>'));
  const detail=api.stageOfferHtml(concept,'detail');assert.ok(detail.includes('콘텐츠와 별도 결제'));
 });
 test('a category purchase opens only that category, historic bundle opens all',()=>{
@@ -39,7 +39,7 @@ test('generated prologue wording changes with real saju',()=>{
 
 test('premium report adds substantive personalised chapters',()=>{ const full=api.detailReportHtml(concept,[],result);assert.ok(full.includes('십신으로'));assert.ok(full.includes('일주일 실천'));assert.ok(full.includes('수 6개'));assert.ok(full.replace(/<[^>]*>/g,'').length>3000);});
 
-test('cover and sticky stage labels omit all amounts',()=>{const card=api.reportCardHtml({...concept,price_krw:4900});assert.ok(!card.includes('4,900'));assert.ok(!card.includes('990'));const steps=api.readerStepsHtml({access:{story:false,detail:false}},'story');assert.ok(!steps.includes('원'));assert.ok(api.stageOfferHtml(concept,'detail').includes('12,900'));});
+test('cover and sticky stage labels omit all amounts',()=>{const card=api.reportCardHtml({...concept,price_krw:4900});assert.ok(card.includes('4,900원~'));assert.ok(!card.includes('990'));const steps=api.readerStepsHtml({access:{story:false,detail:false}},'story');assert.ok(!steps.includes('원'));assert.ok(api.stageOfferHtml(concept,'detail').includes('12,900'));});
 
 test('collectible grades use compatibility boundaries and symbolic art uses the partner',()=>{for(const [score,grade] of [[90,'S'],[89,'A'],[70,'A'],[69,'B'],[50,'B'],[49,'C'],[0,'C']])assert.equal(api.myroomTier(score).grade,grade);for(const [wx,key] of [['목','wood'],['화','fire'],['토','earth'],['금','metal'],['수','water']]){const card=api.collectibleCardHtml({id:'test',nameB:'상대',score:95,dayGanWxA:'화',dayGanWxB:wx,cardPolarity:'yin',shinsalB:['dohwa']},false);assert.ok(card.includes('/assets/cards/evolved/'+key+'-yin.webp'));assert.ok(card.includes('data-grade="S"'));assert.ok(card.includes('꽃의 인장'));assert.ok(card.includes('음의 기운'));}});
 
@@ -87,7 +87,7 @@ const birth={year:1990,month:5,day:15,hour:14,minute:30,isLunar:false,unknownTim
 test('depth uses calculated hidden stems and excludes unknown time',()=>{
  const r=api.computeSaju(birth);assert.equal(r.deepPillars.length,4);
  for(const p of r.deepPillars){assert.ok(p.hidden.length>0);assert.equal(p.hidden.length,p.hiddenSS.length);assert.ok(p.hidden.every(x=>/^[가-힣]+$/.test(x)));}
- const text=api.sajuDepthHtml(r);assert.ok(text.includes('지장간'));assert.ok(text.includes('간이 분류'));assert.ok(text.includes('성명학 분석은 제공하지 않습니다'));
+ const text=api.sajuDepthHtml(r);assert.ok(text.includes('지장간'));assert.ok(text.includes('간이 분류'));assert.ok(text.includes('성명학 분석은 제공하지 않아요'));
  const unknown=api.computeSaju({...birth,unknownTime:true});assert.equal(unknown.deepPillars.length,3);assert.ok(api.sajuDepthHtml(unknown).includes('시주의 지장간은 제외'));
 });
 test('name changes salutation only and input explains its scope',()=>{
@@ -115,7 +115,7 @@ test('each element changes the response and concrete next action across both the
 });
 test('second offer follows the full story and a real personalised sample',()=>{
  const owned=api.storyFlowHtml(concept,{access:{story:true,detail:false},rows:[]},result);assert.ok(owned.indexOf('scene-11')<owned.indexOf('report-real-sample'));assert.ok(owned.indexOf('report-real-sample')<owned.indexOf('data-gate="detail"'));assert.ok(owned.includes('수 6개'));assert.ok(!owned.includes('report-sample-lines'));assert.ok(!owned.includes('sample-lock'));
- const free=api.storyFlowHtml(concept,{access:{story:false,detail:false},rows:[]},result);assert.ok(!free.includes('data-gate="detail"'));assert.ok(free.includes('별도 선택 구매 · 12,900원'));
+ const free=api.storyFlowHtml(concept,{access:{story:false,detail:false},rows:[]},result);assert.ok(!free.includes('data-gate="detail"'));assert.ok(free.includes('별도 선택 구매 · <strong>12,900원</strong>'));
 });
 test('new categories cannot silently reuse the romance story',()=>{assert.equal(api.storyCategory({category:'직장'}),'unsupported');const card=api.reportCardHtml({id:'new',title:'직장 이야기',category:'직장'});assert.ok(card.includes(' disabled'));assert.ok(card.includes('준비 중'));assert.ok(!card.includes('4,900'));});
 
@@ -128,7 +128,7 @@ test('content navigation and cards are neutral about format and future themes',(
 test('pocha opening, owned story and detail respect separate gates with career-specific text',()=>{
  const {concept:c,panels}=require('../api/_pocha-content');
  const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[{caption_template:'DO_NOT_LEAK'}]},result);
- assert.equal((free.match(/class="pocha-scene"/g)||[]).length,0);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('별도 선택 구매 · 12,900원'));assert.ok(!free.includes('data-gate="detail"'));
+ assert.equal((free.match(/class="pocha-scene"/g)||[]).length,0);assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('별도 선택 구매 · <strong>12,900원</strong>'));assert.ok(!free.includes('data-gate="detail"'));
  const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels},result);
  assert.equal((paid.match(/class="pocha-scene"/g)||[]).length,20);assert.ok(paid.includes('오늘 챙겨갈 것'));assert.ok(!paid.includes('data-gate="story"'));assert.ok(paid.indexOf('오늘 챙겨갈 것')<paid.indexOf('data-gate="detail"'));
  const full=api.storyFlowHtml(c,{access:{story:true,detail:true},rows:panels,detailRows:panels},result);
@@ -181,10 +181,10 @@ test('all three catalogue covers match reader art and never load the retired aun
  const {presentConcept}=require('../api/_report-presentation'),{concept:c}=require('../api/_pocha-content');
  const love=presentConcept({id:'운명의-사람은-언제-올까-fyq1z',category:'연애'});
  const money=presentConcept({id:'타고난-재물복은-얼마나-될까-k7dxw',category:'재물'});
- assert.equal(love.title,'나는 왜 이런 사랑을 할까?');assert.equal(money.title,'나는 돈 앞에서 왜 이럴까?');
+ assert.equal(love.title,'연애 사주');assert.equal(money.title,'재물 사주');
  for(const row of [love,money,c]){
   const cover=api.reportCoverSource(row,result);assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',cover)));
-  assert.ok(api.reportCardHtml(row).includes(cover));assert.ok(!row.tagline.includes('타이밍'));
+  assert.ok(api.reportCardHtml(row).includes(cover.replace('scene-01.webp','scene-01-thumb.webp')));assert.ok(!row.tagline.includes('타이밍'));
  }
  assert.ok(api.reportCoverSource(love,{...result,gender:'m'}).includes('love-m-2'));
  assert.ok(api.reportCoverSource(money,{...result,gender:'m'}).includes('wealth-m-0'));
