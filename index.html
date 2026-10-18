@@ -1100,7 +1100,7 @@ body{background:#ece7e5;letter-spacing:-.025em}.app{background:var(--bg);box-sha
 
         <div class="field">
           <label for="f-date">생년월일</label>
-          <input type="date" id="f-date" required min="1900-01-01" value="1996-05-15">
+          <input type="date" id="f-date" required min="1900-01-01" max="2030-12-31">
           <p class="hint" id="date-hint" hidden>음력을 선택했다면 음력 연·월·일 숫자를 그대로 입력하세요.</p>
         </div>
 
@@ -3241,7 +3241,7 @@ function personFieldsHtml(suffix, titleLabel){
       '<div class="field"><label>달력</label><div class="seg" id="c-calendar-'+suffix+'"><button type="button" data-val="solar" class="active">양력</button><button type="button" data-val="lunar">음력</button></div></div>'+
     '</div>'+
     '<label class="check-row" id="c-leap-row-'+suffix+'" hidden><input type="checkbox" id="c-leap-'+suffix+'">윤달이에요</label>'+
-    '<div class="field"><label for="c-date-'+suffix+'">생년월일</label><input type="date" id="c-date-'+suffix+'" min="1900-01-01" value="1996-05-15"></div>'+
+    '<div class="field"><label for="c-date-'+suffix+'">생년월일</label><input type="date" id="c-date-'+suffix+'" min="1900-01-01" max="2030-12-31"></div>'+
     '<div class="two-col">'+
       '<div class="field"><label for="c-time-'+suffix+'">출생시간</label><input type="time" id="c-time-'+suffix+'" value="12:00"></div>'+
       '<div class="field" style="justify-content:flex-end;"><label class="check-row"><input type="checkbox" id="c-unknown-'+suffix+'">시간 모름</label></div>'+
