@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="사주팔자 분석, 오늘의 운세, 궁합보기를 한 곳에서 — SAZUBARA">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=5">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=5">
+<meta name="description" content="무료 사주풀이, 오늘의 운세, 궁합보기를 한 곳에서. 내 사주를 별 카드로 모아보는 별첩사주.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=6">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=6">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="사주바라">
-<meta property="og:title" content="사주바라 — 사주풀이 · 오늘의 운세 · 궁합보기">
-<meta property="og:description" content="나의 성향부터 오늘의 흐름, 서로의 궁합까지. 사주바라에서 만나보세요.">
-<meta property="og:image" content="https://sazubara-web.vercel.app/og-image-v2.jpg">
-<meta property="og:image:alt" content="라벤더빛 카드와 사주바라 로고">
+<meta property="og:site_name" content="별첩사주">
+<meta property="og:title" content="별첩사주 — 사주풀이 · 오늘의 운세 · 궁합보기">
+<meta property="og:description" content="나의 성향부터 오늘의 흐름, 서로의 궁합까지. 별첩사주에서 만나보세요.">
+<meta property="og:image" content="https://sazubara-web.vercel.app/og-image-v3.jpg">
+<meta property="og:image:alt" content="라벤더빛 카드와 별첩사주 로고">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="사주바라 — 사주풀이 · 오늘의 운세 · 궁합보기">
-<meta name="twitter:image" content="https://sazubara-web.vercel.app/og-image-v2.jpg">
-<title>사주바라 — 나의 사주, 오늘의 흐름</title>
+<meta name="twitter:title" content="별첩사주 — 사주풀이 · 오늘의 운세 · 궁합보기">
+<meta name="twitter:image" content="https://sazubara-web.vercel.app/og-image-v3.jpg">
+<title>별첩사주 — 무료 사주풀이 · 오늘의 운세 · 궁합</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600&display=swap" rel="stylesheet">
@@ -832,7 +832,7 @@ img{max-width:100%;}
 }
 </style>
 <style>
-/* 사주바라 화면 정리: 읽기 쉬운 카드와 포스터 중심 탐색 */
+/* 별첩사주 화면 정리: 읽기 쉬운 카드와 포스터 중심 탐색 */
 :root{--fg-muted:#b4bdd3;--fg-faint:#929db9;--border:rgba(190,202,239,.12);--shadow:0 6px 20px rgba(0,0,0,.16);}
 html{min-height:100%;scroll-padding-top:90px;}
 body{background:radial-gradient(ellipse at 50% 0,rgba(37,48,85,.28),transparent 55%),var(--bg);}
@@ -1048,7 +1048,7 @@ body{background:#ece7e5;letter-spacing:-.025em}.app{background:var(--bg);box-sha
 <div class="app">
   <header class="app-header">
     <div class="title-col">
-      <span class="mark brand-mark"><span class="brand-ic" id="brand-mark-ic"></span>사주바라</span>
+      <span class="mark brand-mark"><span class="brand-ic" id="brand-mark-ic"></span>별첩사주</span>
       <span class="sub">오늘의 운세 · 궁합</span>
     </div>
     <div class="header-actions">
@@ -1065,7 +1065,7 @@ body{background:#ece7e5;letter-spacing:-.025em}.app{background:var(--bg);box-sha
 
       <form class="card" id="saju-form">
         <div>
-          <img class="brand-hero" src="og-image.jpg" alt="달빛 아래 두 인물과 사주바라 브랜드" width="1200" height="630" fetchpriority="high">
+          <img class="brand-hero" src="og-image.jpg?v=2" alt="달빛 아래 두 인물과 별첩사주 브랜드" width="1200" height="630" fetchpriority="high">
           <p class="eyebrow">내 사주 속, 아직 몰랐던 이야기</p>
           <h1 class="section-title">나는 어떤 사람일까?</h1>
           <p class="section-desc">생년월일만 알려주면 돼요. 타고난 성격부터 숨겨진 기운, 오늘의 흐름까지 무료로 풀어드려요.</p>
@@ -2296,26 +2296,26 @@ function loadKakaoSdk(){
   });
   return _kakaoSdkPromise;
 }
-var KAKAO_SHARE_IMAGE = 'https://sazubara-web.vercel.app/og-image-v2.jpg';
+var KAKAO_SHARE_IMAGE = 'https://sazubara-web.vercel.app/og-image-v3.jpg';
 function kakaoShare(text, url, buttonTitle){
   return loadKakaoSdk().then(function(Kakao){
     Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: '사주바라',
+        title: '별첩사주',
         description: text,
         imageUrl: KAKAO_SHARE_IMAGE,
         link: { mobileWebUrl: url, webUrl: url }
       },
       buttons: [{
-        title: buttonTitle || '사주바라 열어보기',
+        title: buttonTitle || '별첩사주 열어보기',
         link: { mobileWebUrl: url, webUrl: url }
       }]
     });
   });
 }
 /* 궁합/오늘의 운세/사주요약 공유카드(동적으로 생성된 PNG blob)를 카카오 피드 카드의
-   이미지로 올려서, 누르면 바로 사주바라로 랜딩되는 "초대 메시지" 형태로 공유한다.
+   이미지로 올려서, 누르면 바로 별첩사주로 랜딩되는 "초대 메시지" 형태로 공유한다.
    Kakao.Share.uploadImage는 1회성 이미지 업로드 API — 업로드된 imageUrl을 피드 카드에 꽂아 보낸다. */
 function kakaoShareImage(title, text, blob, url, buttonTitle){
   return loadKakaoSdk().then(function(Kakao){
@@ -2330,7 +2330,7 @@ function kakaoShareImage(title, text, blob, url, buttonTitle){
           link: { mobileWebUrl: url, webUrl: url }
         },
         buttons: [{
-          title: buttonTitle || '사주바라에서 확인하기',
+          title: buttonTitle || '별첩사주에서 확인하기',
           link: { mobileWebUrl: url, webUrl: url }
         }]
       });
@@ -2358,10 +2358,10 @@ function maybeAwardShareBonus(){
 }
 function doShare(){
   var url = shareUrl();
-  var text = (STATE.mySaju&&STATE.mySaju.name? STATE.mySaju.name+'님이 ':'')+'사주바라에서 사주풀이·오늘의 운세·궁합을 확인해보세요! 생년월일을 입력하고 서로의 궁합도 확인해보세요 ✨';
+  var text = (STATE.mySaju&&STATE.mySaju.name? STATE.mySaju.name+'님이 ':'')+'별첩사주에서 사주풀이·오늘의 운세·궁합을 확인해보세요! 생년월일을 입력하고 서로의 궁합도 확인해보세요 ✨';
   kakaoShare(text, url).then(maybeAwardShareBonus).catch(function(){
   if (navigator.share){
-    navigator.share({ title:'사주바라', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
+    navigator.share({ title:'별첩사주', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
   } else {
     copyToClipboard(text+'\n'+url);
     showToast('초대 링크가 복사됐어요. 카카오톡에 붙여넣어 공유해보세요!');
@@ -2383,7 +2383,7 @@ function doShare(){
                showToast('링크를 보냈어요! 상대방이 입력하면 나의 카드첩에서 서로 궁합을 확인할 수 있어요.');
         }).catch(function(){
                if (navigator.share){
-                        navigator.share({ title:'사주바라 궁합', text:text, url:url }).then(function(){
+                        navigator.share({ title:'별첩사주 궁합', text:text, url:url }).then(function(){
                                    maybeAwardShareBonus();
                                    showToast('링크를 보냈어요! 상대방이 입력하면 나의 카드첩에서 서로 궁합을 확인할 수 있어요.');
                         }).catch(function(){});
@@ -2432,7 +2432,7 @@ function startUnlock(unlockKey, priceKrw, label){
     tp.requestPayment('카드', {
       amount: priceKrw,
       orderId: orderId,
-      orderName: '사주바라 — ' + label,
+      orderName: '별첩사주 — ' + label,
       successUrl: location.origin + '/success.html?type=unlock&unlockKey=' + encodeURIComponent(unlockKey)+'&tab='+encodeURIComponent(location.hash.replace('#','')||'saju'),
       failUrl: location.origin + '/fail.html'
     });
@@ -2591,7 +2591,7 @@ function personaIconSvg(bg, inner){
       '<circle cx="32" cy="32" r="32" fill="'+bg+'"/>'+inner+'</svg>';
 }
 /* 태극의 유동적인 소용돌이 곡선 + 꼬리 끝의 별 — 동양 철학의 흐름과 점성술의 반짝임을 함께 담은 브랜드 마크 */
-var BRAND_MARK_SVG = '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none"><rect x="2" y="2" width="44" height="44" rx="14" fill="#eee4f3"/><g stroke="#8f6a9f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 24C16 23 11 19 12 13c6-1 10 4 12 11Z"/><path d="M24 24c1-8 5-13 11-12 1 6-4 10-11 12Z"/><path d="M24 24c8 1 13 5 12 11-6 1-10-4-12-11Z"/><path d="M24 24c-1 8-5 13-11 12-1-6 4-10 11-12Z"/></g><path d="m24 19 5 5-5 5-5-5Z" fill="#b99ac9"/><g fill="#ae8cbf"><circle cx="24" cy="8" r="1.2"/><circle cx="40" cy="24" r="1.2"/><circle cx="24" cy="40" r="1.2"/><circle cx="8" cy="24" r="1.2"/></g></svg>';
+var BRAND_MARK_SVG = '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none"><rect x="2" y="2" width="44" height="44" rx="14" fill="#eee4f3"/><g stroke="#8f6a9f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 37c-3.6-2.4-7.6-3.2-12-2.6V19.6c4.4-.6 8.4.2 12 2.6"/><path d="M24 37c3.6-2.4 7.6-3.2 12-2.6V19.6c-4.4-.6-8.4.2-12 2.6"/><path d="M24 22.2V37"/></g><path d="M24 6.5l1.5 3.6 3.6 1.5-3.6 1.5L24 16.7l-1.5-3.6-3.6-1.5 3.6-1.5Z" fill="#b99ac9" stroke="#8f6a9f" stroke-width="1.2" stroke-linejoin="round"/><g fill="#8f6a9f"><circle cx="13" cy="11" r="1.2"/><circle cx="35" cy="11" r="1.2"/><circle cx="31" cy="15.5" r=".9"/></g></svg>';
 /* 리빌 오버레이 전용 — 계속 회전하는 로딩 마크라 방사 대칭인 반짝임 모양을 그대로 유지 */
 var REVEAL_SPARK_SVG = personaIconSvg('#f3ece0',
   '<path d="M32 12c1.6 11 3.4 16.6 14 18-10.6 1.4-12.4 7-14 18-1.6-11-3.4-16.6-14-18 10.6-1.4 12.4-7 14-18z" fill="#9c6b1f"/>'
@@ -3671,7 +3671,7 @@ var CARD_TYPES=[
 ];
 function cardTypeOf(entry){return CARD_TYPES.find(function(t){return t.stem===entry.dayGanB;})||CARD_TYPES.find(function(t){return t.wx===entry.dayGanWxB&&t.polarity===entry.cardPolarity;})||null;}
 function cardDexEntries(list){return CARD_TYPES.reduce(function(out,type){MYROOM_TIERS.forEach(function(tier){var matches=list.filter(function(e){var t=cardTypeOf(e);return t&&t.id===type.id&&myroomTier(e.score).key===tier.key;});out.push({id:type.id+'-'+tier.key,type:type,tier:tier,entry:matches[0]||null,count:matches.length});});return out;},[]);}
-function cardBackHtml(row,extra){return '<div class="card-back '+(extra||'')+'" aria-label="미보유 · '+esc(row.type.title)+' · '+row.tier.grade+'등급"><span class="card-back-grade">'+row.tier.grade+'</span><span class="card-back-mark">'+BRAND_MARK_SVG+'</span><span class="card-back-brand">SAZUBARA</span><small>'+esc(row.type.wx)+' · '+(row.type.polarity==='yang'?'양':'음')+'</small><span class="card-back-label">아직 만나지 않은 인연</span></div>';}
+function cardBackHtml(row,extra){return '<div class="card-back '+(extra||'')+'" aria-label="미보유 · '+esc(row.type.title)+' · '+row.tier.grade+'등급"><span class="card-back-grade">'+row.tier.grade+'</span><span class="card-back-mark">'+BRAND_MARK_SVG+'</span><span class="card-back-brand">BYEOLCHEOP</span><small>'+esc(row.type.wx)+' · '+(row.type.polarity==='yang'?'양':'음')+'</small><span class="card-back-label">아직 만나지 않은 인연</span></div>';}
 function cardAlbumEmptyHtml(){var rows=cardDexEntries([]).filter(function(r){return r.tier.key==='a';}).slice(0,6);return '<div class="album-page-label"><span>MY CONNECTIONS</span><span>01 / ∞</span></div><div class="myroom-grid card-album-empty">'+rows.map(function(r){return cardBackHtml(r);}).join('')+'</div>';}
 function closeMyroomDex(){var root=$('#myroom-sheet-root');if(root)root.innerHTML='';}
 function openMyroomDex(){
@@ -3876,7 +3876,7 @@ function startReportUnlock(concept,stage){
   Promise.all([loadTossSdk(),fetch('/api/reports/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'prepare',deviceId:DEVICE.shareCode,conceptId:concept.id,stage:stage})}).then(function(r){return r.json();}).then(function(data){if(!data.ok){var error=new Error(data.message||'결제 준비에 실패했어요.');error.code=data.error;throw error;}return data;})]).then(function(values){
     var ctx=values[0],checkout=values[1];
     return ctx.TossPayments(ctx.clientKey).requestPayment('카드',{
-      amount:checkout.amount,orderId:checkout.orderId,orderName:'사주바라 '+(stage==='story'?'콘텐츠':'심층 리포트')+' — '+concept.title,
+      amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+(stage==='story'?'콘텐츠':'심층 리포트')+' — '+concept.title,
       successUrl:location.origin+'/success.html?type=report&conceptId='+encodeURIComponent(concept.id)+'&stage='+stage+'&quote='+encodeURIComponent(checkout.quote),
       failUrl:location.origin+'/fail.html?report='+encodeURIComponent(concept.id)+'&stage='+stage
     });
@@ -5075,9 +5075,9 @@ function shareCardFooter(ctx, W, dividerY, hookLine){
   ctx.fillStyle='#f3e6c8'; ctx.font='700 32px "Noto Serif KR", serif';
   ctx.fillText(hookLine, W/2, dividerY+64);
   ctx.fillStyle='#e0ad55'; ctx.font='700 24px "Noto Sans KR", sans-serif';
-  ctx.fillText('사주바라에서 무료로 확인하기', W/2, dividerY+110);
+  ctx.fillText('별첩사주에서 무료로 확인하기', W/2, dividerY+110);
   ctx.fillStyle='#767e94'; ctx.font='400 19px "Noto Sans KR", sans-serif';
-  ctx.fillText('sazubara.app', W/2, dividerY+146);
+  ctx.fillText(location.host, W/2, dividerY+146);
 }
 function buildCompatShareCard(resA, resB, compat, total){
   var W=1080, H=1650;
@@ -5103,7 +5103,7 @@ function buildCompatShareCard(resA, resB, compat, total){
     ctx.textAlign='center'; ctx.textBaseline='alphabetic';
     ctx.fillStyle='#e0ad55';
     ctx.font='700 38px "Noto Serif KR", serif';
-    ctx.fillText('사주바라 궁합', W/2, 146);
+    ctx.fillText('별첩사주 궁합', W/2, 146);
     ctx.fillStyle='#a1a8bd';
     ctx.font='400 23px "Noto Sans KR", sans-serif';
     ctx.fillText('사주로 보는 우리 궁합', W/2, 188);
@@ -5204,7 +5204,7 @@ function buildDailyShareCard(my){
     ctx.textAlign='center'; ctx.textBaseline='alphabetic';
     ctx.fillStyle='#e0ad55';
     ctx.font='700 38px "Noto Serif KR", serif';
-    ctx.fillText('사주바라 오늘의 운세', W/2, 146);
+    ctx.fillText('별첩사주 오늘의 운세', W/2, 146);
     ctx.fillStyle='#a1a8bd';
     ctx.font='400 23px "Noto Sans KR", sans-serif';
     ctx.fillText(now.getFullYear()+'년 '+(now.getMonth()+1)+'월 '+now.getDate()+'일 ('+weekKr+') · '+(my.name?my.name+'님':'나')+' 기준', W/2, 188);
@@ -5295,7 +5295,7 @@ function buildSajuShareCard(result){
     ctx.textAlign='center'; ctx.textBaseline='alphabetic';
     ctx.fillStyle='#e0ad55';
     ctx.font='700 38px "Noto Serif KR", serif';
-    ctx.fillText('사주바라 사주풀이', W/2, 146);
+    ctx.fillText('별첩사주 사주풀이', W/2, 146);
     ctx.fillStyle='#a1a8bd';
     ctx.font='400 23px "Noto Sans KR", sans-serif';
     ctx.fillText('나의 사주팔자', W/2, 188);
@@ -5379,7 +5379,7 @@ function buildReportShareCard(concept, panels, result){
     ctx.textAlign='center'; ctx.textBaseline='alphabetic';
     ctx.fillStyle='#e0ad55';
     ctx.font='700 32px "Noto Serif KR", serif';
-    ctx.fillText('사주바라 이야기', W/2, 142);
+    ctx.fillText('별첩사주 이야기', W/2, 142);
 
     var avR=78, avY=290;
     drawShareAvatar(ctx, avImg, W/2, avY, avR, (result.name||'나').charAt(0));
@@ -5421,7 +5421,7 @@ function downloadCanvasImage(canvas, filename, toastMsg){
 }
 function fallbackTextShare(text, url, title){
   if (navigator.share){
-    navigator.share({ title:title||'사주바라', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
+    navigator.share({ title:title||'별첩사주', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
   } else {
     copyToClipboard(text+'\n'+url);
     showToast('공유 텍스트가 복사됐어요. 카카오톡에 붙여넣어 보내보세요!');
@@ -5437,50 +5437,50 @@ function isKakaoInApp(){
 }
 function doShareCompat(resA, resB, total, compat){
   var url = shareUrl();
-  var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+' 궁합 점수는 '+total+'점! 사주바라에서 우리 궁합도 확인해보세요 💕';
-  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '사주바라 궁합'); return; }
+  var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+' 궁합 점수는 '+total+'점! 별첩사주에서 우리 궁합도 확인해보세요 💕';
+  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '별첩사주 궁합'); return; }
   buildCompatShareCard(resA, resB, compat, total).then(function(canvas){
     canvas.toBlob(function(blob){
-      if (!blob){ fallbackTextShare(text, url, '사주바라 궁합'); return; }
-      shareImageBlob(canvas, blob, text, url, 'sazubara-compat.png', '사주바라 궁합', '우리 궁합 확인하기');
+      if (!blob){ fallbackTextShare(text, url, '별첩사주 궁합'); return; }
+      shareImageBlob(canvas, blob, text, url, 'byeolcheop-compat.png', '별첩사주 궁합', '우리 궁합 확인하기');
     }, 'image/png', 0.95);
-  }).catch(function(){ fallbackTextShare(text, url, '사주바라 궁합'); });
+  }).catch(function(){ fallbackTextShare(text, url, '별첩사주 궁합'); });
 }
 function doShareDaily(my){
   var url = shareUrl();
   var today = todayGanZhi();
   var ssKey = dailyShishenKey(my.day.gan, my.dayGanWx, today.gan, today.wxGan);
   var ft = FORTUNE_TEXT[ssKey];
-  var text = (my.name?my.name+'님의':'나의')+' 오늘 기운은 "'+ft.label+'"! 사주바라에서 오늘의 운세를 확인해보세요 🔮';
-  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '사주바라 오늘의 운세'); return; }
+  var text = (my.name?my.name+'님의':'나의')+' 오늘 기운은 "'+ft.label+'"! 별첩사주에서 오늘의 운세를 확인해보세요 🔮';
+  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '별첩사주 오늘의 운세'); return; }
   buildDailyShareCard(my).then(function(canvas){
     canvas.toBlob(function(blob){
-      if (!blob){ fallbackTextShare(text, url, '사주바라 오늘의 운세'); return; }
-      shareImageBlob(canvas, blob, text, url, 'sazubara-today.png', '사주바라 오늘의 운세', '오늘 운세 확인하기');
+      if (!blob){ fallbackTextShare(text, url, '별첩사주 오늘의 운세'); return; }
+      shareImageBlob(canvas, blob, text, url, 'byeolcheop-today.png', '별첩사주 오늘의 운세', '오늘 운세 확인하기');
     }, 'image/png', 0.95);
-  }).catch(function(){ fallbackTextShare(text, url, '사주바라 오늘의 운세'); });
+  }).catch(function(){ fallbackTextShare(text, url, '별첩사주 오늘의 운세'); });
 }
 function doShareSaju(result){
   var url = shareUrl();
-  var text = (result.name?result.name+'님의':'나의')+' 사주를 사주바라에서 무료로 풀어보세요 ✨';
-  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '사주바라 내 사주'); return; }
+  var text = (result.name?result.name+'님의':'나의')+' 사주를 별첩사주에서 무료로 풀어보세요 ✨';
+  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '별첩사주 내 사주'); return; }
   buildSajuShareCard(result).then(function(canvas){
     canvas.toBlob(function(blob){
-      if (!blob){ fallbackTextShare(text, url, '사주바라 내 사주'); return; }
-      shareImageBlob(canvas, blob, text, url, 'sazubara-saju.png', '사주바라 내 사주', '내 사주 확인하기');
+      if (!blob){ fallbackTextShare(text, url, '별첩사주 내 사주'); return; }
+      shareImageBlob(canvas, blob, text, url, 'byeolcheop-saju.png', '별첩사주 내 사주', '내 사주 확인하기');
     }, 'image/png', 0.95);
-  }).catch(function(){ fallbackTextShare(text, url, '사주바라 내 사주'); });
+  }).catch(function(){ fallbackTextShare(text, url, '별첩사주 내 사주'); });
 }
 function doShareReport(concept, panels, result){
   var url = shareUrl();
-  var text = '"'+concept.title+'" 이야기, 사주바라에서 확인해보세요 ✨';
-  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '사주바라 이야기'); return; }
+  var text = '"'+concept.title+'" 이야기, 별첩사주에서 확인해보세요 ✨';
+  if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '별첩사주 이야기'); return; }
   buildReportShareCard(concept, panels, result).then(function(canvas){
     canvas.toBlob(function(blob){
-      if (!blob){ fallbackTextShare(text, url, '사주바라 이야기'); return; }
-      shareImageBlob(canvas, blob, text, url, 'sazubara-report.png', '사주바라 이야기', '이야기 확인하기');
+      if (!blob){ fallbackTextShare(text, url, '별첩사주 이야기'); return; }
+      shareImageBlob(canvas, blob, text, url, 'byeolcheop-report.png', '별첩사주 이야기', '이야기 확인하기');
     }, 'image/png', 0.95);
-  }).catch(function(){ fallbackTextShare(text, url, '사주바라 이야기'); });
+  }).catch(function(){ fallbackTextShare(text, url, '별첩사주 이야기'); });
 }
 /* 공유 카드(canvas) 공유 — 우선순위:
    1) kakaoShareImage: 카드 이미지를 카카오에 업로드해서 그 이미지가 꽂힌 피드 카드로 공유.
@@ -5742,7 +5742,7 @@ function openSiteMenu(){
   $('#btn-open-menu').setAttribute('aria-expanded','true');
   var rows=[['archive','보유 콘텐츠','구매한 콘텐츠와 리포트 다시 보기'],['saju','사주풀이','타고난 성향과 나의 강점'],['today','오늘의 운세','오늘부터 올해까지의 흐름'],['compat','궁합보기','두 사람의 기운과 관계'],['reports','콘텐츠','관심 있는 주제 둘러보기']];
   root.innerHTML='<div class="menu-backdrop" id="menu-backdrop"><aside class="site-menu" role="dialog" aria-modal="true" aria-labelledby="menu-title">'+
-    '<div class="menu-top"><h2 id="menu-title">사주바라</h2><button type="button" class="header-icon-btn" id="menu-close" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button></div>'+
+    '<div class="menu-top"><h2 id="menu-title">별첩사주</h2><button type="button" class="header-icon-btn" id="menu-close" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button></div>'+
     '<button type="button" class="menu-profile" id="menu-account" aria-expanded="false" aria-controls="menu-auth"><span class="menu-profile-mark">'+BRAND_MARK_SVG+'</span><span><strong id="menu-account-name">로그인하고 함께하기</strong><small id="menu-account-desc">카카오로 간편하게 시작해보세요</small></span></button>'+
     '<div class="menu-auth" id="menu-auth" hidden></div>'+
     '<div class="menu-nav">'+rows.map(function(row){return '<button type="button" class="menu-row" data-menu-tab="'+row[0]+'"><span class="menu-row-icon">'+MENU_ICONS[row[0]]+'</span><span><strong>'+row[1]+'</strong><small>'+row[2]+'</small></span><span class="menu-chevron" aria-hidden="true">›</span></button>';}).join('')+'</div>'+
@@ -5809,7 +5809,7 @@ function renderAuthPanel(){
   }
   var kakao='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.5 2 10.8c0 2.8 1.9 5.2 4.8 6.6l-1 3.5c-.1.4.2.6.5.4l4.2-2.7H12c5.5 0 10-3.5 10-7.8S17.5 3 12 3Z"/></svg>';
   function provider(id,label,icon){var available=AUTH.settingsLoaded&&AUTH.providers[id]===true;return '<button type="button" class="login-provider login-'+id+'" data-login-provider="'+id+'"'+(available?'':' disabled')+'>'+icon+'<span>'+label+'</span>'+(!available?'<span class="login-status">'+(AUTH.settingsLoaded?'준비 중':'확인 중')+'</span>':'')+'</button>';}
-  panel.innerHTML='<h3>사주바라에 오신 걸 환영해요</h3><p>카카오 계정으로 간편하게 시작하세요.</p>'+provider('kakao','카카오로 시작하기',kakao)+'<p id="menu-auth-message" role="status">'+(AUTH.settingsLoaded&&!AUTH.providers.kakao?'카카오 로그인은 연결을 준비하고 있어요. 사주풀이는 로그인 없이 이용할 수 있어요.':'')+'</p>';
+  panel.innerHTML='<h3>별첩사주에 오신 걸 환영해요</h3><p>카카오 계정으로 간편하게 시작하세요.</p>'+provider('kakao','카카오로 시작하기',kakao)+'<p id="menu-auth-message" role="status">'+(AUTH.settingsLoaded&&!AUTH.providers.kakao?'카카오 로그인은 연결을 준비하고 있어요. 사주풀이는 로그인 없이 이용할 수 있어요.':'')+'</p>';
   $all('[data-login-provider]',panel).forEach(function(button){button.addEventListener('click',async function(){button.disabled=true;var message=$('#menu-auth-message');message.textContent='로그인 페이지로 이동 중...';try{var client=await initAuth();var result=await client.auth.signInWithOAuth({provider:button.dataset.loginProvider,options:{redirectTo:window.location.origin+window.location.pathname}});if(result.error)throw result.error;}catch(e){button.disabled=false;message.textContent='로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.';}});});
   if(!AUTH.settingsLoaded)loadAuthProviders().then(function(){if(panel.isConnected&&!panel.hidden)renderAuthPanel();}).catch(function(){var message=$('#menu-auth-message');if(message)message.textContent='로그인 연결을 확인하지 못했어요. 메뉴를 닫고 다시 열어주세요.';});
 }

@@ -1,4 +1,6 @@
-# SAZUBARA — 독립 웹 배포판
+# 별첩사주 (구 SAZUBARA) — 독립 웹 배포판
+
+> 2026-10-18 서비스명을 사주바라 → 별첩사주로 변경했어요. 저장소·Vercel·Supabase 프로젝트 이름은 아직 `sazubara`를 그대로 씁니다.
 
 claude.ai Artifact(`https://claude.ai/artifact/HaGiD9QkHwJfVJbo6J6s9V`)로 만들었던 사주바라를,
 자체 도메인에서 돌릴 수 있는 일반 웹사이트 형태로 옮긴 버전입니다. UI·콘텐츠·사주 계산 로직은
