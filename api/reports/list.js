@@ -1,6 +1,6 @@
 const { editPanel } = require('../_report-editorial');
 const { presentConcept } = require('../_report-presentation');
-const pocha = require('../_pocha-content');
+const career = require('../_career-content');
 const marriage = require('../_marriage-content');
 const { sbFetch, getQuery, checkAdminSecret } = require('../_supabase');
 const { STAGE_PRICE, rowsAt, reportAccess } = require('../_report-access');
@@ -22,9 +22,9 @@ module.exports = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
   const q = getQuery(req), conceptId = q.conceptId || '';
   try {
-    if (conceptId === pocha.concept.id) {
+    if (conceptId === career.concept.id) {
       const access = await reportAccess(q.device_id || '', conceptId);
-      return res.status(200).json({ok:true, rows:access.story ? pocha.panels : pocha.panels.slice(0,6), detailRows:access.detail ? pocha.panels : [], access, preview:!access.story, storyCount:pocha.panels.length});
+      return res.status(200).json({ok:true, rows:access.story ? [career.story] : [], detailRows:access.detail ? [career.detail] : [], access, preview:!access.story, storyCount:1});
     }
     if (conceptId === marriage.concept.id) {
       const access = await reportAccess(q.device_id || '', conceptId);
@@ -52,6 +52,6 @@ module.exports = async (req, res) => {
     const r = await sbFetch('/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,price_krw,category&order=sort_order.asc');
     if (!r.ok) throw new Error('QUERY_FAILED');
     const rows = (await r.json()).map(c => ({ ...presentConcept(c), price_krw: STAGE_PRICE.story, detail_price_krw: STAGE_PRICE.detail }));
-    res.status(200).json({ ok: true, rows: rows.concat([pocha.concept, marriage.concept]) });
+    res.status(200).json({ ok: true, rows: rows.concat([career.concept, marriage.concept]) });
   } catch (e) { res.status(500).json({ ok: false, error: 'SERVER_ERROR' }); }
 };

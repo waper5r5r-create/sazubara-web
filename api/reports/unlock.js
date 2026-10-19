@@ -1,6 +1,6 @@
-const pocha = require('../_pocha-content');
+const career = require('../_career-content');
 const marriage = require('../_marriage-content');
-const STATIC_CONCEPTS = {[pocha.concept.id]: pocha.concept, [marriage.concept.id]: marriage.concept};
+const STATIC_CONCEPTS = {[career.concept.id]: career.concept, [marriage.concept.id]: marriage.concept};
 // Two independent purchases; historic report_unlocks still grants both stages.
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('../_supabase');
 const { STAGE_PRICE, STAGES, stageKey, rowsAt, reportAccess } = require('../_report-access');

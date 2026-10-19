@@ -90,16 +90,16 @@ test('generic payment rejects mismatched approval and reused orders',async()=>{
  const r=await call(unlock,'POST','/api/unlock',{paymentKey:'test',orderId:'reused',amount:990,deviceId:'test-device',unlockKey:'feature-today-premium'});assert.equal(r.error,'ORDER_CONFLICT');assert.equal(confirms,0);
 });
 
-test('pocha catalogue, two paid stages and protected report work without a database concept row',async()=>{
- reset();const c=require('../api/_pocha-content').concept;
+test('career catalogue, two paid stages and protected report work without a database concept row',async()=>{
+ reset();const c=require('../api/_career-content').concept;
  const catalogue=await call(listReports,'GET','/api/reports/list');assert.equal(catalogue.rows.filter(x=>x.id===c.id).length,1);
  const url='/api/reports/list?conceptId='+c.id+'&device_id=test-device';
- const free=await call(listReports,'GET',url);assert.equal(free.rows.length,6);assert.equal(free.detailRows.length,0);
+ const free=await call(listReports,'GET',url);assert.equal(free.rows.length,0);assert.equal(free.detailRows.length,0);
  assert.equal((await call(reportUnlock,'POST','/api/reports/unlock',{action:'prepare',deviceId:'test-device',conceptId:c.id,stage:'detail'})).error,'STORY_REQUIRED');
  for(const stage of ['story','detail']){
   const checkout=await call(reportUnlock,'POST','/api/reports/unlock',{action:'prepare',deviceId:'test-device',conceptId:c.id,stage});assert.equal(checkout.ok,true);
   const approved=await call(reportUnlock,'POST','/api/reports/unlock',{paymentKey:'mock',orderId:checkout.orderId,amount:checkout.amount,quote:checkout.quote,deviceId:'test-device',conceptId:c.id,stage});assert.equal(approved.ok,true);
-  const read=await call(listReports,'GET',url);assert.equal(read.rows.length,20);assert.equal(read.detailRows.length,stage==='detail'?20:0);
+  const read=await call(listReports,'GET',url);assert.equal(read.rows.length,1);assert.ok(read.rows[0].cards);assert.equal(read.detailRows.length,stage==='detail'?1:0);
  }
- const anonymous=await call(listReports,'GET','/api/reports/list?conceptId='+c.id);assert.equal(anonymous.rows.length,6);assert.equal(anonymous.detailRows.length,0);
+ const anonymous=await call(listReports,'GET','/api/reports/list?conceptId='+c.id);assert.equal(anonymous.rows.length,0);assert.equal(anonymous.detailRows.length,0);
 });

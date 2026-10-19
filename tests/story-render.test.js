@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,careerTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -125,60 +125,32 @@ test('content navigation and cards are neutral about format and future themes',(
  const offer=api.stageOfferHtml({...concept,title:'나만의 제목'},'story');assert.ok(offer.includes('연애 사주 전체 보기'));assert.ok(!offer.includes('웹툰'));
 });
 
-test('pocha opening, owned story and detail respect separate gates with career-specific text',()=>{
- const {concept:c,panels}=require('../api/_pocha-content');
- const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[{caption_template:'DO_NOT_LEAK'}]},result);
- assert.equal((free.match(/class="pocha-scene"/g)||[]).length,3);assert.ok(free.includes('locked-peek'));assert.ok(free.includes('임(수)'));assert.ok(!free.includes('DO_NOT_LEAK'));assert.ok(free.includes('별도 선택 구매 · <strong>12,900원</strong>'));assert.ok(!free.includes('data-gate="detail"'));
- const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels},result);
- assert.equal((paid.match(/class="pocha-scene"/g)||[]).length,20);assert.ok(paid.includes('오늘 챙겨갈 것'));assert.ok(!paid.includes('data-gate="story"'));assert.ok(paid.indexOf('오늘 챙겨갈 것')<paid.indexOf('data-gate="detail"'));
- const full=api.storyFlowHtml(c,{access:{story:true,detail:true},rows:panels,detailRows:panels},result);
- assert.equal((full.match(/id="pocha-detail-/g)||[]).length,20);assert.ok(!full.includes('data-gate='));assert.ok(!full.includes('연애'));assert.ok(!full.includes('love-'));assert.ok(!full.includes('{{branch:'));assert.ok(full.includes('이직보다 먼저 살펴볼 것'));
- const all=['목','화','토','금','수'].map(wx=>api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[]},{...result,dayGanWx:wx}));assert.equal(new Set(all).size,5);
- assert.equal(api.storyCategory({...c,id:'unknown'}),'unsupported');
-});
-
-test('career story maps twenty independent assets in order and keeps every paid interpretation',()=>{
- const path=require('node:path'),{concept:c,panels}=require('../api/_pocha-content');
- const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/pocha/cinematic/manifest.json'),'utf8'));
- assert.equal(panels.length,20);assert.equal(manifest.length,20);
- assert.equal(new Set(manifest.map(x=>x.sha256)).size,20);
- for(const [i,p] of panels.entries()){
-  assert.equal(p.sort_order,i);assert.equal(p.img_url,'/assets/pocha/cinematic/scene-'+String(i+1).padStart(2,'0')+'.webp');
-  const asset=fs.readFileSync(path.join(__dirname,'..',p.img_url));
-  assert.ok(asset.length>0);assert.equal(require('node:crypto').createHash('sha256').update(asset).digest('hex'),manifest[i].sha256);
-  assert.ok(manifest[i].width>=1400);assert.ok(manifest[i].height>=1024);
- }
- const rows=panels.map((p,i)=>({...p,caption_template:'PERSONAL_'+i+'_END'}));
- const paid=api.storyFlowHtml(c,{access:{story:true,detail:false},rows},result);
- for(const [i,row] of rows.entries()){
-  assert.equal(paid.split(row.caption_template).length-1,1);
-  assert.ok(paid.indexOf('data-scene="'+(i+1)+'"')<paid.indexOf(row.caption_template));
- }
- const art=[...paid.matchAll(/<img src="([^"]+)"/g)].map(m=>m[1]);
- assert.deepEqual(art.slice(1),panels.map(p=>p.img_url));assert.equal(art[0],'/assets/pocha/cinematic/scene-08.webp');assert.ok(!paid.includes('사장님'));
- const free=api.storyFlowHtml(c,{access:{story:false,detail:false},rows},result);
- assert.ok(!free.includes('PERSONAL_'));assert.ok(!free.includes('scene-07.webp'));
- assert.equal((free.match(/class="pocha-scene"/g)||[]).length,3);
-});
-
-test('career reader speaks to the reader and never labels them as a fictional protagonist',()=>{
- const {concept:c,panels}=require('../api/_pocha-content');
- const render=r=>api.storyFlowHtml(c,{access:{story:true,detail:false},rows:panels},r);
- const text=render({...result,name:'지민'});
- assert.ok(!text.includes('주인공'));assert.ok(!text.includes('서재가 그려'));
- assert.ok(text.includes('지민님은 어떤 방식으로 일할 때 편한지'));
- assert.ok(text.includes('지민님의 사주 풀이'));
- assert.ok(text.includes('<span>서도윤</span>'));
- assert.ok(text.includes('나, 앞으로 뭐 해 먹고 살지?'));
- const water=render({...result,name:''}),fire=render({...result,name:'',dayGanWx:'화'});
- assert.notEqual(water,fire);assert.ok(!water.includes('undefined'));assert.ok(!water.includes('님은 어떤'));
- const unsafe=render({...result,name:'<script>악성</script>'});
- assert.ok(!unsafe.includes('<script>악성</script>'));assert.ok(unsafe.includes('&lt;script&gt;'));
- for(const row of panels)assert.ok(!row.caption_template.includes('\n\n'));
+test('career report: 서림 free view hides paid copy, owned stages render server content, deep report is long enough',()=>{
+ const m=require('../api/_career-content');
+ const r=api.computeSaju({year:1995,month:3,day:21,hour:14,minute:30,isLunar:false,isLeapMonth:false,unknownTime:false,gender:'f',name:'지민',city:'seoul',useCorrection:false});
+ assert.equal(api.storyCategory(m.concept),'pocha');
+ const rows=api.careerTimeline(r,2027);assert.equal(rows.length,10);assert.equal(rows.filter(x=>x.top).length,3);
+ for(const x of rows){assert.ok(x.rel in m.story.yearByRelation);assert.ok(x.tg in m.story.yearByTenGod);}
+ const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
+ const card=m.story.cards[r.day.ganKr];
+ assert.ok(free.includes(card.title));assert.ok(!free.includes(card.who.slice(0,15)));assert.ok(!free.includes(card.shine.slice(0,15)));assert.ok(!free.includes(m.story.burnout[r.dayGanWx].slice(0,15)));
+ assert.ok(free.includes('locked-peek'));assert.ok(free.includes('직업 사주 전체 보기 · 4,900원'));assert.ok(free.includes('별도 선택 구매 · <strong>12,900원</strong>'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('서림'));
+ const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
+ assert.ok(story.includes(card.who.slice(0,20)));assert.ok(story.includes('서림의 처방전'));assert.ok(story.includes('12,900원'));assert.ok(!story.includes('data-gate="story"'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));assert.ok(!story.includes('deep-report'));
+ for(const n of ['strength','environment','burnout','relation','job-change','side-project','pay-growth','stuck','rest','small-step','compass-gift','prescription','farewell'])assert.ok(story.includes('/assets/career/scenes/'+n+'.webp'),n);
+ const full=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},r);
+ assert.equal((full.match(/class="deep-sec"/g)||[]).length,18);assert.ok(!full.includes('data-gate'));assert.ok(!full.includes('undefined'));assert.ok(!full.includes('NaN'));
+ assert.ok(full.slice(full.indexOf('deep-report')).replace(/<[^>]+>/g,'').replace(new RegExp('[ \t\r\n]+','g'),' ').length>=17000,'심층 리포트는 1인 기준 17,000자 이상');
+ assert.ok(full.includes(m.detail.stemView[r.day.ganKr].view.slice(0,20)));
+ for(const html of [free,story,full])for(const x of html.matchAll(new RegExp('src="(/assets/career/[^"]+)"','g')))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',x[1])),'missing '+x[1]);
+ const unsafe=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},{...r,name:'<script>악성</script>'});
+ assert.ok(!unsafe.includes('<script>악성</script>'));
+ assert.equal(new Set(['목','화','토','금','수'].map(wx=>api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story]},{...r,dayGanWx:wx}))).size,5);
+ for(const s of ['갑','을','병','정','무','기','경','신','임','계']){assert.ok(m.story.cards[s].title);assert.ok(m.detail.stemView[s].boss);}
 });
 
 test('all three catalogue covers match reader art and never load the retired auntie cover',()=>{
- const {presentConcept}=require('../api/_report-presentation'),{concept:c}=require('../api/_pocha-content');
+ const {presentConcept}=require('../api/_report-presentation'),{concept:c}=require('../api/_career-content');
  const love=presentConcept({id:'운명의-사람은-언제-올까-fyq1z',category:'연애'});
  const money=presentConcept({id:'타고난-재물복은-얼마나-될까-k7dxw',category:'재물'});
  assert.equal(love.title,'연애 사주');assert.equal(money.title,'재물 사주');
@@ -208,8 +180,7 @@ test('forty stored interpretation slots use reviewed copy while preserving panel
 });
 
 test('all three free openings lead with personalised readings instead of illustrated stories',()=>{
- const {concept:career}=require('../api/_pocha-content');
- for(const c of [concept,{...concept,category:'재물'},career]){
+ for(const c of [concept,{...concept,category:'재물'}]){
   const render=wx=>api.storyFlowHtml(c,{access:{story:false,detail:false},rows:[{caption_template:'PAID_ONLY'}]},{...result,dayGanWx:wx});
   const text=render('수');
   assert.ok(text.includes('내 사주 무료 풀이'));assert.ok(text.includes('임(수)'));
