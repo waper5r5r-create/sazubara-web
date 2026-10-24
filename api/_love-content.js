@@ -9,8 +9,7 @@ const concept = {
   category: '연애',
   cover_img_url: '/assets/love/scenes/cover.webp',
   active: true,
-  price_krw: 4900,
-  detail_price_krw: 12900
+  price_krw: 7900
 };
 
 // 마음의 꽃 카드: 일간 10종 (제목은 무료 화면에도 보이고, 나머지는 결제 후)

@@ -8,8 +8,7 @@ const concept = {
   category: '결혼',
   cover_img_url: '/assets/marriage/scenes/cover.webp',
   active: true,
-  price_krw: 4900,
-  detail_price_krw: 12900
+  price_krw: 7900
 };
 
 // 배우자 별 카드: 일지(배우자 자리) 12종

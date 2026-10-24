@@ -40,39 +40,41 @@ async function buy(stage,deviceId='test-device') {
   const body={paymentKey:'test-payment-'+checkout.orderId,orderId:checkout.orderId,amount:checkout.amount,quote:checkout.quote,deviceId,conceptId:'theme',stage};
   return {body,result:await call(reportUnlock,'POST','/api/reports/unlock',body)};
 }
-test('two purchases grant different content, retry is idempotent',async()=>{
+test('one 7,900 purchase opens the story and the report together, retry is idempotent',async()=>{
   reset();
   const free=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=test-device');
   assert.equal(free.rows.length,1);assert.equal(free.detailRows.length,0);assert.equal(free.access.story,false);
-  assert.equal((await prepare('detail')).error,'STORY_REQUIRED');assert.equal(confirms,0);
-  const first=await buy('story');assert.equal(first.result.ok,true);assert.equal(confirms,1);
-  const story=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=test-device');
-  assert.equal(story.rows.length,20);assert.equal(story.detailRows.length,0);assert.equal(story.access.story,true);assert.equal(story.access.detail,false);
-  assert.ok(story.rows[0].caption_template.includes('마음을 표현해보세요')); 
-  const second=await buy('detail');assert.equal(second.result.ok,true);assert.equal(confirms,2);
-  const full=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=test-device');assert.equal(full.detailRows.length,20);assert.equal(full.access.detail,true);
-  assert.equal((await call(reportUnlock,'POST','/api/reports/unlock',second.body)).ok,true);assert.equal(confirms,2);
+  assert.equal((await prepare('detail')).error,'MISSING_FIELDS');assert.equal(confirms,0);
+  const first=await buy('story');assert.equal(first.result.ok,true);assert.equal(first.body.amount,7900);assert.equal(confirms,1);
+  const full=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=test-device');
+  assert.equal(full.rows.length,20);assert.equal(full.detailRows.length,20);assert.equal(full.access.story,true);assert.equal(full.access.detail,true);
+  assert.ok(full.rows[0].caption_template.includes('마음을 표현해보세요'));
+  assert.equal((await call(reportUnlock,'POST','/api/reports/unlock',first.body)).ok,true);assert.equal(confirms,1);
   assert.equal((await prepare('story')).error,'ALREADY_OWNED');
 });
 test('price and stage tampering fail before approval',async()=>{
   reset();const checkout=await prepare('story');
-  const body={paymentKey:'test',orderId:checkout.orderId,amount:4900,quote:checkout.quote,deviceId:'test-device',conceptId:'theme',stage:'story'};
-  for(const overrides of [{amount:1},{stage:'detail'},{conceptId:'another-theme'},{deviceId:'another-device'},{quote:'tampered'}]) {
+  const body={paymentKey:'test',orderId:checkout.orderId,amount:7900,quote:checkout.quote,deviceId:'test-device',conceptId:'theme',stage:'story'};
+  for(const overrides of [{amount:1},{amount:4900},{stage:'detail'},{conceptId:'another-theme'},{deviceId:'another-device'},{quote:'tampered'}]) {
     const r=await call(reportUnlock,'POST','/api/reports/unlock',{...body,...overrides});assert.equal(r.ok,false);
   }
   assert.equal(confirms,0);assert.equal(tables.paid_unlocks.length,0);
 });
-test('old full-report buyers retain both stages',async()=>{
+test('old full-report buyers and earlier single-stage buyers keep everything',async()=>{
   reset();tables.report_unlocks.push({device_id:'existing-buyer',concept_id:'theme',order_id:'old-order',amount:4900});
   const r=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=existing-buyer');assert.deepEqual(r.access,{story:true,detail:true,legacy:true});assert.equal(r.detailRows.length,20);
-  assert.equal((await prepare('detail','existing-buyer')).error,'ALREADY_OWNED');
+  assert.equal((await prepare('story','existing-buyer')).error,'ALREADY_OWNED');
+  for(const stage of ['story','detail']){
+   reset();tables.paid_unlocks.push({device_id:'stage-buyer',unlock_key:'report-'+stage+'-theme',order_id:'o-'+stage,amount:stage==='story'?4900:12900});
+   const s=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=stage-buyer');assert.equal(s.access.story,true);assert.equal(s.access.detail,true);assert.equal(s.detailRows.length,20);
+  }
 });
-test('a signed detail purchase still needs story ownership',async()=>{
+test('a signed old detail-stage quote can no longer be approved',async()=>{
   reset();const fields={orderId:'detail-order',deviceId:'test-device',conceptId:'theme',stage:'detail',amount:12900};
-  const r=await call(reportUnlock,'POST','/api/reports/unlock',{...fields,paymentKey:'test',quote:signQuote(fields)});assert.equal(r.error,'STORY_REQUIRED');assert.equal(confirms,0);
+  const r=await call(reportUnlock,'POST','/api/reports/unlock',{...fields,paymentKey:'test',quote:signQuote(fields)});assert.equal(r.error,'INVALID_STAGE');assert.equal(confirms,0);
 });
 test('catalogue prices and every category plus today/couple match 990',async()=>{
-  reset();const catalogue=await call(listReports,'GET','/api/reports/list');assert.equal(catalogue.rows[0].price_krw,4900);assert.equal(catalogue.rows[0].detail_price_krw,12900);
+  reset();const catalogue=await call(listReports,'GET','/api/reports/list');assert.equal(catalogue.rows[0].price_krw,7900);assert.equal(catalogue.rows[0].detail_price_krw,undefined);
   const keys=['연애','직장','재물','건강','인간관계'].map(cat=>'feature-saju-deep:'+cat).concat(['feature-today-premium','compat-test-pair']);
   for(const [i,unlockKey] of keys.entries()) {
     const bad=await call(unlock,'POST','/api/unlock',{paymentKey:'test',orderId:'bad-'+i,amount:2900,deviceId:'test-device',unlockKey});assert.equal(bad.error,'AMOUNT_MISMATCH');
@@ -90,16 +92,13 @@ test('generic payment rejects mismatched approval and reused orders',async()=>{
  const r=await call(unlock,'POST','/api/unlock',{paymentKey:'test',orderId:'reused',amount:990,deviceId:'test-device',unlockKey:'feature-today-premium'});assert.equal(r.error,'ORDER_CONFLICT');assert.equal(confirms,0);
 });
 
-test('career catalogue, two paid stages and protected report work without a database concept row',async()=>{
+test('career catalogue, one paid purchase and protected report work without a database concept row',async()=>{
  reset();const c=require('../api/_career-content').concept;
  const catalogue=await call(listReports,'GET','/api/reports/list');assert.equal(catalogue.rows.filter(x=>x.id===c.id).length,1);
  const url='/api/reports/list?conceptId='+c.id+'&device_id=test-device';
  const free=await call(listReports,'GET',url);assert.equal(free.rows.length,0);assert.equal(free.detailRows.length,0);
- assert.equal((await call(reportUnlock,'POST','/api/reports/unlock',{action:'prepare',deviceId:'test-device',conceptId:c.id,stage:'detail'})).error,'STORY_REQUIRED');
- for(const stage of ['story','detail']){
-  const checkout=await call(reportUnlock,'POST','/api/reports/unlock',{action:'prepare',deviceId:'test-device',conceptId:c.id,stage});assert.equal(checkout.ok,true);
-  const approved=await call(reportUnlock,'POST','/api/reports/unlock',{paymentKey:'mock',orderId:checkout.orderId,amount:checkout.amount,quote:checkout.quote,deviceId:'test-device',conceptId:c.id,stage});assert.equal(approved.ok,true);
-  const read=await call(listReports,'GET',url);assert.equal(read.rows.length,1);assert.ok(read.rows[0].cards);assert.equal(read.detailRows.length,stage==='detail'?1:0);
- }
+ const checkout=await call(reportUnlock,'POST','/api/reports/unlock',{action:'prepare',deviceId:'test-device',conceptId:c.id,stage:'story'});assert.equal(checkout.ok,true);assert.equal(checkout.amount,7900);
+ const approved=await call(reportUnlock,'POST','/api/reports/unlock',{paymentKey:'mock',orderId:checkout.orderId,amount:checkout.amount,quote:checkout.quote,deviceId:'test-device',conceptId:c.id,stage:'story'});assert.equal(approved.ok,true);
+ const read=await call(listReports,'GET',url);assert.equal(read.rows.length,1);assert.ok(read.rows[0].cards);assert.equal(read.detailRows.length,1);assert.ok(read.detailRows[0].stemView);
  const anonymous=await call(listReports,'GET','/api/reports/list?conceptId='+c.id);assert.equal(anonymous.rows.length,0);assert.equal(anonymous.detailRows.length,0);
 });

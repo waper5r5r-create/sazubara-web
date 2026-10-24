@@ -1,7 +1,9 @@
 const { sbFetch } = require('./_supabase');
 
-const STAGE_PRICE = Object.freeze({story:4900, detail:12900});
-const STAGES = ['story', 'detail'];
+// 2026-10-24부터 이야기와 심층 리포트를 7,900원 한 번의 결제로 묶는다.
+// 예전에 이야기(story)나 심층 리포트(detail) 중 하나라도 산 기기는 전체를 연다.
+const STAGE_PRICE = Object.freeze({story:7900});
+const STAGES = ['story'];
 function stageKey(conceptId, stage) { return 'report-' + stage + '-' + conceptId; }
 async function rowsAt(path) {
   const r = await sbFetch(path);
@@ -17,10 +19,7 @@ async function reportAccess(deviceId, conceptId) {
   ]);
   const legacy = legacyRows.length > 0;
   const keys = new Set(paidRows.map(r => r.unlock_key));
-  return {
-    story: legacy || keys.has(stageKey(conceptId, 'story')),
-    detail: legacy || keys.has(stageKey(conceptId, 'detail')),
-    legacy
-  };
+  const owned = legacy || keys.has(stageKey(conceptId, 'story')) || keys.has(stageKey(conceptId, 'detail'));
+  return { story: owned, detail: owned, legacy };
 }
 module.exports = { STAGE_PRICE, STAGES, stageKey, rowsAt, reportAccess };

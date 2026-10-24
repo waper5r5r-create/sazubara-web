@@ -25,7 +25,7 @@ test('speech slots stay short and report includes full interpretation',()=>{
  assert.ok(full.includes('세 번째는 리포트에 남아요.'));assert.ok(full.includes('report-evidence'));assert.equal((full.match(/class="report-analysis"/g)||[]).length,12);
 });
 test('separate prices are disclosed before the first checkout',()=>{
- const offer=api.stageOfferHtml(concept,'story');assert.ok(offer.includes('별도 선택 구매 · <strong>12,900원</strong>'));assert.ok(offer.includes('별도 선택 구매 · <strong>12,900원</strong>'));
+ const offer=api.stageOfferHtml(concept,'story');assert.ok(offer.includes('7,900원'));assert.ok(offer.includes('한 번에'));assert.ok(!offer.includes('12,900'));
  const detail=api.stageOfferHtml(concept,'detail');assert.ok(detail.includes('콘텐츠와 별도 결제'));
 });
 test('a category purchase opens only that category, historic bundle opens all',()=>{
@@ -65,7 +65,7 @@ test('reader keeps free opening and separate purchase gates without reviews',()=
  assert.ok(!text.includes('PRIVATE_SENTENCE'));
  assert.ok(text.includes('data-gate="story"'));assert.ok(!text.includes('data-gate="detail"'));
  assert.ok(!text.includes('story-reviews'));
- assert.ok(!text.includes('01 ·'));assert.ok(text.includes('4,900'));assert.ok(text.includes('12,900'));
+ assert.ok(!text.includes('01 ·'));assert.ok(text.includes('7,900'));assert.ok(!text.includes('12,900'));
 });
 test('paid story keeps all personal interpretation in eight distinct illustrated scenes',()=>{
  const rows=Array.from({length:23},(_,i)=>({caption_template:'UNIQUE_'+i+'_END'}));
@@ -78,7 +78,7 @@ test('paid story keeps all personal interpretation in eight distinct illustrated
 test('story interpretation escapes markup once and preserves readable punctuation',()=>{const text=api.storyPaidScenes(concept,{rows:[{caption_template:"'나 자신' <script>alert(1)</script>"}]},result);assert.ok(text.includes('&#39;나 자신&#39;'));assert.ok(text.includes('&lt;script&gt;'));assert.ok(!text.includes('&amp;#39;'));assert.ok(!text.includes('<script>'));});
 
 
-test('owned content has no purchase gate or misleading locked report sample',()=>{const data={access:{story:true,detail:true},rows:[],detailRows:[]};const full=api.storyFlowHtml(concept,data,result);assert.ok(full.includes('reader-owned-badge'));assert.ok(!full.includes('data-gate='));assert.ok(!full.includes('sample-lock'));assert.ok(!full.includes('story-locked-preview'));const story=api.storyFlowHtml(concept,{...data,access:{story:true,detail:false}},result);assert.ok(!story.includes('data-gate="story"'));assert.ok(story.includes('data-gate="detail"'));});
+test('owned content has no purchase gate or misleading locked report sample',()=>{const data={access:{story:true,detail:true},rows:[],detailRows:[]};const full=api.storyFlowHtml(concept,data,result);assert.ok(full.includes('reader-owned-badge'));assert.ok(!full.includes('data-gate='));assert.ok(!full.includes('sample-lock'));assert.ok(!full.includes('story-locked-preview'));const story=api.storyFlowHtml(concept,{...data,access:{story:true,detail:false}},result);assert.ok(!story.includes('data-gate='));assert.ok(story.includes('owned-detail-report'));});
 test('opening provides a broad personal question without assuming hesitation',()=>{const plan=api.storyNarrativePlan(concept,result);assert.equal(plan.length,12);assert.ok(plan[2][1].includes('임(수)'));assert.ok(plan[3][0].endsWith('?'));const fire=api.storyNarrativePlan(concept,{...result,dayGanWx:'화'});assert.notEqual(plan[1][0],fire[1][0]);assert.notEqual(plan[8][1],fire[8][1]);});
 test('reader removes reviews and exposes purchased interpretation without disclosures',()=>{const text=api.storyFlowHtml(concept,{access:{story:true,detail:false},rows:[{caption_template:'PRIVATE_INTERPRETATION'}]},result);assert.ok(text.includes('PRIVATE_INTERPRETATION'));assert.ok(!text.includes('<details'));assert.ok(!text.includes('story-reviews'));assert.ok(!text.includes('후기'));});
 test('report adds eight actionable scenario guides with examples and cautions',()=>{for(const c of [concept,{...concept,category:'재물'}]){const text=api.reportSituationGuides(c,result);assert.equal((text.match(/class="report-analysis situation-guide"/g)||[]).length,8);assert.equal((text.match(/<dt>주의할 점<\/dt>/g)||[]).length,8);assert.ok(text.includes('내 성향에 맞춰'));assert.ok(text.includes('premium-15'));}});
@@ -113,9 +113,9 @@ test('each element changes the response and concrete next action across both the
  for(const category of ['연애','재물']){const plans=['목','화','토','금','수'].map(wx=>api.storyNarrativePlan({...concept,category},{...result,dayGanWx:wx}));assert.equal(new Set(plans.map(p=>p[1][0])).size,5);assert.equal(new Set(plans.map(p=>p[8][1])).size,5);for(const p of plans)assert.equal(p.length,12);}
  const base=api.storyNarrativePlan(concept,result),diff=api.storyNarrativePlan(concept,{...result,yearSS:'정관',monthSS:'정인',timeSS:'비견',strength:'weak',wxCount:{목:4,화:2,토:1,금:0,수:1}});for(const i of [5,6,7,9])assert.notEqual(base[i][1],diff[i][1]);
 });
-test('second offer follows the full story and a real personalised sample',()=>{
- const owned=api.storyFlowHtml(concept,{access:{story:true,detail:false},rows:[]},result);assert.ok(owned.indexOf('scene-11')<owned.indexOf('report-real-sample'));assert.ok(owned.indexOf('report-real-sample')<owned.indexOf('data-gate="detail"'));assert.ok(owned.includes('수 6개'));assert.ok(!owned.includes('report-sample-lines'));assert.ok(!owned.includes('sample-lock'));
- const free=api.storyFlowHtml(concept,{access:{story:false,detail:false},rows:[]},result);assert.ok(!free.includes('data-gate="detail"'));assert.ok(free.includes('별도 선택 구매 · <strong>12,900원</strong>'));
+test('one purchase follows the full story straight into the report',()=>{
+ const owned=api.storyFlowHtml(concept,{access:{story:true,detail:false},rows:[]},result);assert.ok(owned.indexOf('scene-11')<owned.indexOf('owned-detail-report'));assert.ok(!owned.includes('data-gate='));assert.ok(!owned.includes('sample-lock'));
+ const free=api.storyFlowHtml(concept,{access:{story:false,detail:false},rows:[]},result);assert.ok(!free.includes('data-gate="detail"'));assert.ok(free.includes('7,900원'));
 });
 test('new categories cannot silently reuse the romance story',()=>{assert.equal(api.storyCategory({category:'직장'}),'unsupported');const card=api.reportCardHtml({id:'new',title:'직장 이야기',category:'직장'});assert.ok(card.includes(' disabled'));assert.ok(card.includes('준비 중'));assert.ok(!card.includes('4,900'));});
 
@@ -134,9 +134,10 @@ test('career report: 서림 free view hides paid copy, owned stages render serve
  const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
  const card=m.story.cards[r.day.ganKr];
  assert.ok(free.includes(card.title));assert.ok(!free.includes(card.who.slice(0,15)));assert.ok(!free.includes(card.shine.slice(0,15)));assert.ok(!free.includes(m.story.burnout[r.dayGanWx].slice(0,15)));
- assert.ok(free.includes('locked-peek'));assert.ok(free.includes('직업 사주 전체 보기 · 4,900원'));assert.ok(free.includes('별도 선택 구매 · <strong>12,900원</strong>'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('서림'));
+ assert.ok(free.includes('locked-peek'));assert.ok(free.includes('직업 사주 전체 보기 · 7,900원'));assert.ok(free.includes('한 번에 소장'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('서림'));
  const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
- assert.ok(story.includes(card.who.slice(0,20)));assert.ok(story.includes('서림의 처방전'));assert.ok(story.includes('12,900원'));assert.ok(!story.includes('data-gate="story"'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));assert.ok(!story.includes('deep-report'));
+ assert.ok(free.includes('saju-hook'));assert.ok((free.match(/<li><p>/g)||[]).length>=4);assert.equal((story.match(/class="route-stop"/g)||[]).length,10);assert.ok(!story.includes('love-letter'));
+ assert.ok(story.includes(card.who.slice(0,20)));assert.ok(story.includes('서림의 처방전'));assert.ok(!story.includes('data-gate'));assert.ok(!story.includes('data-gate="story"'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));assert.ok(!story.includes('deep-report'));
  for(const n of ['strength','environment','burnout','relation','job-change','side-project','pay-growth','stuck','rest','small-step','compass-gift','prescription','farewell'])assert.ok(story.includes('/assets/career/scenes/'+n+'.webp'),n);
  const full=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},r);
  assert.equal((full.match(/class="deep-sec"/g)||[]).length,18);assert.ok(!full.includes('data-gate'));assert.ok(!full.includes('undefined'));assert.ok(!full.includes('NaN'));
@@ -158,9 +159,10 @@ test('love report: 해랑 free view hides paid copy, owned stages render server 
  const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
  const card=m.story.cards[r.day.ganKr];
  assert.ok(free.includes(card.title));assert.ok(!free.includes(card.who.slice(0,15)));assert.ok(!free.includes(m.story.conflict[r.dayGanWx].slice(0,15)));assert.ok(!free.includes(m.story.attract[r.day.zhiKr].slice(0,15)));
- assert.ok(free.includes('locked-peek'));assert.ok(free.includes('연애 사주 전체 보기 · 4,900원'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('해랑'));
+ assert.ok(free.includes('locked-peek'));assert.ok(free.includes('연애 사주 전체 보기 · 7,900원'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('해랑'));
  const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
- assert.ok(story.includes(card.who.slice(0,20)));assert.ok(story.includes('해랑의 처방전'));assert.ok(story.includes('12,900원'));assert.ok(!story.includes('data-gate="story"'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));assert.ok(!story.includes('deep-report'));
+ assert.ok(story.includes(card.who.slice(0,20)));assert.ok(story.includes('해랑의 처방전'));assert.ok(!story.includes('data-gate'));assert.ok(!story.includes('data-gate="story"'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));assert.ok(!story.includes('deep-report'));
+ assert.ok(free.includes('saju-hook-love'));assert.equal((story.match(/class="love-letter"/g)||[]).length,10);assert.ok(!story.includes('route-stop'));
  for(const n of ['attraction','waiting','date','confession','conflict','makeup','alone','anxious','everyday','future','flower-gift','prescription','farewell'])assert.ok(story.includes('/assets/love/scenes/'+n+'.webp'),n);
  const full=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},r);
  assert.equal((full.match(/class="deep-sec"/g)||[]).length,18);assert.ok(!full.includes('data-gate'));assert.ok(!full.includes('undefined'));assert.ok(!full.includes('NaN'));
@@ -240,10 +242,10 @@ test('marriage report: timeline picks three strong years, free view hides paid c
  for(const x of rows){assert.ok(x.ganKr&&x.zhiKr);assert.ok(x.rel in m.story.yearByRelation);assert.ok(x.tg in m.story.yearByTenGod);}
  assert.equal(api.marriageStartYear(new Date(2026,9,18)),2027);assert.equal(api.marriageStartYear(new Date(2026,2,1)),2026);
  const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
- assert.ok(free.includes('배우자 자리'));assert.ok(free.includes('4,900원'));assert.ok(!free.includes('undefined'));
- assert.ok(free.includes(m.story.spouseCards[r.day.zhiKr].star));assert.ok(!free.includes(m.story.spouseCards[r.day.zhiKr].who.slice(0,15)));assert.ok(!free.includes(m.story.spouseCards[r.day.zhiKr].keep.slice(0,15)));assert.ok(free.includes('locked-peek'));assert.ok(free.includes('결혼 사주 전체 보기 · 4,900원'));
+ assert.ok(free.includes('배우자 자리'));assert.ok(free.includes('7,900원'));assert.ok(!free.includes('undefined'));
+ assert.ok(free.includes(m.story.spouseCards[r.day.zhiKr].star));assert.ok(!free.includes(m.story.spouseCards[r.day.zhiKr].who.slice(0,15)));assert.ok(!free.includes(m.story.spouseCards[r.day.zhiKr].keep.slice(0,15)));assert.ok(free.includes('locked-peek'));assert.ok(free.includes('결혼 사주 전체 보기 · 7,900원'));
  const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
- assert.ok(story.includes(m.story.spouseCards[r.day.zhiKr].star));assert.ok(story.includes('12,900원'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));
+ assert.ok(story.includes(m.story.spouseCards[r.day.zhiKr].star));assert.ok(!story.includes('data-gate'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));
  const full=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},r);
  assert.ok(full.includes('결혼 전, 둘이 함께 확인할 것'));
  for(const html of [free,story,full])for(const m of html.matchAll(new RegExp('src="(/assets/marriage/[^"]+)"','g')))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',m[1])),'missing '+m[1]);
