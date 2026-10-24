@@ -1064,7 +1064,7 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .site-legal{padding:28px 16px calc(96px + env(safe-area-inset-bottom,0px));text-align:center;font-size:.75rem;line-height:1.9;color:var(--fg-faint,#9a93a8)}.site-legal a{color:inherit;text-decoration:none}.site-legal span{font-size:.6875rem}
 .menu-legal{margin:8px 0 0;font-size:.75rem;color:var(--fg-faint,#9a93a8)}.menu-legal a{color:inherit}
 .reader-price-note a{color:inherit;text-decoration:underline}
-.love-free-card{margin:18px auto 6px;max-width:300px;text-align:center}.love-free-card .love-card-art{margin:0 auto 10px}.love-free-card figcaption{font-size:.875rem;color:#e9d7e3}.love-free-card strong{color:#f6dbe8}
+.love-free-card{margin:18px auto 6px;max-width:300px;text-align:center}.love-free-card .love-card-art{margin:0 auto 10px}.love-free-card figcaption{font-size:.875rem;color:#e9d7e3}.love-free-card strong{color:#f6dbe8}.career-free-card figcaption{color:#cfe7e1}.career-free-card strong{color:#e8f4f1}
 .career-prescription{border-color:#2f8f8f88}.career-prescription .prescription-kicker{color:#1f7a74}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=4">
@@ -4179,6 +4179,10 @@ function sajuHookHtml(kind,result,title){
    무료 문구와 계산은 여기, 유료 문구는 api/_career-content.js에서 결제 확인 후 내려온다. ---- */
 var SEORIM_ART='/assets/career/';
 var CAREER_TITLE={갑:'큰 나무의 길',을:'덩굴의 길',병:'한낮 태양의 길',정:'등불의 길',무:'큰 산의 길',기:'기름진 밭의 길',경:'바위와 쇠의 길',신:'보석의 길',임:'큰 강의 길',계:'이슬비의 길'};
+/* 사람마다 다른 그림: 일간별 지도 카드 10종, 일간 오행별 장면(빛나는 순간·지치는 순간·쉬는 법) 5갈래 */
+var CAREER_CARD_ART={갑:'gap',을:'eul',병:'byeong',정:'jeong',무:'mu',기:'gi',경:'gyeong',신:'sin',임:'im',계:'gye'};
+function careerCardArt(stem){var k=CAREER_CARD_ART[stem];return k?'<img class="spouse-card-art career-card-art" src="'+SEORIM_ART+'cards/card-'+k+'.webp" alt="'+esc((CAREER_TITLE[stem]||'')+' 카드')+'" loading="lazy" decoding="async">':'';}
+function careerVarScene(kind,wx){var k=WX_ART_KEY[wx];return k?'var/'+kind+'-'+k:kind;}
 var CAREER_FREE={갑:'처음 길을 내는 일에서 힘이 나는 타입이에요. 남이 짜둔 방식대로만 하면 금방 답답해져요.',을:'사람 사이를 조율하면서 일을 풀어가는 타입이에요. 정면 돌파보다 관계로 해결하는 편이에요.',병:'사람들 앞에서 반응을 받을 때 일할 힘이 나는 타입이에요. 조용히 반복하는 일은 금방 지쳐요.',정:'디테일까지 챙기며 깊게 파고드는 타입이에요. 꼼꼼함으로 신뢰를 얻어요.',무:'일이 꼬일 때 중심을 잡아주는 타입이에요. 위기 때 사람들이 먼저 찾아요.',기:'계획을 실제로 굴러가게 만드는 타입이에요. 사람을 챙기고 키우는 일에도 강해요.',경:'빠르게 결정하고 밀어붙이는 타입이에요. 흐지부지한 상황을 제일 못 견뎌요.',신:'완성도로 인정받는 타입이에요. 작은 차이를 잘 알아봐요.',임:'여러 분야를 넓게 보고 연결하는 타입이에요. 한 가지 일만 오래 하면 지루해져요.',계:'혼자 깊이 파고들어 원인을 찾아내는 타입이에요. 즉답보다 생각할 시간이 필요해요.'};
 var CAREER_REL_SCORE={liuhe:2,sanhe:2,chong:1,same:1,none:0,xing:-1,hai:-1,yuanjin:-1};
 var CAREER_TG_SCORE={gwanseong:2,jaeseong:2,siksang:2,inseong:1,bigyeop:0};
@@ -4222,11 +4226,12 @@ function careerPreviewHtml(concept,result,rows){
   seorimScene('greeting','새벽 골목에서 등불을 들고 맞이하는 서림')+
   seorimSay('smile','<p>'+who+', 반가워요. 일 얘기 하러 오셨죠.</p><p>본론 전에 사주로 본 일하는 습관부터 몇 가지 짚어볼게요. 맞는지 한번 보세요.</p>')+
   sajuHookHtml('career',result,'서림이 사주에서 먼저 짚은 것')+
+  '<figure class="love-free-card career-free-card">'+careerCardArt(stem)+'<figcaption>당신 일의 지도 · <strong>'+esc(CAREER_TITLE[stem]||'')+'</strong></figcaption></figure>'+
   seorimSay('explain','<p>여기서부터 풀이를 시작할게요. 당신 일하는 스타일을 한 단어로 하면 <strong>「'+esc(CAREER_TITLE[stem]||'')+'」</strong>이에요.</p>')+
   '<ol class="route">'+routeStop(1,'출발점','지금 서 있는 곳','intro','빈 두루마리에 붓으로 첫 선을 그으려는 서림','<p>'+esc(CAREER_FREE[stem]||'')+'</p>','일간 '+stem+'('+result.day.gan+') · 일터 자리 '+mz)+
   (first?routeStop(2,'가장 가까운 이정표','길이 열리는 첫 번째 해','listen','작업상 너머로 이야기를 듣는 서림','<p><strong class="wolha-year">'+first.year+'년</strong>, '+esc(first.ganKr+first.zhiKr)+'년의 기운이 일터 자리 '+esc(mz)+'에 닿는 <strong>'+esc(careerYearLabel(first))+'</strong>예요. 앞으로 10년 중 특히 좋은 해는 세 번이에요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','월지 × 그해 지지 · 천간 십신'):'')+'</ol>'+
-  '<div class="wolha-cliff" aria-label="이어지는 풀이 미리보기"><ol class="route"><li class="route-stop"><span class="route-pin" aria-hidden="true">3</span><p class="route-place">위험 구간</p><h3>당신이 가장 지치는 곳</h3><div class="route-note"><p>당신이 유독 빨리 지치는 상황이 있어요. 그 상황이 오면 당신은 —</p></div></li></ol></div>'+
-  lockedPeekHtml('<section class="spouse-card career-card"><p class="reader-kicker">일의 지도 카드</p><h2>'+esc(CAREER_TITLE[stem]||'')+'</h2><h3>나는 어떤 일꾼일까</h3><p>'+esc(CAREER_FREE[stem]||'')+'</p></section>'+careerTimelineHtml(rows,function(r){return esc(careerYearLabel(r));}))+
+  '<div class="wolha-cliff" aria-label="이어지는 풀이 미리보기"><ol class="route"><li class="route-stop"><span class="route-pin" aria-hidden="true">3</span><p class="route-place">위험 구간</p><h3>당신이 가장 지치는 곳</h3>'+seorimScene(careerVarScene('burnout',result.dayGanWx),'지치는 장면')+'<div class="route-note"><p>당신이 유독 빨리 지치는 상황이 있어요. 그 상황이 오면 당신은 —</p></div></li></ol></div>'+
+  lockedPeekHtml('<section class="spouse-card career-card">'+careerCardArt(stem)+'<p class="reader-kicker">일의 지도 카드</p><h2>'+esc(CAREER_TITLE[stem]||'')+'</h2><h3>나는 어떤 일꾼일까</h3><p>'+esc(CAREER_FREE[stem]||'')+'</p></section>'+careerTimelineHtml(rows,function(r){return esc(careerYearLabel(r));}))+
  '</section>';
 }
 function careerOffer(stage){
@@ -4242,17 +4247,17 @@ function careerStoryHtml(story,result,rows){
  var P=function(t){return '<p>'+esc(t||'')+'</p>';};
  var html='<section class="wolha-talk seorim-talk">'+seorimScene('map-reveal','다 그린 일의 지도를 펼쳐 보이는 서림')+
   seorimSay('smile','<p>'+who+' 일 사주를 순서대로 정리했어요. 1번부터 읽어 내려가면 돼요.</p>')+
-  '<section class="spouse-card career-card"><p class="reader-kicker">일의 지도 카드 · 일간 '+esc(stem+'('+result.day.gan+')')+'</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 일꾼일까</h3><p>'+esc(card.who||'')+'</p><h3>잘 맞는 일</h3><p>'+esc(card.fields||'')+'</p><h3>이 길을 오래 걷는 법</h3><p>'+esc(card.keep||'')+'</p></section>'+
+  '<section class="spouse-card career-card">'+careerCardArt(stem)+'<p class="reader-kicker">일의 지도 카드 · 일간 '+esc(stem+'('+result.day.gan+')')+'</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 일꾼일까</h3><p>'+esc(card.who||'')+'</p><h3>잘 맞는 일</h3><p>'+esc(card.fields||'')+'</p><h3>이 길을 오래 걷는 법</h3><p>'+esc(card.keep||'')+'</p></section>'+
   '<ol class="route">'+
-  routeStop(1,'출발점','가장 빛나는 순간','strength','회의실 화이트보드 앞에서 아이디어를 설명하는 장면',P(card.shine),'일간 '+stem)+
+  routeStop(1,'출발점','가장 빛나는 순간',careerVarScene('strength',wx),'가장 빛나는 순간의 장면',P(card.shine),'일간 '+stem)+
   routeStop(2,'머물 곳','나에게 맞는 일터','environment','조용한 개인 작업 공간과 북적이는 협업 공간 사이에 선 장면',P(story.environment[strong?'strong':'weak'])+P(story.envByWx[dom]),(strong?'신강':'신약')+' · 가장 강한 기운 '+dom)+
   routeStop(3,'동행','상사·동료와의 관계','relation','작은 회의실에서 상사와 마주 앉아 이야기하는 장면',P(story.relation[g]),'월주 십신 '+(result.monthSS||''))+
-  routeStop(4,'위험 구간','지치는 조건','burnout','불 꺼진 사무실 모니터 앞에 엎드린 장면',P(story.burnout[wx]),'일간 오행 '+wx)+
+  routeStop(4,'위험 구간','지치는 조건',careerVarScene('burnout',wx),'지치는 순간의 장면',P(story.burnout[wx]),'일간 오행 '+wx)+
   routeStop(5,'막힌 길','막혔을 때 돌아가는 법','stuck','알림이 쌓인 모니터 앞에서 멈춘 손',P(story.stuck[weak]),'가장 약한 기운 '+weak)+
   routeStop(6,'샛길','새로운 도전과 부업','side-project','퇴근 후 스탠드 아래에서 부업을 준비하는 장면',P(story.side[gods.siksang?'has':'none']),'식상 '+(gods.siksang?'있음':'드러나지 않음'))+
   routeStop(7,'보상','돈과 성장','pay-growth','동전과 새싹이 그려진 두 장의 서류를 비교하는 손',P(story.money[gods.jaeseong?'has':'none']),'재성 '+(gods.jaeseong?'있음':'드러나지 않음'))+
   routeStop(8,'갈림길','앞으로 10년, 길이 열리는 해','job-change','카페 창가에서 휴대폰과 봉투를 앞에 두고 고민하는 장면','<p>해마다 일터 자리에 닿는 기운이 달라요. 별이 찍힌 세 해에 길이 크게 열려요.</p>'+careerTimelineHtml(rows,function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return (r.top?'★ ':'')+esc(r.top?careerYearLabel(r):rel.label);})+tops.map(function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return '<div class="route-year"><p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(careerYearLabel(r))+'</p>'+P(rel.text)+P(story.yearByTenGod[r.tg])+'</div>';}).join('')+(best&&good.length?'<p>'+best.year+'년 안에서 특히 길이 잘 열리는 달</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>':''),'월지 × 그해 지지 · 천간 십신 · 대운')+
-  routeStop(9,'쉼터','쉬어 가는 법','rest','노을 지는 창가에서 차 한 잔과 쉬는 장면',P(story.rest[wx]),'')+
+  routeStop(9,'쉼터','쉬어 가는 법',careerVarScene('rest',wx),'쉬는 장면',P(story.rest[wx]),'')+
   routeStop(10,'첫걸음','이번 주 작은 한 걸음','small-step','메모지 세 장 중 하나에 체크 표시를 하는 손','<ul class="seorim-steps">'+(story.smallStep[wx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>','')+
   '</ol>';
  html+=seorimScene('compass-gift','황동 나침반을 두 손으로 건네는 서림')+seorimSay('cheer','<p>마지막으로 앞으로 10년의 큰 흐름이에요.</p>'+(dg&&story.daeunText[dg]?'<p>'+esc(story.daeunText[dg])+'</p>':''))+
