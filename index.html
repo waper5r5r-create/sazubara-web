@@ -1064,6 +1064,7 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .site-legal{padding:28px 16px calc(96px + env(safe-area-inset-bottom,0px));text-align:center;font-size:.75rem;line-height:1.9;color:var(--fg-faint,#9a93a8)}.site-legal a{color:inherit;text-decoration:none}.site-legal span{font-size:.6875rem}
 .menu-legal{margin:8px 0 0;font-size:.75rem;color:var(--fg-faint,#9a93a8)}.menu-legal a{color:inherit}
 .reader-price-note a{color:inherit;text-decoration:underline}
+.love-free-card{margin:18px auto 6px;max-width:300px;text-align:center}.love-free-card .love-card-art{margin:0 auto 10px}.love-free-card figcaption{font-size:.875rem;color:#e9d7e3}.love-free-card strong{color:#f6dbe8}
 .career-prescription{border-color:#2f8f8f88}.career-prescription .prescription-kicker{color:#1f7a74}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=4">
@@ -4324,6 +4325,11 @@ var LOVE_ID='운명의-사람은-언제-올까-fyq1z';
 function isLove(c){return c&&c.id===LOVE_ID;}
 var HAERANG_ART='/assets/love/';
 var LOVE_TITLE={갑:'해바라기',을:'덩굴장미',병:'튤립',정:'작약',무:'목련',기:'안개꽃',경:'백합',신:'은방울꽃',임:'수국',계:'물망초'};
+/* 사람마다 다른 그림: 일간별 꽃 카드 10종, 일간 오행별 장면(다툴 때·답장 기다릴 때·마음 전할 때) 5갈래 */
+var LOVE_CARD_ART={갑:'gap',을:'eul',병:'byeong',정:'jeong',무:'mu',기:'gi',경:'gyeong',신:'sin',임:'im',계:'gye'};
+var WX_ART_KEY={목:'mok',화:'hwa',토:'to',금:'geum',수:'su'};
+function loveCardArt(stem){var k=LOVE_CARD_ART[stem];return k?'<img class="spouse-card-art love-card-art" src="'+HAERANG_ART+'cards/card-'+k+'.webp" alt="'+esc((LOVE_TITLE[stem]||'')+' 카드')+'" loading="lazy" decoding="async">':'';}
+function loveVarScene(kind,wx){var k=WX_ART_KEY[wx];return k?'var/'+kind+'-'+k:kind;}
 var LOVE_FREE={갑:'좋아하는 사람이 생기면 그 사람만 보는 타입이에요. 마음이 생기면 말보다 행동이 먼저 나가요.',을:'상대 기분을 먼저 살피고 맞춰주는 타입이에요. 같이 있으면 편하다는 말을 자주 들어요.',병:'좋으면 좋다고 바로 표현하는 타입이에요. 연애를 시작하면 주변에서 먼저 알아채요.',정:'겉으로는 티를 덜 내도 속으로 깊게 좋아하는 타입이에요. 서운한 건 혼자 오래 품는 편이에요.',무:'말보다 옆에 있어 주는 걸로 마음을 보여주는 타입이에요. 연애에서도 믿음이 제일 중요해요.',기:'상대 일상을 꼼꼼하게 챙기는 타입이에요. 생색은 안 내도 해주는 게 많아요.',경:'좋고 싫음이 분명한 타입이에요. 애매한 관계를 오래 못 끌고 가요.',신:'작은 디테일에 마음이 움직이는 타입이에요. 그만큼 사소한 실망에도 마음이 식기 쉬워요.',임:'상대를 있는 그대로 받아주는 타입이에요. 대신 나만의 시간이 꼭 있어야 해요.',계:'한번 좋아하면 오래 못 잊는 타입이에요. 마음을 표현하기까지 시간이 걸려요.'};
 var LOVE_REL_SCORE={liuhe:3,sanhe:2,chong:1,same:1,none:0,xing:-1,hai:-1,yuanjin:-1};
 var LOVE_TG_SCORE={jaeseong:2,gwanseong:2,siksang:1,inseong:1,bigyeop:0};
@@ -4366,10 +4372,11 @@ function lovePreviewHtml(concept,result,rows){
   haerangScene('greeting','달이 뜬 저녁, 꽃집 문을 열고 맞이하는 해랑')+
   haerangSay('smile','<p>'+who+', 왔어요? 연애 고민이죠.</p><p>사주부터 잠깐 봤는데, 혹시 이런 적 있지 않아요?</p>')+
   sajuHookHtml('love',result,'해랑이 사주에서 먼저 본 것')+
+  '<figure class="love-free-card">'+loveCardArt(stem)+'<figcaption>당신 마음의 꽃 · <strong>'+esc(LOVE_TITLE[stem]||'')+'</strong></figcaption></figure>'+
   haerangSay('wink','<p>맞죠? 이제 연애하면서 자주 하는 고민들에 하나씩 답해볼게요.</p>')+
   (first?loveLetter('나 언제쯤 연애할 수 있을까?','listen','찻잔을 들고 이야기를 듣는 해랑','<p>앞으로 10년 중 연애운이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년 기운이 연인 자리 '+esc(dz)+'와 잘 맞아서, <strong>'+esc(loveYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','연인 자리(일지) '+dz+' · 일간 '+stem+'('+result.day.gan+')'):'')+
-  '<div class="wolha-cliff" aria-label="이어지는 풀이 미리보기"><article class="love-letter"><div class="love-q"><span class="love-q-tag">Q.</span><p>왜 싸울 때마다 똑같은 패턴으로 싸우지?</p></div><div class="love-a"><p class="love-a-to">해랑의 답장</p><p>이건 당신이 싸울 때 꼭 하는 행동 하나 때문이에요. 그게 뭐냐면 —</p></div></article></div>'+
-  lockedPeekHtml('<section class="spouse-card love-card"><p class="reader-kicker">마음의 꽃 카드</p><h2>'+esc(LOVE_TITLE[stem]||'')+'</h2><h3>나는 어떤 연인일까</h3><p>'+esc(LOVE_FREE[stem]||'')+'</p></section>'+loveTimelineHtml(rows,function(r){return esc(loveYearLabel(r));}))+
+  '<div class="wolha-cliff" aria-label="이어지는 풀이 미리보기"><article class="love-letter"><div class="love-q"><span class="love-q-tag">Q.</span><p>왜 싸울 때마다 똑같은 패턴으로 싸우지?</p></div>'+haerangScene(loveVarScene('conflict',result.dayGanWx),'다투는 장면')+'<div class="love-a"><p class="love-a-to">해랑의 답장</p><p>이건 당신이 싸울 때 꼭 하는 행동 하나 때문이에요. 그게 뭐냐면 —</p></div></article></div>'+
+  lockedPeekHtml('<section class="spouse-card love-card">'+loveCardArt(stem)+'<p class="reader-kicker">마음의 꽃 카드</p><h2>'+esc(LOVE_TITLE[stem]||'')+'</h2><h3>나는 어떤 연인일까</h3><p>'+esc(LOVE_FREE[stem]||'')+'</p></section>'+loveTimelineHtml(rows,function(r){return esc(loveYearLabel(r));}))+
  '</section>';
 }
 function loveOffer(stage){
@@ -4385,12 +4392,12 @@ function loveStoryHtml(story,result,rows){
  var P=function(t){return '<p>'+esc(t||'')+'</p>';};
  var html='<section class="wolha-talk haerang-talk">'+haerangScene('bouquet-reveal','다 엮은 꽃다발을 내밀어 보여주는 해랑')+
   haerangSay('smile','<p>'+who+' 연애 사주, 다 봤어요. 많이들 물어보는 고민 열 가지로 정리했어요.</p>')+
-  '<section class="spouse-card love-card"><p class="reader-kicker">마음의 꽃 카드 · 일간 '+esc(stem+'('+result.day.gan+')')+'</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 연인일까</h3><p>'+esc(card.who||'')+'</p><h3>내 매력</h3><p>'+esc(card.charm||'')+'</p><h3>잘 맞는 연애</h3><p>'+esc(card.fit||'')+'</p><h3>이 꽃을 오래 피우는 법</h3><p>'+esc(card.keep||'')+'</p></section>'+
+  '<section class="spouse-card love-card">'+loveCardArt(stem)+'<p class="reader-kicker">마음의 꽃 카드 · 일간 '+esc(stem+'('+result.day.gan+')')+'</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 연인일까</h3><p>'+esc(card.who||'')+'</p><h3>내 매력</h3><p>'+esc(card.charm||'')+'</p><h3>잘 맞는 연애</h3><p>'+esc(card.fit||'')+'</p><h3>이 꽃을 오래 피우는 법</h3><p>'+esc(card.keep||'')+'</p></section>'+
   loveLetter('나는 왜 맨날 비슷한 사람만 좋아하지?','attraction','서점에서 같은 책을 집으려던 두 손이 겹치는 장면',P(story.attract[result.day.zhiKr])+P(story.dohwa[hasDohwa?'has':'none']),'연인 자리(일지) '+result.day.zhiKr+'('+result.day.zhi+') · 도화 '+(hasDohwa?'있음':'없음'))+
-  loveLetter('답장 늦으면 왜 이렇게 신경 쓰이지?','waiting','늦은 밤 휴대폰을 보며 답장을 기다리는 장면',P(story.contact[wx]),'일간 오행 '+wx)+
+  loveLetter('답장 늦으면 왜 이렇게 신경 쓰이지?',loveVarScene('waiting',wx),'답장을 기다리는 장면',P(story.contact[wx]),'일간 오행 '+wx)+
   loveLetter('나 연애할 때 너무 빠른 편이야, 느린 편이야?','date','해 질 녘 강변을 나란히 걷는 두 사람',P(story.pace[strong?'strong':'weak']),'간이 신강·신약 분류 '+(strong?'신강':'신약'))+
-  loveLetter('좋아한다는 말, 어떻게 꺼내지?','confession','가로등 아래 작은 꽃다발을 건네는 장면',P(story.express[gods.siksang?'has':'none']),'식상(표현의 기운) '+(gods.siksang?'있음':'드러나지 않음'))+
-  loveLetter('왜 싸울 때마다 똑같은 패턴으로 싸우지?','conflict','소파 양 끝에 떨어져 앉은 두 사람',P(story.conflict[wx]),'일간 오행 '+wx)+
+  loveLetter('좋아한다는 말, 어떻게 꺼내지?',loveVarScene('confession',wx),'마음을 전하는 장면',P(story.express[gods.siksang?'has':'none']),'식상(표현의 기운) '+(gods.siksang?'있음':'드러나지 않음'))+
+  loveLetter('왜 싸울 때마다 똑같은 패턴으로 싸우지?',loveVarScene('conflict',wx),'다투는 장면',P(story.conflict[wx]),'일간 오행 '+wx)+
   loveLetter('싸우고 나서 먼저 연락하기 너무 어색해','makeup','커피잔 사이로 손을 맞잡는 두 사람',P(story.makeup[wx]),'')+
   loveLetter('솔로 기간이 길어지니까 좀 불안해','alone','비 오는 창가에 혼자 앉은 장면',P(story.alone[weak]),'가장 약한 기운 '+weak)+
   loveLetter('연애하면서 괜히 불안해질 땐 어떡해?','anxious','엎어둔 휴대폰 위에서 머뭇거리는 손',P(story.anxious[strong?'strong':'weak']),'')+
