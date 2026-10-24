@@ -2,6 +2,7 @@ const { editPanel } = require('../_report-editorial');
 const { presentConcept } = require('../_report-presentation');
 const career = require('../_career-content');
 const marriage = require('../_marriage-content');
+const love = require('../_love-content');
 const { sbFetch, getQuery, checkAdminSecret } = require('../_supabase');
 const { STAGE_PRICE, rowsAt, reportAccess } = require('../_report-access');
 
@@ -25,6 +26,10 @@ module.exports = async (req, res) => {
     if (conceptId === career.concept.id) {
       const access = await reportAccess(q.device_id || '', conceptId);
       return res.status(200).json({ok:true, rows:access.story ? [career.story] : [], detailRows:access.detail ? [career.detail] : [], access, preview:!access.story, storyCount:1});
+    }
+    if (conceptId === love.concept.id) {
+      const access = await reportAccess(q.device_id || '', conceptId);
+      return res.status(200).json({ok:true, rows:access.story ? [love.story] : [], detailRows:access.detail ? [love.detail] : [], access, preview:!access.story, storyCount:1});
     }
     if (conceptId === marriage.concept.id) {
       const access = await reportAccess(q.device_id || '', conceptId);

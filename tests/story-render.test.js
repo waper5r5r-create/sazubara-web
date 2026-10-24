@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,careerTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -149,6 +149,31 @@ test('career report: 서림 free view hides paid copy, owned stages render serve
  for(const s of ['갑','을','병','정','무','기','경','신','임','계']){assert.ok(m.story.cards[s].title);assert.ok(m.detail.stemView[s].boss);}
 });
 
+test('love report: 해랑 free view hides paid copy, owned stages render server content, deep report is long enough',()=>{
+ const m=require('../api/_love-content');
+ const r=api.computeSaju({year:1995,month:3,day:21,hour:14,minute:30,isLunar:false,isLeapMonth:false,unknownTime:false,gender:'m',name:'지훈',city:'seoul',useCorrection:false});
+ assert.equal(api.storyCategory(m.concept),'love');
+ const rows=api.loveTimeline(r,2027);assert.equal(rows.length,10);assert.equal(rows.filter(x=>x.top).length,3);
+ for(const x of rows){assert.ok(x.rel in m.story.yearByRelation);assert.ok(x.tg in m.story.yearByTenGod);}
+ const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
+ const card=m.story.cards[r.day.ganKr];
+ assert.ok(free.includes(card.title));assert.ok(!free.includes(card.who.slice(0,15)));assert.ok(!free.includes(m.story.conflict[r.dayGanWx].slice(0,15)));assert.ok(!free.includes(m.story.attract[r.day.zhiKr].slice(0,15)));
+ assert.ok(free.includes('locked-peek'));assert.ok(free.includes('연애 사주 전체 보기 · 4,900원'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('해랑'));
+ const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
+ assert.ok(story.includes(card.who.slice(0,20)));assert.ok(story.includes('해랑의 처방전'));assert.ok(story.includes('12,900원'));assert.ok(!story.includes('data-gate="story"'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));assert.ok(!story.includes('deep-report'));
+ for(const n of ['attraction','waiting','date','confession','conflict','makeup','alone','anxious','everyday','future','flower-gift','prescription','farewell'])assert.ok(story.includes('/assets/love/scenes/'+n+'.webp'),n);
+ const full=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},r);
+ assert.equal((full.match(/class="deep-sec"/g)||[]).length,18);assert.ok(!full.includes('data-gate'));assert.ok(!full.includes('undefined'));assert.ok(!full.includes('NaN'));
+ assert.ok(full.slice(full.indexOf('deep-report')).replace(/<[^>]+>/g,'').replace(new RegExp('[ \t\r\n]+','g'),' ').length>=17000,'심층 리포트는 1인 기준 17,000자 이상');
+ assert.ok(full.includes(m.detail.stemView[r.day.ganKr].view.slice(0,20)));assert.ok(full.includes(m.detail.zhiDeep[r.day.zhiKr].nature.slice(0,20)));
+ for(const html of [free,story,full])for(const x of html.matchAll(new RegExp('src="(/assets/love/[^"]+)"','g')))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',x[1])),'missing '+x[1]);
+ const unsafe=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},{...r,name:'<script>악성</script>'});
+ assert.ok(!unsafe.includes('<script>악성</script>'));
+ for(const s of ['갑','을','병','정','무','기','경','신','임','계']){assert.ok(m.story.cards[s].title);assert.ok(m.detail.stemView[s].tip);assert.equal(m.detail.whatIGive[s].length,4);}
+ for(const z of ['자','축','인','묘','진','사','오','미','신','유','술','해']){assert.ok(m.story.attract[z]);assert.ok(m.detail.zhiDeep[z].caution);assert.equal(m.detail.howToLoveMe[z].length,4);}
+ assert.ok(!/유혹|섹시|키스/.test(JSON.stringify(m.story)+JSON.stringify(m.detail)));
+});
+
 test('all three catalogue covers match reader art and never load the retired auntie cover',()=>{
  const {presentConcept}=require('../api/_report-presentation'),{concept:c}=require('../api/_career-content');
  const love=presentConcept({id:'운명의-사람은-언제-올까-fyq1z',category:'연애'});
@@ -158,7 +183,7 @@ test('all three catalogue covers match reader art and never load the retired aun
   const cover=api.reportCoverSource(row,result);assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',cover)));
   assert.ok(api.reportCardHtml(row).includes(cover.replace('scene-01.webp','scene-01-thumb.webp')));assert.ok(!row.tagline.includes('타이밍'));
  }
- assert.ok(api.reportCoverSource(love,{...result,gender:'m'}).includes('love-m-2'));
+ assert.equal(api.reportCoverSource(love,{...result,gender:'m'}),'/assets/love/scenes/cover.webp');
  assert.ok(api.reportCoverSource(money,{...result,gender:'m'}).includes('wealth-m-0'));
  assert.ok(!html.includes('/assets/pocha/auntie-'));assert.ok(html.includes('esc(reportCoverSource(concept,STATE.mySaju))'));
 });
