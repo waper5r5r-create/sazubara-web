@@ -11,6 +11,7 @@
 // 같은 orderId로 다시 호출돼도 DB의 unique 제약 때문에 중복 지급되지 않습니다.
 
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('./_supabase');
+const { linkedDeviceIds, deviceFilter } = require('./_account');
 
 const PAID_UNLOCK_PRICE_BY_KEY = {
   'feature-saju-deep': 4900,
@@ -35,7 +36,7 @@ async function handleGet(req, res) {
   }
   try {
     const r = await sbFetch(
-      '/paid_unlocks?device_id=eq.' + encodeURIComponent(deviceId) + '&select=unlock_key'
+      '/paid_unlocks?device_id=' + deviceFilter(await linkedDeviceIds(deviceId)) + '&select=unlock_key'
     );
     if (!r.ok) {
       res.status(500).json({ ok: false, error: 'QUERY_FAILED' });

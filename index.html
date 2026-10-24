@@ -1060,6 +1060,10 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 /* 심층 리포트 종이 색: 가게마다 다르게 */
 .seorim-deep{background:#eef4f2}.seorim-deep .deep-no{background:#1f6f6a!important}.haerang-deep{background:#fbf1f5}.haerang-deep .deep-no{background:#b8577f!important}
 .nowrap{white-space:nowrap}
+.cost-note{display:block;margin-top:6px;font-size:.6875rem;color:var(--fg-faint,#9a93a8)}.cost-note a{color:inherit;text-decoration:underline}
+.site-legal{padding:28px 16px calc(96px + env(safe-area-inset-bottom,0px));text-align:center;font-size:.75rem;line-height:1.9;color:var(--fg-faint,#9a93a8)}.site-legal a{color:inherit;text-decoration:none}.site-legal span{font-size:.6875rem}
+.menu-legal{margin:8px 0 0;font-size:.75rem;color:var(--fg-faint,#9a93a8)}.menu-legal a{color:inherit}
+.reader-price-note a{color:inherit;text-decoration:underline}
 .career-prescription{border-color:#2f8f8f88}.career-prescription .prescription-kicker{color:#1f7a74}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=4">
@@ -1159,6 +1163,7 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
     <!-- ===================== 탭 4: 이야기(구 리포트, 건별결제) ===================== -->
     <section class="view" id="view-reports" hidden></section>
 
+    <footer class="site-legal"><a href="/legal.html#terms">이용약관</a> · <a href="/legal.html#privacy"><b>개인정보처리방침</b></a> · <a href="/legal.html#refund">환불 정책</a> · <a href="/legal.html#business">사업자 정보</a><br><span>사주 풀이는 참고용 콘텐츠예요.</span></footer>
   </main>
 
   <nav class="tabs-bar" aria-label="주요 메뉴">
@@ -2108,7 +2113,12 @@ function loadState(){
    기록이 남은 항목만 pullReportUnlocks()/pullPaidUnlocks()로 당겨와 캐시한 것입니다.
    ============================================================ */
 var DEVICE_KEY = 'mysaju_device_v1';
-var DEVICE = { shareCode:null, pendingInviteCode:null, unlocked:{} };
+var DEVICE = { shareCode:null, secret:null, pendingInviteCode:null, unlocked:{} };
+/* 기기 비밀 키: 기기 ID(shareCode)는 초대 링크로 공개되므로, 로그인 계정에 기기를 연결할 때 이 키로 본인 기기임을 확인한다. */
+function genDeviceSecret(){
+  try{ var a=new Uint8Array(24); crypto.getRandomValues(a); return Array.prototype.map.call(a,function(b){return ('0'+b.toString(16)).slice(-2);}).join(''); }
+  catch(e){ return (Math.random().toString(36)+Math.random().toString(36)+Date.now().toString(36)).replace(/[^a-z0-9]/g,'').slice(0,40); }
+}
 
 function genShareCode(){
   return Math.random().toString(36).slice(2,8) + Date.now().toString(36).slice(-3);
@@ -2155,7 +2165,7 @@ function resizeImageFileToBase64(file, maxDim){
 function saveDevice(){
   try{
     localStorage.setItem(DEVICE_KEY, JSON.stringify({
-      unlocked:DEVICE.unlocked, shareCode:DEVICE.shareCode, pendingInviteCode:DEVICE.pendingInviteCode
+      unlocked:DEVICE.unlocked, shareCode:DEVICE.shareCode, secret:DEVICE.secret, pendingInviteCode:DEVICE.pendingInviteCode
     }));
   }catch(e){}
 }
@@ -2178,6 +2188,7 @@ function initDevice(){
     try{ var d = JSON.parse(raw); for (var k in d) DEVICE[k]=d[k]; }catch(e){}
   }
   if (!DEVICE.shareCode) DEVICE.shareCode = genShareCode();
+  if (!DEVICE.secret) { DEVICE.secret = genDeviceSecret(); saveDevice(); }
   var invited = false;
   var inviteNow = parseInviteHash();
   if (inviteNow && inviteNow !== DEVICE.shareCode){
@@ -2261,7 +2272,8 @@ function lockedCardHtml(priceKrw, title, desc, btnLabel){
     '<p class="section-title" style="font-size:.95rem;">'+title+'</p>'+
     '<p class="section-desc">'+desc+'</p>'+
     '<button type="button" class="unlock-btn" data-price="'+priceKrw+'">'+esc(btnLabel)+'</button>'+
-    '<span class="cost-badge">'+krwFmt(priceKrw)+'원 · 1회 결제, 평생 이용</span>'+
+    '<span class="cost-badge">'+krwFmt(priceKrw)+'원 · 1회 결제, 기간 제한 없이 이용</span>'+
+    '<span class="cost-note">결제 후 바로 열리는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></span>'+
   '</div>';
 }
 
@@ -3894,7 +3906,7 @@ function stageOfferHtml(concept,stage){
  if(isPocha(concept))return careerOffer(stage);
  var detail=stage==='detail',money=storyCategory(concept)==='wealth';
  var features=detail?(money?['일간·오행·재성(나를 상징하는 글자와 재물운 기운)으로 살펴보는 수입과 소비 성향','충동구매·수입 감소·지인과의 돈 거래 등 8가지 상황별 대응','결정 전 체크리스트, 주의할 점, 일주일 실천 계획']:['일간·오행·십신(나와 상대를 설명하는 사주 기호)으로 살펴보는 연애와 관계의 패턴','연락·고백·갈등·거리 두기 등 8가지 상황별 대응','바로 써볼 대화 예시, 주의할 점, 일주일 실천 계획']):(money?['돈을 쓰거나 새로운 기회를 고를 때의 습관','만족한 소비와 후회한 소비가 갈리는 기준','돈을 남기기 위해 점검할 나의 선택 방식']:['끌리는 사람의 특징과 마음을 표현하는 방식','편안한 관계의 속도와 서운함이 생기는 지점','반복되는 연애 고민에서 확인할 나의 기준']);
- return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'내 사주를 더 읽어보면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내가 돈을 쓰고 기회를 고르는 모습을 돌아보며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내가 끌리고 마음을 표현하는 모습을 돌아보며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기':money?'재물 사주 전체 보기':'연애 사주 전체 보기')+' · '+(detail?'12,900':'7,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 세부 리포트를 한 번에 소장')+'</p></section>';
+ return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'내 사주를 더 읽어보면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내가 돈을 쓰고 기회를 고르는 모습을 돌아보며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내가 끌리고 마음을 표현하는 모습을 돌아보며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기':money?'재물 사주 전체 보기':'연애 사주 전체 보기')+' · '+(detail?'12,900':'7,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 세부 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 function startReportUnlock(concept,stage){
   if(['story','detail'].indexOf(stage)===-1)return;
@@ -4219,7 +4231,7 @@ function careerPreviewHtml(concept,result,rows){
 function careerOffer(stage){
  var detail=stage==='detail';
  var benefits=detail?['한눈에 보는 직업 사주 요약표, 일간별 일하는 방식, 월주로 보는 일터의 나','십신·오행·신살·신강약으로 읽는 적성과 맞는 분야, 추천 직무','10년 커리어 흐름의 해마다 할 일, 가장 강한 해의 월별 흐름, 대운 속 커리어','이직·퇴사 판단 기준, 일터 관계 6장면 대응법, 연봉 협상 가이드','번아웃 신호와 회복법, 커리어 로드맵 5단계, 스스로에게 던질 질문 24개']:['일의 지도 카드와 현실 장면 10개로 보는 나의 일하는 방식','앞으로 10년의 커리어 흐름과 길이 크게 열리는 세 해, 서림의 처방전','18개 항목 직업 심층 리포트: 적성과 추천 직무, 이직 판단, 연봉 협상, 번아웃, 커리어 로드맵'];
- return '<section class="reader-offer marriage-offer career-offer" data-gate="'+stage+'">'+seorimScene(detail?'detail':'lock',detail?'기록책을 펼쳐두고 맞은편 자리를 권하는 서림':'두루마리를 입가에 대고 윙크하는 서림',!detail)+'<p class="reader-kicker">'+(detail?'직업 심층 리포트':'직업 사주 · 서림')+'</p><h2>'+(detail?'내 직업 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'직업 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 직업 심층 리포트를 한 번에 소장')+'</p></section>';
+ return '<section class="reader-offer marriage-offer career-offer" data-gate="'+stage+'">'+seorimScene(detail?'detail':'lock',detail?'기록책을 펼쳐두고 맞은편 자리를 권하는 서림':'두루마리를 입가에 대고 윙크하는 서림',!detail)+'<p class="reader-kicker">'+(detail?'직업 심층 리포트':'직업 사주 · 서림')+'</p><h2>'+(detail?'내 직업 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'직업 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 직업 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 function careerStoryHtml(story,result,rows){
  var stem=result.day.ganKr,card=story.cards[stem]||{},wx=result.dayGanWx,strong=result.strength==='strong',who=marriageCallName(result);
@@ -4363,7 +4375,7 @@ function lovePreviewHtml(concept,result,rows){
 function loveOffer(stage){
  var detail=stage==='detail';
  var benefits=detail?['한눈에 보는 연애 사주 요약표, 일간별 연애 방식, 연인 자리(일지) 심층 분석','십신·오행·신살·신강약으로 읽는 연애 성향과 보완 습관','10년 인연 흐름의 해마다 할 일, 꽃 피는 세 해의 월별 흐름, 대운 속 연애','잘 맞는 띠·일지 궁합 가이드, 연애 상황 6가지 대응법(해볼 말, 피할 말)','연인에게 건네는 나 사용설명서, 이별과 회복, 연애 로드맵과 질문 24개']:['마음의 꽃 카드와 연애 장면 10개로 보는 나의 연애 방식','앞으로 10년의 인연 흐름과 꽃 피는 세 해, 해랑의 처방전','18개 항목 연애 심층 리포트: 연인 자리, 궁합, 상황별 대응법, 나 사용설명서, 이별과 회복'];
- return '<section class="reader-offer marriage-offer love-offer" data-gate="'+stage+'">'+haerangScene(detail?'detail':'lock',detail?'꽃 도감을 펼쳐두고 맞은편 자리를 권하는 해랑':'꽃다발을 등 뒤로 숨기며 웃는 해랑',!detail)+'<p class="reader-kicker">'+(detail?'연애 심층 리포트':'연애 사주 · 해랑')+'</p><h2>'+(detail?'내 연애 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'연애 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 연애 심층 리포트를 한 번에 소장')+'</p></section>';
+ return '<section class="reader-offer marriage-offer love-offer" data-gate="'+stage+'">'+haerangScene(detail?'detail':'lock',detail?'꽃 도감을 펼쳐두고 맞은편 자리를 권하는 해랑':'꽃다발을 등 뒤로 숨기며 웃는 해랑',!detail)+'<p class="reader-kicker">'+(detail?'연애 심층 리포트':'연애 사주 · 해랑')+'</p><h2>'+(detail?'내 연애 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'연애 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 연애 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 function loveStoryHtml(story,result,rows){
  var stem=result.day.ganKr,card=story.cards[stem]||{},wx=result.dayGanWx,strong=result.strength==='strong',who=marriageCallName(result);
@@ -4580,7 +4592,7 @@ function marriageStoryHtml(story,result,rows){
 function marriageOffer(stage){
  var detail=stage==='detail';
  var benefits=detail?['한눈에 보는 결혼 사주 요약표, 일간별 결혼관, 배우자 자리 심층 분석','십신·오행·신강약으로 읽는 나의 결혼 성향과 보완 습관','10년 연도별 할 일, 가장 강한 해의 월별 흐름, 대운 속 결혼','신혼 1·5·10년차 미리보기, 잘 맞는 띠·일지 궁합 가이드','갈등 상황 6가지 대응법(나의 패턴, 해볼 말, 피해야 할 말)','결혼 준비 5단계 로드맵과 결혼 전 함께 나눌 질문 20개']:['배우자 별 카드와 앞으로 10년의 결혼 흐름, 가장 크게 빛나는 세 해','함께 살 때의 모습: 다툼, 돈, 양가 가족, 바로 쓸 대화, 체크리스트','18개 항목 결혼 심층 리포트: 배우자 자리, 궁합, 갈등 대응법, 결혼 준비 로드맵, 질문 20개'];
- return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하')+'</p><h2>'+(detail?'내 결혼 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'결혼 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 결혼 심층 리포트를 한 번에 소장')+'</p></section>';
+ return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하')+'</p><h2>'+(detail?'내 결혼 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'결혼 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 결혼 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 /* 결혼 사주 계산 보조: 월별 흐름, 궁합 짝, 십신 묶음 */
 var ZHI_ORDER='子丑寅卯辰巳午未申酉戌亥',ZHI_ANIMAL={子:'쥐',丑:'소',寅:'호랑이',卯:'토끼',辰:'용',巳:'뱀',午:'말',未:'양',申:'원숭이',酉:'닭',戌:'개',亥:'돼지'};
@@ -6195,7 +6207,7 @@ function openSiteMenu(){
     '<button type="button" class="menu-profile" id="menu-account" aria-expanded="false" aria-controls="menu-auth"><span class="menu-profile-mark">'+BRAND_MARK_SVG+'</span><span><strong id="menu-account-name">로그인하고 함께하기</strong><small id="menu-account-desc">카카오로 간편하게 시작해보세요</small></span></button>'+
     '<div class="menu-auth" id="menu-auth" hidden></div>'+
     '<div class="menu-nav">'+rows.map(function(row){return '<button type="button" class="menu-row" data-menu-tab="'+row[0]+'"><span class="menu-row-icon">'+MENU_ICONS[row[0]]+'</span><span><strong>'+row[1]+'</strong><small>'+row[2]+'</small></span><span class="menu-chevron" aria-hidden="true">›</span></button>';}).join('')+'</div>'+
-    '<div id="menu-archive" hidden></div><p class="menu-footnote">나의 사주와 열어본 이야기는 현재 브라우저 기준으로 표시돼요.</p></aside></div>';
+    '<div id="menu-archive" hidden></div><p class="menu-footnote">로그인하지 않으면 사주와 구매한 콘텐츠는 이 브라우저에만 저장돼요. 로그인하면 다른 기기에서도 이어서 볼 수 있어요.</p><p class="menu-legal"><a href="/legal.html#terms">이용약관</a> · <a href="/legal.html#privacy">개인정보처리방침</a> · <a href="/legal.html#refund">환불 정책</a> · <a href="/legal.html#business">사업자 정보</a></p></aside></div>';
   $('#menu-close').addEventListener('click',closeSiteMenu);
   $('#menu-account').addEventListener('click',function(){var panel=$('#menu-auth');panel.hidden=!panel.hidden;this.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden)renderAuthPanel();});
   updateAccountMenu();
@@ -6220,6 +6232,26 @@ var AUTH_URL='https://mmahxsblqlidphavqheu.supabase.co';
 var AUTH_PUBLIC_KEY='sb_publishable_7XKAiWzXkHE8cS0gri228A_Y_Yu-Yq6';
 var AUTH={client:null,loading:null,user:null,providers:{},settingsLoaded:false};
 function authName(){var u=AUTH.user,m=u&&u.user_metadata||{};return u ? (m.name||m.full_name||m.preferred_username||'회원') : '';}
+/* 로그인하면 이 기기를 계정에 연결한다. 같은 계정의 다른 기기에서 산 콘텐츠도 열리고, 새 기기에서는 저장된 사주를 이어받는다. */
+var ACCOUNT_LINKED_FOR=null;
+function linkAccount(session){
+  if(!session||!session.access_token||!session.user||!DEVICE.shareCode||!DEVICE.secret)return;
+  if(ACCOUNT_LINKED_FOR===session.user.id)return;
+  ACCOUNT_LINKED_FOR=session.user.id;
+  fetch('/api/account/link',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({deviceId:DEVICE.shareCode,deviceSecret:DEVICE.secret,accessToken:session.access_token})})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data||!data.ok){if(!data||data.error!=='DEVICE_MISMATCH')ACCOUNT_LINKED_FOR=null;return;}
+      if(!STATE.mySaju&&data.saju){
+        try{var result=computeSaju(data.saju);STATE.mySaju=result;STATE._mySajuOpts=data.saju;STATE.lastForm=data.saju;saveState();renderSajuResult(result);refreshCompatPersonA();renderMyRoom();}catch(e){}
+      }
+      return Promise.all([pullPaidUnlocks(),pullReportUnlocks()]).then(function(){
+        if(typeof renderReportsTabView==='function'&&$('#view-reports')&&!$('#view-reports').hidden)renderReportsTabView();
+        if(data.devices>1)showToast('같은 계정의 다른 기기에서 산 콘텐츠도 볼 수 있어요.');
+      });
+    })
+    .catch(function(){ACCOUNT_LINKED_FOR=null;});
+}
 function updateAccountMenu(){
   var name=$('#menu-account-name');if(!name)return;
   name.textContent=AUTH.user ? authName()+'님, 반가워요' : '로그인하고 함께하기';
@@ -6238,9 +6270,10 @@ function initAuth(){
     AUTH.client=window.supabase.createClient(AUTH_URL,AUTH_PUBLIC_KEY,{auth:{flowType:'pkce',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     var result=await AUTH.client.auth.getSession();
     AUTH.user=result.data.session ? result.data.session.user : null;
+    if(result.data.session)linkAccount(result.data.session);
     if(result.error){showToast('로그인을 완료하지 못했어요. 메뉴에서 다시 시도해주세요.');}
     else if(AUTH.user && new URLSearchParams(location.search).has('code')){var cleanUrl=new URL(location.href);cleanUrl.searchParams.delete('code');history.replaceState(null,'',cleanUrl.pathname+cleanUrl.search+cleanUrl.hash);}
-    AUTH.client.auth.onAuthStateChange(function(event,session){AUTH.user=session ? session.user : null;updateAccountMenu();});
+    AUTH.client.auth.onAuthStateChange(function(event,session){AUTH.user=session ? session.user : null;if(session)linkAccount(session);updateAccountMenu();});
     updateAccountMenu();return AUTH.client;
   }).catch(function(error){AUTH.loading=null;throw error;});
   return AUTH.loading;
@@ -6253,12 +6286,12 @@ async function loadAuthProviders(){
 function renderAuthPanel(){
   var panel=$('#menu-auth');if(!panel)return;
   if(AUTH.user){
-    panel.innerHTML='<h3>나의 계정</h3><p>'+esc(authName())+'님으로 로그인되어 있어요. 사주와 구매 내역은 현재 브라우저에 보관돼요.</p><button type="button" class="menu-logout" id="menu-logout">로그아웃</button><p id="menu-auth-message" role="status"></p>';
+    panel.innerHTML='<h3>나의 계정</h3><p>'+esc(authName())+'님으로 로그인되어 있어요. 구매한 콘텐츠와 사주가 이 계정에 연결돼요. 다른 기기에서도 같은 계정으로 로그인하면 이어서 볼 수 있어요.</p><button type="button" class="menu-logout" id="menu-logout">로그아웃</button><p id="menu-auth-message" role="status"></p>';
     $('#menu-logout').addEventListener('click',async function(){this.disabled=true;try{var result=await AUTH.client.auth.signOut({scope:'local'});if(result.error)throw result.error;AUTH.user=null;updateAccountMenu();}catch(e){this.disabled=false;var message=$('#menu-auth-message');if(message)message.textContent='로그아웃하지 못했어요. 다시 시도해주세요.';}});return;
   }
   var kakao='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.5 2 10.8c0 2.8 1.9 5.2 4.8 6.6l-1 3.5c-.1.4.2.6.5.4l4.2-2.7H12c5.5 0 10-3.5 10-7.8S17.5 3 12 3Z"/></svg>';
   function provider(id,label,icon){var available=AUTH.settingsLoaded&&AUTH.providers[id]===true;return '<button type="button" class="login-provider login-'+id+'" data-login-provider="'+id+'"'+(available?'':' disabled')+'>'+icon+'<span>'+label+'</span>'+(!available?'<span class="login-status">'+(AUTH.settingsLoaded?'준비 중':'확인 중')+'</span>':'')+'</button>';}
-  panel.innerHTML='<h3>별첩사주에 오신 걸 환영해요</h3><p>카카오 계정으로 간편하게 시작하세요.</p>'+provider('kakao','카카오로 시작하기',kakao)+'<p id="menu-auth-message" role="status">'+(AUTH.settingsLoaded&&!AUTH.providers.kakao?'카카오 로그인은 연결을 준비하고 있어요. 사주풀이는 로그인 없이 이용할 수 있어요.':'')+'</p>';
+  panel.innerHTML='<h3>별첩사주에 오신 걸 환영해요</h3><p>카카오 계정으로 로그인하면 휴대폰을 바꾸거나 다른 기기에서 들어와도 구매한 콘텐츠를 다시 볼 수 있어요.</p>'+provider('kakao','카카오로 시작하기',kakao)+'<p id="menu-auth-message" role="status">'+(AUTH.settingsLoaded&&!AUTH.providers.kakao?'카카오 로그인은 연결을 준비하고 있어요. 사주풀이는 로그인 없이 이용할 수 있어요.':'')+'</p>';
   $all('[data-login-provider]',panel).forEach(function(button){button.addEventListener('click',async function(){button.disabled=true;var message=$('#menu-auth-message');message.textContent='로그인 페이지로 이동 중...';try{var client=await initAuth();var result=await client.auth.signInWithOAuth({provider:button.dataset.loginProvider,options:{redirectTo:window.location.origin+window.location.pathname}});if(result.error)throw result.error;}catch(e){button.disabled=false;message.textContent='로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.';}});});
   if(!AUTH.settingsLoaded)loadAuthProviders().then(function(){if(panel.isConnected&&!panel.hidden)renderAuthPanel();}).catch(function(){var message=$('#menu-auth-message');if(message)message.textContent='로그인 연결을 확인하지 못했어요. 메뉴를 닫고 다시 열어주세요.';});
 }

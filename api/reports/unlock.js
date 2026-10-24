@@ -5,13 +5,15 @@ const STATIC_CONCEPTS = {[career.concept.id]: career.concept, [marriage.concept.
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('../_supabase');
 const { STAGE_PRICE, STAGES, stageKey, rowsAt, reportAccess } = require('../_report-access');
 const { signQuote, verifyQuote, newOrderId } = require('../_payment-quote');
+const { linkedDeviceIds, deviceFilter } = require('../_account');
 
 async function handleGet(req, res) {
   const { device_id: deviceId } = getQuery(req);
   if (!deviceId) return res.status(400).json({ ok: false, error: 'MISSING_DEVICE_ID' });
+  const devices = deviceFilter(await linkedDeviceIds(deviceId));
   const [legacy, stages] = await Promise.all([
-    rowsAt('/report_unlocks?device_id=eq.' + encodeURIComponent(deviceId) + '&select=concept_id'),
-    rowsAt('/paid_unlocks?device_id=eq.' + encodeURIComponent(deviceId) + '&select=unlock_key')
+    rowsAt('/report_unlocks?device_id=' + devices + '&select=concept_id'),
+    rowsAt('/paid_unlocks?device_id=' + devices + '&select=unlock_key')
   ]);
   res.status(200).json({ ok: true, rows: legacy.map(r => r.concept_id), stageKeys: stages.map(r => r.unlock_key).filter(k => /^report-(story|detail)-/.test(k)) });
 }

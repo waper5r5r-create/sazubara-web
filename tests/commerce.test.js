@@ -10,7 +10,7 @@ const { signQuote } = require('../api/_payment-quote');
 let tables, confirms;
 function reset() {
   confirms=0;
-  tables={report_concepts:[{id:'theme',title:'테스트 이야기',active:true,price_krw:990}], report_panels:Array.from({length:20},(_,i)=>({id:i+1,concept_id:'theme',sort_order:i+1,img_url:i%2===0?'https://image.invalid/'+i:null,caption_template:'{{branch:domWx|수::차분한 마음이에요. 생각이 깊어요. 마음을 표현해보세요.||화::솔직한 마음이에요. 먼저 다가가요.||else::}}'})),paid_unlocks:[],report_unlocks:[],devices:[]};
+  tables={devices:[],account_devices:[],device_secrets:[],report_concepts:[{id:'theme',title:'테스트 이야기',active:true,price_krw:990}], report_panels:Array.from({length:20},(_,i)=>({id:i+1,concept_id:'theme',sort_order:i+1,img_url:i%2===0?'https://image.invalid/'+i:null,caption_template:'{{branch:domWx|수::차분한 마음이에요. 생각이 깊어요. 마음을 표현해보세요.||화::솔직한 마음이에요. 먼저 다가가요.||else::}}'})),paid_unlocks:[],report_unlocks:[],devices:[]};
   global.fetch=async function(url,options={}) {
     const parsed=new URL(url);
     if(parsed.hostname==='api.tosspayments.com') {
@@ -18,14 +18,16 @@ function reset() {
       const body=JSON.parse(options.body);
       return Response.json({totalAmount:body.amount,orderId:body.orderId,status:'DONE',currency:'KRW',approvedAt:'2026-10-12T00:00:00+09:00'});
     }
+    if(parsed.pathname==='/auth/v1/user'){const token=(options.headers||{}).Authorization||'';return token==='Bearer good-login-token-123456789'?Response.json({id:'11111111-1111-4111-8111-111111111111'}):Response.json({},{status:401});}
     const name=parsed.pathname.split('/').pop(),table=tables[name];assert.ok(table,'unexpected mock table '+name);
     if(options.method==='POST') {
       const row=JSON.parse(options.body);
-      if(name==='devices')return Response.json({});
-      if(table.some(r=>r.order_id===row.order_id||(r.device_id===row.device_id&&(r.unlock_key&&r.unlock_key===row.unlock_key||r.concept_id&&r.concept_id===row.concept_id))))return Response.json({},{status:409});
+      if(name==='devices'){if(!table.some(r=>r.device_id===row.device_id))table.push(row);return Response.json({});}
+      if(table.some(r=>(row.order_id&&r.order_id===row.order_id)||(row.secret_hash&&r.device_id===row.device_id)||(row.user_id&&r.user_id===row.user_id&&r.device_id===row.device_id)||(r.device_id===row.device_id&&(r.unlock_key&&r.unlock_key===row.unlock_key||r.concept_id&&r.concept_id===row.concept_id))))return Response.json({},{status:409});
       table.push(row);return Response.json([row],{status:201});
     }
-    let rows=table.filter(r=>[...parsed.searchParams.entries()].every(([key,value])=>!value.startsWith('eq.')||String(r[key])===value.slice(3)));
+    const match=(r,key,value)=>value.startsWith('eq.')?String(r[key])===value.slice(3):value.startsWith('in.(')?value.slice(4,-1).split(',').map(v=>v.replace(/^"|"$/g,'')).includes(String(r[key])):value==='not.is.null'?r[key]!=null:true;
+    let rows=table.filter(r=>[...parsed.searchParams.entries()].every(([key,value])=>match(r,key,value)));
     return Response.json(rows);
   };
 }
@@ -101,4 +103,19 @@ test('career catalogue, one paid purchase and protected report work without a da
  const approved=await call(reportUnlock,'POST','/api/reports/unlock',{paymentKey:'mock',orderId:checkout.orderId,amount:checkout.amount,quote:checkout.quote,deviceId:'test-device',conceptId:c.id,stage:'story'});assert.equal(approved.ok,true);
  const read=await call(listReports,'GET',url);assert.equal(read.rows.length,1);assert.ok(read.rows[0].cards);assert.equal(read.detailRows.length,1);assert.ok(read.detailRows[0].stemView);
  const anonymous=await call(listReports,'GET','/api/reports/list?conceptId='+c.id);assert.equal(anonymous.rows.length,0);assert.equal(anonymous.detailRows.length,0);
+});
+
+test('logging in links devices: purchases follow the account, the saju carries over, and a wrong device key is refused',async()=>{
+ reset();const link=(deviceId,deviceSecret,accessToken='good-login-token-123456789')=>call(require('../api/account/link'),'POST','/api/account/link',{deviceId,deviceSecret,accessToken});
+ const bought=await buy('story','phone-a');assert.equal(bought.result.ok,true);
+ tables.devices.find(r=>r.device_id==='phone-a').saju_opts={year:1995,month:3,day:21};
+ assert.equal((await link('phone-a','secret-a-0123456789abcdefghij','bad')).error,'NOT_LOGGED_IN');
+ const a=await link('phone-a','secret-a-0123456789abcdefghij');assert.equal(a.ok,true);assert.equal(a.devices,1);
+ const before=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=phone-b');assert.equal(before.access.story,false);
+ const b=await link('phone-b','secret-b-0123456789abcdefghij');assert.equal(b.ok,true);assert.equal(b.devices,2);assert.deepEqual(b.saju,{year:1995,month:3,day:21});
+ const after=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=phone-b');assert.equal(after.access.story,true);assert.equal(after.detailRows.length,20);
+ assert.equal((await prepare('story','phone-b')).error,'ALREADY_OWNED');
+ assert.equal((await link('phone-a','someone-else-guessing-the-key-123')).error,'DEVICE_MISMATCH');
+ assert.equal(tables.account_devices.length,2);
+ const stranger=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=phone-c');assert.equal(stranger.access.story,false);
 });
