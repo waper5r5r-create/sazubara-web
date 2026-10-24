@@ -50,3 +50,7 @@ body{background:radial-gradient(ellipse at 10% 0,#edd8ff 0,transparent 46%),radi
 .report-page .reader-cover>img,.report-page .pocha-cover>img{width:96px;height:120px;object-fit:cover;object-position:50% 25%}.report-page .pocha-cover>img{object-position:44% 40%}.report-page .reader-cover>img[src*="wealth-"]{object-position:58% 22%}
 .report-page .reading-intro-art{aspect-ratio:4/3;overflow:hidden;margin:24px 0 8px}.report-page .reading-intro-art img{display:block;width:100%;height:100%;max-height:none;object-fit:cover;object-position:50% 22%}.report-page [data-reading-topic="money"] .reading-intro-art img{object-position:55% 25%}.report-page [data-reading-topic="career"] .reading-intro-art img{object-position:52% 60%}
 @media(max-width:374px){.report-grid .report-card{grid-template-columns:108px minmax(0,1fr)}.report-page .reader-cover>img,.report-page .pocha-cover>img{width:76px;height:104px}}
+
+/* 2026-10-24 최소 글자 크기 */
+.disclaimer,.album-page-label,.card-back-label,.card-back-brand,.atelier-caption,.myroom-head-right .myroom-count,.card-back small,.reader-cover .reader-kicker,.report-page .reader-kicker{font-size:.6875rem!important}
+.card-back-label,.card-back-brand,.album-page-label,.atelier-caption{letter-spacing:.04em!important}

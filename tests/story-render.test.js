@@ -183,7 +183,7 @@ test('all three catalogue covers match reader art and never load the retired aun
  assert.equal(love.title,'연애 사주');assert.equal(money.title,'재물 사주');
  for(const row of [love,money,c]){
   const cover=api.reportCoverSource(row,result);assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',cover)));
-  assert.ok(api.reportCardHtml(row).includes(cover.replace('scene-01.webp','scene-01-thumb.webp')));assert.ok(!row.tagline.includes('타이밍'));
+  assert.ok(api.reportCardHtml(row).includes(cover.replace('/scenes/cover.webp','/scenes/cover-thumb.webp')));assert.ok(!row.tagline.includes('타이밍'));
  }
  assert.equal(api.reportCoverSource(love,{...result,gender:'m'}),'/assets/love/scenes/cover.webp');
  assert.ok(api.reportCoverSource(money,{...result,gender:'m'}).includes('wealth-m-0'));

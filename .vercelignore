@@ -1,0 +1,7 @@
+# 배포에서 빼는 내부 파일(그림 프롬프트, 미리보기 페이지, 테스트, DB 스크립트)
+assets/**/*.md
+card-album-preview.html
+story-design-preview.html
+README.md
+tests/
+database/
