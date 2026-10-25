@@ -1066,6 +1066,52 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .reader-price-note a{color:inherit;text-decoration:underline}
 .love-free-card{margin:18px auto 6px;max-width:300px;text-align:center}.love-free-card .love-card-art{margin:0 auto 10px}.love-free-card figcaption{font-size:.875rem;color:#e9d7e3}.love-free-card strong{color:#f6dbe8}.career-free-card figcaption{color:#cfe7e1}.career-free-card strong{color:#e8f4f1}
 .career-prescription{border-color:#2f8f8f88}.career-prescription .prescription-kicker{color:#1f7a74}
+/* 재물 사주 · 금비: 장부 종이, 저울 막대, 영수증 */
+.gumbi-talk .wolha-face,.gumbi-deep .wolha-face{border-color:#d4a24c99;background:radial-gradient(circle at 50% 35%,#5a4325,#2a1f14);box-shadow:0 0 0 3px #f0d39a22}
+.wolha-scene.is-tall{max-width:440px;margin-left:auto;margin-right:auto}
+.gumbi-scale{margin:18px 0 22px;padding:20px 18px;border-radius:18px;background:#fbf6ea;color:#2b2416;box-shadow:0 10px 28px #0006}
+.gumbi-scale-kicker{margin:0 0 14px;font-size:.8125rem;font-weight:700;letter-spacing:.04em;color:#9a6a12}
+.scale-bars{display:grid;gap:12px}
+.scale-bar{position:relative;display:grid;grid-template-columns:1fr auto;align-items:center;padding:10px 12px;border-radius:12px;background:#00000008;overflow:hidden}
+.scale-bar span{position:relative;z-index:1;font-size:.875rem;font-weight:600}
+.scale-bar b{position:relative;z-index:1;font-size:1.25rem}
+.scale-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:12px}
+.scale-bar.is-in i{background:#e9c46a77}
+.scale-bar.is-out i{background:#c8303a33}
+.scale-verdict{margin:14px 0 0;font-size:1rem;font-weight:600;word-break:keep-all}
+.scale-verdict strong{color:#9a6a12}
+.scale-text{margin:8px 0 0;font-size:.9375rem;line-height:1.75;color:#3a3020;word-break:keep-all}
+.scale-basis{margin:10px 0 0;font-size:.75rem;color:#7a6e5a}
+.ledger-row{margin:26px 0;padding:18px 16px 16px;border-radius:16px;background:#fdfaf2 repeating-linear-gradient(transparent 0 31px,#2b241610 31px 32px);color:#2b2416;box-shadow:0 10px 28px #0006;border-left:4px solid #d4a24c}
+.ledger-out{border-left-color:#c8303a}.ledger-save{border-left-color:#4f8a5b}.ledger-grow{border-left-color:#3d6fb0}.ledger-people{border-left-color:#8a5aa8}
+.ledger-head{display:flex;align-items:center;gap:8px;margin:0 0 6px}
+.ledger-no{font-size:.75rem;font-weight:700;color:#7a6e5a}
+.ledger-tab{display:inline-block;padding:3px 10px;border-radius:999px;background:#2b2416;color:#fdfaf2;font-size:.75rem;font-weight:700}
+.ledger-q{margin:4px 0 0;font-size:1.0625rem;font-weight:700;line-height:1.5;word-break:keep-all}
+.ledger-row .wolha-scene{margin:14px 0 4px;border:0;box-shadow:none}
+.ledger-body p{margin:10px 0 0;font-size:.9375rem;line-height:1.8;word-break:keep-all}
+.ledger-body .ledger-title{font-weight:700;color:#9a6a12}
+.ledger-body .ledger-tip{padding:10px 12px;border-radius:10px;background:#f3e6c4;font-weight:600}
+.ledger-basis{margin:12px 0 0;font-size:.75rem;color:#7a6e5a}
+.ledger-row .marriage-timeline li{border-color:#00000012}.ledger-row .marriage-year b{color:#2b2416}.ledger-row .marriage-year span,.ledger-row .marriage-year-label{color:#6d6150}
+.ledger-row .marriage-timeline li.is-top .marriage-year-label,.ledger-row .wolha-year{color:#9a6a12}
+.ledger-row .wolha-months span{background:#f3e6c4;color:#6a4a10}
+.ledger-peek{padding:16px;border-radius:16px;background:#fdfaf2;color:#2b2416}
+.ledger-peek ul{list-style:none;margin:8px 0 0;padding:0}
+.ledger-peek li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px dashed #00000020;font-size:.875rem}
+.gumbi-talk .wolha-cliff .ledger-row{box-shadow:none}
+.gumbi-receipt{max-width:420px;margin:20px auto 26px;padding:22px 20px 24px;background:#fffdf7;color:#2b2416;box-shadow:0 10px 28px #0006;border-top:3px dashed #2b241640;border-bottom:3px dashed #2b241640}
+.receipt-kicker{margin:0 0 4px;font-size:.75rem;font-weight:700;letter-spacing:.08em;color:#9a6a12;text-align:center}
+.gumbi-receipt h3{margin:0 0 14px;text-align:center;font-size:1.125rem;color:#2b2416}
+.gumbi-receipt ul{list-style:none;margin:0;padding:0}
+.gumbi-receipt li{display:flex;gap:10px;padding:10px 0;border-top:1px dotted #2b241640;font-size:.9375rem;line-height:1.6;word-break:keep-all}
+.gumbi-receipt li::before{content:'☐';flex:none;color:#9a6a12}
+.receipt-foot{margin:14px 0 0;text-align:center;font-size:.8125rem;color:#7a6e5a}
+.saju-hook-wealth li::before{background:#9a6a12}
+.saju-hook-wealth .saju-hook-kicker{color:#9a6a12}
+.gumbi-deep{background:#f8f3e6}
+.gumbi-deep .deep-no{background:#9a6a12!important}
+.gumbi-deep .gumbi-scale{box-shadow:none;border:1px solid #9a6a1233}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=4">
 </head>
@@ -3788,7 +3834,7 @@ function reportCoverSource(c,result){
  var gender=result&&(result.gender==='m'||result.gender==='male')?'m':'f';
  if(isPocha(c))return c.cover_img_url||'/assets/career/scenes/cover.webp';
  if(c.id==='운명의-사람은-언제-올까-fyq1z')return '/assets/love/scenes/cover.webp';
- if(c.id==='타고난-재물복은-얼마나-될까-k7dxw')return '/assets/webtoon/reader-v2/wealth-'+gender+'-0.webp';
+ if(c.id==='타고난-재물복은-얼마나-될까-k7dxw')return '/assets/wealth/scenes/cover.webp';
  return c.cover_img_url||'';
 }
 function reportCardHtml(c){
@@ -3797,6 +3843,7 @@ function reportCardHtml(c){
   if(coverSrc==='/assets/career/scenes/cover.webp')coverSrc='/assets/career/scenes/cover-thumb.webp';
   if(coverSrc==='/assets/love/scenes/cover.webp')coverSrc='/assets/love/scenes/cover-thumb.webp';
   if(coverSrc==='/assets/marriage/scenes/cover.webp')coverSrc='/assets/marriage/scenes/cover-thumb.webp';
+  if(coverSrc==='/assets/wealth/scenes/cover.webp')coverSrc='/assets/wealth/scenes/cover-thumb.webp';
   var coverInner = coverSrc ? '<img src="'+esc(coverSrc)+'" alt="" loading="lazy" decoding="async">' : '<span class="report-cover-fallback">'+BRAND_MARK_SVG+'</span>';
   return '<button type="button" class="report-card" data-report-id="'+esc(String(c.id))+'" data-cat="'+esc(c.category||'')+'"'+(available?'':' disabled')+'>'+
       '<span class="report-cover">'+coverInner+'</span>'+
@@ -4170,8 +4217,8 @@ var HOOK_MARRIAGE={
 };
 /* 다섯 문장 + 근거 태그. 순서: 일간 → 자리(일지/월주) → 강한 기운 → 약한 기운 → 신강약 */
 function sajuHookHtml(kind,result,title){
- var H=kind==='love'?HOOK_LOVE:kind==='career'?HOOK_CAREER:HOOK_MARRIAGE,stem=result.day.ganKr,dom=dominantWx(result.wxCount).wx,weak=weakestWx(result.wxCount).wx,strong=result.strength==='strong';
- var second=kind==='career'?[H.group[careerGroup(result)],'월주 '+(result.monthSS||'')]:[H.zhi[result.day.zhiKr],'일지 '+result.day.zhiKr+'('+result.day.zhi+')'];
+ var H=kind==='love'?HOOK_LOVE:kind==='career'?HOOK_CAREER:kind==='wealth'?HOOK_WEALTH:HOOK_MARRIAGE,stem=result.day.ganKr,dom=dominantWx(result.wxCount).wx,weak=weakestWx(result.wxCount).wx,strong=result.strength==='strong';
+ var second=kind==='wealth'?(function(t){return [H.income[t],WEALTH_INCOME_TAG[t]];})(wealthProfile(result).income):kind==='career'?[H.group[careerGroup(result)],'월주 '+(result.monthSS||'')]:[H.zhi[result.day.zhiKr],'일지 '+result.day.zhiKr+'('+result.day.zhi+')'];
  var rows=[[H.stem[stem],'일간 '+stem+'('+result.day.gan+')'],second,[H.dom[dom],dom+' 기운 강함'],weak!==dom?[H.weak[weak],weak+' 기운 약함']:null,[H.strength[strong?'strong':'weak'],strong?'신강':'신약']].filter(function(r){return r&&r[0];});
  return '<section class="saju-hook saju-hook-'+kind+'"><p class="saju-hook-kicker">'+esc(title)+'</p><ol>'+rows.map(function(r){return '<li><p>'+esc(r[0])+'</p><span>'+esc(r[1])+'</span></li>';}).join('')+'</ol><p class="saju-hook-foot">하나라도 "어? 맞는데" 싶었다면, 이건 입력한 사주로 계산한 거예요.</p></section>';
 }
@@ -4704,7 +4751,179 @@ function marriageFlow(concept,data,result){
  if(data.detailRows&&data.detailRows[0])return html+'<section id="owned-detail-report">'+marriageDeepHtml(data.detailRows[0],result,rows)+'</section>';
  return html;
 }
+/* ---- 재물 사주: 금빛 저울방의 환전상 "금비"가 사주로 들어오는 힘과 새는 힘을 저울에 달고, 장부 칸으로 정리한다.
+   무료 문구와 계산은 여기, 유료 문구는 api/_wealth-content.js에서 결제 확인 후 내려온다. ---- */
+var WEALTH_ID='타고난-재물복은-얼마나-될까-k7dxw';
+function isWealth(c){return c&&c.id===WEALTH_ID;}
+var GUMBI_ART='/assets/wealth/';
+var WEALTH_TITLE={갑:'씨앗 금화',을:'덩굴 동전',병:'햇살 금화',정:'등불 금고',무:'산 금괴',기:'곳간 자루',경:'무쇠 금고',신:'보석함',임:'금화 나룻배',계:'빗물 항아리'};
+var HOOK_WEALTH={
+ stem:{갑:'"이건 투자야" 하면서 강의나 장비를 결제한 적 많죠.',을:'모임비랑 선물값을 합쳐보고 깜짝 놀란 적 있어요.',병:'기분 좋은 날엔 계획에 없던 한턱을 내고 있어요.',정:'작은 금액도 어디 썼는지 대충은 다 기억해요.',무:'한번 정한 적금은 웬만해선 안 깨요.',기:'장 볼 때 "이왕 온 김에" 하나씩 더 담게 돼요.',경:'필요 없다 싶은 건 아무리 싸도 안 사요.',신:'싼 거 두 번 사느니 좋은 거 한 번 사는 게 낫다고 생각해요.',임:'통장, 앱, 포인트가 흩어져 있어서 전부 얼마인지 헷갈려요.',계:'통장 잔고를 생각보다 자주 확인해요.'},
+ income:{salary:'월급날이 정해져 있어야 마음이 편해요.',business:'고정 월급보다 한 만큼 받는 쪽이 더 끌려요.',skill:'본업 말고 다른 걸로도 돈 벌 수 있을 것 같다는 생각, 자주 하죠.',build:'열심히 하는데 돈이 따라오는 느낌은 아직 덜해요.'},
+ dom:{목:'"이번 달만" 하고 새로 시작하는 게 꼭 하나씩 생겨요.',화:'"오늘까지 할인"을 보면 마음이 급해져요.',토:'집에 휴지나 세제가 떨어질 일이 없어요.',금:'비교하다 결국 한 단계 위 제품을 사요.',수:'후기를 한참 읽다가 결국 안 사거나 여러 개 사요.'},
+ weak:{목:'새로운 돈벌이를 시작하는 게 늘 망설여져요.',화:'연봉이나 단가 얘기를 꺼내기가 어려워요.',토:'모으려고 해도 어느새 통장이 비어 있어요.',금:'부탁을 받으면 거절을 잘 못해요.',수:'내 돈이 어디에 얼마 있는지 정리해 본 지 오래됐어요.'},
+ strength:{strong:'돈 문제는 결국 내가 결정해야 마음이 놓여요.',weak:'큰돈 쓸 땐 누군가에게 꼭 한 번 물어보고 싶어져요.'}
+};
+var WEALTH_INCOME_NAME={salary:'월급형',business:'사업·기회형',skill:'재능형',build:'기반형'};
+var WEALTH_INCOME_TAG={salary:'정재 있음',business:'편재 있음',skill:'식상 강함',build:'재성 숨어 있음'};
+/* 일간 기준 다섯 기운의 개수: 비겁(같은 기운)·식상(내가 낳는)·재성(내가 다스리는)·관성(나를 다스리는)·인성(나를 낳는) */
+function wealthGroups(result){var W=['목','화','토','금','수'],d=W.indexOf(result.dayGanWx),c=result.wxCount||{},at=function(k){return d<0?0:Number(c[W[(d+k)%5]])||0;};return {bigyeop:Math.max(0,at(0)-1),siksang:at(1),jaeseong:at(2),gwanseong:at(3),inseong:at(4)};}
+function wealthProfile(result){
+ var g=wealthGroups(result),ss=[result.yearSS,result.monthSS,result.timeSS],strong=result.strength==='strong';
+ var jj=ss.indexOf('정재')>=0,pj=ss.indexOf('편재')>=0,dom=dominantWx(result.wxCount).wx;
+ var income=g.siksang>=3?'skill':pj&&(!jj||strong)?'business':jj?'salary':g.jaeseong>=2?(strong?'business':'salary'):g.siksang>=2?'skill':'build';
+ var invest=(pj||g.jaeseong>=2)&&strong?'bold':(g.jaeseong>=3&&!strong)||dom==='수'?'careful':'steady';
+ var big=g.bigyeop>=3?'many':g.bigyeop>=1?'some':'none';
+ var zs=[result.year,result.month,result.day].concat(result.unknownTime?[]:[result.time]).filter(Boolean).map(function(p){return p.zhiKr;});
+ var store=zs.filter(function(z){return '진술축미'.indexOf(z)>=0;}).length,storage=store>=2?'many':store===1?'some':'none';
+ var inPow=Math.max(18,Math.min(96,Math.round(35+11*g.jaeseong+7*g.siksang+(strong?8:0)+(jj?4:0)+(pj?4:0))));
+ var leakPow=Math.max(12,Math.min(92,Math.round(28+9*g.bigyeop+(g.jaeseong>=3&&!strong?14:0)+(g.gwanseong===0?10:0)+(g.siksang>=3?6:0)-3*g.inseong)));
+ var diff=inPow-leakPow,verdict=diff>=12?'surplus':diff<=-6?'deficit':'even';
+ return {g:g,strong:strong,jj:jj,pj:pj,income:income,invest:invest,big:big,store:store,storage:storage,inPow:inPow,leakPow:leakPow,verdict:verdict,inLevel:inPow>=66?'high':inPow>=45?'mid':'low',leakLevel:leakPow>=58?'high':leakPow>=38?'mid':'low'};
+}
+var WEALTH_VERDICT_SHORT={surplus:'들어오는 쪽으로 기울었어요',even:'거의 수평이에요',deficit:'새는 쪽으로 조금 기울었어요'};
+var WEALTH_TG_SCORE={jaeseong:3,siksang:2,gwanseong:1,inseong:0,bigyeop:-1};
+var WEALTH_REL_SCORE={liuhe:1,sanhe:1,same:0,none:0,chong:-1,xing:-1,hai:-1,yuanjin:-1};
+var WEALTH_TG_LABEL={jaeseong:'돈이 들어오는 해',siksang:'일한 만큼 버는 해',gwanseong:'자리가 오르는 해',inseong:'배워서 쌓는 해',bigyeop:'나가는 돈 조심할 해'};
+function wealthTimeline(result,fromYear,count){
+ var rows=[],daeun=result.daeun||[];
+ for(var y=fromYear;y<fromYear+(count||10);y++){
+  var g=yearGanZhi(new Date(y,6,1)),rel=zhiRelation(result.day.zhi,g.zhi),tg=dailyFortuneRelation(result.dayGanWx,g.wxGan);
+  var du=daeun.filter(function(d){return y>=d.startYear&&y<=d.endYear;})[0],dg=du?SS_GROUP[du.ss]:null;
+  rows.push({year:y,ganKr:g.ganKr,zhiKr:g.zhiKr,rel:rel,tg:tg,score:WEALTH_TG_SCORE[tg]+WEALTH_REL_SCORE[rel]+(dg==='jaeseong'||dg==='siksang'?1:0),top:0});
+ }
+ rows.slice().sort(function(a,b){return b.score-a.score||a.year-b.year;}).slice(0,3).forEach(function(r,i){r.top=i+1;});
+ return rows;
+}
+function wealthYearLabel(r){return r.tg==='jaeseong'&&r.rel==='liuhe'?'돈이 붙어 머무는 해':WEALTH_TG_LABEL[r.tg];}
+function wealthMonths(result,year){
+ var rows=[];
+ for(var m=1;m<=12;m++){
+  var gz=Solar.fromYmd(year,m,15).getLunar().getMonthInGanZhiExact(),g=gz.charAt(0),z=gz.charAt(1);
+  var rel=zhiRelation(result.day.zhi,z),tg=dailyFortuneRelation(result.dayGanWx,WX_KR[LunarUtil.WU_XING_GAN[g]]);
+  rows.push({month:m,ganKr:GAN_KR[g],zhiKr:ZHI_KR[z],rel:rel,tg:tg,score:WEALTH_TG_SCORE[tg]+WEALTH_REL_SCORE[rel],top:0});
+ }
+ rows.slice().sort(function(a,b){return b.score-a.score||a.month-b.month;}).slice(0,3).forEach(function(r,i){r.top=i+1;});
+ return rows;
+}
+/* 금비 대화 조각: 장면 그림(세로·정사각), 말풍선, 현실 장면(입력한 성별), 손 장면(일간 오행) */
+function gumbiScene(name,alt,shape){return '<figure class="wolha-scene'+(shape?' is-'+shape:'')+'"><img src="'+GUMBI_ART+'scenes/'+name+'.webp" alt="'+esc(alt||'금빛 저울방의 금비')+'" loading="lazy" decoding="async"></figure>';}
+function gumbiSay(face,html){return '<div class="wolha-say"><img class="wolha-face" src="'+GUMBI_ART+'faces/gumbi-'+face+'.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><div class="wolha-bubble"><span class="wolha-name">금비</span>'+html+'</div></div>';}
+function wealthHero(result,key,alt){var shared=key==='saving'||key==='big-spend',g=(result.gender==='m'||result.gender==='male')?'m':'f';return gumbiScene('hero/'+key+(shared?'':'-'+g),alt,'tall');}
+function wealthVar(kind,wx,alt){var k=WX_ART_KEY[wx];return k?gumbiScene('var/'+kind+'-'+k,alt,'tall'):'';}
+function wealthCardArt(stem){var k=LOVE_CARD_ART[stem];return k?'<img class="spouse-card-art wealth-card-art" src="'+GUMBI_ART+'cards/card-'+k+'.webp" alt="'+esc((WEALTH_TITLE[stem]||'')+' 카드')+'" loading="lazy" decoding="async">':'';}
+/* 재물은 "장부" 형식: 칸 이름 → 실제로 묻는 질문 → 장면 → 풀이 → 근거 */
+function ledgerRow(no,tab,kind,q,fig,body,basis){return '<article class="ledger-row ledger-'+kind+'"><header class="ledger-head"><span class="ledger-no">'+no+'</span><span class="ledger-tab">'+esc(tab)+'</span></header><p class="ledger-q">'+esc(q)+'</p>'+fig+'<div class="ledger-body">'+body+'</div>'+(basis?'<p class="ledger-basis">'+esc(basis)+'</p>':'')+'</article>';}
+function wealthScaleHtml(pf,verdictText){
+ return '<section class="gumbi-scale"><p class="gumbi-scale-kicker">금비의 저울</p><div class="scale-bars"><div class="scale-bar is-in"><span>들어오는 힘</span><b>'+pf.inPow+'</b><i style="width:'+pf.inPow+'%"></i></div><div class="scale-bar is-out"><span>새는 힘</span><b>'+pf.leakPow+'</b><i style="width:'+pf.leakPow+'%"></i></div></div><p class="scale-verdict">저울이 <strong>'+esc(WEALTH_VERDICT_SHORT[pf.verdict])+'</strong></p>'+(verdictText?'<p class="scale-text">'+esc(verdictText)+'</p>':'')+'<p class="scale-basis">재성 '+pf.g.jaeseong+' · 식상 '+pf.g.siksang+' · 비겁 '+pf.g.bigyeop+' · 관성 '+pf.g.gwanseong+' · '+(pf.strong?'신강':'신약')+'</p></section>';
+}
+function wealthYearsHtml(rows,labelOf){return '<section class="marriage-timeline wealth-years"><ol>'+rows.map(function(r){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+labelOf(r)+'</p></div></li>';}).join('')+'</ol></section>';}
+function wealthPreviewHtml(concept,result,rows){
+ var stem=result.day.ganKr,who=marriageCallName(result),pf=wealthProfile(result);
+ var first=rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;})[0];
+ return '<section class="wolha-talk gumbi-talk" data-reading-topic="wealth">'+
+  gumbiScene('greeting','환전소 문을 열고 어서 오라고 손짓하는 금비','tall')+
+  gumbiSay('smile','<p>'+who+', 어서 와요. 돈 얘기죠?</p><p>사주부터 저울에 달아봤어요. 이런 적 있죠?</p>')+
+  sajuHookHtml('wealth',result,'금비가 사주에서 먼저 본 것')+
+  gumbiScene('scale','저울 양쪽에 동전을 올려 균형을 보는 금비','tall')+
+  wealthScaleHtml(pf,'')+
+  '<figure class="love-free-card wealth-free-card">'+wealthCardArt(stem)+'<figcaption>내 재물 장부 카드 · <strong>'+esc(WEALTH_TITLE[stem]||'')+'</strong></figcaption></figure>'+
+  gumbiSay('wink','<p>봐요, 맞죠? 이제 장부 펼쳐볼게요.</p>')+
+  (first?ledgerRow(1,'10년 흐름','flow','그래서 나 언제 돈 들어와?','','<p>앞으로 10년 중 돈 흐름이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년이라 <strong>'+esc(wealthYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','일간 '+stem+'('+result.day.gan+') × 그해 천간 · 내 자리(일지) '+result.day.zhiKr):'')+
+  '<div class="wolha-cliff" aria-label="이어지는 풀이 미리보기">'+ledgerRow(2,'지출','out','내 돈은 대체 어디로 새는 거야?',wealthVar('spend',result.dayGanWx,'돈 쓰는 장면'),'<p>'+who+' 돈이 새는 구멍이 하나 있어요. 매달 조금씩이라 티가 안 나는 건데, 그게 —</p>','')+'</div>'+
+  lockedPeekHtml('<section class="ledger-peek"><p class="ledger-q">내 장부</p><ul><li><b>수입</b><span>어떻게 버는 타입인지</span></li><li><b>지출</b><span>새는 구멍과 막는 법</span></li><li><b>저축</b><span>모으는 힘과 재물 창고</span></li><li><b>투자</b><span>맞는 성향과 원칙</span></li><li><b>빌려주기·동업</b><span>사람과 얽힌 돈</span></li></ul></section>'+wealthYearsHtml(rows,function(r){return esc(wealthYearLabel(r));}))+
+ '</section>';
+}
+function wealthOffer(stage){
+ var benefits=['재물 장부 카드와 장부 11칸: 수입, 지출, 충동구매, 저축, 가계부, 투자, 빌려주기, 동업, 부업, 큰돈, 10년 흐름','돈이 들어오는 세 해와 그해 좋은 달, 금비의 영수증(이번 달 할 일)','18개 항목 재물 심층 리포트: 저울, 십신, 재물 창고, 대운, 상황별 대응법, 나에게 맞는 돈 관리 방식'];
+ return '<section class="reader-offer marriage-offer wealth-offer" data-gate="'+stage+'">'+gumbiScene('leak','장부의 한 칸을 검지로 짚으며 잠깐 하고 말하는 금비','square')+'<p class="reader-kicker">재물 사주 · 금비</p><h2>새는 구멍,<br>장부에서 같이 찾아요</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">재물 사주 전체 보기 · 7,900원</button><p class="reader-price-note">1회 결제 · 장부 풀이와 18개 항목 재물 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></p></section>';
+}
+function wealthStoryHtml(story,result,rows){
+ var stem=result.day.ganKr,card=story.cards[stem]||{},wx=result.dayGanWx,pf=wealthProfile(result),who=marriageCallName(result);
+ var dom=dominantWx(result.wxCount).wx,weak=weakestWx(result.wxCount).wx,dg=currentDaeunGroup(result),inc=story.income[pf.income]||{},inv=story.invest[pf.invest]||{};
+ var tops=rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;}),best=rows.filter(function(r){return r.top===1;})[0];
+ var good=best?wealthMonths(result,best.year).filter(function(m){return m.top;}).sort(function(a,b){return a.month-b.month;}):[];
+ var P=function(t){return '<p>'+esc(t||'')+'</p>';},tip=function(t){return t?'<p class="ledger-tip">'+esc(t)+'</p>':'';};
+ var html='<section class="wolha-talk gumbi-talk">'+gumbiScene('ledger-open','두꺼운 장부를 펼쳐 보여주는 금비','tall')+
+  gumbiSay('smile','<p>'+who+' 장부, 다 정리했어요. 칸마다 하나씩 짚어볼게요.</p>')+
+  '<section class="spouse-card wealth-card">'+wealthCardArt(stem)+'<p class="reader-kicker">재물 장부 카드 · 일간 '+esc(stem+'('+result.day.gan+')')+'</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 돈 성향일까</h3>'+P(card.who)+'<h3>돈이 붙는 곳</h3>'+P(card.earn)+'<h3>오래 지키는 법</h3>'+P(card.keep)+'</section>'+
+  wealthScaleHtml(pf,'')+
+  ledgerRow(1,'수입','in','나는 어떻게 돈을 버는 타입이야?',wealthHero(result,'payday','월급 알림을 보고 웃는 장면'),'<p class="ledger-title">'+esc(inc.title)+'</p>'+P(inc.text)+tip(inc.tip),WEALTH_INCOME_TAG[pf.income]+' · 재성 '+pf.g.jaeseong+' · 식상 '+pf.g.siksang)+
+  ledgerRow(2,'지출','out','내 돈은 대체 어디로 새는 거야?',wealthVar('spend',wx,'돈 쓰는 장면'),P(story.leak[wx])+P(story.leakBigyeop[pf.big]),'일간 오행 '+wx+' · 비겁 '+pf.g.bigyeop)+
+  ledgerRow(3,'충동구매','out','왜 자꾸 지르고 후회하지?',wealthHero(result,'impulse','결제 버튼 앞에서 망설이는 장면'),P(story.impulse[dom]),'가장 강한 기운 '+dom)+
+  ledgerRow(4,'저축','save','나 돈 모을 수 있는 사람이야?',wealthHero(result,'saving','저금통에 동전을 넣는 손'),P(story.save[wx])+P(story.storage[pf.storage])+wealthVar('save',wx,'돈 모으는 장면'),'일간 오행 '+wx+' · 재물 창고(진·술·축·미) '+pf.store+'개')+
+  ledgerRow(5,'가계부','save','가계부, 나한테 맞는 방법이 따로 있어?',wealthHero(result,'ledger','가계부에 적으며 뿌듯해하는 장면'),P(story.ledgerHabit[pf.strong?'strong':'weak']),'간이 신강·신약 분류 '+(pf.strong?'신강':'신약'))+
+  ledgerRow(6,'투자','grow','나한테 맞는 투자 성향은?',wealthHero(result,'invest','그래프를 보며 고민하는 장면'),'<p class="ledger-title">'+esc(inv.title)+'</p>'+P(inv.text)+tip(inv.rule)+wealthVar('grow',wx,'돈 불리는 장면'),(pf.pj?'편재 있음':'편재 드러나지 않음')+' · '+(pf.strong?'신강':'신약'))+
+  ledgerRow(7,'빌려주기','people','친구가 돈 빌려달라는데 어떡하지?',wealthHero(result,'lend','돈 부탁을 받고 난감해하는 장면'),P(story.lend[pf.big]),'비겁(나와 같은 기운) '+pf.g.bigyeop)+
+  ledgerRow(8,'동업','people','동업 제안 받았는데 해도 될까?',wealthHero(result,'partner','동업 계획을 듣는 장면'),P(story.partner[pf.big]),'비겁 '+pf.g.bigyeop)+
+  ledgerRow(9,'부업','in','부업, 나도 해볼까?',wealthHero(result,'side','퇴근 후 부업에 집중하는 장면'),P(story.side[pf.g.siksang>=1?'has':'none']),'식상(재능과 표현의 기운) '+pf.g.siksang)+
+  ledgerRow(10,'큰돈','out','집이나 차처럼 큰돈 쓸 때 어떻게 해?',wealthHero(result,'big-spend','계약서에 도장을 찍으려다 멈춘 손'),P(story.bigSpend[pf.strong?'strong':'weak']),'간이 신강·신약 분류 '+(pf.strong?'신강':'신약'))+
+  gumbiScene('timeline','연표 위에 동전 세 개를 올려놓는 금비','tall')+
+  ledgerRow(11,'10년 흐름','flow','그래서 나 언제 돈 들어와?',wealthHero(result,'windfall','두툼한 봉투를 받고 놀라 웃는 장면'),'<p>앞으로 10년 돈 흐름이에요. ● 표시가 있는 세 해가 특히 좋아요.</p>'+wealthYearsHtml(rows,function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return (r.top?'● ':'')+esc(r.top?wealthYearLabel(r):rel.label);})+tops.map(function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return '<div class="love-year"><p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(wealthYearLabel(r))+'</p>'+P(story.yearByTenGod[r.tg])+P(rel.text)+'</div>';}).join('')+(best&&good.length?'<p>'+best.year+'년 중에서도 특히 좋은 달이에요.</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>':''),'일간 × 그해 천간 십신 · 일지 × 그해 지지 · 대운');
+ html+=gumbiSay('serious','<p>마지막으로 앞으로 10년 큰 흐름 하나만요.</p>'+(dg&&story.daeunText[dg]?'<p>'+esc(story.daeunText[dg])+'</p>':''))+
+  gumbiScene('receipt','영수증을 내밀며 엄지를 세우는 금비','square')+
+  '<section class="gumbi-receipt"><p class="receipt-kicker">금비의 영수증</p><h3>이번 달, 이것만 해봐요</h3><ul>'+story.receipt.concat([story.receiptByWeakWx[weak],story.receiptByStrength[pf.strong?'strong':'weak']]).filter(Boolean).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="receipt-foot">다음 달에 다시 저울에 달아봐요.</p></section>'+
+  gumbiScene('farewell','환전소 문 앞에서 동전 주머니를 흔들며 배웅하는 금비','tall')+
+  gumbiSay('cheer','<p>여기까지가 요약이에요. 아래에 더 자세한 리포트가 있어요. 천천히 읽어봐요.</p>')+
+ '</section>';
+ return html;
+}
+/* 재물 심층 리포트: 리포트 형식(18개 항목), 금비는 시작과 끝에만 */
+function wealthDeepHtml(deep,result,rows){
+ var stem=result.day.ganKr,zhi=result.day.zhiKr,wx=result.dayGanWx,sv=deep.stemView[stem]||{},who=marriageCallName(result),pf=wealthProfile(result),strong=pf.strong,st=deep.strengthDeep[strong?'strong':'weak'];
+ var domWx=dominantWx(result.wxCount).wx,weakWx=weakestWx(result.wxCount).wx,es=deep.elementMoney.strong[domWx]||{},ew=deep.elementMoney.weak[weakWx]||{};
+ var tops=rows.filter(function(r){return r.top;}).sort(function(a,b){return a.top-b.top;}),best=tops[0];
+ var daeun=result.daeun||[],ci=-1;daeun.forEach(function(d,i){if(d.current)ci=i;});var cur=daeun[ci],periods=ci>=0?daeun.slice(ci,ci+6):[];
+ var n=0,sec=function(title,body){n++;return '<section class="deep-sec"><h3><span class="deep-no">'+n+'</span>'+esc(title)+'</h3>'+body+'</section>';};
+ var tips=function(list){return '<ul class="deep-tips">'+(list||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>';};
+ var box=function(cls,title,body){return '<div class="deep-box'+(cls?' '+cls:'')+'"><b>'+esc(title)+'</b>'+body+'</div>';};
+ var p=function(t){return '<p>'+esc(t||'')+'</p>';};
+ var stars=function(s){var k=s>=4?5:s>=3?4:s>=1?3:s>=0?2:1;return '<span class="deep-stars" aria-label="'+k+'점">'+'★★★★★'.slice(0,k)+'<i>'+'★★★★★'.slice(k)+'</i></span>';};
+ var tm=deep.tenGodMoney,sm=deep.siksangMoney,bm=deep.bigyeopMoney,gi=deep.gwanInMoney,sys=deep.system.split[pf.income]||{};
+ var html='<div class="deep-report gumbi-deep">'+
+  '<header class="deep-head">'+gumbiScene('detail','선반에서 두꺼운 장부를 꺼내며 돌아보는 금비','tall')+gumbiSay('serious','<p>여기부터는 자세한 리포트예요. 궁금한 항목부터 읽어봐요.</p>')+'<p class="deep-kicker">재물 심층 리포트</p><h2>'+who+'의 재물 사주</h2><p class="deep-sub">18개 항목 · 일간·오행·십신·재물 창고·신강약·대운·세운·월운 기준</p>'+
+  '<ol class="deep-toc">'+['한눈에 보는 재물 사주','나의 돈 성향','저울로 보는 들어오는 힘과 새는 힘','재성으로 보는 돈 그릇','식상으로 보는 버는 재능','비겁으로 보는 나가는 돈','관성·인성으로 보는 관리와 안정','기둥별 십신의 돈 의미','오행 균형과 돈','다섯 기운 하나하나','재물 창고','나의 힘과 돈 그릇','10년 재물 흐름 상세','돈이 들어오는 해의 월별 흐름','대운 속 재물','돈 상황별 대응법','나에게 맞는 돈 관리 방식','재물 로드맵과 스스로에게 던질 질문'].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol></header>';
+ var hard=rows.filter(function(r){return r.tg==='bigyeop'||WEALTH_REL_SCORE[r.rel]<0;}).sort(function(a,b){return a.score-b.score||a.year-b.year;})[0];
+ var bmonths=best?wealthMonths(result,best.year).filter(function(x){return x.top;}).sort(function(x,y){return x.month-y.month;}):[];
+ html+=sec('한눈에 보는 재물 사주','<dl class="deep-summary">'+
+  '<div><dt>일간 (나)</dt><dd>'+esc(stem+'('+result.day.gan+') · '+wx+' · '+(WEALTH_TITLE[stem]||''))+'</dd></div>'+
+  '<div><dt>금비의 저울</dt><dd>'+esc('들어오는 힘 '+pf.inPow+' · 새는 힘 '+pf.leakPow+' · '+WEALTH_VERDICT_SHORT[pf.verdict])+'</dd></div>'+
+  '<div><dt>버는 방식</dt><dd>'+esc(WEALTH_INCOME_NAME[pf.income]+' · '+WEALTH_INCOME_TAG[pf.income])+'</dd></div>'+
+  '<div><dt>나의 힘</dt><dd>'+(strong?'신강 · 큰돈을 감당하는 그릇':'신약 · 지키는 힘이 먼저인 그릇')+'</dd></div>'+
+  '<div><dt>강한 기운 / 약한 기운</dt><dd>'+esc(domWx+' / '+weakWx)+'</dd></div>'+
+  '<div><dt>재물 창고</dt><dd>'+esc('진·술·축·미 '+pf.store+'개')+'</dd></div>'+
+  (cur?'<div><dt>지금의 대운</dt><dd>'+esc(cur.startYear+'~'+cur.endYear+' · '+cur.ganKr+cur.zhiKr+' ('+cur.ss+')')+'</dd></div>':'')+
+  '<div><dt>돈이 들어오는 해</dt><dd>'+tops.slice().sort(function(a,b){return a.year-b.year;}).map(function(r){return r.year+'년';}).join(' · ')+'</dd></div></dl>'+
+  '<h4>핵심 다섯 줄</h4>'+tips([best?'가장 좋은 시기: '+best.year+'년'+(bmonths.length?' '+bmonths.map(function(x){return x.month+'월';}).join('·'):'')+', '+wealthYearLabel(best)+'예요.':'',sv.earn?'돈이 붙는 곳: '+sv.earn.split('. ')[0]+'.':'',sv.trap?'조심할 함정: '+sv.trap:'',ew.tips&&ew.tips[0]?'먼저 바꿀 습관: '+ew.tips[0]:'',hard?'조심할 해: '+hard.year+'년이에요. '+(hard.tg==='bigyeop'?'주변 사람과 얽힌 지출이 생기기 쉬워요.':'돈의 흐름이 흔들리기 쉬워요.')+' 미리 비상금을 넉넉히 두세요.':'크게 흔들리는 해가 두드러지지 않아요. 계획대로 꾸준히 쌓으면 돼요.'].filter(Boolean))+'<p class="deep-muted">이 리포트의 모든 해석은 위 요약의 값에서 출발해요. 읽다가 궁금하면 이 표로 돌아와 근거를 확인해 보세요.</p>');
+ html+=sec('나의 돈 성향 · 일간 '+stem+'('+result.day.gan+')',p(sv.view)+'<h4>돈이 들어오는 방식</h4>'+p(sv.earn)+'<h4>돈을 쓰는 방식</h4>'+p(sv.spend)+'<div class="deep-two">'+box('good','돈 관리의 강점',p(sv.strength))+box('warn','조심할 점',p(sv.weak))+'</div>'+box('','돈 그릇을 키우는 법',p(sv.grow))+box('','이번 달 해볼 것',p(sv.tip))+box('warn','빠지기 쉬운 돈 함정',p(sv.trap))+box('','이런 장면, 익숙하죠',p((deep.stemExtra[stem]||{}).habit))+'<div class="deep-two">'+box('good','돈이 되기 쉬운 일',p((deep.stemExtra[stem]||{}).job))+box('','돈 관리가 잘 맞는 사람',p((deep.stemExtra[stem]||{}).mate))+'</div>');
+ html+=sec('저울로 보는 들어오는 힘과 새는 힘',wealthScaleHtml(pf,deep.scaleText.verdict[pf.verdict])+'<div class="deep-two">'+box('good','들어오는 힘 '+pf.inPow,p(deep.scaleText.in[pf.inLevel]))+box('warn','새는 힘 '+pf.leakPow,p(deep.scaleText.leak[pf.leakLevel]))+'</div><h4>저울을 기울이는 방법</h4>'+p(deep.scaleMove[pf.verdict])+tips(deep.scaleText.tips[pf.verdict])+'<p class="deep-muted">들어오는 힘은 재성·식상의 개수와 신강약, 새는 힘은 비겁의 개수와 재성·관성의 균형으로 계산한 참고 점수예요.</p>');
+ html+=sec('재성으로 보는 돈 그릇','<p class="deep-muted">재성(내가 다스리는 기운) '+pf.g.jaeseong+'개 · 연·월·시 천간 십신: '+esc([result.yearSS,result.monthSS,result.timeSS].filter(Boolean).join(' · '))+'</p>'+box(pf.jj?'good':'',tm.jeongjae.title+(pf.jj?' · 있음':' · 드러나지 않음'),p(pf.jj?tm.jeongjae.has:tm.jeongjae.none))+box(pf.pj?'good':'',tm.pyeonjae.title+(pf.pj?' · 있음':' · 드러나지 않음'),p(pf.pj?tm.pyeonjae.has:tm.pyeonjae.none))+(pf.g.jaeseong>=3?box('warn','재성이 많은 사주',p(tm.many)):'')+box('','재성 '+pf.g.jaeseong+'개 · 돈을 지키는 습관',p(deep.jaeKeep[pf.g.jaeseong>=3?'many':pf.g.jaeseong>=1?'some':'none']))+tips(tm.tips[pf.jj||pf.pj?'has':'none']));
+ html+=sec('식상으로 보는 버는 재능','<p class="deep-muted">식상(내가 낳는 기운) '+pf.g.siksang+'개</p>'+p(pf.g.siksang>=1?sm.has:sm.none)+(pf.g.siksang>=3?box('warn','식상이 아주 강한 사주',p(sm.many)):'')+box('','버는 재능이 돈으로 바뀌는 길 · 식상 '+pf.g.siksang+' · 재성 '+pf.g.jaeseong,p(deep.linkSikJae[pf.g.siksang>=1&&pf.g.jaeseong>=1?'both':pf.g.siksang>=1?'talent':pf.g.jaeseong>=1?'money':'neither']))+tips(sm.tips[pf.g.siksang>=1?'has':'none']));
+ html+=sec('비겁으로 보는 나가는 돈','<p class="deep-muted">비겁(나와 같은 기운, 일간 제외) '+pf.g.bigyeop+'개</p>'+p(bm[pf.big])+(function(bp){return box('','친구 사이의 돈',p(bp.friend))+box('','가족과의 돈',p(bp.family))+box('','일터에서의 돈',p(bp.work));})(deep.bigyeopPeople[pf.big]||{})+tips(bm.tips[pf.big]));
+ html+=sec('관성·인성으로 보는 관리와 안정','<div class="deep-two">'+box(pf.g.gwanseong?'good':'','관성 '+pf.g.gwanseong+'개 · 자리와 책임',p(pf.g.gwanseong?gi.gwan.has:gi.gwan.none))+box(pf.g.inseong?'good':'','인성 '+pf.g.inseong+'개 · 배움과 도움',p(pf.g.inseong?gi.in.has:gi.in.none))+'</div>'+p(deep.gwanInCombo[pf.g.gwanseong&&pf.g.inseong?'both':pf.g.gwanseong?'gwan':pf.g.inseong?'in':'none']));
+ html+=sec('기둥별 십신의 돈 의미',box('good','일주 · 일지 '+zhi+'('+result.day.zhi+')',p(deep.dayZhiMoney[zhi]))+[['연주',result.yearSS],['월주',result.monthSS],['시주',result.timeSS]].filter(function(x){return deep.pillarTenGod[x[1]];}).map(function(x){return box('',x[0]+' · '+x[1],p(deep.pillarTenGod[x[1]])+'<p class="deep-muted">'+esc(deep.pillarPos[x[0]]||'')+'</p>');}).join('')||'<p class="deep-muted">출생시간을 몰라 확인할 수 있는 기둥이 적어요.</p>');
+ html+=sec('오행 균형과 돈','<h4>가장 강한 기운 · '+esc(domWx)+'</h4>'+p(es.text)+tips(es.tips)+box('good','강한 기운을 돈으로 쓰는 법',p(deep.elementWork[domWx]))+(weakWx!==domWx?'<h4>가장 약한 기운 · '+esc(weakWx)+'</h4>'+p(ew.text)+tips(ew.tips)+box('','약한 기운을 채우는 지출',p(deep.elementFill[weakWx])):''));
+ html+=sec('다섯 기운 하나하나',['목','화','토','금','수'].map(function(k){var c=Number(result.wxCount[k])||0,t=deep.elementCount[k]||{};return box(c>=3?'good':c===0?'warn':'',k+' '+c+'개',p(c===0?t.none:c>=3?t.many:t.few));}).join(''));
+ html+=sec('재물 창고 · 진·술·축·미 '+pf.store+'개',p(deep.storageDeep[pf.storage])+tips(deep.storageDeep.tips[pf.storage])+(function(open){return '<h4>창고가 움직이는 해</h4>'+p(open.length?deep.storageOpen.has:deep.storageOpen.none)+(open.length?'<p class="wolha-months">'+open.map(function(r){return '<span>'+r.year+'년 '+esc(r.zhiKr)+'</span>';}).join('')+'</p>':'');})(rows.filter(function(r){return '진술축미'.indexOf(r.zhiKr)>=0;})));
+ html+=sec('나의 힘과 돈 그릇 · '+st.title,p(st.text)+tips(st.tips)+'<h4>돈 관리 단계별로 보면</h4>'+deep.stageType.map(function(w){return box('',w.name,p(strong?w.strong:w.weak));}).join('')+'<h4>'+(strong?'신강':'신약')+'인 당신의 1년 계획</h4>'+tips(deep.strengthPlan[strong?'strong':'weak']));
+ html+=sec('10년 재물 흐름 상세','<p class="deep-muted">해마다 그해 천간이 나에게 어떤 십신인지, 그해 지지가 내 자리 '+esc(zhi)+'에 어떻게 닿는지, 그해가 속한 대운을 함께 읽었어요.</p><ol class="deep-years">'+rows.map(function(r){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],dgk=du&&SS_GROUP[du.ss];return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'● ':'')+esc(wealthYearLabel(r))+'</p>'+p(deep.yearTgLong[r.tg])+p(deep.yearRelNote[r.rel]||deep.yearRelNote.none)+(dgk&&deep.yearDaeun[dgk]?'<p class="deep-muted">'+esc(r.year+'년은 '+du.ganKr+du.zhiKr+' 대운('+du.ss+') 안에 있어요. '+deep.yearDaeun[dgk])+'</p>':'')+'<div class="deep-two">'+box('','직장인이라면',p(deep.yearWorker[r.tg]))+box('','자영업·프리랜서라면',p(deep.yearFree[r.tg]))+'</div><p class="deep-label">이 해에 해볼 일</p>'+tips(deep.yearTodo[r.tg])+'</li>';}).join('')+'</ol>');
+ if(best)html+=sec('돈이 들어오는 해의 월별 흐름',tops.slice(0,3).map(function(ty,yi){var months=wealthMonths(result,ty.year);return '<h4>'+ty.year+'년'+(yi===0?' · 가장 좋은 해':yi===1?' · 두 번째로 좋은 해':' · 세 번째로 좋은 해')+'</h4><p class="deep-muted">● 표시는 그해에서 가장 좋은 세 달이에요.</p><ol class="deep-months">'+months.map(function(m){return '<li class="'+(m.top?'is-top':'')+'"><b>'+m.month+'월</b><span>'+esc(m.ganKr+m.zhiKr)+'</span><p>'+(m.top?'● ':'')+esc(deep.monthByTg[m.tg]||'')+'</p><p class="deep-muted">'+esc(deep.monthAdvice[m.rel]||deep.monthAdvice.none)+'</p></li>';}).join('')+'</ol>';}).join(''));
+ html+=sec('대운 속 재물',periods.length?periods.map(function(d,i){var dgk=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear+' '+d.ganKr+d.zhiKr+' ('+d.ss+')',p(deep.daeunDeep[dgk])+p(deep.daeunAdvice[dgk]));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
+ html+=sec('돈 상황별 대응법','<p class="deep-muted">일간 '+esc(wx)+' 기운이 돈 앞에서 자주 보이는 반응과, 대신 해볼 행동이에요.</p>'+(deep.scenes[wx]||[]).map(function(c){return box('',c.scene,'<p><span class="deep-label">나의 패턴</span>'+esc(c.pattern)+'</p><p class="deep-say"><span class="deep-label">이렇게 해보세요</span>'+esc(c.do)+'</p><p class="deep-avoid"><span class="deep-label">피해야 할 것</span>'+esc(deep.sceneAvoid[c.scene]||'')+'</p>');}).join('')+(function(sx){return '<h4>돈 스트레스가 쌓였다는 신호</h4>'+p(sx.text)+'<div class="deep-two">'+box('warn','이런 신호가 보이면',tips(sx.signs))+box('good','이렇게 풀어보세요',tips(sx.relief))+'</div>';})(deep.stressByWx[wx]||{}));
+ html+=sec('나에게 맞는 돈 관리 방식',p(sys.text)+box('good','통장 나누기 · '+WEALTH_INCOME_TAG[pf.income],tips(sys.ratio))+box('',strong?'규칙 정하기 · 신강':'규칙 정하기 · 신약',p(deep.system.budget[strong?'strong':'weak']))+box('','모으는 방법 · 일간 '+wx,p(deep.system.saveMethod[wx]))+(function(ia){return box('good',ia.title||'',tips(ia.items));})(deep.investAccount[pf.invest]||{})+box('','1년에 한 번, 고정비 점검',tips(deep.fixedCostChecks)));
+ html+=sec('재물 로드맵과 스스로에게 던질 질문','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b>'+p(r.text)+'<p class="deep-note">'+(strong?'신강인 당신에게: ':'신약인 당신에게: ')+esc(strong?r.strong:r.weak)+'</p><p class="deep-label">이 단계의 점검</p>'+tips(deep.roadmapChecks[i])+'</li>';}).join('')+'</ol><p class="deep-muted">답을 노트에 적어보세요. 석 달 뒤에 다시 답해보면 내 돈 습관이 어떻게 바뀌었는지 보여요.</p>'+deep.questions.map(function(q){return '<h4>'+esc(q.topic)+'</h4><ol class="deep-q">'+q.items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>';}).join('')+'<h4>'+esc(weakWx)+' 기운이 약한 당신을 위한 질문</h4><ol class="deep-q">'+(deep.customQuestions[weakWx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>');
+ html+='<footer class="deep-foot">'+gumbiSay('cheer','<p>여기까지예요. 돈 때문에 고민될 때 다시 열어봐요.</p>')+'<p class="deep-muted">일간·오행 분포·천간 십신·재물 창고·간이 신강약·대운·세운·월운을 바탕으로 한 해석이에요. 출생시간을 모르면 시주는 제외해요. 특정 금융 상품을 추천하지 않으며, 수입이나 투자 결과를 확정하는 해석은 아니에요.</p></footer></div>';
+ return html;
+}
+function wealthFlow(concept,data,result){
+ var rows=wealthTimeline(result,marriageStartYear());
+ if(!data.access.story||!data.rows||!data.rows[0]||!data.rows[0].cards)return wealthPreviewHtml(concept,result,rows)+wealthOffer('story');
+ var html='<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유</div>'+wealthStoryHtml(data.rows[0],result,rows);
+ if(data.detailRows&&data.detailRows[0]&&data.detailRows[0].stemView)return html+'<section id="owned-detail-report">'+wealthDeepHtml(data.detailRows[0],result,rows)+'</section>';
+ return html;
+}
 function storyFlowHtml(concept,data,result){
+ if(isWealth(concept))return wealthFlow(concept,data,result);
  if(isMarriage(concept))return marriageFlow(concept,data,result);
  if(isPocha(concept))return careerFlow(concept,data,result);
  if(isLove(concept))return loveFlow(concept,data,result);
