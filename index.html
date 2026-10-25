@@ -1249,6 +1249,36 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .album-cover img{width:100%;height:100%;object-fit:cover;object-position:center 35%}
 .album-cover span{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-family:'Noto Serif KR',serif;font-size:1.5rem;letter-spacing:.3em;color:#f1d896;text-shadow:0 2px 10px #0b1020}
 .myroom-grid,.card-dex-grid{padding:10px;border-radius:14px;background:#0d1430 url(/assets/album/paper.webp) center/300px}
+/* 별첩 카드첩: 오행 5장 × 8칸 + 새 카드 도장 */
+.album-chapters{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.album-chapter{border-radius:16px;background:#0d1430 url(/assets/album/paper.webp) center/300px;color:#efe3c4;overflow:hidden}
+.album-chapter summary{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:4px 10px;padding:14px 16px;cursor:pointer;list-style:none}
+.album-chapter summary::-webkit-details-marker{display:none}
+.chapter-no{font-size:.6875rem;letter-spacing:.08em;color:#b9a77c}
+.chapter-glyph{font-family:'Noto Serif KR',serif;font-size:1.25rem;line-height:1;color:#f1d896}
+.chapter-name{font-family:'Noto Serif KR',serif;font-size:1rem;color:#fff4dc}
+.chapter-count{font-size:.8125rem;font-weight:700;color:#f1d896}
+.chapter-bar{grid-column:1/-1;display:block;height:3px;border-radius:2px;background:#ffffff1f;overflow:hidden}
+.chapter-bar i{display:block;height:100%;background:linear-gradient(90deg,#c9a24e,#f6e3a8)}
+.album-chapter[open] summary{padding-bottom:10px}
+.album-chapter-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;padding:0 12px 6px}
+.chapter-legend{margin:0;padding:4px 14px 14px;font-size:.6875rem;color:#b9ad93;word-break:keep-all}
+.album-slot{position:relative;display:block;padding:0;border:0;background:none;border-radius:8px;cursor:pointer}
+.album-slot .card-back,.album-slot .destiny-card.myroom-card{width:100%;min-height:0;margin:0;border-radius:8px}
+.album-slot .card-back{opacity:.55}
+.album-slot .card-back small,.album-slot .card-back .card-back-label{display:none}
+.album-slot .destiny-v2 .destiny-copy,.album-slot .destiny-v2 .destiny-element{display:none}
+.album-slot .destiny-card.destiny-v2 .destiny-top{inset:6% 7% auto}
+.album-slot .destiny-card.destiny-v2 .destiny-grade{font-size:8px;padding:3px 4px;border-radius:4px}
+.album-slot-count{position:absolute;right:4px;bottom:4px;z-index:6;padding:2px 5px;border-radius:6px;background:#0d1430d9;color:#f1d896;font-size:.625rem;font-weight:700}
+.album-note{min-height:1.2em;margin:10px 2px 0;font-size:.8125rem;color:var(--fg-muted);text-align:center}
+.album-people{margin-top:16px}
+.album-people summary{padding:12px 4px;font-size:.875rem;font-weight:700;color:var(--fg);cursor:pointer}
+.album-slot.is-new{animation:albumStamp .62s cubic-bezier(.2,.9,.25,1.15) var(--stamp-delay,.25s) both}
+.album-slot.is-new::after{content:'';position:absolute;inset:-6px;border:2px solid #f1d896;border-radius:12px;opacity:0;pointer-events:none;animation:albumStampRing .7s ease-out calc(var(--stamp-delay,.25s) + .28s) both}
+@keyframes albumStamp{0%{opacity:0;transform:translateY(-26px) scale(1.55) rotate(-7deg);filter:drop-shadow(0 22px 18px #0008)}60%{opacity:1;transform:translateY(0) scale(.94) rotate(1deg);filter:drop-shadow(0 2px 3px #0006)}100%{opacity:1;transform:none;filter:none}}
+@keyframes albumStampRing{0%{opacity:.9;transform:scale(.9)}100%{opacity:0;transform:scale(1.18)}}
+@media(prefers-reduced-motion:reduce){.album-slot.is-new,.album-slot.is-new::after{animation:none}}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=4">
 </head>
@@ -2439,6 +2469,8 @@ function hapticPulse(pattern){ try{ if (navigator.vibrate) navigator.vibrate(pat
 function soundReveal(){ playTone([660,880], {stagger:0.085, dur:0.38, gain:0.04}); hapticPulse(12); }
 /* 크레딧으로 잠금 해제 — 상승하는 3음 벨 */
 function soundUnlock(){ playTone([523,659,784], {stagger:0.075, dur:0.38, gain:0.045, type:'sine'}); hapticPulse([10,30,18]); }
+/* 카드첩 도장 — 낮은 쿵 + 짧은 방울 */
+function soundStamp(){ playTone([140],{dur:0.16,gain:0.06,type:'triangle'}); playTone([1046],{dur:0.22,gain:0.018}); hapticPulse([18]); }
 /* 가벼운 탭/선택 피드백 */
 var lastTapSound=0;
 function soundTap(){var now=Date.now();if(now-lastTapSound<110)return;lastTapSound=now;playTone([740],{dur:0.075,gain:0.018});if(isSoundOn())hapticPulse(5);}
@@ -3118,11 +3150,35 @@ function doShareStar(result){
  buildStarShareCard(result).then(function(canvas){canvas.toBlob(function(blob){if(!blob){fallbackTextShare(text,url,'별첩사주 별 카드');return;}shareImageBlob(canvas,blob,text,url,'byeolcheop-star.png','별첩사주 별 카드','내 별 카드 받기');},'image/png',0.95);}).catch(function(){fallbackTextShare(text,url,'별첩사주 별 카드');});
 }
 /* 카드첩 첫 페이지(아직 모은 카드가 없을 때): 내 카드 + 초대 버튼 + 모을 수 있는 카드 실루엣 */
-function albumFirstPageHtml(result){
- var t=myStarType(result),others=CARD_TYPES.filter(function(x){return !t||x.id!==t.id;}).slice(0,6);
- return '<div class="album-first"><div class="album-cover"><img src="/assets/album/cover.webp" alt="" loading="lazy" decoding="async"><span>별첩</span></div>'+(t?'<div class="album-mine"><img src="/assets/guardians/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" loading="lazy" decoding="async"><div><small>첫 장 · 내 카드</small><b>'+esc(t.title)+'</b><span>친구를 초대하면 둘의 궁합 카드가 이 옆에 모여요.</span></div></div>':'')+
+var ALBUM_CHAPTERS=[['목','木','나무의 장'],['화','火','불의 장'],['토','土','흙의 장'],['금','金','쇠의 장'],['수','水','물의 장']];
+var ALBUM_SEEN_KEY='byeolcheop_album_seen';
+function albumSeenIds(){try{var v=JSON.parse(localStorage.getItem(ALBUM_SEEN_KEY)||'null');return Array.isArray(v)?v:null;}catch(e){return null;}}
+function albumMarkSeen(ids){try{localStorage.setItem(ALBUM_SEEN_KEY,JSON.stringify(ids));}catch(e){}}
+/* 새로 들어온 칸(아직 본 적 없는 종류·등급)에만 도장 연출. 처음 여는 사람은 이미 모인 카드를 한 번에 찍어준다. */
+function albumNewSlots(rows){var seen=albumSeenIds()||[];return rows.filter(function(r){return r.entry&&seen.indexOf(r.id)===-1;}).map(function(r){return r.id;});}
+function albumChaptersHtml(list,myWx){
+ var rows=cardDexEntries(list||[]),fresh=albumNewSlots(rows);
+ return '<div class="album-chapters">'+ALBUM_CHAPTERS.map(function(ch,ci){
+  var mine=rows.filter(function(r){return r.type.wx===ch[0];}),owned=mine.filter(function(r){return r.entry;}).length;
+  var open=owned>0||ch[0]===myWx;
+  return '<details class="album-chapter" data-wx="'+ch[0]+'"'+(open?' open':'')+'><summary><span class="chapter-no">'+(ci+1)+'장</span><b class="chapter-glyph">'+ch[1]+'</b><span class="chapter-name">'+ch[2]+'</span><span class="chapter-count">'+owned+' / 8</span><i class="chapter-bar"><i style="width:'+(owned/8*100)+'%"></i></i></summary>'+
+   '<div class="album-chapter-grid">'+mine.map(function(r){var isNew=r.entry&&fresh.indexOf(r.id)>=0;return '<button type="button" class="album-slot'+(r.entry?' is-owned':'')+(isNew?' is-new':'')+'" data-card-sku="'+r.id+'" aria-label="'+esc(r.type.title)+' '+r.tier.grade+'등급 · '+(r.entry?'보유 '+r.count+'명':'빈 자리')+'">'+(r.entry?collectibleCardHtml(r.entry,true):cardBackHtml(r))+(r.count>1?'<span class="album-slot-count">×'+r.count+'</span>':'')+'</button>';}).join('')+'</div>'+
+   '<p class="chapter-legend">'+mine.filter(function(r){return r.tier.key==='s';}).map(function(r){return esc(r.type.title)+'('+r.type.stem+')';}).join(' · ')+' · 왼쪽부터 S·A·B·C 등급</p></details>';
+ }).join('')+'</div><p class="album-note" role="status" data-album-note></p>';
+}
+function wireAlbumChapters(scope,list){
+ var rows=cardDexEntries(list||[]),note=$('[data-album-note]',scope);
+ $all('.album-slot',scope).forEach(function(btn){btn.addEventListener('click',function(){var row=rows.find(function(r){return r.id===btn.dataset.cardSku;});if(!row)return;if(row.entry)openMyroomDetail(row.entry);else if(note)note.textContent=row.type.title+' '+row.tier.grade+'등급 자리는 아직 비어 있어요. 친구를 초대해 채워보세요.';});});
+ var fresh=$all('.album-slot.is-new',scope),reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ fresh.forEach(function(el,i){el.style.setProperty('--stamp-delay',(0.25+i*0.22)+'s');if(!reduce)setTimeout(function(){try{soundStamp();}catch(e){}},250+i*220+280);});
+ if(fresh.length&&note)note.textContent='새 카드 '+fresh.length+'장이 별첩에 찍혔어요.';
+ albumMarkSeen(rows.filter(function(r){return r.entry;}).map(function(r){return r.id;}));
+}
+function albumFirstPageHtml(result,list){
+ var t=myStarType(result);list=list||[];
+ return '<div class="album-first"><div class="album-cover"><img src="/assets/album/cover.webp" alt="" loading="lazy" decoding="async"><span>별첩</span></div>'+(t?'<div class="album-mine"><img src="/assets/guardians/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" loading="lazy" decoding="async"><div><small>첫 장 · 내 카드</small><b>'+esc(t.title)+'</b><span>'+(list.length?'지금까지 '+list.length+'명의 인연이 별첩에 모였어요.':'친구를 초대하면 둘의 궁합 카드가 오행별 장에 모여요.')+'</span></div></div>':'')+
   '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구에게 궁합 링크 보내기</button>'+
-  '<p class="album-tease">누구의 카드가 먼저 모일까요?</p><div class="album-silhouettes">'+others.map(function(x){return '<span class="album-sil"><img src="/assets/guardians/'+x.asset+'.webp" alt="" loading="lazy" decoding="async"><b>?</b><small>'+esc(x.wx)+' · '+(x.polarity==='yang'?'양':'음')+'</small></span>';}).join('')+'</div></div>';
+  albumChaptersHtml(list,result&&result.dayGanWx)+'</div>';
 }
 function wireAlbumInvite(scope){$all('[data-album-invite]',scope).forEach(function(b){b.addEventListener('click',function(){if(STATE.mySaju)doShareCompatInvite(STATE.mySaju);else{switchTab('saju');showToast('내 사주를 먼저 입력해주세요.');}});});}
 function renderSajuResult(result){
@@ -5563,8 +5619,8 @@ function renderMyRoomLocal(root){
   if (!list.length){
     root.innerHTML =
       '<div class="myroom-head"><div><p class="eyebrow">궁합 카드 모음</p><h2 class="album-heading">인연이 깃든 카드첩</h2></div>'+myroomDexBtnHtml()+'</div>'+
-      albumFirstPageHtml(STATE.mySaju)+cardSymbolGuideHtml();
-    wireMyroomDexBtn();wireAlbumInvite(root);
+      albumFirstPageHtml(STATE.mySaju,[])+cardSymbolGuideHtml();
+    wireMyroomDexBtn();wireAlbumInvite(root);wireAlbumChapters(root,[]);
     return;
   }
   var rankMap = myroomRankMap(list);
@@ -5573,8 +5629,11 @@ function renderMyRoomLocal(root){
     '<div class="myroom-head"><div><p class="eyebrow">궁합 카드 모음</p><h2 class="album-heading">인연이 깃든 카드첩</h2></div>'+
       '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
     '</div>'+
+    albumFirstPageHtml(STATE.mySaju,list)+
+    '<details class="album-people"><summary>모은 사람 '+list.length+'명 모두 보기</summary>'+
     cardAlbumIntro(list)+'<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
-    '<p class="hint">내가 초대해서 실제로 사주를 등록한 사람들이 모이는 갤러리예요.</p>';
+    '<p class="hint">내가 초대해서 실제로 사주를 등록한 사람들이 모이는 갤러리예요.</p></details>';
+  wireAlbumInvite(root);wireAlbumChapters(root,list);
   wireMyroomSortSeg();
   wireMyroomCardClicks($('.myroom-grid', root), displayList);
   wireMyroomDexBtn();

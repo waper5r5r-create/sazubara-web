@@ -283,7 +283,7 @@ test('star card: every day stem gets its own animal card, home hero and album fi
  const seen=new Set();for(const s of ['갑','을','병','정','무','기','경','신','임','계']){const h=api.myStarCardHtml({...result,day:{...result.day,ganKr:s,gan:'X'}});assert.ok(h.includes('my-star-card'),s);const m=h.match(new RegExp('assets/guardians/([a-z-]+)[.]webp'));assert.ok(m,s);seen.add(m[1]);assert.ok(fs.existsSync(require('node:path').join(__dirname,'..','assets/guardians/'+m[1]+'.webp')));assert.ok(!h.includes('undefined'));}
  assert.equal(seen.size,10);
  const hero=api.starHeroHtml();assert.ok(hero.includes('나의 사주팔자'));assert.ok(hero.includes('출생지 보정'));for(const x of hero.matchAll(/src="([^"]+)"/g))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',x[1])),x[1]);
- const album=api.albumFirstPageHtml(result);assert.ok(album.includes('data-album-invite'));assert.equal((album.match(/album-sil/g)||[]).length>=6,true);
+ const album=api.albumFirstPageHtml(result);assert.ok(album.includes('data-album-invite'));assert.equal((album.match(/class="album-chapter"/g)||[]).length,5);assert.equal((album.match(/class="album-slot/g)||[]).length,40);const e={id:'f',score:95,dayGanWxB:'목',dayGanB:'갑',cardPolarity:'yang',nameB:'친구'};const full=api.albumFirstPageHtml(result,[e,{...e,id:'g'}]);assert.ok(full.includes('1 / 8'));assert.ok(full.includes('×2'));assert.ok(full.includes('is-new'));
  const back=api.cardBackHtml(api.cardDexEntries([])[0]);assert.ok(back.includes('card-back-art'));
  const unsafe=api.myStarCardHtml({...result,name:'<script>x</script>'});assert.ok(!unsafe.includes('<script>x</script>'));
 });
