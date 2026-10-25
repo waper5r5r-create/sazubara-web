@@ -1168,10 +1168,10 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .hero-pillar small{font-size:.6875rem;color:#bfb3c9}
 .hero-pillar b{font-family:'Noto Serif KR',serif;font-size:1.75rem;line-height:1.2;color:#f3dfb7}
 .hero-board-note{position:absolute;top:-10px;right:12px;padding:2px 8px;border-radius:999px;background:#d6b785;color:#2a2140;font-size:.6875rem;font-weight:700}
-.saju-hero-trust{list-style:none;margin:0;padding:0;display:grid;gap:8px;text-align:left}
-.saju-hero-trust li{display:flex;gap:12px;align-items:baseline;padding:12px 14px;border-radius:14px;background:var(--surface-2)}
-.saju-hero-trust b{flex:none;width:78px;font-size:.875rem;color:var(--accent)}
-.saju-hero-trust span{font-size:.8125rem;line-height:1.5;color:var(--fg);word-break:keep-all}
+.saju-hero-trust{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.saju-hero-trust li{display:flex;flex-direction:column;gap:2px;padding:10px 4px;border-radius:12px;background:var(--surface-2)}
+.saju-hero-trust b{font-size:.8125rem;color:var(--accent)}
+.saju-hero-trust span{font-size:.75rem;line-height:1.4;color:var(--fg-muted);word-break:keep-all}
 .saju-hero-gift{margin:14px 0 4px;font-size:.8125rem;color:var(--fg-muted)}
 .saju-result-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin:4px 0 14px}
 .saju-result-head h1{margin:0;font-family:'Noto Serif KR',serif;font-size:1.5rem;line-height:1.35;color:var(--fg)}
@@ -2986,7 +2986,7 @@ function starHeroHtml(){
  var sample=[['시주','丙','午'],['일주','辛','亥'],['월주','己','卯'],['연주','乙','亥']];
  return '<div class="saju-hero"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일시로 세우는<br>나의 사주팔자</h1><p class="saju-hero-sub">태어난 순간의 여덟 글자로 타고난 성향과 앞으로의 흐름을 풀어드려요.</p>'+
   '<div class="saju-hero-board" aria-hidden="true">'+sample.map(function(p){return '<div class="hero-pillar"><small>'+p[0]+'</small><b>'+p[1]+'</b><b>'+p[2]+'</b></div>';}).join('')+'<span class="hero-board-note">예시</span></div>'+
-  '<ul class="saju-hero-trust"><li><b>절기 기준</b><span>입춘과 절기로 해와 달을 나눠 계산해요</span></li><li><b>출생지 보정</b><span>태어난 지역의 경도로 시간을 보정해요</span></li><li><b>1만 7천 자</b><span>주제별 심층 리포트는 1인 기준 1만 7천 자 이상</span></li></ul>'+
+  '<ul class="saju-hero-trust"><li><b>절기 기준</b><span>입춘·절기로 계산</span></li><li><b>출생지 보정</b><span>경도로 시간 보정</span></li><li><b>1만 7천 자</b><span>주제별 심층 리포트</span></li></ul>'+
   '<p class="saju-hero-gift">✦ 풀이를 마치면 나를 닮은 별 카드가 만들어져요</p></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
@@ -6516,10 +6516,10 @@ function advanceSajuStep(){
   showSajuStep(Math.min(2,SAJU_FORM_STEP+1),true);
 }
 function showSajuStep(step,focus){
-  SAJU_FORM_STEP=step;var form=$('#saju-form');if(!$('#saju-guide-line'))return;
+  SAJU_FORM_STEP=step;var form=$('#saju-form');
   var name=$('#f-name').value.trim(),hello=name?name+'님, ':'당신의 ';
   var lines=['풀이를 볼 분의 이름과 성별을 입력해주세요. 이름은 생략할 수 있어요.','양력·음력을 확인하고 생년월일을 입력해주세요.','출생시간과 태어난 지역을 입력해주세요. 시간을 모르면 ‘모름’을 선택하세요.'];
-  $('#saju-guide-line').textContent=lines[step];
+  if($('#saju-guide-line'))$('#saju-guide-line').textContent=lines[step];
   $all('[data-form-step]',form).forEach(function(g){g.hidden=!SAJU_FORM_FULL&&Number(g.dataset.formStep)!==step;});
   $all('[data-form-progress]',form).forEach(function(el){var i=Number(el.dataset.formProgress);el.classList.toggle('current',i===step);el.classList.toggle('done',i<step);if(i===step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});
   $('#saju-step-back').hidden=SAJU_FORM_FULL||step===0;
