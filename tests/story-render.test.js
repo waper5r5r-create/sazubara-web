@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={sajuQuickSummaryHtml,reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -286,4 +286,12 @@ test('star card: every day stem gets its own animal card, home hero and album fi
  const album=api.albumFirstPageHtml(result);assert.ok(album.includes('data-album-invite'));assert.equal((album.match(/album-sil/g)||[]).length>=6,true);
  const back=api.cardBackHtml(api.cardDexEntries([])[0]);assert.ok(back.includes('card-back-art'));
  const unsafe=api.myStarCardHtml({...result,name:'<script>x</script>'});assert.ok(!unsafe.includes('<script>x</script>'));
+});
+
+test('free result opens with a portrait and personal scene sentences',()=>{
+ const base={...result,day:{...result.day,ganKr:'을',gan:'乙',zhiKr:'미',zhi:'未'},dayGanWx:'목',month:{zhiKr:'사',zhi:'巳',wxZhi:'화'},monthSS:'상관',strength:'weak',wxCount:{목:2,화:3,토:2,금:1,수:0}};
+ const p=api.sajuQuickSummaryHtml(base);assert.ok(p.includes('초여름에 태어난 덩굴꽃'));assert.ok(p.includes('덩굴꽃이라'));assert.ok(p.includes('기억할 한 가지'));
+ assert.notEqual(p,api.sajuQuickSummaryHtml({...base,month:{zhiKr:'자',zhi:'子',wxZhi:'수'}}));
+ assert.equal(api.sajuQuickSummaryHtml({...base,month:null}),'');
+ const main=api.everydaySajuHtml(base);assert.ok(main.includes('saju-hook-self'));assert.ok(main.includes('월주 상관'));assert.ok(main.includes('일지 미'));
 });
