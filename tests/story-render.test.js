@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -45,7 +45,7 @@ test('collectible grades use compatibility boundaries and symbolic art uses the 
 
 test('grades use distinct finishes without replacing the character',()=>{const e={id:'sample',nameB:'친구',dayGanWxB:'목'};assert.ok(api.collectibleCardHtml({...e,score:80},false).includes('/assets/cards/evolved/wood.webp'));assert.ok(api.collectibleCardHtml({...e,score:95},false).includes('tier-s'));});
 
-test('codex has 40 unique types, missing backs, and duplicate ownership counts',()=>{const empty=api.cardDexEntries([]);assert.equal(empty.length,40);assert.equal(new Set(empty.map(r=>r.id)).size,40);assert.equal(empty.filter(r=>r.entry).length,0);assert.ok(api.cardBackHtml(empty[0]).includes('미보유'));assert.ok(!api.cardBackHtml(empty[0]).includes('<img'));const e={id:'friend',score:80,dayGanWxB:'목',dayGanB:'을',cardPolarity:'yin',nameB:'친구'};const rows=api.cardDexEntries([e,{...e,id:'another'}]);assert.equal(rows.filter(r=>r.entry).length,1);assert.equal(rows.find(r=>r.entry).count,2);assert.equal(rows.find(r=>r.entry).id,'wood-yin-a');assert.ok(api.collectibleCardHtml(e,false).includes('/assets/cards/evolved/wood-yin.webp'));});
+test('codex has 40 unique types, missing backs, and duplicate ownership counts',()=>{const empty=api.cardDexEntries([]);assert.equal(empty.length,40);assert.equal(new Set(empty.map(r=>r.id)).size,40);assert.equal(empty.filter(r=>r.entry).length,0);assert.ok(api.cardBackHtml(empty[0]).includes('미보유'));assert.ok(api.cardBackHtml(empty[0]).includes('card-back-art'));const e={id:'friend',score:80,dayGanWxB:'목',dayGanB:'을',cardPolarity:'yin',nameB:'친구'};const rows=api.cardDexEntries([e,{...e,id:'another'}]);assert.equal(rows.filter(r=>r.entry).length,1);assert.equal(rows.find(r=>r.entry).count,2);assert.equal(rows.find(r=>r.entry).id,'wood-yin-a');assert.ok(api.collectibleCardHtml(e,false).includes('/assets/cards/evolved/wood-yin.webp'));});
 
 test('album omits tier collection status panel',()=>{assert.equal(api.cardAlbumIntro([{score:90},{score:70}]),'');});
 
@@ -101,7 +101,7 @@ test('summary has three distinct traits grounded in the chart',()=>{
 test('all five topics have a personalised free reading before checkout',()=>{
  for(const cat of ['연애','직장','재물','건강','인간관계']){const a=api.worryPreviewHtml(result,cat),b=api.worryPreviewHtml({...result,dayGanWx:'화'},cat);assert.ok(a.includes(cat+' 무료 맛보기'));assert.ok(a.replace(/<[^>]*>/g,'').length>230);assert.notEqual(a,b);assert.ok(!a.includes('unlock-btn'));}
  assert.equal(api.worryPreviewHtml(result,'invalid'),'');assert.ok(api.worryPreviewHtml(result,'건강').includes('건강은 사주로 판단할 수 없어요'));
- const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('나의 연애와 인연'));
+ const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('my-star-card'));assert.ok(main.includes('data-home-contents'));assert.ok(main.includes('data-star-share'));
 });
 
 test('compatibility guidance includes all relationships without assuming romance',()=>{
@@ -277,4 +277,13 @@ test('wealth report: 금비 free view hides paid copy, ledger story and 18-secti
  const unsafe=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},{...r,name:'<script>악성</script>'});assert.ok(!unsafe.includes('<script>악성</script>'));
  for(const s of ['갑','을','병','정','무','기','경','신','임','계']){assert.ok(m.story.cards[s].keep);assert.ok(m.detail.stemView[s].trap);}
  for(const wx of ['목','화','토','금','수']){assert.equal(m.detail.scenes[wx].length,6);for(const c of m.detail.scenes[wx])assert.ok(m.detail.sceneAvoid[c.scene],c.scene);}
+});
+
+test('star card: every day stem gets its own animal card, home hero and album first page render real art',()=>{
+ const seen=new Set();for(const s of ['갑','을','병','정','무','기','경','신','임','계']){const h=api.myStarCardHtml({...result,day:{...result.day,ganKr:s,gan:'X'}});assert.ok(h.includes('my-star-card'),s);const m=h.match(new RegExp('assets/cards/([a-z-]+)[.]webp'));assert.ok(m,s);seen.add(m[1]);assert.ok(fs.existsSync(require('node:path').join(__dirname,'..','assets/cards/'+m[1]+'.webp')));assert.ok(!h.includes('undefined'));}
+ assert.equal(seen.size,10);
+ const hero=api.starHeroHtml();assert.ok(hero.includes('나의 별 카드'));for(const x of hero.matchAll(/src="([^"]+)"/g))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',x[1])),x[1]);
+ const album=api.albumFirstPageHtml(result);assert.ok(album.includes('data-album-invite'));assert.equal((album.match(/album-sil/g)||[]).length>=6,true);
+ const back=api.cardBackHtml(api.cardDexEntries([])[0]);assert.ok(back.includes('card-back-art'));
+ const unsafe=api.myStarCardHtml({...result,name:'<script>x</script>'});assert.ok(!unsafe.includes('<script>x</script>'));
 });

@@ -1112,6 +1112,53 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .gumbi-deep{background:#f8f3e6}
 .gumbi-deep .deep-no{background:#9a6a12!important}
 .gumbi-deep .gumbi-scale{box-shadow:none;border:1px solid #9a6a1233}
+/* 내 별 카드 · 첫 화면 별 카드 · 콘텐츠 줄 · 카드첩 첫 페이지 */
+.star-hero{padding:6px 2px 4px;text-align:center}
+.star-hero h1{margin:10px 0 8px;font-family:'Noto Serif KR',serif;font-size:1.75rem;line-height:1.4;letter-spacing:-.03em;color:var(--fg)}
+.star-hero-sub{margin:0 auto;max-width:300px;font-size:.9375rem;line-height:1.7;color:var(--fg-muted);word-break:keep-all}
+.star-hero-fan{position:relative;height:230px;margin:22px auto 8px;max-width:340px}
+.star-fan-card{position:absolute;left:50%;top:14px;width:132px;aspect-ratio:3/4;border-radius:16px;overflow:hidden;background:#fffdf8;border:1px solid #e6dcea;box-shadow:0 12px 28px #5a3d6a26}
+.star-fan-card img{width:100%;height:100%;object-fit:cover}
+.star-fan-card.is-0{transform:translateX(-128%) rotate(-12deg)}
+.star-fan-card.is-2{transform:translateX(28%) rotate(12deg)}
+.star-fan-card.is-1{top:0;width:148px;transform:translateX(-50%);z-index:2}
+.star-fan-card.is-1 img{filter:grayscale(1) brightness(1.15) blur(2px);opacity:.55}
+.star-fan-card b{position:absolute;inset:0;display:grid;place-items:center;font-family:'Noto Serif KR',serif;font-size:3rem;color:#8b6a9e}
+.star-hero-steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 6px;padding:0}
+.star-hero-steps li{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:14px;background:var(--surface-2);font-size:.75rem;line-height:1.45;color:var(--fg);word-break:keep-all}
+.star-hero-steps b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:.75rem}
+.my-star-card{margin:4px 0 26px;padding:20px 18px;border-radius:22px;background:linear-gradient(160deg,#fbf6ee,#f1e6f5);border:1px solid #e6dcea;color:#3d2c48}
+.my-star-body{display:flex;gap:16px;align-items:center;margin-top:12px}
+.my-star-art{flex:none;width:118px;margin:0;border-radius:16px;overflow:hidden;background:#fffdf8;box-shadow:0 10px 24px #5a3d6a22}
+.my-star-art img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}
+.my-star-copy h2{margin:0;font-family:'Noto Serif KR',serif;font-size:1.375rem;color:#3d2c48}
+.my-star-tags{margin:4px 0 8px;font-size:.75rem;color:#8b6a9e}
+.my-star-copy p:last-child{margin:0;font-size:.9375rem;line-height:1.7;word-break:keep-all}
+.my-star-actions{display:grid;gap:8px;margin-top:16px}
+.my-star-card .hint{margin:10px 0 0}
+.home-contents{margin:6px 0 24px}
+.home-contents h2{margin:0 0 4px}
+.home-content-row{display:flex;gap:12px;overflow-x:auto;padding:10px 2px 8px;scrollbar-width:none}
+.home-content-card{flex:none;width:150px;padding:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface);text-align:left;color:var(--fg)}
+.home-content-card img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
+.home-content-card span{display:block;padding:10px 12px 12px}
+.home-content-card b{display:block;font-size:.9375rem}
+.home-content-card small{display:block;margin-top:4px;font-size:.75rem;line-height:1.45;color:var(--fg-muted);word-break:keep-all}
+.album-first{display:grid;gap:14px;margin-top:6px}
+.album-mine{display:flex;gap:14px;align-items:center;padding:14px;border-radius:18px;background:#fffdf8;border:1px solid #e6dcea}
+.album-mine img{flex:none;width:84px;aspect-ratio:3/4;object-fit:cover;border-radius:12px}
+.album-mine small{display:block;font-size:.75rem;color:#8b6a9e}
+.album-mine b{display:block;margin:2px 0 4px;font-family:'Noto Serif KR',serif;font-size:1.125rem;color:#3d2c48}
+.album-mine span{display:block;font-size:.8125rem;line-height:1.6;color:#6d5a77;word-break:keep-all}
+.album-tease{margin:4px 0 0;font-size:.875rem;font-weight:600;color:var(--fg)}
+.album-silhouettes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.album-sil{position:relative;display:block;border-radius:14px;overflow:hidden;background:#f6f0f8;border:1px dashed #d8c8e0}
+.album-sil img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;filter:grayscale(1) brightness(1.2) blur(2px);opacity:.45}
+.album-sil b{position:absolute;inset:0;display:grid;place-items:center;font-size:1.75rem;color:#9b7bab}
+.album-sil small{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:.6875rem;color:#8b6a9e}
+.card-back{position:relative;overflow:hidden}
+.card-back-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(1.2) blur(2px);opacity:.3;pointer-events:none}
+.card-back>:not(.card-back-art){position:relative}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=4">
 </head>
@@ -2843,8 +2890,7 @@ function everydayTraitsHtml(result){
  return '<section class="personal-traits"><h2>사주로 살펴본 내 특징 세 가지</h2><ol>'+rows.map(function(r,i){return '<li><span class="trait-symbol">'+uiIcon(r[2])+'</span><div><small>0'+(i+1)+' · '+r[0]+'</small><p>'+esc(r[1])+'</p></div></li>';}).join('')+'</ol><p class="hint">일간과 오행 분포를 참고한 해석이에요. 실제 경험과 함께 읽어보세요.</p></section>';
 }
 function everydaySajuHtml(result){
- var items=[['연애','heart','나의 연애와 인연','마음을 나누는 방식과 관계의 흐름'],['직장','briefcase','일과 나의 가능성','나에게 맞는 방향과 발휘할 강점'],['재물','wallet','나의 재물과 선택','돈을 대하는 성향과 균형 잡는 방법']];
- return '<section class="everyday-saju"><p class="editorial-tag">나의 사주 풀이</p><div class="everyday-title"><h1>'+esc(result.name?result.name+'님을':'나를')+' <span class="nowrap">조금 더</span><br>이해하는 시간</h1><span class="title-symbol" aria-hidden="true"><img src="/assets/ui/saju-orbit.svg" alt=""></span></div><p>나의 성향부터 일과 관계까지, 궁금한 이야기를 살펴보세요.</p>'+everydayTraitsHtml(result)+'<h2>어떤 이야기가 궁금하세요?</h2><p class="hint">주제를 선택하면 내 사주에 맞춘 맛보기를 무료로 읽을 수 있어요.</p><div class="everyday-questions">'+items.map(function(row){return '<button type="button" data-everyday-cat="'+row[0]+'"><span class="question-icon">'+uiIcon(row[1])+'</span><span><b>'+row[2]+'</b><small>'+row[3]+'</small></span>'+uiIcon('arrow')+'</button>';}).join('')+'</div></section>';
+ return '<section class="everyday-saju"><p class="editorial-tag">나의 사주 풀이</p>'+myStarCardHtml(result)+everydayTraitsHtml(result)+homeContentsHtml()+'</section>';
 }
 var WORRY_PREVIEW_LENS={
  목:{연애:'서로의 가능성을 알아가고 함께 경험을 넓히는 관계',직장:'새로운 역할을 배우고 시도하며 방향을 만드는 과정',재물:'새로운 기회를 발견하고 자원을 활용하는 과정',건강:'활동과 회복 사이에 지속 가능한 리듬을 만드는 과정',인간관계:'새로운 만남과 기존 관계를 함께 넓혀가는 과정'},
@@ -2861,6 +2907,84 @@ function worryPreviewHtml(my,cat){
  return '<section class="worry-preview" aria-label="'+esc(cat)+' 무료 맛보기"><p class="eyebrow">'+uiIcon(icons[cat])+' '+esc(cat)+' · 먼저 읽어보세요</p><h3>내 사주로 살펴보는 '+esc(cat)+'</h3><p>일간이 <strong>'+esc(wx)+'</strong>인 사주는 '+esc(WORRY_PREVIEW_LENS[wx][cat])+'에 주목해 읽어요. '+esc(EVERYDAY_TRAITS[wx][0])+'을 이 주제에서도 함께 살펴볼 수 있어요.</p><p>표면의 오행 분포에서는 <strong>'+esc(dominant)+'</strong> 기운이 상대적으로 두드러져요. '+esc(EVERYDAY_TRAITS[dominant][1])+'이 어떻게 나타나는지 실제 경험에 비춰보세요. 한 가지 기운만으로 결과를 정하지는 않아요.</p><div class="preview-reflection"><span>'+uiIcon('compass')+'</span><p>'+esc(questions[cat])+'</p></div><p class="preview-scope">지금 내용은 일간·오행에 따른 기본 해석이에요. 더 자세한 풀이에서는 '+esc(cat)+'의 성향, 선택할 때 참고할 점과 상황별 조언을 이어서 볼 수 있어요.</p></section>';
 }
 
+/* ---- 내 별 카드: 내 일간의 동물 카드(카드첩의 첫 장). 첫 화면·사주풀이 결과·카드첩에서 같이 쓴다.
+   콘텐츠는 계속 바뀌므로 고정해서 소개하지 않고, 목록 API에서 자동으로 불러와 한 줄로 보여준다. ---- */
+var STAR_SELF={
+ 'wood-yang':'먼저 길을 여는 사람. 무언가를 시작하는 순간에 가장 빛나요.',
+ 'wood-yin':'곁을 조용히 살피는 사람. 작은 배려로 관계를 키워요.',
+ 'fire-yang':'있는 곳을 환하게 만드는 사람. 웃음이 먼저 번져요.',
+ 'fire-yin':'마음을 오래 품는 사람. 은은한 온기로 사람을 지켜요.',
+ 'earth-yang':'쉽게 흔들리지 않는 사람. 곁에 있으면 숨이 편해져요.',
+ 'earth-yin':'살뜰히 챙기는 사람. 작은 약속을 끝까지 지켜요.',
+ 'metal-yang':'결단이 빠른 사람. 필요한 순간에 앞에 나서요.',
+ 'metal-yin':'반짝임을 알아보는 사람. 섬세한 기준이 매력이에요.',
+ 'water-yang':'흐름을 읽는 사람. 새로운 길을 먼저 찾아내요.',
+ 'water-yin':'마음 깊이 헤아리는 사람. 말없이 곁을 지켜줘요.'
+};
+function myStarType(result){return result&&result.day?CARD_TYPES.find(function(t){return t.stem===result.day.ganKr;})||null:null;}
+function myStarCardHtml(result){
+ var t=myStarType(result);if(!t)return '';
+ var who=result.name?esc(result.name)+'님':'나';
+ return '<section class="my-star-card"><p class="editorial-tag">'+who+'의 별 카드</p>'+
+  '<div class="my-star-body"><figure class="my-star-art"><img src="/assets/cards/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" decoding="async"></figure>'+
+  '<div class="my-star-copy"><h2>'+esc(t.title)+'</h2><p class="my-star-tags">일간 '+esc(t.stem+'('+result.day.gan+')')+' · '+esc(t.wx)+' · '+(t.polarity==='yang'?'양':'음')+'</p><p>'+esc(STAR_SELF[t.id]||'')+'</p></div></div>'+
+  '<div class="my-star-actions"><button type="button" class="btn-primary" data-star-share>내 별 카드 저장·공유</button><button type="button" class="share-btn" data-star-album>친구 카드 모으러 가기</button></div>'+
+  '<p class="hint">친구가 링크로 사주를 넣으면, 둘의 궁합이 담긴 카드가 카드첩에 모여요.</p></section>';
+}
+/* 첫 화면 큰 그림: 별 카드 세 장을 부채꼴로 */
+function starHeroHtml(){
+ var fan=['wood','metal-yin','water-yin'];
+ return '<div class="star-hero"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 받는<br>나의 별 카드</h1><p class="star-hero-sub">사주로 내 성향을 풀어보고, 나를 닮은 별 카드를 받아요.</p>'+
+  '<div class="star-hero-fan" aria-hidden="true">'+fan.map(function(a,i){return '<span class="star-fan-card is-'+i+'"><img src="/assets/cards/'+a+'.webp" alt="" decoding="async"'+(i===1?' fetchpriority="high"':'')+'>'+(i===1?'<b>?</b>':'')+'</span>';}).join('')+'</div>'+
+  '<ol class="star-hero-steps"><li><b>1</b><span>생년월일 입력</span></li><li><b>2</b><span>무료 사주풀이와<br>내 별 카드</span></li><li><b>3</b><span>친구와 궁합 보고<br>카드첩 채우기</span></li></ol></div>';
+}
+/* 콘텐츠 줄: 목록 API에서 자동으로 */
+function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
+function homeContentsHtml(){return '<section class="home-contents"><h2>내 사주로 더 읽어보기</h2><p class="hint">주제마다 내 사주에 맞춘 풀이를 볼 수 있어요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
+function fillHomeContents(scope){
+ var row=$('[data-home-contents]',scope);if(!row)return;
+ loadReportList().then(function(list){
+  var items=(list||[]).filter(function(c){return storyCategory(c)!=='unsupported';});
+  if(!items.length){row.innerHTML='<p class="hint">곧 새로운 콘텐츠가 열려요.</p>';return;}
+  row.innerHTML=items.map(function(c){var src=reportThumbSource(c);return '<button type="button" class="home-content-card" data-home-report="'+esc(String(c.id))+'">'+(src?'<img src="'+esc(src)+'" alt="" loading="lazy" decoding="async">':'')+'<span><b>'+esc(c.title||'')+'</b><small>'+esc(c.tagline||'')+'</small></span></button>';}).join('');
+  $all('[data-home-report]',row).forEach(function(btn){btn.addEventListener('click',function(){var c=items.filter(function(x){return String(x.id)===btn.dataset.homeReport;})[0];if(c)openReportViewer(c);});});
+ }).catch(function(){row.innerHTML='<button type="button" class="share-btn" data-home-retry>콘텐츠 둘러보기</button>';var b=$('[data-home-retry]',row);if(b)b.addEventListener('click',function(){switchTab('reports');});});
+}
+function goCardAlbum(){switchTab('compat');setTimeout(function(){var w=$('#myroom-card-wrap');if(w)w.scrollIntoView({behavior:'smooth',block:'start'});},120);}
+function wireStarCard(scope){
+ $all('[data-star-share]',scope).forEach(function(b){b.addEventListener('click',function(){if(STATE.mySaju)doShareStar(STATE.mySaju);});});
+ $all('[data-star-album]',scope).forEach(function(b){b.addEventListener('click',goCardAlbum);});
+}
+/* 별 카드 공유 이미지 (1080×1350) */
+function buildStarShareCard(result){
+ var t=myStarType(result),W=1080,H=1350,canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;var ctx=canvas.getContext('2d');
+ var fontsReady=(document.fonts&&document.fonts.load)?Promise.all([document.fonts.load('700 64px "Noto Serif KR"'),document.fonts.load('500 34px "Noto Sans KR"')]).catch(function(){}):Promise.resolve();
+ return fontsReady.then(function(){return loadImageAsync('/assets/cards/'+t.asset+'.webp');}).then(function(img){
+  var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#fbf6ee');g.addColorStop(1,'#efe4f3');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.textAlign='center';ctx.fillStyle='#8b6a9e';ctx.font='500 32px "Noto Sans KR", sans-serif';ctx.fillText((result.name?result.name+'님':'나')+'의 별 카드',W/2,120);
+  var cw=560,ch=Math.round(cw*img.height/img.width),cx=(W-cw)/2,cy=170;
+  ctx.save();ctx.shadowColor='#5a3d6a33';ctx.shadowBlur=40;ctx.shadowOffsetY=16;ctx.fillStyle='#fffdf8';var r=36;ctx.beginPath();ctx.moveTo(cx+r,cy);ctx.arcTo(cx+cw,cy,cx+cw,cy+ch,r);ctx.arcTo(cx+cw,cy+ch,cx,cy+ch,r);ctx.arcTo(cx,cy+ch,cx,cy,r);ctx.arcTo(cx,cy,cx+cw,cy,r);ctx.closePath();ctx.fill();ctx.restore();
+  ctx.save();ctx.beginPath();ctx.moveTo(cx+r,cy);ctx.arcTo(cx+cw,cy,cx+cw,cy+ch,r);ctx.arcTo(cx+cw,cy+ch,cx,cy+ch,r);ctx.arcTo(cx,cy+ch,cx,cy,r);ctx.arcTo(cx,cy,cx+cw,cy,r);ctx.closePath();ctx.clip();ctx.drawImage(img,cx,cy,cw,ch);ctx.restore();
+  var y=cy+ch+96;ctx.fillStyle='#3d2c48';ctx.font='700 64px "Noto Serif KR", serif';ctx.fillText(t.title,W/2,y);
+  ctx.fillStyle='#8b6a9e';ctx.font='500 30px "Noto Sans KR", sans-serif';ctx.fillText('일간 '+t.stem+' · '+t.wx+' · '+(t.polarity==='yang'?'양':'음'),W/2,y+56);
+  ctx.fillStyle='#4a3b55';ctx.font='500 34px "Noto Sans KR", sans-serif';var line=STAR_SELF[t.id]||'',parts=line.split('. ');ctx.fillText(parts[0]+(parts[1]?'.':''),W/2,y+130);if(parts[1])ctx.fillText(parts[1],W/2,y+180);
+  ctx.fillStyle='#a08bad';ctx.font='500 28px "Noto Sans KR", sans-serif';ctx.fillText('별첩사주에서 내 별 카드 받기 · '+location.host,W/2,H-60);
+  return canvas;
+ });
+}
+function doShareStar(result){
+ var t=myStarType(result);if(!t)return;var url=shareUrl(),text=(result.name?result.name+'님의':'나의')+' 별 카드는 '+t.title+'! 너의 별 카드도 받아봐 ✨';
+ if(!document.createElement('canvas').getContext){fallbackTextShare(text,url,'별첩사주 별 카드');return;}
+ buildStarShareCard(result).then(function(canvas){canvas.toBlob(function(blob){if(!blob){fallbackTextShare(text,url,'별첩사주 별 카드');return;}shareImageBlob(canvas,blob,text,url,'byeolcheop-star.png','별첩사주 별 카드','내 별 카드 받기');},'image/png',0.95);}).catch(function(){fallbackTextShare(text,url,'별첩사주 별 카드');});
+}
+/* 카드첩 첫 페이지(아직 모은 카드가 없을 때): 내 카드 + 초대 버튼 + 모을 수 있는 카드 실루엣 */
+function albumFirstPageHtml(result){
+ var t=myStarType(result),others=CARD_TYPES.filter(function(x){return !t||x.id!==t.id;}).slice(0,6);
+ return '<div class="album-first">'+(t?'<div class="album-mine"><img src="/assets/cards/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" loading="lazy" decoding="async"><div><small>첫 장 · 내 카드</small><b>'+esc(t.title)+'</b><span>친구를 초대하면 둘의 궁합 카드가 이 옆에 모여요.</span></div></div>':'')+
+  '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구에게 궁합 링크 보내기</button>'+
+  '<p class="album-tease">누구의 카드가 먼저 모일까요?</p><div class="album-silhouettes">'+others.map(function(x){return '<span class="album-sil"><img src="/assets/cards/'+x.asset+'.webp" alt="" loading="lazy" decoding="async"><b>?</b><small>'+esc(x.wx)+' · '+(x.polarity==='yang'?'양':'음')+'</small></span>';}).join('')+'</div></div>';
+}
+function wireAlbumInvite(scope){$all('[data-album-invite]',scope).forEach(function(b){b.addEventListener('click',function(){if(STATE.mySaju)doShareCompatInvite(STATE.mySaju);else{switchTab('saju');showToast('내 사주를 먼저 입력해주세요.');}});});}
 function renderSajuResult(result){
   var wrap = $('#saju-result');
   var pillarsHtml = '<div class="pillars no-time">'+
@@ -2967,6 +3091,7 @@ function renderSajuResult(result){
   evidence.innerHTML='<summary><span>'+uiIcon('compass')+'<b>내 사주의 근거도 궁금하다면</b><small>원국 · 오행 · 지장간 · 십신</small></span>'+uiIcon('arrow')+'</summary>';
   Array.from(wrap.children).slice(1,6).forEach(function(card){evidence.appendChild(card);});
   wrap.appendChild(evidence);
+  wireStarCard(wrap);fillHomeContents(wrap);
   $all('[data-everyday-cat]',wrap).forEach(function(btn){btn.addEventListener('click',function(){var target=$all('#worry-chips .chip-btn').find(function(chip){return chip.dataset.cat===btn.dataset.everydayCat;});if(target){target.click();target.closest('.card').scrollIntoView({behavior:'smooth',block:'start'});}});});
   wrap.hidden = false;
   $('#saju-form').hidden = true;
@@ -3755,7 +3880,7 @@ var CARD_TYPES=[
 ];
 function cardTypeOf(entry){return CARD_TYPES.find(function(t){return t.stem===entry.dayGanB;})||CARD_TYPES.find(function(t){return t.wx===entry.dayGanWxB&&t.polarity===entry.cardPolarity;})||null;}
 function cardDexEntries(list){return CARD_TYPES.reduce(function(out,type){MYROOM_TIERS.forEach(function(tier){var matches=list.filter(function(e){var t=cardTypeOf(e);return t&&t.id===type.id&&myroomTier(e.score).key===tier.key;});out.push({id:type.id+'-'+tier.key,type:type,tier:tier,entry:matches[0]||null,count:matches.length});});return out;},[]);}
-function cardBackHtml(row,extra){return '<div class="card-back '+(extra||'')+'" aria-label="미보유 · '+esc(row.type.title)+' · '+row.tier.grade+'등급"><span class="card-back-grade">'+row.tier.grade+'</span><span class="card-back-mark">'+BRAND_MARK_SVG+'</span><small>'+esc(row.type.wx)+' · '+(row.type.polarity==='yang'?'양':'음')+'</small><span class="card-back-label">빈 자리</span></div>';}
+function cardBackHtml(row,extra){return '<div class="card-back '+(extra||'')+'" aria-label="미보유 · '+esc(row.type.title)+' · '+row.tier.grade+'등급"><img class="card-back-art" src="/assets/cards/'+row.type.asset+'.webp" alt="" loading="lazy" decoding="async"><span class="card-back-grade">'+row.tier.grade+'</span><span class="card-back-mark">'+BRAND_MARK_SVG+'</span><small>'+esc(row.type.wx)+' · '+(row.type.polarity==='yang'?'양':'음')+'</small><span class="card-back-label">빈 자리</span></div>';}
 function cardAlbumEmptyHtml(){var rows=cardDexEntries([]).filter(function(r){return r.tier.key==='a';}).slice(0,6);return '<div class="album-page-label"><span>나의 인연</span><span>01 / ∞</span></div><div class="myroom-grid card-album-empty">'+rows.map(function(r){return cardBackHtml(r);}).join('')+'</div>';}
 function closeMyroomDex(){var root=$('#myroom-sheet-root');if(root)root.innerHTML='';}
 function openMyroomDex(){
@@ -5299,9 +5424,8 @@ function renderMyRoomLocal(root){
   if (!list.length){
     root.innerHTML =
       '<div class="myroom-head"><div><p class="eyebrow">궁합 카드 모음</p><h2 class="album-heading">인연이 깃든 카드첩</h2></div>'+myroomDexBtnHtml()+'</div>'+
-      '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>아직 비어 있는 첫 페이지.<br>친구에게 링크를 보내, 우리만의 인연 카드를 남겨보세요.</span></div>'+cardAlbumEmptyHtml()+cardSymbolGuideHtml();
-    wireMyroomDexBtn();
+      albumFirstPageHtml(STATE.mySaju)+cardSymbolGuideHtml();
+    wireMyroomDexBtn();wireAlbumInvite(root);
     return;
   }
   var rankMap = myroomRankMap(list);
@@ -6291,7 +6415,7 @@ function initSajuStoryForm(){
   var originalIntro=form.firstElementChild;
   originalIntro.hidden=true;
   var welcome=document.createElement('div');welcome.className='saju-story-welcome';
-  welcome.innerHTML='<div class="journal-hero"><div class="journal-hero-copy"><p class="editorial-tag">무료 사주풀이</p><h1>나를 알아가는 시간,<br>어떤 이야기가 담겨 있을까요?</h1><p>나의 성향부터 관계, 일과 재물까지.<br>사주에서 나를 이해할 실마리를 찾아보세요.</p></div><div class="hero-atelier" aria-hidden="true"><div class="atelier-aura"></div><svg class="atelier-orbits" viewBox="0 0 440 200" fill="none"><ellipse cx="220" cy="124" rx="174" ry="45" transform="rotate(-12 220 124)"/><ellipse cx="220" cy="124" rx="145" ry="62" transform="rotate(14 220 124)"/><path class="constellation-thread" d="M48 122 91 81 140 107 210 31 282 78 347 42 396 104"/><g class="constellation-dots"><circle cx="48" cy="122" r="2"/><circle cx="91" cy="81" r="2.5"/><circle cx="140" cy="107" r="2"/><circle cx="210" cy="31" r="3"/><circle cx="282" cy="78" r="2"/><circle cx="347" cy="42" r="2.5"/><circle cx="396" cy="104" r="2"/></g></svg><div class="atelier-card card-left"><div class="atelier-card-face"><span class="atelier-card-no">01</span><svg viewBox="0 0 40 60" fill="none"><path d="M20 49V22m0 18C8 40 8 28 8 28s12 0 12 12Zm0-10c12 0 12-12 12-12S20 18 20 30Zm0-8C9 12 20 6 20 6s11 6 0 16Z"/></svg><span class="atelier-card-line"></span></div></div><div class="atelier-card card-right"><div class="atelier-card-face"><span class="atelier-card-no">03</span><svg viewBox="0 0 40 60" fill="none"><path d="M28 15a17 17 0 1 0 3 29 21 21 0 0 1-3-29Z"/><path d="m12 14 1 3 3 1-3 1-1 3-1-3-3-1 3-1Zm18 26 1 3 3 1-3 1-1 3-1-3-3-1 3-1Z"/></svg><span class="atelier-card-line"></span></div></div><div class="atelier-card card-center"><div class="atelier-card-face"><span class="atelier-card-no">02</span><svg viewBox="0 0 40 60" fill="none"><path d="m20 10 4 15 11 5-11 5-4 15-4-15-11-5 11-5Z"/><circle cx="20" cy="30" r="16"/><path d="M20 4v3m0 46v3M1 30h3m32 0h3"/></svg><span class="atelier-card-line"></span></div></div><span class="atelier-glint glint-a">✦</span><span class="atelier-glint glint-b">✧</span><span class="atelier-glint glint-c">✦</span><span class="atelier-caption">나를 이루는 수많은 가능성</span></div></div><div class="curiosity-strip"><span>나의 성향과 강점</span><span>일과 삶의 방향</span><span>인연과 재물의 흐름</span></div><div class="saju-story-head"><p class="eyebrow">무료로 시작하는 나의 이야기</p><h2>먼저, 나를 알려주세요</h2><div class="saju-step-track" aria-label="사주 입력 진행 단계"><span data-form-progress="0">01 기본 정보</span><span data-form-progress="1">02 생년월일</span><span data-form-progress="2">03 출생 정보</span></div><p id="saju-guide-line" class="saju-input-guide" aria-live="polite"></p></div>';
+  welcome.innerHTML=starHeroHtml();
   form.insertBefore(welcome,form.firstChild);
   var groups=[0,1,2].map(function(i){var g=document.createElement('div');g.className='saju-form-step';g.dataset.formStep=i;form.insertBefore(g,submit);return g;});
   groups[0].appendChild($('#f-name').closest('.field'));
