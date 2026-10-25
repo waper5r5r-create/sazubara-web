@@ -99,9 +99,9 @@ test('summary has three distinct traits grounded in the chart',()=>{
  assert.notEqual(text,api.everydayTraitsHtml({...result,dayGanWx:'화',wxCount:{목:1,화:6,토:0,금:0,수:1}}));
 });
 test('all five topics have a personalised free reading before checkout',()=>{
- for(const cat of ['연애','직장','재물','건강','인간관계']){const a=api.worryPreviewHtml(result,cat),b=api.worryPreviewHtml({...result,dayGanWx:'화'},cat);assert.ok(a.includes(cat+' 무료 맛보기'));assert.ok(a.replace(/<[^>]*>/g,'').length>230);assert.notEqual(a,b);assert.ok(!a.includes('unlock-btn'));}
+ for(const cat of ['연애','직장','재물','건강','인간관계']){const a=api.worryPreviewHtml(result,cat),b=api.worryPreviewHtml({...result,dayGanWx:'화'},cat);assert.ok(a.includes(cat+' 무료 풀이'));assert.ok(a.replace(/<[^>]*>/g,'').length>230);assert.notEqual(a,b);assert.ok(!a.includes('unlock-btn'));}
  assert.equal(api.worryPreviewHtml(result,'invalid'),'');assert.ok(api.worryPreviewHtml(result,'건강').includes('건강은 사주로 판단할 수 없어요'));
- const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('my-star-card'));assert.ok(main.includes('data-home-contents'));assert.ok(main.includes('data-star-share'));
+ const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('saju-board'));assert.ok(main.includes('data-home-contents'));assert.ok(main.includes('data-star-make'));assert.ok(main.includes('btn-edit-saju'));assert.ok(main.indexOf('saju-board')<main.indexOf('data-star-make'));
 });
 
 test('compatibility guidance includes all relationships without assuming romance',()=>{
@@ -282,7 +282,7 @@ test('wealth report: 금비 free view hides paid copy, ledger story and 18-secti
 test('star card: every day stem gets its own animal card, home hero and album first page render real art',()=>{
  const seen=new Set();for(const s of ['갑','을','병','정','무','기','경','신','임','계']){const h=api.myStarCardHtml({...result,day:{...result.day,ganKr:s,gan:'X'}});assert.ok(h.includes('my-star-card'),s);const m=h.match(new RegExp('assets/cards/([a-z-]+)[.]webp'));assert.ok(m,s);seen.add(m[1]);assert.ok(fs.existsSync(require('node:path').join(__dirname,'..','assets/cards/'+m[1]+'.webp')));assert.ok(!h.includes('undefined'));}
  assert.equal(seen.size,10);
- const hero=api.starHeroHtml();assert.ok(hero.includes('나의 별 카드'));for(const x of hero.matchAll(/src="([^"]+)"/g))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',x[1])),x[1]);
+ const hero=api.starHeroHtml();assert.ok(hero.includes('나의 사주팔자'));assert.ok(hero.includes('출생지 보정'));for(const x of hero.matchAll(/src="([^"]+)"/g))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',x[1])),x[1]);
  const album=api.albumFirstPageHtml(result);assert.ok(album.includes('data-album-invite'));assert.equal((album.match(/album-sil/g)||[]).length>=6,true);
  const back=api.cardBackHtml(api.cardDexEntries([])[0]);assert.ok(back.includes('card-back-art'));
  const unsafe=api.myStarCardHtml({...result,name:'<script>x</script>'});assert.ok(!unsafe.includes('<script>x</script>'));

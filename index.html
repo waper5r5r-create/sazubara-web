@@ -1159,6 +1159,55 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .card-back{position:relative;overflow:hidden}
 .card-back-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(1.2) blur(2px);opacity:.3;pointer-events:none}
 .card-back>:not(.card-back-art){position:relative}
+/* 첫 화면 사주팔자 · 결과 원국표 · 별 카드 선물과 생성 연출 */
+.saju-hero{text-align:center;padding:4px 2px}
+.saju-hero h1{margin:10px 0 8px;font-family:'Noto Serif KR',serif;font-size:1.75rem;line-height:1.4;letter-spacing:-.03em;color:var(--fg)}
+.saju-hero-sub{max-width:300px;margin:0 auto;font-size:.9375rem;line-height:1.7;color:var(--fg-muted);word-break:keep-all}
+.saju-hero-board{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:24px 0 16px;padding:18px 12px;border-radius:18px;background:linear-gradient(160deg,#2a2140,#1a1530);box-shadow:0 12px 28px #2a214040}
+.hero-pillar{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;border-radius:12px;background:#ffffff0d;border:1px solid #d6b78533}
+.hero-pillar small{font-size:.6875rem;color:#bfb3c9}
+.hero-pillar b{font-family:'Noto Serif KR',serif;font-size:1.75rem;line-height:1.2;color:#f3dfb7}
+.hero-board-note{position:absolute;top:-10px;right:12px;padding:2px 8px;border-radius:999px;background:#d6b785;color:#2a2140;font-size:.6875rem;font-weight:700}
+.saju-hero-trust{list-style:none;margin:0;padding:0;display:grid;gap:8px;text-align:left}
+.saju-hero-trust li{display:flex;gap:12px;align-items:baseline;padding:12px 14px;border-radius:14px;background:var(--surface-2)}
+.saju-hero-trust b{flex:none;width:78px;font-size:.875rem;color:var(--accent)}
+.saju-hero-trust span{font-size:.8125rem;line-height:1.5;color:var(--fg);word-break:keep-all}
+.saju-hero-gift{margin:14px 0 4px;font-size:.8125rem;color:var(--fg-muted)}
+.saju-result-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin:4px 0 14px}
+.saju-result-head h1{margin:0;font-family:'Noto Serif KR',serif;font-size:1.5rem;line-height:1.35;color:var(--fg)}
+.saju-board{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 16px}
+.star-gift{margin:8px 0 26px;padding:22px 18px;border-radius:22px;background:#fbf7ef;border:1px solid #e6dcea;text-align:center;color:#3d2c48}
+.star-gift h2{margin:8px 0 6px;font-family:'Noto Serif KR',serif;font-size:1.25rem;color:#3d2c48}
+.star-gift-sub{margin:0;font-size:.875rem;line-height:1.6;color:#6d5a77;word-break:keep-all}
+.star-make-btn{width:100%;margin-top:16px}
+.star-gift.is-done{padding:0;background:none;border:0;text-align:left}
+.star-gift.is-done .my-star-card{animation:star-land .6s ease-out both}
+@keyframes star-land{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.star-stage{position:relative;height:340px;margin-top:16px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 50% 45%,#3b2a55,#120f1f 72%)}
+.star-orbit{position:absolute;inset:0;transition:opacity .4s}
+.star-orbit span{position:absolute;left:50%;top:44%;width:2em;margin:-1em 0 0 -1em;text-align:center;font-family:'Noto Serif KR',serif;font-size:1.375rem;color:#f3dfb7;text-shadow:0 0 12px #f3dfb788;animation:glyph-in 1.5s cubic-bezier(.5,0,.75,0) both;animation-delay:calc(var(--i) * 60ms)}
+@keyframes glyph-in{0%{opacity:0;transform:rotate(calc(var(--i) / var(--n) * 360deg)) translateY(-150px) rotate(calc(var(--i) / var(--n) * -360deg))}35%{opacity:1;transform:rotate(calc(var(--i) / var(--n) * 360deg + 60deg)) translateY(-110px) rotate(calc(var(--i) / var(--n) * -360deg - 60deg))}100%{opacity:0;transform:rotate(calc(var(--i) / var(--n) * 360deg + 220deg)) translateY(0) rotate(calc(var(--i) / var(--n) * -360deg - 220deg))}}
+.star-core{position:absolute;left:50%;top:44%;width:14px;height:14px;margin:-7px;border-radius:50%;background:#fff;box-shadow:0 0 30px 12px #f3dfb7aa;animation:core-grow 1.6s ease-in both}
+@keyframes core-grow{0%{transform:scale(.2);opacity:.3}100%{transform:scale(3.2);opacity:1}}
+.star-flip{position:absolute;left:50%;top:44%;width:160px;aspect-ratio:3/4;margin:-107px 0 0 -80px;perspective:900px;opacity:0;transform:scale(.6)}
+.phase-card .star-orbit{opacity:0}
+.phase-card .star-flip{animation:card-in .6s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes card-in{to{opacity:1;transform:scale(1)}}
+.star-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:card-spin 1.4s ease-in-out infinite}
+.phase-flip .star-flip-inner{animation:card-flip 1s cubic-bezier(.3,.1,.2,1) forwards}
+@keyframes card-spin{0%,100%{transform:rotateY(-16deg)}50%{transform:rotateY(16deg)}}
+@keyframes card-flip{from{transform:rotateY(0)}to{transform:rotateY(540deg)}}
+.star-face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.star-back{background:linear-gradient(160deg,#2a2140,#1a1530);border:2px solid #d6b785;color:#d6b785}
+.star-back-mark svg{width:56px;height:56px}
+.star-back small{margin-top:10px;font-size:.6875rem;letter-spacing:.24em}
+.star-front{transform:rotateY(180deg);background:#fffdf8;border:2px solid #d6b785}
+.star-front img{display:block;width:100%;height:84%;object-fit:cover}
+.star-front b{padding:6px;font-family:'Noto Serif KR',serif;font-size:1rem;color:#3d2c48}
+.star-stage::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 44%,#fffbe8 0,#fffbe800 58%);opacity:0;pointer-events:none}
+.star-stage.phase-flip::after{animation:star-flash 1s ease-out}
+@keyframes star-flash{0%{opacity:0}35%{opacity:.9}100%{opacity:0}}
+.star-stage-text{position:absolute;left:0;right:0;bottom:18px;margin:0;text-align:center;font-size:.875rem;color:#e9ddf0}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=4">
 </head>
@@ -2890,7 +2939,7 @@ function everydayTraitsHtml(result){
  return '<section class="personal-traits"><h2>사주로 살펴본 내 특징 세 가지</h2><ol>'+rows.map(function(r,i){return '<li><span class="trait-symbol">'+uiIcon(r[2])+'</span><div><small>0'+(i+1)+' · '+r[0]+'</small><p>'+esc(r[1])+'</p></div></li>';}).join('')+'</ol><p class="hint">일간과 오행 분포를 참고한 해석이에요. 실제 경험과 함께 읽어보세요.</p></section>';
 }
 function everydaySajuHtml(result){
- return '<section class="everyday-saju"><p class="editorial-tag">나의 사주 풀이</p>'+myStarCardHtml(result)+everydayTraitsHtml(result)+homeContentsHtml()+'</section>';
+ return '<section class="everyday-saju"><p class="editorial-tag">나의 사주팔자</p><div class="saju-result-head"><h1>'+(result.name?esc(result.name)+'님의 사주':'나의 사주')+'</h1><button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button></div>'+sajuBoardHtml(result)+sajuQuickSummaryHtml(result)+everydayTraitsHtml(result)+starGiftHtml(result)+homeContentsHtml()+'</section>';
 }
 var WORRY_PREVIEW_LENS={
  목:{연애:'서로의 가능성을 알아가고 함께 경험을 넓히는 관계',직장:'새로운 역할을 배우고 시도하며 방향을 만드는 과정',재물:'새로운 기회를 발견하고 자원을 활용하는 과정',건강:'활동과 회복 사이에 지속 가능한 리듬을 만드는 과정',인간관계:'새로운 만남과 기존 관계를 함께 넓혀가는 과정'},
@@ -2904,7 +2953,7 @@ function worryPreviewHtml(my,cat){
  var wx=my.dayGanWx,dominant=dominantWx(my.wxCount).wx;
  var questions={연애:'관계에서 내가 편안하게 느끼는 방식과 상대가 편안하게 느끼는 방식을 함께 살펴보세요.',직장:'일의 이름보다 내가 힘을 내는 과정과 부담을 느끼는 조건을 구분해보세요.',재물:'돈의 크기만 보기보다 무엇에 가치를 두고 선택하는지 돌아보세요.',건강:'건강은 사주로 판단할 수 없어요. 아래 내용은 생활 습관을 돌아보는 질문으로만 활용해주세요.',인간관계:'가깝고 먼 관계 모두에서 내가 지키고 싶은 기준과 조정할 수 있는 부분을 구분해보세요.'};
  var icons={연애:'heart',직장:'briefcase',재물:'wallet',건강:'leaf',인간관계:'people'};
- return '<section class="worry-preview" aria-label="'+esc(cat)+' 무료 맛보기"><p class="eyebrow">'+uiIcon(icons[cat])+' '+esc(cat)+' · 먼저 읽어보세요</p><h3>내 사주로 살펴보는 '+esc(cat)+'</h3><p>일간이 <strong>'+esc(wx)+'</strong>인 사주는 '+esc(WORRY_PREVIEW_LENS[wx][cat])+'에 주목해 읽어요. '+esc(EVERYDAY_TRAITS[wx][0])+'을 이 주제에서도 함께 살펴볼 수 있어요.</p><p>표면의 오행 분포에서는 <strong>'+esc(dominant)+'</strong> 기운이 상대적으로 두드러져요. '+esc(EVERYDAY_TRAITS[dominant][1])+'이 어떻게 나타나는지 실제 경험에 비춰보세요. 한 가지 기운만으로 결과를 정하지는 않아요.</p><div class="preview-reflection"><span>'+uiIcon('compass')+'</span><p>'+esc(questions[cat])+'</p></div><p class="preview-scope">지금 내용은 일간·오행에 따른 기본 해석이에요. 더 자세한 풀이에서는 '+esc(cat)+'의 성향, 선택할 때 참고할 점과 상황별 조언을 이어서 볼 수 있어요.</p></section>';
+ return '<section class="worry-preview" aria-label="'+esc(cat)+' 무료 풀이"><p class="eyebrow">'+uiIcon(icons[cat])+' '+esc(cat)+' · 먼저 읽어보세요</p><h3>내 사주로 살펴보는 '+esc(cat)+'</h3><p>일간이 <strong>'+esc(wx)+'</strong>인 사주는 '+esc(WORRY_PREVIEW_LENS[wx][cat])+'에 주목해 읽어요. '+esc(EVERYDAY_TRAITS[wx][0])+'을 이 주제에서도 함께 살펴볼 수 있어요.</p><p>표면의 오행 분포에서는 <strong>'+esc(dominant)+'</strong> 기운이 상대적으로 두드러져요. '+esc(EVERYDAY_TRAITS[dominant][1])+'이 어떻게 나타나는지 실제 경험에 비춰보세요. 한 가지 기운만으로 결과를 정하지는 않아요.</p><div class="preview-reflection"><span>'+uiIcon('compass')+'</span><p>'+esc(questions[cat])+'</p></div><p class="preview-scope">지금 내용은 일간·오행에 따른 기본 해석이에요. 더 자세한 풀이에서는 '+esc(cat)+'의 성향, 선택할 때 참고할 점과 상황별 조언을 이어서 볼 수 있어요.</p></section>';
 }
 
 /* ---- 내 별 카드: 내 일간의 동물 카드(카드첩의 첫 장). 첫 화면·사주풀이 결과·카드첩에서 같이 쓴다.
@@ -2932,11 +2981,44 @@ function myStarCardHtml(result){
   '<p class="hint">친구가 링크로 사주를 넣으면, 둘의 궁합이 담긴 카드가 카드첩에 모여요.</p></section>';
 }
 /* 첫 화면 큰 그림: 별 카드 세 장을 부채꼴로 */
+/* 첫 화면: 정통 사주팔자와 계산 기준을 먼저, 별 카드는 한 줄로 */
 function starHeroHtml(){
- var fan=['wood','metal-yin','water-yin'];
- return '<div class="star-hero"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 받는<br>나의 별 카드</h1><p class="star-hero-sub">사주로 내 성향을 풀어보고, 나를 닮은 별 카드를 받아요.</p>'+
-  '<div class="star-hero-fan" aria-hidden="true">'+fan.map(function(a,i){return '<span class="star-fan-card is-'+i+'"><img src="/assets/cards/'+a+'.webp" alt="" decoding="async"'+(i===1?' fetchpriority="high"':'')+'>'+(i===1?'<b>?</b>':'')+'</span>';}).join('')+'</div>'+
-  '<ol class="star-hero-steps"><li><b>1</b><span>생년월일 입력</span></li><li><b>2</b><span>무료 사주풀이와<br>내 별 카드</span></li><li><b>3</b><span>친구와 궁합 보고<br>카드첩 채우기</span></li></ol></div>';
+ var sample=[['시주','丙','午'],['일주','辛','亥'],['월주','己','卯'],['연주','乙','亥']];
+ return '<div class="saju-hero"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일시로 세우는<br>나의 사주팔자</h1><p class="saju-hero-sub">태어난 순간의 여덟 글자로 타고난 성향과 앞으로의 흐름을 풀어드려요.</p>'+
+  '<div class="saju-hero-board" aria-hidden="true">'+sample.map(function(p){return '<div class="hero-pillar"><small>'+p[0]+'</small><b>'+p[1]+'</b><b>'+p[2]+'</b></div>';}).join('')+'<span class="hero-board-note">예시</span></div>'+
+  '<ul class="saju-hero-trust"><li><b>절기 기준</b><span>입춘과 절기로 해와 달을 나눠 계산해요</span></li><li><b>출생지 보정</b><span>태어난 지역의 경도로 시간을 보정해요</span></li><li><b>1만 7천 자</b><span>주제별 심층 리포트는 1인 기준 1만 7천 자 이상</span></li></ul>'+
+  '<p class="saju-hero-gift">✦ 풀이를 마치면 나를 닮은 별 카드가 만들어져요</p></div>';
+}
+/* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
+function sajuBoardHtml(result){
+ var cols=[['시주',result.time],['일주',result.day,true],['월주',result.month],['연주',result.year]];
+ return '<div class="saju-board">'+cols.map(function(c){var p=c[1];return pillarHtml(c[0],p&&p.gan&&p.wxGan&&WUXING_INFO[p.wxGan]?p:null,c[2]);}).join('')+'</div>'+(result.unknownTime?'<p class="hint">출생시간을 몰라 시주는 비워두고 계산했어요.</p>':'');
+}
+function starGiftHtml(result){
+ var t=myStarType(result);if(!t)return '';
+ return '<section class="star-gift" data-star-gift><p class="editorial-tag">풀이를 마친 선물</p><h2>사주가 만든 나의 별 카드</h2><p class="star-gift-sub">여덟 글자 중 나를 대표하는 일간 '+esc(t.stem+'('+result.day.gan+')')+'의 기운으로 카드가 만들어져요.</p>'+
+  '<button type="button" class="btn-primary star-make-btn" data-star-make>내 별 카드 받기</button><div class="star-stage" data-star-stage hidden></div></section>';
+}
+function starRevealKey(result){return 'byeolcheop_star_'+(result.day?result.day.gan+result.day.zhi:'')+(result.year?result.year.gan+result.year.zhi:'');}
+function starRevealSeen(result){try{return localStorage.getItem(starRevealKey(result))==='1';}catch(e){return false;}}
+function starRevealDone(scope,result){var gift=$('[data-star-gift]',scope);if(!gift)return;gift.classList.add('is-done');gift.innerHTML=myStarCardHtml(result);wireStarCard(gift);try{localStorage.setItem(starRevealKey(result),'1');}catch(e){}}
+function playStarReveal(scope,result){
+ var gift=$('[data-star-gift]',scope),stage=$('[data-star-stage]',gift),btn=$('[data-star-make]',gift),t=myStarType(result);if(!gift||!stage||!t)return;
+ var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(reduce){starRevealDone(scope,result);return;}
+ var glyphs=[result.time,result.day,result.month,result.year].filter(Boolean).reduce(function(a,p){return a.concat([p.gan,p.zhi]);},[]);
+ btn.hidden=true;stage.hidden=false;gift.classList.add('is-playing');
+ stage.innerHTML='<div class="star-orbit">'+glyphs.map(function(g,i){return '<span style="--i:'+i+';--n:'+glyphs.length+'">'+esc(g)+'</span>';}).join('')+'<i class="star-core"></i></div>'+
+  '<div class="star-flip"><div class="star-flip-inner"><div class="star-face star-back"><span class="star-back-mark">'+BRAND_MARK_SVG+'</span><small>BYEOLCHEOP</small></div><div class="star-face star-front"><img src="/assets/cards/'+t.asset+'.webp" alt="" decoding="async"><b>'+esc(t.title)+'</b></div></div></div><p class="star-stage-text" aria-live="polite">여덟 글자를 모으는 중…</p>';
+ var img=new Image();img.src='/assets/cards/'+t.asset+'.webp';
+ setTimeout(function(){stage.classList.add('phase-card');var tx=$('.star-stage-text',stage);if(tx)tx.textContent='카드를 새기는 중…';},1500);
+ setTimeout(function(){stage.classList.add('phase-flip');try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}var tx=$('.star-stage-text',stage);if(tx)tx.textContent=t.title+' 카드가 만들어졌어요';},2700);
+ setTimeout(function(){starRevealDone(scope,result);},4300);
+}
+function wireStarGift(scope,result){
+ var gift=$('[data-star-gift]',scope);if(!gift)return;
+ if(starRevealSeen(result)){starRevealDone(scope,result);return;}
+ var btn=$('[data-star-make]',gift);if(btn)btn.addEventListener('click',function(){playStarReveal(scope,result);});
 }
 /* 콘텐츠 줄: 목록 API에서 자동으로 */
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
@@ -3027,9 +3109,7 @@ function renderSajuResult(result){
     '<div class="card">'+
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">'+
         '<div><p class="eyebrow">사주팔자</p><h2 class="section-title">'+(result.name? esc(result.name)+'님의 사주':'나의 사주')+'</h2></div>'+
-        '<button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button>'+
       '</div>'+
-      sajuQuickSummaryHtml(result) +
       pillarsHtml + corrNote +
     '</div>'+sajuDepthHtml(result)+
 
@@ -3084,7 +3164,7 @@ function renderSajuResult(result){
   evidence.innerHTML='<summary><span>'+uiIcon('compass')+'<b>내 사주의 근거도 궁금하다면</b><small>원국 · 오행 · 지장간 · 십신</small></span>'+uiIcon('arrow')+'</summary>';
   var evCards=[];Array.from(wrap.children).slice(1).some(function(card){if(card.querySelector('#worry-chips'))return true;evCards.push(card);return false;});evCards.forEach(function(card){evidence.appendChild(card);});
   wrap.appendChild(evidence);
-  wireStarCard(wrap);fillHomeContents(wrap);
+  wireStarGift(wrap,result);fillHomeContents(wrap);
   $all('[data-everyday-cat]',wrap).forEach(function(btn){btn.addEventListener('click',function(){var target=$all('#worry-chips .chip-btn').find(function(chip){return chip.dataset.cat===btn.dataset.everydayCat;});if(target){target.click();target.closest('.card').scrollIntoView({behavior:'smooth',block:'start'});}});});
   wrap.hidden = false;
   $('#saju-form').hidden = true;
