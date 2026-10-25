@@ -1242,13 +1242,8 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .card-back .card-back-label{color:#cdbb92;font-size:.5625rem}
 .star-back{padding:0;border:0;background:#0d1430}
 .star-back img,.star-front img{width:100%;height:100%;object-fit:cover}
-.saju-hero.has-art{padding:0}
-.saju-hero-visual{position:relative;margin:0 -2px 16px;border-radius:20px;overflow:hidden;background:#0d1430;aspect-ratio:4/5}
-.saju-hero-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.saju-hero-copy{position:relative;padding:28px 20px 0;color:#f6ecd6;text-shadow:0 2px 12px #0b1020}
-.saju-hero.has-art .editorial-tag{color:#e6cb8b}
-.saju-hero.has-art h1{color:#fff7e6}
-.saju-hero.has-art .saju-hero-sub{color:#e3dacb}
+.saju-hero-visual{position:relative;margin:18px -2px 14px;border-radius:18px;overflow:hidden;background:#0d1430;aspect-ratio:3/2;box-shadow:0 12px 28px #0b102033}
+.saju-hero-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 72%}
 .album-cover{position:relative;margin-bottom:14px;border-radius:16px;overflow:hidden;aspect-ratio:3/2;background:#0d1430}
 .album-cover img{width:100%;height:100%;object-fit:cover;object-position:center 35%}
 .album-cover span{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-family:'Noto Serif KR',serif;font-size:1.5rem;letter-spacing:.3em;color:#f1d896;text-shadow:0 2px 10px #0b1020}
@@ -3036,7 +3031,7 @@ function myStarCardHtml(result){
 /* 첫 화면 큰 그림: 별 카드 세 장을 부채꼴로 */
 /* 첫 화면: 정통 사주팔자와 계산 기준을 먼저, 별 카드는 한 줄로 */
 function starHeroHtml(){
- return '<div class="saju-hero has-art"><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"><div class="saju-hero-copy"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일시로 세우는<br>나의 사주팔자</h1><p class="saju-hero-sub">태어난 순간의 여덟 글자로 타고난 성향과 앞으로의 흐름을 풀어드려요.</p></div></div>'+
+ return '<div class="saju-hero has-art"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일시로 세우는<br>나의 사주팔자</h1><p class="saju-hero-sub">태어난 순간의 여덟 글자로 타고난 성향과 앞으로의 흐름을 풀어드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"></div>'+
   '<ul class="saju-hero-trust"><li><b>절기 기준</b><span>입춘·절기로 계산</span></li><li><b>출생지 보정</b><span>경도로 시간 보정</span></li><li><b>1만 7천 자</b><span>주제별 심층 리포트</span></li></ul>'+
   '<p class="saju-hero-gift">✦ 풀이를 마치면 나를 닮은 별 카드가 만들어져요</p></div>';
 }
