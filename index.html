@@ -3023,7 +3023,7 @@ function myStarCardHtml(result){
  var t=myStarType(result);if(!t)return '';
  var who=result.name?esc(result.name)+'님':'나';
  return '<section class="my-star-card"><p class="editorial-tag">'+who+'의 별 카드</p>'+
-  '<div class="my-star-body"><figure class="my-star-art"><img src="/assets/cards/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" decoding="async"></figure>'+
+  '<div class="my-star-body"><figure class="my-star-art"><img src="/assets/guardians/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" decoding="async"></figure>'+
   '<div class="my-star-copy"><h2>'+esc(t.title)+'</h2><p class="my-star-tags">일간 '+esc(t.stem+'('+result.day.gan+')')+' · '+esc(t.wx)+' · '+(t.polarity==='yang'?'양':'음')+'</p><p>'+esc(STAR_SELF[t.id]||'')+'</p></div></div>'+
   '<div class="my-star-actions"><button type="button" class="btn-primary" data-star-share>내 별 카드 저장·공유</button><button type="button" class="share-btn" data-star-album>친구 카드 모으러 가기</button></div>'+
   '<p class="hint">친구가 링크로 사주를 넣으면, 둘의 궁합이 담긴 카드가 카드첩에 모여요.</p></section>';
@@ -3055,8 +3055,8 @@ function playStarReveal(scope,result){
  var glyphs=[result.time,result.day,result.month,result.year].filter(Boolean).reduce(function(a,p){return a.concat([p.gan,p.zhi]);},[]);
  btn.hidden=true;stage.hidden=false;gift.classList.add('is-playing');
  stage.innerHTML='<div class="star-orbit">'+glyphs.map(function(g,i){return '<span style="--i:'+i+';--n:'+glyphs.length+'">'+esc(g)+'</span>';}).join('')+'<i class="star-core"></i></div>'+
-  '<div class="star-flip"><div class="star-flip-inner"><div class="star-face star-back"><img src="/assets/cards/back.webp" alt="" decoding="async"></div><div class="star-face star-front"><img src="/assets/cards/'+t.asset+'.webp" alt="" decoding="async"><b>'+esc(t.title)+'</b></div></div></div><p class="star-stage-text" aria-live="polite">여덟 글자를 모으는 중…</p>';
- var img=new Image();img.src='/assets/cards/'+t.asset+'.webp';var back=new Image();back.src='/assets/cards/back.webp';
+  '<div class="star-flip"><div class="star-flip-inner"><div class="star-face star-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="star-face star-front"><img src="/assets/guardians/'+t.asset+'.webp" alt="" decoding="async"><b>'+esc(t.title)+'</b></div></div></div><p class="star-stage-text" aria-live="polite">여덟 글자를 모으는 중…</p>';
+ var img=new Image();img.src='/assets/guardians/'+t.asset+'.webp';var back=new Image();back.src='/assets/guardians/back.webp';
  setTimeout(function(){stage.classList.add('phase-card');var tx=$('.star-stage-text',stage);if(tx)tx.textContent='카드를 새기는 중…';},1500);
  setTimeout(function(){stage.classList.add('phase-flip');try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}var tx=$('.star-stage-text',stage);if(tx)tx.textContent=t.title+' 카드가 만들어졌어요';},2700);
  setTimeout(function(){starRevealDone(scope,result);},4300);
@@ -3098,7 +3098,7 @@ function wireStarCard(scope){
 function buildStarShareCard(result){
  var t=myStarType(result),W=1080,H=1350,canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;var ctx=canvas.getContext('2d');
  var fontsReady=(document.fonts&&document.fonts.load)?Promise.all([document.fonts.load('700 64px "Noto Serif KR"'),document.fonts.load('500 34px "Noto Sans KR"')]).catch(function(){}):Promise.resolve();
- return fontsReady.then(function(){return loadImageAsync('/assets/cards/'+t.asset+'.webp');}).then(function(img){
+ return fontsReady.then(function(){return loadImageAsync('/assets/guardians/'+t.asset+'.webp');}).then(function(img){
   var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#fbf6ee');g.addColorStop(1,'#efe4f3');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   ctx.textAlign='center';ctx.fillStyle='#8b6a9e';ctx.font='500 32px "Noto Sans KR", sans-serif';ctx.fillText((result.name?result.name+'님':'나')+'의 별 카드',W/2,120);
   var cw=560,ch=Math.round(cw*img.height/img.width),cx=(W-cw)/2,cy=170;
@@ -3119,9 +3119,9 @@ function doShareStar(result){
 /* 카드첩 첫 페이지(아직 모은 카드가 없을 때): 내 카드 + 초대 버튼 + 모을 수 있는 카드 실루엣 */
 function albumFirstPageHtml(result){
  var t=myStarType(result),others=CARD_TYPES.filter(function(x){return !t||x.id!==t.id;}).slice(0,6);
- return '<div class="album-first"><div class="album-cover"><img src="/assets/album/cover.webp" alt="" loading="lazy" decoding="async"><span>별첩</span></div>'+(t?'<div class="album-mine"><img src="/assets/cards/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" loading="lazy" decoding="async"><div><small>첫 장 · 내 카드</small><b>'+esc(t.title)+'</b><span>친구를 초대하면 둘의 궁합 카드가 이 옆에 모여요.</span></div></div>':'')+
+ return '<div class="album-first"><div class="album-cover"><img src="/assets/album/cover.webp" alt="" loading="lazy" decoding="async"><span>별첩</span></div>'+(t?'<div class="album-mine"><img src="/assets/guardians/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" loading="lazy" decoding="async"><div><small>첫 장 · 내 카드</small><b>'+esc(t.title)+'</b><span>친구를 초대하면 둘의 궁합 카드가 이 옆에 모여요.</span></div></div>':'')+
   '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구에게 궁합 링크 보내기</button>'+
-  '<p class="album-tease">누구의 카드가 먼저 모일까요?</p><div class="album-silhouettes">'+others.map(function(x){return '<span class="album-sil"><img src="/assets/cards/'+x.asset+'.webp" alt="" loading="lazy" decoding="async"><b>?</b><small>'+esc(x.wx)+' · '+(x.polarity==='yang'?'양':'음')+'</small></span>';}).join('')+'</div></div>';
+  '<p class="album-tease">누구의 카드가 먼저 모일까요?</p><div class="album-silhouettes">'+others.map(function(x){return '<span class="album-sil"><img src="/assets/guardians/'+x.asset+'.webp" alt="" loading="lazy" decoding="async"><b>?</b><small>'+esc(x.wx)+' · '+(x.polarity==='yang'?'양':'음')+'</small></span>';}).join('')+'</div></div>';
 }
 function wireAlbumInvite(scope){$all('[data-album-invite]',scope).forEach(function(b){b.addEventListener('click',function(){if(STATE.mySaju)doShareCompatInvite(STATE.mySaju);else{switchTab('saju');showToast('내 사주를 먼저 입력해주세요.');}});});}
 function renderSajuResult(result){
@@ -3800,7 +3800,7 @@ function collectibleCardHtml(entry,preview){
  var emblem={s:'✦',a:'✧',b:'❧',c:''}[tier.key];
  var gan=entry.dayGanB||'',polarity=entry.cardPolarity==='yang'?'양의 기운':entry.cardPolarity==='yin'?'음의 기운':'일간의 기운';
  return '<div class="myroom-card destiny-card destiny-v2'+(preview?' is-preview':'')+' tier-'+tier.key+'" '+(preview?'':'tabindex="0" role="button"')+' data-grade="'+tier.grade+'" data-polarity="'+esc(type?type.polarity:(entry.cardPolarity||'unknown'))+'" data-element="'+spirit.key+'"'+(frame?' data-frame="'+esc(frame)+'"':'')+' aria-label="'+esc(entry.nameB||'상대방')+' · '+tier.grade+'등급 궁합 카드 · '+artTitle+'" style="--card-strength:'+(score/100).toFixed(2)+';--tier-color:'+tier.color+';--tier-soft:'+tier.soft+';'+frameStyleVars(frame)+'">'+
- '<div class="destiny-art">'+(spirit.key?'<img src="/assets/cards/'+asset+'.webp" alt="'+artTitle+' · '+spirit.tag+'" loading="lazy" decoding="async">':'')+'</div><img class="destiny-frame-art" src="/assets/cards/frames/'+tier.key+'.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><div class="destiny-foil"></div><span class="destiny-corner tl"></span><span class="destiny-corner tr"></span><span class="destiny-corner bl"></span><span class="destiny-corner br"></span>'+
+ '<div class="destiny-art">'+(spirit.key?'<img src="/assets/guardians/'+asset+'.webp" alt="'+artTitle+' · '+spirit.tag+'" loading="lazy" decoding="async">':'')+'</div><img class="destiny-frame-art" src="/assets/guardians/frames/'+tier.key+'.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><div class="destiny-foil"></div><span class="destiny-corner tl"></span><span class="destiny-corner tr"></span><span class="destiny-corner bl"></span><span class="destiny-corner br"></span>'+
  '<span class="card-tier-ribbon"></span><span class="card-tier-emblems" aria-hidden="true"><i>'+emblem+'</i><i>'+emblem+'</i></span><div class="destiny-top"><span class="destiny-grade">'+tier.grade+'</span><span class="destiny-element">'+spirit.symbol+'</span></div><span class="destiny-seal" aria-label="'+sealName+'">'+seal+'</span>'+
  '<div class="destiny-copy"><span class="destiny-title">'+artTitle+'</span><span class="nm">'+esc(entry.nameB||'상대방')+'</span><div class="destiny-stats"><span>나와의 궁합 <b>'+Math.max(0,Math.min(100,Number(entry.score)||0))+'</b></span><span>'+esc(gan||spirit.symbol)+' · '+polarity+'</span></div><span class="destiny-caption">'+tier.label+' · '+spirit.tag+'</span></div></div>';
 }
@@ -4010,7 +4010,7 @@ var CARD_TYPES=[
 ];
 function cardTypeOf(entry){return CARD_TYPES.find(function(t){return t.stem===entry.dayGanB;})||CARD_TYPES.find(function(t){return t.wx===entry.dayGanWxB&&t.polarity===entry.cardPolarity;})||null;}
 function cardDexEntries(list){return CARD_TYPES.reduce(function(out,type){MYROOM_TIERS.forEach(function(tier){var matches=list.filter(function(e){var t=cardTypeOf(e);return t&&t.id===type.id&&myroomTier(e.score).key===tier.key;});out.push({id:type.id+'-'+tier.key,type:type,tier:tier,entry:matches[0]||null,count:matches.length});});return out;},[]);}
-function cardBackHtml(row,extra){return '<div class="card-back '+(extra||'')+'" aria-label="미보유 · '+esc(row.type.title)+' · '+row.tier.grade+'등급"><img class="card-back-art" src="/assets/cards/back.webp" alt="" loading="lazy" decoding="async"><span class="card-back-grade">'+row.tier.grade+'</span><small>'+esc(row.type.wx)+' · '+(row.type.polarity==='yang'?'양':'음')+'</small><span class="card-back-label">빈 자리</span></div>';}
+function cardBackHtml(row,extra){return '<div class="card-back '+(extra||'')+'" aria-label="미보유 · '+esc(row.type.title)+' · '+row.tier.grade+'등급"><img class="card-back-art" src="/assets/guardians/back.webp" alt="" loading="lazy" decoding="async"><span class="card-back-grade">'+row.tier.grade+'</span><small>'+esc(row.type.wx)+' · '+(row.type.polarity==='yang'?'양':'음')+'</small><span class="card-back-label">빈 자리</span></div>';}
 function cardAlbumEmptyHtml(){var rows=cardDexEntries([]).filter(function(r){return r.tier.key==='a';}).slice(0,6);return '<div class="album-page-label"><span>나의 인연</span><span>01 / ∞</span></div><div class="myroom-grid card-album-empty">'+rows.map(function(r){return cardBackHtml(r);}).join('')+'</div>';}
 function closeMyroomDex(){var root=$('#myroom-sheet-root');if(root)root.innerHTML='';}
 function openMyroomDex(){
