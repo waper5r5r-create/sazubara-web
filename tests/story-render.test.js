@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={sajuQuickSummaryHtml,reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={sajuQuickSummaryHtml,homePreviewLine,reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -294,4 +294,10 @@ test('free result opens with a portrait and personal scene sentences',()=>{
  assert.notEqual(p,api.sajuQuickSummaryHtml({...base,month:{zhiKr:'자',zhi:'子',wxZhi:'수'}}));
  assert.equal(api.sajuQuickSummaryHtml({...base,month:null}),'');
  const main=api.everydaySajuHtml(base);assert.ok(main.includes('saju-hook-self'));assert.ok(main.includes('월주 상관'));assert.ok(main.includes('일지 미'));
+});
+
+test('home content cards show the first good year already shown free',()=>{
+ const r=api.computeSaju({year:1993,month:5,day:14,hour:8,minute:30,isLunar:false,isLeapMonth:false,unknownTime:false,gender:'f',name:'지은',city:'seoul',useCorrection:false});
+ for(const f of ['_career-content','_marriage-content','_wealth-content','_love-content']){const line=api.homePreviewLine(require('../api/'+f).concept,r);assert.match(line,/home-content-peek">✦ 20\d\d년 · \S/);}
+ assert.equal(api.homePreviewLine({id:'x',category:'직장'},r),'');assert.equal(api.homePreviewLine(require('../api/_career-content').concept,null),'');
 });

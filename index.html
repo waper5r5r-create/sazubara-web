@@ -1143,7 +1143,7 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .home-content-card{flex:none;width:150px;padding:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface);text-align:left;color:var(--fg)}
 .home-content-card img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
 .home-content-card span{display:block;padding:10px 12px 12px}
-.home-content-card b{display:block;font-size:.9375rem}
+.home-content-card b{display:block;font-size:.9375rem}.home-content-card .home-content-peek{display:block;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-style:normal;font-size:.75rem;line-height:1.45;font-weight:600;color:var(--accent);word-break:keep-all}
 .home-content-card small{display:block;margin-top:4px;font-size:.75rem;line-height:1.45;color:var(--fg-muted);word-break:keep-all}
 .album-first{display:grid;gap:14px;margin-top:6px}
 .album-mine{display:flex;gap:14px;align-items:center;padding:14px;border-radius:18px;background:#fffdf8;border:1px solid #e6dcea}
@@ -3031,13 +3031,24 @@ function wireStarGift(scope,result){
 }
 /* 콘텐츠 줄: 목록 API에서 자동으로 */
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
-function homeContentsHtml(){return '<section class="home-contents"><h2>내 사주로 더 읽어보기</h2><p class="hint">주제마다 내 사주에 맞춘 풀이를 볼 수 있어요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
-function fillHomeContents(scope){
+function homeContentsHtml(){return '<section class="home-contents"><h2>내 사주로 더 읽어보기</h2><p class="hint">내 사주로 계산한 가장 먼저 좋은 해예요. 앞부분은 무료로 볼 수 있어요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
+/* 콘텐츠 카드 한 줄 미리보기: 각 콘텐츠 무료 화면에서 이미 공개하는 "10년 중 가장 먼저 좋은 해"만 보여준다 */
+function homePreviewLine(c,result){
+ try{
+  var cat=isPocha(c)?'career':storyCategory(c),from=marriageStartYear();
+  var pair=cat==='love'?[loveTimeline,loveYearLabel]:cat==='wealth'?[wealthTimeline,wealthYearLabel]:cat==='career'?[careerTimeline,careerYearLabel]:cat==='marriage'?[marriageTimeline,marriageYearLabel]:null;
+  if(!pair||!result||!result.day)return '';
+  var first=pair[0](result,from,10).filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;})[0];
+  var label=first&&pair[1](first);
+  return label?'<em class="home-content-peek">✦ '+first.year+'년 · '+esc(label)+'</em>':'';
+ }catch(e){return '';}
+}
+function fillHomeContents(scope,result){
  var row=$('[data-home-contents]',scope);if(!row)return;
  loadReportList().then(function(list){
   var items=(list||[]).filter(function(c){return storyCategory(c)!=='unsupported';});
   if(!items.length){row.innerHTML='<p class="hint">곧 새로운 콘텐츠가 열려요.</p>';return;}
-  row.innerHTML=items.map(function(c){var src=reportThumbSource(c);return '<button type="button" class="home-content-card" data-home-report="'+esc(String(c.id))+'">'+(src?'<img src="'+esc(src)+'" alt="" loading="lazy" decoding="async">':'')+'<span><b>'+esc(c.title||'')+'</b><small>'+esc(c.tagline||'')+'</small></span></button>';}).join('');
+  row.innerHTML=items.map(function(c){var src=reportThumbSource(c);return '<button type="button" class="home-content-card" data-home-report="'+esc(String(c.id))+'">'+(src?'<img src="'+esc(src)+'" alt="" loading="lazy" decoding="async">':'')+'<span><b>'+esc(c.title||'')+'</b><small>'+esc(c.tagline||'')+'</small>'+homePreviewLine(c,result)+'</span></button>';}).join('');
   $all('[data-home-report]',row).forEach(function(btn){btn.addEventListener('click',function(){var c=items.filter(function(x){return String(x.id)===btn.dataset.homeReport;})[0];if(c)openReportViewer(c);});});
  }).catch(function(){row.innerHTML='<button type="button" class="share-btn" data-home-retry>콘텐츠 둘러보기</button>';var b=$('[data-home-retry]',row);if(b)b.addEventListener('click',function(){switchTab('reports');});});
 }
@@ -3173,7 +3184,7 @@ function renderSajuResult(result){
   evidence.innerHTML='<summary><span>'+uiIcon('compass')+'<b>내 사주의 근거도 궁금하다면</b><small>원국 · 오행 · 지장간 · 십신</small></span>'+uiIcon('arrow')+'</summary>';
   var evCards=[];Array.from(wrap.children).slice(1).some(function(card){if(card.querySelector('#worry-chips'))return true;evCards.push(card);return false;});evCards.forEach(function(card){evidence.appendChild(card);});
   wrap.appendChild(evidence);
-  wireStarGift(wrap,result);fillHomeContents(wrap);
+  wireStarGift(wrap,result);fillHomeContents(wrap,result);
   $all('[data-everyday-cat]',wrap).forEach(function(btn){btn.addEventListener('click',function(){var target=$all('#worry-chips .chip-btn').find(function(chip){return chip.dataset.cat===btn.dataset.everydayCat;});if(target){target.click();target.closest('.card').scrollIntoView({behavior:'smooth',block:'start'});}});});
   wrap.hidden = false;
   $('#saju-form').hidden = true;
