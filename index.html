@@ -3303,7 +3303,7 @@ var HOME_PREVIEW_Q={love:'은 언제, 어떤 사람과 이어질까?',wealth:'�
 function homePreviewLine(c,result){
  var cat=isPocha(c)?'career':storyCategory(c),q=HOME_PREVIEW_Q[cat];
  if(!q||!result||!result.day)return '';
- return '<em class="home-content-peek">✦ '+(result.name?esc(result.name)+'님':'나')+q+'</em>';
+ return '<em class="home-content-peek">✦ '+(result.name?esc(result.name)+'님'+q:'나'+q.replace(/^은/,'는'))+'</em>';
 }
 function fillHomeContents(scope,result){
  var row=$('[data-home-contents]',scope);if(!row)return;
