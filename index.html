@@ -20,7 +20,7 @@
 <title>별첩사주 — 무료 사주풀이 · 오늘의 운세 · 궁합</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 /* Color tokens: exact repeats only, so every computed color is unchanged. */
 :root{--c-white:#ffffff;--c-black:#000000;--c-black-a13:#00000022;--c-white-a06:#ffffff10;--c-white-a07:#ffffff12;--c-white-a15:#ffffff25;--c-white-a33:#ffffff55;--c-paper-blush:#fffafc;--c-paper:#fffdfa;--c-cream:#fffaf0;--c-ivory:#f5f0e6;--c-ivory-soft:#faf7f1;--c-sand:#e8dfd1;--c-gold:#e8b96d;--c-gold-deep:#e0ad55;--c-gold-muted:#d6b785;--c-umber:#20180e;--c-night-ink:#10131c;--c-night:#111a29;--c-night-raised:#1c283a;--c-night-line:#26324a;--c-mist:#c0cbde;--c-gray-cool:#d3d6de;--c-gray-soft:#d5d6df;--c-plum:#755587;--c-plum-deep:#4f3c5c;--c-lavender:#9973ad;--c-lilac-line:#e5dce8;--c-lilac-pale:#eee4f3;--c-lilac-mist:#eee8f1}
@@ -1336,6 +1336,15 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .sky-book-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:12px;color:#e8dcc0;font-size:.8125rem}
 .sky-book-nav button{width:40px;height:40px;border:1px solid #e8dcc055;border-radius:50%;background:none;color:#f1d896;font-size:1.25rem}
 @media(prefers-reduced-motion:reduce){.sky-nebula,.sky-map,.sky-nebula-art{transition:none}.sky-book-spread.turn-next,.sky-book-spread.turn-prev{animation:none}}
+/* 글자 체계: 제목은 명조(별첩의 목소리), 본문은 고딕. 정의가 빠져 있던 글꼴 변수를 채우고 제목·소제목·눈썹 글자를 한 규칙으로 맞춘다. */
+:root{--font-body:'Noto Sans KR',sans-serif;--font-heading:'Noto Serif KR',serif}
+body{letter-spacing:-.01em}
+main h1,main h1.section-title{font-family:var(--font-heading);font-weight:700;font-size:1.5rem;line-height:1.4;letter-spacing:-.03em}
+.section-title,.album-heading,.home-contents h2,.personal-traits h2{font-family:var(--font-heading);font-weight:700;letter-spacing:-.02em}
+.section-title,.album-heading,.home-contents h2{font-size:1.1875rem;line-height:1.45}
+.eyebrow,.editorial-tag{font-size:.75rem;font-weight:700;letter-spacing:.12em}
+.daeun-chip .age{color:#776a80}
+.sky-book .sky-book-close{color:#f1d896;background:#ffffff14;border-radius:50%}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=4">
 </head>
