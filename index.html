@@ -1345,6 +1345,9 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 .eyebrow,.editorial-tag{font-size:.75rem;font-weight:700;letter-spacing:.12em}
 .daeun-chip .age{color:#6a6e80}
 .sky-book .sky-book-close{color:#f1d896;background:#ffffff14;border-radius:50%}
+.sky-tint{position:absolute;inset:0;background:radial-gradient(60% 45% at 50% 50%,var(--neb),transparent 75%);mix-blend-mode:soft-light;opacity:.75;pointer-events:none}
+.sky-name,.sky-empty text{paint-order:stroke;stroke:#0b1024;stroke-width:3px;stroke-linejoin:round}
+.sky-stage.is-far .sky-nebula-art{transform:scale(.9)}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
 <link rel="stylesheet" href="/assets/ui/night.css?v=1">
@@ -3255,7 +3258,7 @@ function albumFirstPageHtml(result,list){
    별을 누르면 별첩이 펼쳐져 그 사람의 수호수와 "OO님과 나"를 읽는다. 등급 글자는 쓰지 않는다. ---- */
 var SKY_DIR={목:0,화:90,금:180,수:-90};
 var SKY_TINT={목:'#3f9a82',화:'#c8603f',토:'#b8903f',금:'#b9b4c8',수:'#4566b8'};
-var NEBULA_ART=null; /* 성운 그림이 오면 '/assets/album/nebula.webp' */
+var NEBULA_ART='/assets/album/nebula.webp';
 function skyWord(score){return score>=90?'운명처럼 닿은 인연':score>=70?'마음이 잘 맞는 인연':score>=50?'알수록 편한 인연':'서로 다른 매력의 인연';}
 function skyLayout(list){
  var groups={};list.forEach(function(e,i){var wx=e.dayGanWxB||'토';(groups[wx]=groups[wx]||[]).push(i);});
@@ -3278,7 +3281,7 @@ function skyHtml(result,list){
  var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
   '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(list.length?'친구 '+list.length+'명이 내 별자리에 있어요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
-  '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async">':'<div class="sky-nebula" aria-hidden="true"></div>')+
+  '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
    '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs><radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg>'+
    '<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button></div>'+
   '<p class="sky-legend">가까이, 밝게 빛날수록 잘 맞는 사이예요.</p>'+
