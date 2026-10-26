@@ -1348,6 +1348,60 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 .sky-tint{position:absolute;inset:0;background:radial-gradient(60% 45% at 50% 50%,var(--neb),transparent 75%);mix-blend-mode:soft-light;opacity:.75;pointer-events:none}
 .sky-name,.sky-empty text{paint-order:stroke;stroke:#0b1024;stroke-width:3px;stroke-linejoin:round}
 .sky-stage.is-far .sky-nebula-art{transform:scale(.9)}
+/* 별 카드 받기 연출 */
+.star-stage.rv{height:470px;margin-top:16px;border-radius:22px;overflow:hidden;background:#0b1024;isolation:isolate}
+.rv-sky{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;opacity:.55;animation:rv-drift 9s ease-in-out both}
+.rv-ring{position:absolute;left:50%;top:42%;width:0;height:0;animation:rv-turn 14s linear infinite}
+.rv-ring span{position:absolute;left:0;top:0;width:2.2em;margin:-1.1em 0 0 -1.1em;text-align:center;font-family:'Noto Serif KR',serif;font-size:1.5rem;color:#f6e3b0;text-shadow:0 0 14px #f1d896aa;opacity:0;transform:rotate(var(--a)) translateY(-122px) rotate(calc(var(--a)*-1)) scale(.5)}
+.p1 .rv-ring span{animation:rv-glyph .7s cubic-bezier(.2,.8,.2,1) var(--d) forwards}
+.p2 .rv-ring span{animation:rv-gather .9s cubic-bezier(.6,0,.3,1) forwards}
+.rv-core{position:absolute;left:50%;top:42%;width:16px;height:16px;margin:-8px;border-radius:50%;background:#fff8e0;box-shadow:0 0 40px 18px #f1d896aa;opacity:0;transform:scale(.2)}
+.p2 .rv-core{animation:rv-core 1.1s ease-in forwards}
+.p3 .rv-core{animation:rv-core-out .6s ease-out forwards}
+.rv-rays{position:absolute;left:50%;top:42%;width:520px;height:520px;margin:-260px;background:repeating-conic-gradient(from 0deg,#f1d89630 0 6deg,transparent 6deg 22deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 62%);mask:radial-gradient(circle,#000 0,transparent 62%);opacity:0;transition:opacity .8s}
+.p3 .rv-rays{opacity:1;animation:rv-turn 18s linear infinite}
+.rv-card{position:absolute;left:50%;top:42%;width:186px;aspect-ratio:3/4;margin:-124px 0 0 -93px;perspective:1000px;opacity:0;transform:scale(.4) translateY(30px)}
+.p3 .rv-card{animation:rv-card-in .9s cubic-bezier(.2,.9,.3,1.1) forwards}
+.rv-card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+.p3 .rv-card-inner{animation:rv-float 2.4s ease-in-out infinite}
+.p4 .rv-card-inner{animation:rv-flip 1.2s cubic-bezier(.4,.1,.2,1) forwards}
+.rv-face{position:absolute;inset:0;border-radius:14px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 18px 40px #000a,0 0 0 1.5px #e0bf72}
+.rv-face img{display:block;width:100%;height:100%;object-fit:cover}
+.rv-front{transform:rotateY(180deg)}
+.p4 .rv-face{box-shadow:0 18px 40px #000a,0 0 0 2px #f1d896,0 0 36px 4px #f1d89666}
+.rv-sparks{position:absolute;left:50%;top:42%;width:0;height:0}
+.rv-sparks i{position:absolute;width:6px;height:6px;margin:-3px;border-radius:50%;background:#fff3cf;box-shadow:0 0 10px 2px #f1d896;opacity:0}
+.p4 .rv-sparks i{animation:rv-spark 1.4s ease-out .55s forwards}
+.rv-caption{position:absolute;left:16px;right:16px;bottom:22px;text-align:center;color:#f3ead6}
+.rv-step{margin:0;font-size:.875rem;color:#e6cb8b;letter-spacing:.02em}
+.rv-title{margin:6px 0 2px;font-family:'Noto Serif KR',serif;font-size:1.5rem;font-weight:700;color:#fff6e3;opacity:0;transform:translateY(8px);transition:opacity .6s .9s,transform .6s .9s}
+.rv-tags{margin:0;font-size:.8125rem;color:#d9cfb6;opacity:0;transition:opacity .6s 1.1s}
+.p4 .rv-title{opacity:1;transform:none}.p4 .rv-tags{opacity:1}
+.rv-skip{position:absolute;top:12px;right:12px;padding:6px 12px;border:1px solid #f1d89640;border-radius:999px;background:#0b102480;color:#e8dcc0;font-size:.75rem}
+.star-stage.rv::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#fffbe8,#fffbe800 55%);opacity:0;pointer-events:none}
+.star-stage.rv.p4::after{animation:star-flash 1.1s ease-out .45s}
+@keyframes rv-glyph{to{opacity:1;transform:rotate(var(--a)) translateY(-122px) rotate(calc(var(--a)*-1)) scale(1)}}
+@keyframes rv-gather{from{opacity:1;transform:rotate(var(--a)) translateY(-122px) rotate(calc(var(--a)*-1)) scale(1)}to{opacity:0;transform:rotate(var(--a)) translateY(0) rotate(calc(var(--a)*-1)) scale(.3)}}
+@keyframes rv-turn{to{transform:rotate(360deg)}}
+@keyframes rv-drift{from{transform:scale(1.15)}to{transform:scale(1)}}
+@keyframes rv-core{0%{opacity:0;transform:scale(.2)}70%{opacity:1;transform:scale(2.6)}100%{opacity:1;transform:scale(3.4)}}
+@keyframes rv-core-out{from{opacity:1;transform:scale(3.4)}to{opacity:0;transform:scale(6)}}
+@keyframes rv-card-in{to{opacity:1;transform:none}}
+@keyframes rv-float{0%,100%{transform:translateY(0) rotateY(-10deg)}50%{transform:translateY(-6px) rotateY(10deg)}}
+@keyframes rv-flip{from{transform:rotateY(0)}to{transform:rotateY(540deg)}}
+@keyframes rv-spark{0%{opacity:1;transform:rotate(var(--r)) translateY(0) scale(1)}100%{opacity:0;transform:rotate(var(--r)) translateY(calc(var(--l)*-1)) scale(.3)}}
+/* 받은 뒤 내 별 카드: 밤하늘 위에 카드를 크게 */
+.my-star-card{position:relative;overflow:hidden;padding:22px 18px 20px;background:radial-gradient(ellipse at 50% 30%,#2f3c7a66,transparent 70%),linear-gradient(170deg,#0b1024,#17204a);border:1px solid #c9a24e55;color:#f3ead6;text-align:center}
+.my-star-card .editorial-tag{color:#e6cb8b}
+.my-star-body{display:block;margin-top:14px}
+.my-star-art{width:62%;max-width:230px;margin:0 auto 16px;border-radius:14px;background:#0d1430;box-shadow:0 16px 36px #000a,0 0 0 1.5px #e0bf72}
+.my-star-art img{aspect-ratio:3/4;object-position:center}
+.my-star-copy h2{color:#fff6e3;font-size:1.5rem}
+.my-star-tags{color:#e6cb8b;margin:4px 0 10px}
+.my-star-copy p:last-child{color:#e8e1d0;max-width:280px;margin:0 auto}
+.my-star-card .share-btn{background:#ffffff10;border-color:#f1d89650;color:#f3ead6}
+.my-star-card .hint{color:#b9b2a0}
+@media(prefers-reduced-motion:reduce){.rv-sky,.rv-ring,.rv-rays,.rv-card-inner{animation:none!important}}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
 <link rel="stylesheet" href="/assets/ui/night.css?v=2">
@@ -3154,18 +3208,30 @@ function starGiftHtml(result){
 function starRevealKey(result){return 'byeolcheop_star_'+(result.day?result.day.gan+result.day.zhi:'')+(result.year?result.year.gan+result.year.zhi:'');}
 function starRevealSeen(result){try{return localStorage.getItem(starRevealKey(result))==='1';}catch(e){return false;}}
 function starRevealDone(scope,result){var gift=$('[data-star-gift]',scope);if(!gift)return;gift.classList.add('is-done');gift.innerHTML=myStarCardHtml(result);wireStarCard(gift);try{localStorage.setItem(starRevealKey(result),'1');}catch(e){}}
+/* 별 카드 받기 연출(약 7초, 건너뛰기 가능):
+   1) 성운 위에 내 여덟 글자가 하나씩 떠오름 → 2) 가운데로 모여 빛이 됨 → 3) 빛 속에서 카드 뒷면이 나타남
+   → 4) 카드가 뒤집히며 수호수 공개, 별가루가 퍼지고 이름이 뜸 → 5) 내 별 카드 화면으로 */
 function playStarReveal(scope,result){
  var gift=$('[data-star-gift]',scope),stage=$('[data-star-stage]',gift),btn=$('[data-star-make]',gift),t=myStarType(result);if(!gift||!stage||!t)return;
  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  if(reduce){starRevealDone(scope,result);return;}
  var glyphs=[result.time,result.day,result.month,result.year].filter(Boolean).reduce(function(a,p){return a.concat([p.gan,p.zhi]);},[]);
- btn.hidden=true;stage.hidden=false;gift.classList.add('is-playing');
- stage.innerHTML='<div class="star-orbit">'+glyphs.map(function(g,i){return '<span style="--i:'+i+';--n:'+glyphs.length+'">'+esc(g)+'</span>';}).join('')+'<i class="star-core"></i></div>'+
-  '<div class="star-flip"><div class="star-flip-inner"><div class="star-face star-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="star-face star-front"><img src="/assets/guardians/'+t.asset+'.webp" alt="" decoding="async"><b>'+esc(t.title)+'</b></div></div></div><p class="star-stage-text" aria-live="polite">사주를 읽는 중…</p>';
- var img=new Image();img.src='/assets/guardians/'+t.asset+'.webp';var back=new Image();back.src='/assets/guardians/back.webp';
- setTimeout(function(){stage.classList.add('phase-card');var tx=$('.star-stage-text',stage);if(tx)tx.textContent='카드를 만드는 중…';},1500);
- setTimeout(function(){stage.classList.add('phase-flip');try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}var tx=$('.star-stage-text',stage);if(tx)tx.textContent=t.title+' 카드가 나왔어요';},2700);
- setTimeout(function(){starRevealDone(scope,result);},4300);
+ var who=result.name?esc(result.name)+'님':'나';
+ btn.hidden=true;stage.hidden=false;gift.classList.add('is-playing');stage.className='star-stage rv';
+ stage.innerHTML='<img class="rv-sky" src="/assets/album/nebula.webp" alt="" decoding="async">'+
+  '<div class="rv-ring">'+glyphs.map(function(g,i){return '<span style="--a:'+(i*(360/glyphs.length)-90)+'deg;--d:'+(i*0.2).toFixed(2)+'s">'+esc(g)+'</span>';}).join('')+'</div>'+
+  '<i class="rv-core"></i><i class="rv-rays"></i>'+
+  '<div class="rv-card"><div class="rv-card-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img src="/assets/guardians/'+t.asset+'.webp" alt="" decoding="async"></div></div></div>'+
+  '<div class="rv-sparks" aria-hidden="true">'+Array.apply(null,{length:14}).map(function(_,i){return '<i style="--r:'+(i*360/14)+'deg;--l:'+(90+(i%3)*28)+'px"></i>';}).join('')+'</div>'+
+  '<div class="rv-caption"><p class="rv-step" aria-live="polite">'+who+'의 여덟 글자</p><h3 class="rv-title">'+esc(t.title)+'</h3><p class="rv-tags">일간 '+esc(t.stem+'('+result.day.gan+')')+' · '+esc(t.wx)+' · '+(t.polarity==='yang'?'양':'음')+'</p></div>'+
+  '<button type="button" class="rv-skip">건너뛰기</button>';
+ var timers=[],done=false;
+ function step(cls,text,fn){return function(){stage.classList.add(cls);var tx=$('.rv-step',stage);if(tx&&text)tx.textContent=text;if(fn)fn();};}
+ function finish(){if(done)return;done=true;timers.forEach(clearTimeout);starRevealDone(scope,result);}
+ [[60,step('p1')],[2100,step('p2','나를 닮은 수호수를 찾는 중…')],[3100,step('p3','카드를 만드는 중…')],
+  [4700,step('p4','내 별 카드',function(){try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}})],[7600,finish]]
+  .forEach(function(x){timers.push(setTimeout(x[1],x[0]));});
+ $('.rv-skip',stage).addEventListener('click',finish);
 }
 function wireStarGift(scope,result){
  var gift=$('[data-star-gift]',scope);if(!gift)return;
