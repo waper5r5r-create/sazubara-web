@@ -6,26 +6,27 @@
  --bg:#f6f0e4;--surface:#fffaf0;--surface-2:#efe7d6;--surface-3:#e6dcc6;--fg:#1d2240;--fg-muted:#5d6075;--fg-faint:#77798a;
  --c-lilac-line:#e3dac6;--c-lilac-pale:#efe7d6;--c-lilac-mist:#f6f0e4;--c-plum:#2a3560;--c-plum-deep:#1b2140;--c-lavender:#4a5585;--c-paper-blush:#fffaf0
 }
-body{background:radial-gradient(ellipse at 15% 0,#e9dcc0 0,transparent 45%),radial-gradient(ellipse at 100% 45%,#e4e2ee 0,transparent 40%),#eee6d6;background-attachment:fixed;color:var(--fg)}
+body{background:radial-gradient(ellipse at 10% 0,#f6dcc4 0,transparent 45%),radial-gradient(ellipse at 100% 40%,#dfe6f3 0,transparent 42%),#f1e9da;background-attachment:fixed;color:var(--fg)}
 .app{background:var(--paper);box-shadow:0 0 80px #0d143014}
 
-/* 머리·아래 탭: 밤하늘 */
-.app-header{background:linear-gradient(110deg,#0b1024,#141c40 60%,#1f2a5c);border-bottom:1px solid #c9a24e55;box-shadow:0 5px 22px #0d143026}
-.app-header .mark{background:linear-gradient(110deg,#fff1c8,#f1d896 55%,#d9b86a);background-clip:text;-webkit-background-clip:text}
-.app-header .sub{color:#d9cfb6}
-.app-header .header-actions .header-icon-btn,.app-header .header-actions .sound-toggle,.app-header .header-icon-btn,.app-header .sound-toggle{color:#efe3c4!important;border-color:#f1d89630!important;background:#ffffff0a!important}
-.tabs-bar{background:linear-gradient(110deg,#0b1024f7,#17204af7)!important;border-top:1px solid #c9a24e55;box-shadow:0 -8px 30px #0d143026}
-.tabs-bar .tab-btn{color:#b9b6c8}.tabs-bar .tab-btn.active{color:var(--gold-light);background:radial-gradient(ellipse at center,#c9a24e26,transparent 75%);text-shadow:none}
-.tab-btn.active svg{filter:none}.tabs-bar .tab-btn.active .ico{background:#f1d8961a;box-shadow:0 0 0 7px #f1d8961a}
+/* 머리·아래 탭: 밝은 종이 + 남색 글자. 남색은 그림·별자리·카드에만 크게 쓴다. */
+.app-header{background:#fbf6eaf2;backdrop-filter:blur(14px);border-bottom:1px solid #d9c79b66;box-shadow:0 4px 18px #0d14300d}
+.app-header .mark{background:linear-gradient(110deg,#1b2140,#34428a);background-clip:text;-webkit-background-clip:text}
+.app-header .sub{color:#7a735f}
+.app-header .header-actions .header-icon-btn,.app-header .header-actions .sound-toggle,.app-header .header-icon-btn,.app-header .sound-toggle{color:#1f2a5c!important;border-color:#1b214022!important;background:#ffffff99!important}
+.app-header .header-actions .sound-toggle.is-on{color:#84621f!important;border-color:#c9a24e66!important;background:#f1d89633!important}
+.tabs-bar{background:#fbf6eaf5!important;border-top:1px solid #d9c79b66;box-shadow:0 -6px 24px #0d14300f}
+.tabs-bar .tab-btn{color:#7d7a8a}.tabs-bar .tab-btn.active{color:#1b2140;background:none;text-shadow:none;font-weight:700}
+.tab-btn.active svg{filter:none}.tabs-bar .tab-btn.active .ico{background:#f1d89666;box-shadow:0 0 0 7px #f1d89640}
 
-/* 버튼·선택: 남색 바탕 + 미색 글자 + 금색 테 */
-.btn-primary,.unlock-btn{background:linear-gradient(110deg,#141c40,#26336b)!important;color:#f8ecca!important;border:1px solid #c9a24e70;box-shadow:0 7px 20px #0d143030}
-.btn-primary:not(:disabled):hover,.unlock-btn:hover{box-shadow:0 10px 25px #0d143040}
+/* 버튼: 따뜻한 금색 + 남색 글자, 선택: 부드러운 남색 */
+.btn-primary,.unlock-btn{background:linear-gradient(110deg,#f0d38c,#d9a957)!important;color:#1b2140!important;border:1px solid #b98a3a55;box-shadow:0 7px 18px #b98a3a33;font-weight:700}
+.btn-primary:not(:disabled):hover,.unlock-btn:hover{box-shadow:0 10px 24px #b98a3a44}
 .btn-primary:disabled{background:#e6dcc6!important;color:#8a8573!important}
-.seg button.active,.chip-btn.active,.report-cat-chip.active{background:var(--night-2);color:#f8ecca;border-color:transparent;box-shadow:0 3px 10px #0d143026}
+.seg button.active,.chip-btn.active,.report-cat-chip.active{background:#2f3c7a;color:#fff6e0;border-color:transparent;box-shadow:0 3px 10px #0d143020}
 .share-btn{border-color:#1b214030;color:var(--fg)}
-.field input:focus,.field select:focus{outline:2px solid #26336b;box-shadow:0 0 0 5px #26336b14}
-.saju-step-track .active{background:#e9dfc8;color:#1f2a5c}
+.field input:focus,.field select:focus{outline:2px solid #34428a;box-shadow:0 0 0 5px #34428a14}
+.saju-step-track .active{background:#f1d89666;color:#1f2a5c}
 
 /* 표면 */
 .card{border-color:#1b21401a;box-shadow:0 8px 26px #0d14300d;background:var(--cream)}

@@ -1350,7 +1350,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 .sky-stage.is-far .sky-nebula-art{transform:scale(.9)}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
-<link rel="stylesheet" href="/assets/ui/night.css?v=1">
+<link rel="stylesheet" href="/assets/ui/night.css?v=2">
 </head>
 <body>
 
@@ -2616,15 +2616,18 @@ function loadKakaoSdk(){
   });
   return _kakaoSdkPromise;
 }
-var KAKAO_SHARE_IMAGE = 'https://sazubara-web.vercel.app/og-image-v4.jpg';
-function kakaoShare(text, url, buttonTitle){
+var KAKAO_SHARE_IMAGE = 'https://sazubara-web.vercel.app/kakao-share-v1.jpg';
+/* 카카오 말풍선은 가로가 좁아서, 글자가 잘리지 않는 정사각형 그림을 따로 쓴다. */
+function kakaoShare(text, url, buttonTitle, title){
   return loadKakaoSdk().then(function(Kakao){
     Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: '별첩사주',
+        title: title || '별첩사주',
         description: text,
         imageUrl: KAKAO_SHARE_IMAGE,
+        imageWidth: 800,
+        imageHeight: 800,
         link: { mobileWebUrl: url, webUrl: url }
       },
       buttons: [{
@@ -2678,8 +2681,8 @@ function maybeAwardShareBonus(){
 }
 function doShare(){
   var url = shareUrl();
-  var text = (STATE.mySaju&&STATE.mySaju.name? STATE.mySaju.name+'님이 ':'')+'별첩사주에서 사주풀이·오늘의 운세·궁합을 확인해보세요! 생년월일을 입력하고 서로의 궁합도 확인해보세요 ✨';
-  kakaoShare(text, url).then(maybeAwardShareBonus).catch(function(){
+  var text = '사주풀이, 오늘의 운세, 궁합을 무료로 볼 수 있어요.';
+  kakaoShare(text, url, '내 사주 보러 가기', (STATE.mySaju&&STATE.mySaju.name? STATE.mySaju.name+'님이 별첩사주를 추천했어요':'별첩사주')).then(maybeAwardShareBonus).catch(function(){
   if (navigator.share){
     navigator.share({ title:'별첩사주', text:text, url:url }).then(maybeAwardShareBonus).catch(function(){});
   } else {
@@ -2697,8 +2700,8 @@ function doShare(){
    function doShareCompatInvite(resA){
         var url = shareUrl();
         var myName = (resA && resA.name) || (STATE.mySaju&&STATE.mySaju.name) || '';
-        var text = (myName? myName+'님이 ':'')+'당신과의 궁합이 궁금해서 보내요 💕 링크 열고 본인 사주만 입력하면 바로 궁합을 확인할 수 있어요!';
-        kakaoShare(text, url, '궁합 확인하러 가기').then(function(){
+        var text = '내 생년월일만 넣으면 둘의 궁합이 바로 나와요.';
+        kakaoShare(text, url, '궁합 보러 가기', (myName? myName+'님이 ':'')+'궁합을 보자고 해요').then(function(){
                maybeAwardShareBonus();
                showToast('링크를 보냈어요. 상대가 입력하면 내 별자리에 별이 생겨요.');
         }).catch(function(){
