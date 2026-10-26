@@ -1279,6 +1279,62 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 @keyframes albumStamp{0%{opacity:0;transform:translateY(-26px) scale(1.55) rotate(-7deg);filter:drop-shadow(0 22px 18px #0008)}60%{opacity:1;transform:translateY(0) scale(.94) rotate(1deg);filter:drop-shadow(0 2px 3px #0006)}100%{opacity:1;transform:none;filter:none}}
 @keyframes albumStampRing{0%{opacity:.9;transform:scale(.9)}100%{opacity:0;transform:scale(1.18)}}
 @media(prefers-reduced-motion:reduce){.album-slot.is-new,.album-slot.is-new::after{animation:none}}
+/* 나의 별첩: 성운 + 별자리 + 펼치는 책 */
+.sky-head{margin-bottom:14px}
+.sky-sub{margin:6px 0 0;font-size:.875rem;line-height:1.6;color:var(--fg-muted);word-break:keep-all}
+.sky-stage{position:relative;aspect-ratio:3/4;border-radius:20px;overflow:hidden;background:#070b1c;isolation:isolate}
+.sky-nebula{position:absolute;inset:-20%;background:radial-gradient(38% 30% at 50% 50%,#f6e7c2cc,transparent 70%),radial-gradient(55% 42% at 46% 52%,var(--neb),transparent 72%),radial-gradient(70% 50% at 58% 44%,#3a2f6a99,transparent 75%),radial-gradient(90% 70% at 50% 50%,#121a3a,#070b1c 80%);filter:blur(8px);opacity:.9;transition:transform 1.1s cubic-bezier(.2,.8,.2,1),opacity 1.1s}
+.sky-nebula-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+.sky-map{position:absolute;inset:0;width:100%;height:100%;transition:transform 1.1s cubic-bezier(.2,.8,.2,1),opacity .8s}
+.sky-dust{fill:#fff6dc;opacity:.55}
+.sky-line{stroke:#e9d8a8;stroke-width:.7;stroke-dasharray:3 4;opacity:.35}
+.sky-line.is-near{stroke-dasharray:none;stroke-width:1;opacity:.7}
+.sky-star{cursor:pointer;outline:none}
+.sky-star .sky-halo{fill:#ffe9b0;opacity:calc(var(--glow)*.35)}
+.sky-star .sky-core{fill:#fff4d6;opacity:calc(.45 + var(--glow)*.6)}
+.sky-star:focus-visible .sky-halo,.sky-star:hover .sky-halo{opacity:.55}
+.sky-name{fill:#f3e8cf;font-size:11px;text-anchor:middle;font-family:var(--font-body);letter-spacing:0;transition:opacity .6s .3s}
+.sky-me .sky-halo{fill:#f1d896;opacity:.18}
+.sky-me-ring{fill:none;stroke:#f1d896;stroke-width:1.5}
+.sky-me .sky-name{fill:#f1d896;font-weight:700}
+.sky-empty circle{fill:none;stroke:#e9d8a8;stroke-dasharray:2 3;opacity:.5}
+.sky-empty text{fill:#cbbf9f;font-size:9px;text-anchor:middle;opacity:.7;transition:opacity .6s .3s}
+.sky-enter{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:56px 16px 22px;border:0;background:linear-gradient(transparent,#070b1ccc 60%);color:#f6ecd6;cursor:pointer;transition:opacity .6s}
+.sky-enter span{font-size:.8125rem;color:#d9c79b}
+.sky-enter b{font-family:'Noto Serif KR',serif;font-size:1.0625rem;font-weight:600}
+.sky-stage.is-far .sky-map{transform:scale(.62)}
+.sky-stage.is-far .sky-nebula,.sky-stage.is-far .sky-nebula-art{transform:scale(.85)}
+.sky-stage.is-far .sky-name,.sky-stage.is-far .sky-empty text{opacity:0;transition-delay:0s}
+.sky-stage:not(.is-far) .sky-enter{opacity:0;pointer-events:none}
+.sky-stage:not(.is-far) .sky-nebula{opacity:.7}
+.sky-legend{margin:10px 2px 14px;font-size:.75rem;line-height:1.6;color:var(--fg-muted);text-align:center;word-break:keep-all}
+.sky-list{margin-top:14px}
+.sky-list summary{padding:10px 2px;font-size:.875rem;font-weight:700;cursor:pointer}
+.sky-list ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.sky-list li button{display:flex;justify-content:space-between;gap:10px;width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--fg);text-align:left;font-size:.875rem}
+.sky-list li span{color:var(--fg-muted);font-size:.8125rem}
+.sky-book-backdrop{align-items:center;justify-content:center;padding:16px}
+.sky-book{position:relative;width:min(100%,420px);max-height:88vh;overflow:auto;padding:22px 18px 16px;border-radius:18px;background:#0d1430;box-shadow:0 24px 60px #0009;perspective:1200px}
+.sky-book-close{position:absolute;top:10px;right:10px;z-index:2;color:#e8dcc0}
+.sky-book-spread{display:flex;flex-direction:column;gap:2px;transform-origin:left center}
+.sky-book-spread.turn-next{animation:skyTurnNext .52s ease-in-out}
+.sky-book-spread.turn-prev{animation:skyTurnPrev .52s ease-in-out}
+@keyframes skyTurnNext{0%{transform:none}50%{transform:rotateY(-80deg);opacity:.4}51%{transform:rotateY(80deg);opacity:.4}100%{transform:none}}
+@keyframes skyTurnPrev{0%{transform:none}50%{transform:rotateY(80deg);opacity:.4}51%{transform:rotateY(-80deg);opacity:.4}100%{transform:none}}
+.sky-page{padding:20px 18px;background:#f7f0e1 url(/assets/album/paper.webp) center/260px;background-blend-mode:soft-light;color:#2d2618}
+.sky-page-left{border-radius:12px 12px 2px 2px;text-align:center}
+.sky-page-right{border-radius:2px 2px 12px 12px;border-top:1px dashed #b9a77c66}
+.sky-page img{display:block;width:62%;margin:0 auto 14px;aspect-ratio:4/5;object-fit:cover;object-position:top;border-radius:10px;box-shadow:0 8px 20px #1a14082e}
+.sky-page-kicker{margin:0 0 4px;font-size:.75rem;letter-spacing:.04em;color:#8a6d35}
+.sky-page h3{margin:0 0 4px;font-family:'Noto Serif KR',serif;font-size:1.25rem;line-height:1.4;color:#221b10}
+.sky-page h4{margin:16px 0 4px;font-size:.8125rem;color:#7a5f2c}
+.sky-page p{margin:0;font-size:.9375rem;line-height:1.75;word-break:keep-all}
+.sky-page-tag{font-size:.75rem!important;color:#7d725d;margin-bottom:12px!important}
+.sky-page-quote{font-family:'Noto Serif KR',serif;color:#3d3220}
+.sky-page .share-btn{margin-top:16px;width:100%}
+.sky-book-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:12px;color:#e8dcc0;font-size:.8125rem}
+.sky-book-nav button{width:40px;height:40px;border:1px solid #e8dcc055;border-radius:50%;background:none;color:#f1d896;font-size:1.25rem}
+@media(prefers-reduced-motion:reduce){.sky-nebula,.sky-map,.sky-nebula-art{transition:none}.sky-book-spread.turn-next,.sky-book-spread.turn-prev{animation:none}}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=4">
 </head>
@@ -2630,12 +2686,12 @@ function doShare(){
         var text = (myName? myName+'님이 ':'')+'당신과의 궁합이 궁금해서 보내요 💕 링크 열고 본인 사주만 입력하면 바로 궁합을 확인할 수 있어요!';
         kakaoShare(text, url, '궁합 확인하러 가기').then(function(){
                maybeAwardShareBonus();
-               showToast('링크를 보냈어요! 상대방이 입력하면 나의 카드첩에서 서로 궁합을 확인할 수 있어요.');
+               showToast('링크를 보냈어요! 상대방이 입력하면 내 별첩 하늘에 별로 떠요.');
         }).catch(function(){
                if (navigator.share){
                         navigator.share({ title:'별첩사주 궁합', text:text, url:url }).then(function(){
                                    maybeAwardShareBonus();
-                                   showToast('링크를 보냈어요! 상대방이 입력하면 나의 카드첩에서 서로 궁합을 확인할 수 있어요.');
+                                   showToast('링크를 보냈어요! 상대방이 입력하면 내 별첩 하늘에 별로 떠요.');
                         }).catch(function(){});
                } else {
                         copyToClipboard(text+'\n'+url);
@@ -2771,7 +2827,7 @@ function renderInviteSheet(){
 
         '<div><p class="section-title" style="font-size:.95rem;">함께 궁합 알아보기</p>'+
           '<div class="invite-box">'+
-            '<p class="section-desc">링크로 들어온 친구가 자기 사주를 직접 등록하면, 서로의 카드첩에 카드가 생겨요.</p>'+
+            '<p class="section-desc">링크로 들어온 친구가 자기 사주를 직접 등록하면, 서로의 별첩 하늘에 별이 떠요.</p>'+
             '<div class="invite-link-row"><input type="text" readonly id="invite-link-input" value="'+shareUrl()+'"></div>'+
             '<button type="button" class="share-btn" id="btn-do-share">'+uiIcon('share')+' 카카오톡 등으로 공유하기</button>'+
           '</div>'+
@@ -3058,8 +3114,8 @@ function myStarCardHtml(result){
  return '<section class="my-star-card"><p class="editorial-tag">'+who+'의 별 카드</p>'+
   '<div class="my-star-body"><figure class="my-star-art"><img src="/assets/guardians/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" decoding="async"></figure>'+
   '<div class="my-star-copy"><h2>'+esc(t.title)+'</h2><p class="my-star-tags">일간 '+esc(t.stem+'('+result.day.gan+')')+' · '+esc(t.wx)+' · '+(t.polarity==='yang'?'양':'음')+'</p><p>'+esc(STAR_SELF[t.id]||'')+'</p></div></div>'+
-  '<div class="my-star-actions"><button type="button" class="btn-primary" data-star-share>내 별 카드 저장·공유</button><button type="button" class="share-btn" data-star-album>친구 카드 모으러 가기</button></div>'+
-  '<p class="hint">친구가 링크로 사주를 넣으면, 둘의 궁합이 담긴 카드가 카드첩에 모여요.</p></section>';
+  '<div class="my-star-actions"><button type="button" class="btn-primary" data-star-share>내 별 카드 저장·공유</button><button type="button" class="share-btn" data-star-album>내 별첩 하늘 보기</button></div>'+
+  '<p class="hint">친구가 링크로 사주를 넣으면, 내 별첩 하늘에 그 사람의 별이 떠요.</p></section>';
 }
 /* 첫 화면 큰 그림: 별 카드 세 장을 부채꼴로 */
 /* 첫 화면: 정통 사주팔자와 계산 기준을 먼저, 별 카드는 한 줄로 */
@@ -3179,6 +3235,79 @@ function albumFirstPageHtml(result,list){
  return '<div class="album-first"><div class="album-cover"><img src="/assets/album/cover.webp" alt="" loading="lazy" decoding="async"><span>별첩</span></div>'+(t?'<div class="album-mine"><img src="/assets/guardians/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" loading="lazy" decoding="async"><div><small>첫 장 · 내 카드</small><b>'+esc(t.title)+'</b><span>'+(list.length?'지금까지 '+list.length+'명의 인연이 별첩에 모였어요.':'친구를 초대하면 둘의 궁합 카드가 오행별 장에 모여요.')+'</span></div></div>':'')+
   '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구에게 궁합 링크 보내기</button>'+
   albumChaptersHtml(list,result&&result.dayGanWx)+'</div>';
+}
+/* ---- 나의 별첩: 내 사주로 물든 성운 위에, 초대해 등록한 사람들이 별로 뜬다.
+   방향 = 상대 일간 오행의 방위(목 동·화 남·금 서·수 북·토 사이), 거리 = 궁합(가까울수록 깊은 인연), 밝기 = 궁합.
+   별을 누르면 별첩이 펼쳐져 그 사람의 수호수와 "OO님과 나"를 읽는다. 등급 글자는 쓰지 않는다. ---- */
+var SKY_DIR={목:0,화:90,금:180,수:-90};
+var SKY_TINT={목:'#3f9a82',화:'#c8603f',토:'#b8903f',금:'#b9b4c8',수:'#4566b8'};
+var NEBULA_ART=null; /* 성운 그림이 오면 '/assets/album/nebula.webp' */
+function skyWord(score){return score>=90?'운명처럼 닿은 인연':score>=70?'마음이 잘 맞는 인연':score>=50?'알아갈수록 편한 인연':'서로 다른 결의 인연';}
+function skyLayout(list){
+ var groups={};list.forEach(function(e,i){var wx=e.dayGanWxB||'토';(groups[wx]=groups[wx]||[]).push(i);});
+ var out=[];
+ Object.keys(groups).forEach(function(wx){var ids=groups[wx];ids.forEach(function(idx,k){
+  var e=list[idx],score=Math.max(0,Math.min(100,Number(e.score)||0));
+  var base=wx==='토'?(k%2?135:-45):SKY_DIR[wx],spread=wx==='토'?Math.floor(k/2):k-(ids.length-1)/2;
+  var ang=(base+spread*22)*Math.PI/180,r=72+(100-score)*1.25;
+  out[idx]={x:Math.round(180+Math.cos(ang)*r),y:Math.round(240+Math.sin(ang)*r),size:3+score/22,glow:(0.25+score/140).toFixed(2),near:score>=70};
+ });});
+ return out;
+}
+function skyDust(){var x=7,out=[];for(var i=0;i<46;i++){x=(x*9301+49297)%233280;var a=x/233280;x=(x*9301+49297)%233280;var b=x/233280;x=(x*9301+49297)%233280;out.push('<circle cx="'+Math.round(a*360)+'" cy="'+Math.round(b*480)+'" r="'+(x/233280<.15?1.3:.7)+'" class="sky-dust"/>');}return out.join('');}
+function skyHtml(result,list){
+ list=list||[];var t=myStarType(result),pos=skyLayout(list),dom=result&&result.wxCount?dominantWx(result.wxCount).wx:'수';
+ var lines=list.map(function(e,i){return '<line x1="180" y1="240" x2="'+pos[i].x+'" y2="'+pos[i].y+'" class="sky-line'+(pos[i].near?' is-near':'')+'"/>';}).join('');
+ var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e);return '<g class="sky-star" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e.score))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+'"><circle class="sky-halo" r="'+(p.size*3.2).toFixed(1)+'"/><circle class="sky-core" r="'+p.size.toFixed(1)+'"/><text class="sky-name" y="'+(p.size+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
+ var empty=list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">아직 이어지지 않은 별</text></g>';}).join(''):'';
+ var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
+ return '<section class="sky" aria-label="나의 별첩">'+
+  '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">내 사람들로 이루어진 하늘</h2><p class="sky-sub">'+(list.length?list.length+'명의 별이 내 하늘에 떠 있어요.':'친구가 사주를 등록하면 내 하늘에 별이 하나씩 떠요.')+'</p></div>'+
+  '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async">':'<div class="sky-nebula" aria-hidden="true"></div>')+
+   '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false">'+skyDust()+lines+empty+stars+me+'</svg>'+
+   '<button type="button" class="sky-enter" data-sky-enter><span>'+esc(dom)+' 기운으로 물든 나의 성운</span><b>눌러서 들여다보기</b></button></div>'+
+  '<p class="sky-legend">가까울수록 깊은 인연, 밝을수록 잘 맞는 사이예요. 별이 놓인 방향은 그 사람의 오행 방위예요.</p>'+
+  '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구 별 불러오기 · 궁합 링크 보내기</button>'+
+  (list.length?'<details class="sky-list"><summary>별 목록 '+list.length+'</summary><ul>'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((type?type.title+' · ':'')+skyWord(e.score))+'</span></button></li>';}).join('')+'</ul></details>':'')+
+ '</section>';
+}
+function wireSky(scope,list){
+ var stage=$('[data-sky]',scope);if(!stage)return;
+ function near(){if(stage.classList.contains('is-far')){stage.classList.remove('is-far');try{soundReveal();}catch(e){}}}
+ var enter=$('[data-sky-enter]',stage);if(enter)enter.addEventListener('click',near);
+ $all('[data-sky-star]',scope).forEach(function(el){
+  function open(e){if(stage.classList.contains('is-far')&&stage.contains(el)){near();return;}openSkyBook(list,Number(el.dataset.skyStar));}
+  el.addEventListener('click',open);el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+ });
+}
+function skyPageHtml(e){
+ var type=cardTypeOf(e),name=esc(e.nameB||'상대방');
+ return '<article class="sky-page sky-page-left">'+(type?'<img src="/assets/guardians/'+type.asset+'.webp" alt="'+esc(type.title)+'" decoding="async">':'')+
+  '<p class="sky-page-kicker">'+name+'님의 별</p><h3>'+esc(type?type.title:'아직 드러나지 않은 별')+'</h3><p class="sky-page-tag">'+esc(type?'일간 '+type.stem+' · '+type.wx+' · '+(type.polarity==='yang'?'양':'음'):'')+'</p>'+
+  '<p class="sky-page-quote">'+esc(type?CARD_RELATION_QUOTES[type.id]||'':'')+'</p></article>'+
+  '<article class="sky-page sky-page-right"><p class="sky-page-kicker">'+name+'님과 나</p><h3>'+skyWord(e.score)+'</h3>'+
+  (ZHI_REL_TEXT[e.zhiRel]?'<h4>관계의 결</h4><p>'+esc(ZHI_REL_TEXT[e.zhiRel])+'</p>':'')+
+  (GAN_REL_TEXT[e.ganRel]?'<h4>마음이 오가는 방향</h4><p>'+esc(GAN_REL_TEXT[e.ganRel])+'</p>':'')+
+  '<button type="button" class="share-btn" data-sky-detail>궁합 자세히 보기</button></article>';
+}
+function openSkyBook(list,i){
+ var root=$('#myroom-sheet-root');if(!root||!list[i])return;
+ root.innerHTML='<div class="sheet-backdrop sky-book-backdrop" data-sky-backdrop><div class="sky-book" role="dialog" aria-label="별첩"><button type="button" class="sheet-close sky-book-close" data-sky-close aria-label="별첩 닫기">✕</button><div class="sky-book-spread" data-sky-spread></div>'+
+  (list.length>1?'<div class="sky-book-nav"><button type="button" data-sky-prev aria-label="이전 별">‹</button><span data-sky-pos></span><button type="button" data-sky-next aria-label="다음 별">›</button></div>':'')+'</div></div>';
+ var spread=$('[data-sky-spread]',root),cur=i;
+ function paint(dir){
+  var draw=function(){spread.innerHTML=skyPageHtml(list[cur]);var pos=$('[data-sky-pos]',root);if(pos)pos.textContent=(cur+1)+' / '+list.length;var d=$('[data-sky-detail]',spread);if(d)d.addEventListener('click',function(){openMyroomDetail(list[cur]);});};
+  if(!dir){draw();return;}
+  spread.classList.remove('turn-next','turn-prev');void spread.offsetWidth;spread.classList.add(dir>0?'turn-next':'turn-prev');try{soundTap();}catch(e){}
+  setTimeout(draw,260);
+ }
+ paint(0);
+ var prev=$('[data-sky-prev]',root),next=$('[data-sky-next]',root);
+ if(prev)prev.addEventListener('click',function(){cur=(cur-1+list.length)%list.length;paint(-1);});
+ if(next)next.addEventListener('click',function(){cur=(cur+1)%list.length;paint(1);});
+ $('[data-sky-close]',root).addEventListener('click',closeMyroomDex);
+ $('[data-sky-backdrop]',root).addEventListener('click',function(e){if(e.target===e.currentTarget)closeMyroomDex();});
+ $('[data-sky-close]',root).focus();
 }
 function wireAlbumInvite(scope){$all('[data-album-invite]',scope).forEach(function(b){b.addEventListener('click',function(){if(STATE.mySaju)doShareCompatInvite(STATE.mySaju);else{switchTab('saju');showToast('내 사주를 먼저 입력해주세요.');}});});}
 function renderSajuResult(result){
@@ -5602,14 +5731,13 @@ var INVITE_MYROOM_CACHE = null; /* 초대해서 실제 등록한 사람 목록(�
 function renderMyRoomLocal(root){
   if (!STATE.mySaju){
     root.innerHTML =
-      '<div class="myroom-head"><div><p class="eyebrow">궁합 카드 모음</p><h2 class="album-heading">인연이 깃든 카드첩</h2></div>'+myroomDexBtnHtml()+'</div>'+
+      '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">내 사람들로 이루어진 하늘</h2></div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>먼저 내 사주를 입력하면, 초대한 상대가 등록했을 때 이곳에 카드가 모여요.</span></div>'+cardAlbumEmptyHtml()+cardSymbolGuideHtml();
-    wireMyroomDexBtn();
+      '<span>먼저 내 사주를 입력하면 내 사주로 물든 성운이 만들어지고, 초대한 사람들이 그 하늘에 별로 떠요.</span></div>';
     return;
   }
   if (INVITE_MYROOM_CACHE === null){
-    root.innerHTML = '<p class="eyebrow">나의 카드첩</p><div class="myroom-empty"><span style="font-size:1.8rem;">⏳</span><span>불러오는 중...</span></div>';
+    root.innerHTML = '<p class="eyebrow">나의 별첩</p><div class="myroom-empty"><span style="font-size:1.8rem;">⏳</span><span>불러오는 중...</span></div>';
     fetchInviteMyRoom();
     return;
   }
@@ -5618,25 +5746,12 @@ function renderMyRoomLocal(root){
   var list = hiddenIds.length ? INVITE_MYROOM_CACHE.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : INVITE_MYROOM_CACHE;
   if (!list.length){
     root.innerHTML =
-      '<div class="myroom-head"><div><p class="eyebrow">궁합 카드 모음</p><h2 class="album-heading">인연이 깃든 카드첩</h2></div>'+myroomDexBtnHtml()+'</div>'+
-      albumFirstPageHtml(STATE.mySaju,[])+cardSymbolGuideHtml();
-    wireMyroomDexBtn();wireAlbumInvite(root);wireAlbumChapters(root,[]);
+      skyHtml(STATE.mySaju,[]);
+    wireAlbumInvite(root);wireSky(root,[]);
     return;
   }
-  var rankMap = myroomRankMap(list);
-  var displayList = myroomSortedForDisplay(list, STATE.myroomSort);
-  root.innerHTML =
-    '<div class="myroom-head"><div><p class="eyebrow">궁합 카드 모음</p><h2 class="album-heading">인연이 깃든 카드첩</h2></div>'+
-      '<div class="myroom-head-right">'+myroomDexBtnHtml()+myroomSortSegHtml()+'<span class="myroom-count">'+list.length+'명 모음</span></div>'+
-    '</div>'+
-    albumFirstPageHtml(STATE.mySaju,list)+
-    '<details class="album-people"><summary>모은 사람 '+list.length+'명 모두 보기</summary>'+
-    cardAlbumIntro(list)+'<div class="myroom-grid">'+displayList.map(function(e){ return myroomCardHtml(e, rankMap[(e.ownerId||'local')+'|'+e.id]); }).join('')+'</div>'+
-    '<p class="hint">내가 초대해서 실제로 사주를 등록한 사람들이 모이는 갤러리예요.</p></details>';
-  wireAlbumInvite(root);wireAlbumChapters(root,list);
-  wireMyroomSortSeg();
-  wireMyroomCardClicks($('.myroom-grid', root), displayList);
-  wireMyroomDexBtn();
+  root.innerHTML = skyHtml(STATE.mySaju,list);
+  wireAlbumInvite(root);wireSky(root,list);
 }
 /* 마이룸은 두 방향을 모두 모아서 보여준다:
    1) 내가 초대해서 실제로 등록한 사람 (/api/invite?action=list) — row.invitee_saju를 그대로 받아온다.
