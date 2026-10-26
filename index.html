@@ -10,13 +10,13 @@
 <meta property="og:site_name" content="별첩사주">
 <meta property="og:title" content="별첩사주 — 사주풀이 · 오늘의 운세 · 궁합보기">
 <meta property="og:description" content="나의 성향부터 오늘의 흐름, 서로의 궁합까지. 별첩사주에서 만나보세요.">
-<meta property="og:image" content="https://sazubara-web.vercel.app/og-image-v3.jpg">
+<meta property="og:image" content="https://sazubara-web.vercel.app/og-image-v4.jpg">
 <meta property="og:image:alt" content="라벤더빛 카드와 별첩사주 로고">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="별첩사주 — 사주풀이 · 오늘의 운세 · 궁합보기">
-<meta name="twitter:image" content="https://sazubara-web.vercel.app/og-image-v3.jpg">
+<meta name="twitter:image" content="https://sazubara-web.vercel.app/og-image-v4.jpg">
 <title>별첩사주 — 무료 사주풀이 · 오늘의 운세 · 궁합</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1372,7 +1372,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 
       <form class="card" id="saju-form">
         <div>
-          <img class="brand-hero" src="og-image.jpg?v=2" alt="달빛 아래 두 인물과 별첩사주 브랜드" width="1200" height="630" fetchpriority="high">
+          <img class="brand-hero" src="og-image-v4.jpg" alt="달빛 아래 두 인물과 별첩사주 브랜드" width="1200" height="630" fetchpriority="high">
           <p class="eyebrow">내 사주 속, 아직 몰랐던 이야기</p>
           <h1 class="section-title">나는 어떤 사람일까?</h1>
           <p class="section-desc">생년월일만 알려주면 돼요. 타고난 성격부터 숨겨진 기운, 오늘의 흐름까지 무료로 풀어드려요.</p>
@@ -2613,7 +2613,7 @@ function loadKakaoSdk(){
   });
   return _kakaoSdkPromise;
 }
-var KAKAO_SHARE_IMAGE = 'https://sazubara-web.vercel.app/og-image-v3.jpg';
+var KAKAO_SHARE_IMAGE = 'https://sazubara-web.vercel.app/og-image-v4.jpg';
 function kakaoShare(text, url, buttonTitle){
   return loadKakaoSdk().then(function(Kakao){
     Kakao.Share.sendDefault({
@@ -3199,15 +3199,18 @@ function buildStarShareCard(result){
  var t=myStarType(result),W=1080,H=1350,canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;var ctx=canvas.getContext('2d');
  var fontsReady=(document.fonts&&document.fonts.load)?Promise.all([document.fonts.load('700 64px "Noto Serif KR"'),document.fonts.load('500 34px "Noto Sans KR"')]).catch(function(){}):Promise.resolve();
  return fontsReady.then(function(){return loadImageAsync('/assets/guardians/'+t.asset+'.webp');}).then(function(img){
-  var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#fbf6ee');g.addColorStop(1,'#efe4f3');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  ctx.textAlign='center';ctx.fillStyle='#8b6a9e';ctx.font='500 32px "Noto Sans KR", sans-serif';ctx.fillText((result.name?result.name+'님':'나')+'의 별 카드',W/2,120);
+  var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0b1024');g.addColorStop(.6,'#141c40');g.addColorStop(1,'#1f2a5c');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  var seed=11;ctx.fillStyle='#fff3d6';for(var i=0;i<70;i++){seed=(seed*9301+49297)%233280;var sx=seed/233280*W;seed=(seed*9301+49297)%233280;var sy=seed/233280*H;seed=(seed*9301+49297)%233280;ctx.globalAlpha=.25+seed/233280*.5;ctx.beginPath();ctx.arc(sx,sy,seed/233280<.15?2.2:1.2,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;
+  ctx.strokeStyle='#c9a24e66';ctx.lineWidth=2;ctx.strokeRect(36,36,W-72,H-72);
+  ctx.textAlign='center';ctx.fillStyle='#e6cb8b';ctx.font='500 32px "Noto Sans KR", sans-serif';ctx.fillText((result.name?result.name+'님':'나')+'의 별 카드',W/2,120);
   var cw=560,ch=Math.round(cw*img.height/img.width),cx=(W-cw)/2,cy=170;
-  ctx.save();ctx.shadowColor='#5a3d6a33';ctx.shadowBlur=40;ctx.shadowOffsetY=16;ctx.fillStyle='#fffdf8';var r=36;ctx.beginPath();ctx.moveTo(cx+r,cy);ctx.arcTo(cx+cw,cy,cx+cw,cy+ch,r);ctx.arcTo(cx+cw,cy+ch,cx,cy+ch,r);ctx.arcTo(cx,cy+ch,cx,cy,r);ctx.arcTo(cx,cy,cx+cw,cy,r);ctx.closePath();ctx.fill();ctx.restore();
+  ctx.save();ctx.shadowColor='#00000080';ctx.shadowBlur=50;ctx.shadowOffsetY=18;ctx.fillStyle='#0d1430';var r=36;ctx.beginPath();ctx.moveTo(cx+r,cy);ctx.arcTo(cx+cw,cy,cx+cw,cy+ch,r);ctx.arcTo(cx+cw,cy+ch,cx,cy+ch,r);ctx.arcTo(cx,cy+ch,cx,cy,r);ctx.arcTo(cx,cy,cx+cw,cy,r);ctx.closePath();ctx.fill();ctx.restore();
   ctx.save();ctx.beginPath();ctx.moveTo(cx+r,cy);ctx.arcTo(cx+cw,cy,cx+cw,cy+ch,r);ctx.arcTo(cx+cw,cy+ch,cx,cy+ch,r);ctx.arcTo(cx,cy+ch,cx,cy,r);ctx.arcTo(cx,cy,cx+cw,cy,r);ctx.closePath();ctx.clip();ctx.drawImage(img,cx,cy,cw,ch);ctx.restore();
-  var y=cy+ch+96;ctx.fillStyle='#3d2c48';ctx.font='700 64px "Noto Serif KR", serif';ctx.fillText(t.title,W/2,y);
-  ctx.fillStyle='#8b6a9e';ctx.font='500 30px "Noto Sans KR", sans-serif';ctx.fillText('일간 '+t.stem+' · '+t.wx+' · '+(t.polarity==='yang'?'양':'음'),W/2,y+56);
-  ctx.fillStyle='#4a3b55';ctx.font='500 34px "Noto Sans KR", sans-serif';var line=STAR_SELF[t.id]||'',parts=line.split('. ');ctx.fillText(parts[0]+(parts[1]?'.':''),W/2,y+130);if(parts[1])ctx.fillText(parts[1],W/2,y+180);
-  ctx.fillStyle='#a08bad';ctx.font='500 28px "Noto Sans KR", sans-serif';ctx.fillText('별첩사주에서 내 별 카드 받기 · '+location.host,W/2,H-60);
+  ctx.strokeStyle='#e0bf72';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(cx+r,cy);ctx.arcTo(cx+cw,cy,cx+cw,cy+ch,r);ctx.arcTo(cx+cw,cy+ch,cx,cy+ch,r);ctx.arcTo(cx,cy+ch,cx,cy,r);ctx.arcTo(cx,cy,cx+cw,cy,r);ctx.closePath();ctx.stroke();
+  var y=cy+ch+96;ctx.fillStyle='#fff6e3';ctx.font='700 64px "Noto Serif KR", serif';ctx.fillText(t.title,W/2,y);
+  ctx.fillStyle='#e6cb8b';ctx.font='500 30px "Noto Sans KR", sans-serif';ctx.fillText('일간 '+t.stem+' · '+t.wx+' · '+(t.polarity==='yang'?'양':'음'),W/2,y+56);
+  ctx.fillStyle='#e8e1d0';ctx.font='500 34px "Noto Sans KR", sans-serif';var line=STAR_SELF[t.id]||'',parts=line.split('. ');ctx.fillText(parts[0]+(parts[1]?'.':''),W/2,y+130);if(parts[1])ctx.fillText(parts[1],W/2,y+180);
+  ctx.fillStyle='#b9b2a0';ctx.font='500 28px "Noto Sans KR", sans-serif';ctx.fillText('별첩사주에서 내 별 카드 받기 · '+location.host,W/2,H-70);
   return canvas;
  });
 }
