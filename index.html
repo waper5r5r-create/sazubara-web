@@ -1404,6 +1404,58 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 .rv-front img{height:124%;object-position:center top}
 .my-star-art{aspect-ratio:3/4;overflow:hidden}.my-star-card .my-star-art img{height:124%;aspect-ratio:auto;object-fit:cover;object-position:center top}
 @media(prefers-reduced-motion:reduce){.rv-sky,.rv-ring,.rv-rays,.rv-card-inner{animation:none!important}}
+/* 살아 있는 별자리: 카메라, 반짝임, 별똥별, 펼치기, 별 다가가기 */
+.sky-stage{touch-action:pan-y}
+.sky-stage.is-open{touch-action:none}
+.sky-cam{position:absolute;inset:0;transform-origin:0 0;will-change:transform}
+.sky-stage .sky-map,.sky-stage.is-far .sky-map{transform:none;transition:none}
+.sky-stage .sky-nebula-art,.sky-stage.is-far .sky-nebula-art{inset:-25%;width:150%;height:150%;transform:none;animation:skySpin 320s linear infinite}
+.sky-stage .sky-tint{inset:-25%}
+.sky-dust{animation:skyTw 3.8s ease-in-out infinite;animation-delay:var(--tw,0s)}
+.sky-shoot{position:absolute;top:14%;left:-30%;width:110px;height:1.5px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff3d6);transform:rotate(16deg);opacity:0;animation:skyShoot 11s linear 3s infinite;pointer-events:none}
+.sky-star-in{transform-box:fill-box;transform-origin:center;animation:skyPulse 3.4s ease-in-out infinite;animation-delay:var(--d,0s)}
+.sky-hit{fill:transparent}
+.sky-burst{fill:none;stroke:#fff3c8;stroke-width:1.2;opacity:0;transform-box:fill-box;transform-origin:center}
+.sky-stage.is-far .sky-star,.sky-stage.is-far .sky-line{opacity:0}
+.sky-stage.is-open .sky-star{animation:skyAppear .7s ease-out var(--d,0s) both}
+.sky-stage.is-open .sky-star-in{animation:skyPop .7s cubic-bezier(.2,.9,.3,1.3) var(--d,0s) both,skyPulse 3.4s ease-in-out calc(var(--d,0s) + .7s) infinite}
+.sky-line.is-near{stroke-dasharray:1;stroke-dashoffset:1}
+.sky-stage.is-open .sky-line.is-near{animation:skyDraw 1.1s ease-out var(--d,0s) forwards}
+.sky-stage.is-open .sky-line:not(.is-near){animation:skyAppear .8s ease-out var(--d,0s) both}
+.sky-stage.is-focus .sky-star:not(.is-cur),.sky-stage.is-focus .sky-line,.sky-stage.is-focus .sky-me,.sky-stage.is-focus .sky-empty{opacity:.18;transition:opacity .6s}
+.sky-star.is-cur .sky-burst{animation:skyBurst .9s ease-out .55s}
+.sky-star.is-cur .sky-name{opacity:0}
+.sky-focus{position:absolute;inset:0;z-index:5;background:radial-gradient(ellipse at 50% 30%,transparent 30%,#070b1ccc 85%)}
+.sky-focus[hidden]{display:none}
+.sky-focus-close{position:absolute;top:10px;right:10px;z-index:3;width:36px;height:36px;border:1px solid #f1d89650;border-radius:50%;background:#0b102499;color:#f1d896;font-size:1rem}
+.sky-fcard{position:absolute;left:50%;top:30%;width:42%;aspect-ratio:3/4;transform:translate(-50%,-50%) scale(.06);opacity:0;perspective:1000px}
+.sky-fcard-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+.sky-focus.in .sky-fcard{animation:skyCardIn .75s cubic-bezier(.2,.9,.3,1.15) forwards}
+.sky-focus.in .sky-fcard-inner{animation:skyCardFlip 1s cubic-bezier(.4,.1,.2,1) .6s both}
+.sky-focus.out .sky-fcard{animation:skyCardOut .35s ease-in forwards}
+.sky-fcard .rv-front img{height:124%;object-position:center top}
+.sky-panel{position:absolute;left:12px;right:12px;bottom:12px;max-height:44%;overflow:auto;padding:14px 16px 12px;border-radius:16px;background:#fffaf0f2;color:#1d2240;box-shadow:0 12px 30px #0008;opacity:0;transform:translateY(24px)}
+.sky-focus.in .sky-panel{animation:skyPanelIn .6s ease-out 1.2s forwards}
+.sky-focus.out .sky-panel{opacity:0;transition:opacity .2s}
+.sky-panel-kicker{margin:0 0 2px;font-size:.75rem;color:#84621f;font-weight:700}
+.sky-panel h3{margin:0 0 6px;font-family:'Noto Serif KR',serif;font-size:1.125rem}
+.sky-panel p{margin:0 0 4px;font-size:.875rem;line-height:1.65;color:#3b3f58;word-break:keep-all}
+.sky-panel-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.sky-panel-nav button{min-width:40px;height:38px;border:1px solid #1b214026;border-radius:999px;background:#fff;color:#1f2a5c;font-size:1.125rem}
+.sky-panel-nav .sky-panel-more{flex:1;font-size:.8125rem;font-weight:700;background:linear-gradient(110deg,#f0d38c,#d9a957);border-color:transparent}
+@keyframes skySpin{to{transform:rotate(360deg)}}
+@keyframes skyTw{0%,100%{opacity:.25}50%{opacity:.9}}
+@keyframes skyShoot{0%{left:-30%;opacity:0}3%{opacity:1}10%{left:120%;opacity:0}100%{left:120%;opacity:0}}
+@keyframes skyPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@keyframes skyAppear{from{opacity:0}to{opacity:1}}
+@keyframes skyPop{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes skyDraw{to{stroke-dashoffset:0}}
+@keyframes skyBurst{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(6)}}
+@keyframes skyCardIn{to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes skyCardOut{from{opacity:1;transform:translate(-50%,-50%) scale(1)}to{opacity:0;transform:translate(-50%,-50%) scale(.06)}}
+@keyframes skyCardFlip{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
+@keyframes skyPanelIn{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.sky-nebula-art,.sky-dust,.sky-shoot,.sky-star-in{animation:none!important}.sky-focus.in .sky-fcard,.sky-focus.in .sky-fcard-inner,.sky-focus.in .sky-panel{animation-duration:.01s!important;animation-delay:0s!important}}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
 <link rel="stylesheet" href="/assets/ui/night.css?v=2">
@@ -3343,31 +3395,86 @@ function skyLayout(list){
  });});
  return out;
 }
-function skyDust(){var x=7,out=[];for(var i=0;i<46;i++){x=(x*9301+49297)%233280;var a=x/233280;x=(x*9301+49297)%233280;var b=x/233280;x=(x*9301+49297)%233280;out.push('<circle cx="'+Math.round(a*360)+'" cy="'+Math.round(b*480)+'" r="'+(x/233280<.15?1.3:.7)+'" class="sky-dust"/>');}return out.join('');}
+function skyDust(){var x=7,out=[];for(var i=0;i<56;i++){x=(x*9301+49297)%233280;var a=x/233280;x=(x*9301+49297)%233280;var b=x/233280;x=(x*9301+49297)%233280;var c=x/233280;out.push('<circle cx="'+Math.round(a*360)+'" cy="'+Math.round(b*480)+'" r="'+(c<.15?1.3:.7)+'" class="sky-dust" style="--tw:-'+(c*4).toFixed(2)+'s"/>');}return out.join('');}
+/* 나의 별자리: 카메라(sky-cam) 하나로 멀리 보기 → 펼치기 → 별 하나로 다가가기를 움직인다.
+   별을 누르면 그 별로 날아가 별빛이 터지고, 카드가 별에서 나와 뒤집힌 뒤 둘의 관계가 아래에서 올라온다. */
+var SKY_DEMO=[{id:'demo-1',nameB:'민지',score:94,dayGanB:'신',dayGanWxB:'금',cardPolarity:'yin',zhiRel:'liuhe',ganRel:'sheng'},{id:'demo-2',nameB:'서연',score:78,dayGanB:'병',dayGanWxB:'화',cardPolarity:'yang',zhiRel:'sanhe',ganRel:'same'},{id:'demo-3',nameB:'하준',score:61,dayGanB:'계',dayGanWxB:'수',cardPolarity:'yin',zhiRel:'none',ganRel:'ke'},{id:'demo-4',nameB:'도윤',score:38,dayGanB:'무',dayGanWxB:'토',cardPolarity:'yang',zhiRel:'chong',ganRel:'keBack'},{id:'demo-5',nameB:'지호',score:72,dayGanB:'갑',dayGanWxB:'목',cardPolarity:'yang',zhiRel:'same',ganRel:'shengBack'}];
+function skyIsDemo(){return typeof location!=='undefined'&&/[?&]skydemo/.test(location.search);}
 function skyHtml(result,list){
  list=list||[];var t=myStarType(result),pos=skyLayout(list),dom=result&&result.wxCount?dominantWx(result.wxCount).wx:'수';
- var lines=list.map(function(e,i){return '<line x1="180" y1="240" x2="'+pos[i].x+'" y2="'+pos[i].y+'" class="sky-line'+(pos[i].near?' is-near':'')+'"/>';}).join('');
- var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e);return '<g class="sky-star" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e.score))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+'"><circle class="sky-halo" r="'+(p.size*3.6).toFixed(1)+'"/><path class="sky-spark" d="M0 -'+(p.size*2.6).toFixed(1)+'V'+(p.size*2.6).toFixed(1)+'M-'+(p.size*2.6).toFixed(1)+' 0H'+(p.size*2.6).toFixed(1)+'"/><circle class="sky-core" r="'+(p.size*.55).toFixed(1)+'"/><text class="sky-name" y="'+(p.size+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
+ var lines=list.map(function(e,i){return '<line pathLength="1" x1="180" y1="240" x2="'+pos[i].x+'" y2="'+pos[i].y+'" class="sky-line'+(pos[i].near?' is-near':'')+'" style="--d:'+(0.35+i*0.16).toFixed(2)+'s"/>';}).join('');
+ var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e),sz=p.size;return '<g class="sky-star" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e.score))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+';--d:'+(0.5+i*0.16).toFixed(2)+'s"><g class="sky-star-in"><circle class="sky-hit" r="22"/><circle class="sky-halo" r="'+(sz*3.6).toFixed(1)+'"/><circle class="sky-burst" r="'+(sz*1.6).toFixed(1)+'"/><path class="sky-spark" d="M0 -'+(sz*2.6).toFixed(1)+'V'+(sz*2.6).toFixed(1)+'M-'+(sz*2.6).toFixed(1)+' 0H'+(sz*2.6).toFixed(1)+'"/><circle class="sky-core" r="'+(sz*.55).toFixed(1)+'"/></g><text class="sky-name" y="'+(sz+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
  var empty=list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">빈자리</text></g>';}).join(''):'';
  var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
-  '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(list.length?'친구 '+list.length+'명이 내 별자리에 있어요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
-  '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
-   '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs><radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg>'+
-   '<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button></div>'+
-  '<p class="sky-legend">가까이, 밝게 빛날수록 잘 맞는 사이예요.</p>'+
+  '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':list.length?'친구 '+list.length+'명이 내 별자리에 있어요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
+  '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
+   '<div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
+   '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs><radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
+   '<i class="sky-shoot" aria-hidden="true"></i>'+
+   '<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button>'+
+   '<div class="sky-focus" data-sky-focus hidden><button type="button" class="sky-focus-close" data-sky-close aria-label="별자리로 돌아가기">✕</button>'+
+    '<div class="sky-fcard"><div class="sky-fcard-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img data-sky-fimg alt="" decoding="async"></div></div></div>'+
+    '<div class="sky-panel" data-sky-panel aria-live="polite"></div></div>'+
+  '</div>'+
+  '<p class="sky-legend">가까이, 밝게 빛날수록 잘 맞는 사이예요. 하늘을 끌어서 둘러보세요.</p>'+
   '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구 초대하기</button>'+
   (list.length?'<details class="sky-list"><summary>별 목록 '+list.length+'</summary><ul>'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((type?type.title+' · ':'')+skyWord(e.score))+'</span></button></li>';}).join('')+'</ul></details>':'')+
  '</section>';
 }
+function skyFirst(text){text=String(text||'');var i=text.indexOf('. ');return i>0?text.slice(0,i+1):text;}
+function skyPanelHtml(e,i,n){
+ var type=cardTypeOf(e),name=esc(e.nameB||'상대방');
+ return '<p class="sky-panel-kicker">'+name+'님의 별 · '+esc(type?type.title:'')+'</p><h3>'+skyWord(e.score)+'</h3>'+
+  (ZHI_REL_TEXT[e.zhiRel]?'<p>'+esc(skyFirst(ZHI_REL_TEXT[e.zhiRel]))+'</p>':'')+(GAN_REL_TEXT[e.ganRel]?'<p>'+esc(skyFirst(GAN_REL_TEXT[e.ganRel]))+'</p>':'')+
+  '<div class="sky-panel-nav">'+(n>1?'<button type="button" data-sky-prev aria-label="이전 별">‹</button>':'')+(skyIsDemo()?'':'<button type="button" class="sky-panel-more" data-sky-more>궁합 자세히</button>')+(n>1?'<button type="button" data-sky-next aria-label="다음 별">›</button>':'')+'</div>';
+}
 function wireSky(scope,list){
  var stage=$('[data-sky]',scope);if(!stage)return;
- function near(){if(stage.classList.contains('is-far')){stage.classList.remove('is-far');try{soundReveal();}catch(e){}}}
- var enter=$('[data-sky-enter]',stage);if(enter)enter.addEventListener('click',near);
+ var cam=$('[data-sky-cam]',stage),focus=$('[data-sky-focus]',stage),panel=$('[data-sky-panel]',stage),fimg=$('[data-sky-fimg]',stage),pos=skyLayout(list);
+ var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ var W,H,k,pan={x:0,y:0},cur=-1,busy=false,dragMoved=false;
+ function size(){W=stage.clientWidth;H=stage.clientHeight;k=W/360;}
+ function apply(S,tx,ty,anim){cam.style.transition=anim&&!reduce?'transform 1.15s cubic-bezier(.3,.1,.2,1)':'none';cam.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+S+')';}
+ function camFar(anim){size();var S=.62;apply(S,W/2-180*k*S,H/2-240*k*S,anim);}
+ function camNear(anim){size();apply(1,pan.x,pan.y,anim);}
+ function camFocus(i){size();var S=2.3,p=pos[i];apply(S,W/2-p.x*k*S,H*.3-p.y*k*S,true);}
+ camFar(false);
+ function enter(){if(!stage.classList.contains('is-far'))return;stage.classList.remove('is-far');stage.classList.add('is-open');camNear(true);try{soundReveal();}catch(e){}}
+ function markCur(i){$all('.sky-star',stage).forEach(function(g){g.classList.toggle('is-cur',Number(g.dataset.skyStar)===i);});}
+ function showCard(i){
+  var e=list[i],type=cardTypeOf(e);fimg.src=type?'/assets/guardians/'+type.asset+'.webp':'/assets/guardians/back.webp';
+  panel.innerHTML=skyPanelHtml(e,i,list.length);
+  focus.hidden=false;focus.classList.remove('in');void focus.offsetWidth;focus.classList.add('in');
+  setTimeout(function(){try{soundReveal();}catch(x){}try{hapticPulse([10,30,14]);}catch(x){}},reduce?0:1100);
+  var prev=$('[data-sky-prev]',panel),next=$('[data-sky-next]',panel),more=$('[data-sky-more]',panel);
+  if(prev)prev.addEventListener('click',function(){go((cur-1+list.length)%list.length);});
+  if(next)next.addEventListener('click',function(){go((cur+1)%list.length);});
+  if(more)more.addEventListener('click',function(){openMyroomDetail(list[cur]);});
+ }
+ function go(i){
+  if(busy||!list[i])return;busy=true;var first=cur<0;cur=i;
+  stage.classList.add('is-focus');markCur(i);try{soundTap();}catch(e){}
+  if(!first){focus.classList.remove('in');focus.classList.add('out');}
+  camFocus(i);
+  setTimeout(function(){focus.classList.remove('out');showCard(i);busy=false;},reduce?0:(first?900:1000));
+ }
+ function close(){if(cur<0)return;cur=-1;focus.classList.remove('in');focus.hidden=true;stage.classList.remove('is-focus');markCur(-1);camNear(true);}
+ $('[data-sky-close]',stage).addEventListener('click',close);
+ var enterBtn=$('[data-sky-enter]',stage);if(enterBtn)enterBtn.addEventListener('click',enter);
  $all('[data-sky-star]',scope).forEach(function(el){
-  function open(e){if(stage.classList.contains('is-far')&&stage.contains(el)){near();return;}openSkyBook(list,Number(el.dataset.skyStar));}
+  function open(){if(dragMoved)return;var i=Number(el.dataset.skyStar);
+   if(!stage.contains(el))stage.scrollIntoView({behavior:'smooth',block:'center'});
+   if(stage.classList.contains('is-far')){enter();setTimeout(function(){go(i);},reduce?0:900);}else go(i);}
   el.addEventListener('click',open);el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
  });
+ /* 끌어서 둘러보기: 펼친 상태에서만, 너무 멀리 가지 않게 */
+ var start=null;
+ stage.addEventListener('pointerdown',function(e){if(stage.classList.contains('is-far')||cur>=0||e.target.closest('button'))return;start={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};dragMoved=false;});
+ stage.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dx)+Math.abs(dy)>6)dragMoved=true;if(!dragMoved)return;pan.x=Math.max(-90,Math.min(90,start.px+dx));pan.y=Math.max(-90,Math.min(90,start.py+dy));camNear(false);});
+ function end(){if(!start)return;start=null;setTimeout(function(){dragMoved=false;},60);}
+ stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);stage.addEventListener('pointerleave',end);
+ window.addEventListener('resize',function(){if(cur>=0)camFocus(cur);else if(stage.classList.contains('is-far'))camFar(false);else camNear(false);});
 }
 function skyPageHtml(e){
  var type=cardTypeOf(e),name=esc(e.nameB||'상대방');
@@ -5833,6 +5940,7 @@ function renderMyRoomLocal(root){
   /* 마이룸 = (서버에서 받아온) 실제로 초대해서 등록한 사람 목록을 최신순으로 보여준다. */
   var hiddenIds = getHiddenMyRoomIds();
   var list = hiddenIds.length ? INVITE_MYROOM_CACHE.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : INVITE_MYROOM_CACHE;
+  if (!list.length && skyIsDemo()) list = SKY_DEMO.map(function(e){ return Object.assign({dayGanWxA:STATE.mySaju.dayGanWx}, e); });
   if (!list.length){
     root.innerHTML =
       skyHtml(STATE.mySaju,[]);
