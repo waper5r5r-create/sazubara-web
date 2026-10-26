@@ -3297,16 +3297,19 @@ function wireStarGift(scope,result){
 }
 /* 콘텐츠 줄: 목록 API에서 자동으로 */
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
-function homeContentsHtml(){return '<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 본 가장 가까운 좋은 해예요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
+function homeContentsHtml(){return '<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 본 가까운 흐름이에요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
 /* 콘텐츠 카드 한 줄 미리보기: 각 콘텐츠 무료 화면에서 이미 공개하는 "10년 중 가장 먼저 좋은 해"만 보여준다 */
+function skyYearWord(y,now){var d=y-now;return d<=0?'올해':d===1?'내년':d===2?'후년':d+'년 뒤';}
 function homePreviewLine(c,result){
  try{
   var cat=isPocha(c)?'career':storyCategory(c),from=marriageStartYear();
   var pair=cat==='love'?[loveTimeline,loveYearLabel]:cat==='wealth'?[wealthTimeline,wealthYearLabel]:cat==='career'?[careerTimeline,careerYearLabel]:cat==='marriage'?[marriageTimeline,marriageYearLabel]:null;
   if(!pair||!result||!result.day)return '';
-  var first=pair[0](result,from,10).filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;})[0];
-  var label=first&&pair[1](first);
-  return label?'<em class="home-content-peek">✦ '+first.year+'년 · '+esc(label)+'</em>':'';
+  /* 먼 해는 남 얘기처럼 느껴져서, 3년 안의 좋은 해를 고르고 없으면 내년 흐름을 보여준다. 연도는 "내년·후년"으로 */
+  var rows=pair[0](result,from,10),now=new Date().getFullYear();
+  var pick=rows.filter(function(r){return r.top&&r.year<=now+3;}).sort(function(a,b){return a.year-b.year;})[0]||rows[0];
+  var label=pick&&pair[1](pick);
+  return label?'<em class="home-content-peek">✦ '+skyYearWord(pick.year,now)+' · '+esc(label)+'</em>':'';
  }catch(e){return '';}
 }
 function fillHomeContents(scope,result){
