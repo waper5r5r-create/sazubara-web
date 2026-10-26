@@ -2697,12 +2697,12 @@ function doShare(){
         var text = (myName? myName+'님이 ':'')+'당신과의 궁합이 궁금해서 보내요 💕 링크 열고 본인 사주만 입력하면 바로 궁합을 확인할 수 있어요!';
         kakaoShare(text, url, '궁합 확인하러 가기').then(function(){
                maybeAwardShareBonus();
-               showToast('링크를 보냈어요! 상대방이 입력하면 내 별첩 하늘에 별로 떠요.');
+               showToast('링크를 보냈어요. 상대가 입력하면 내 별자리에 별이 생겨요.');
         }).catch(function(){
                if (navigator.share){
                         navigator.share({ title:'별첩사주 궁합', text:text, url:url }).then(function(){
                                    maybeAwardShareBonus();
-                                   showToast('링크를 보냈어요! 상대방이 입력하면 내 별첩 하늘에 별로 떠요.');
+                                   showToast('링크를 보냈어요. 상대가 입력하면 내 별자리에 별이 생겨요.');
                         }).catch(function(){});
                } else {
                         copyToClipboard(text+'\n'+url);
@@ -2838,7 +2838,7 @@ function renderInviteSheet(){
 
         '<div><p class="section-title" style="font-size:.95rem;">함께 궁합 알아보기</p>'+
           '<div class="invite-box">'+
-            '<p class="section-desc">링크로 들어온 친구가 자기 사주를 직접 등록하면, 서로의 별첩 하늘에 별이 떠요.</p>'+
+            '<p class="section-desc">링크로 들어온 친구가 자기 사주를 직접 등록하면, 서로의 별자리에 별이 생겨요.</p>'+
             '<div class="invite-link-row"><input type="text" readonly id="invite-link-input" value="'+shareUrl()+'"></div>'+
             '<button type="button" class="share-btn" id="btn-do-share">'+uiIcon('share')+' 카카오톡 등으로 공유하기</button>'+
           '</div>'+
@@ -3021,10 +3021,10 @@ function sajuQuickSummaryHtml(result){
   var stem=result.day.ganKr,m=result.month||{},season=SELF_SEASON[m.zhiKr],img=SELF_IMAGE[stem];
   if(!season||!img)return '';
   var mwx=m.wxZhi,inSeason=mwx===result.dayGanWx||WX_MOTHER[result.dayGanWx]===mwx;
-  var ra=josaIeyo(img)==='이에요'?'이라':'라',fit=inSeason?'제철을 만난 '+img+ra+' 자기 색이 뚜렷하게 드러나요.':'제철이 아닌 계절의 '+img+ra+', 환경에 맞춰 나답게 피어나는 법을 알아요.';
+  var ra=josaIeyo(img)==='이에요'?'이라':'라',fit=inSeason?'자기 색이 뚜렷하게 드러나는 사람이에요.':'어떤 환경에서도 나답게 피어나는 사람이에요.';
   var weak=weakestWx(result.wxCount).wx;
   return '<div class="saju-quick-summary saju-portrait" aria-label="나의 사주 한 줄">'+
-    '<p class="quick-heading">나의 사주를 한 장면으로</p>'+
+    '<p class="quick-heading">나를 닮은 풍경</p>'+
     '<h2 class="portrait-title">'+esc(season[0])+'에 태어난 '+esc(img)+'</h2>'+
     '<p class="portrait-tags">'+esc(stem+result.dayGanWx+'('+result.day.gan+') 일간 · '+m.zhiKr+'월('+(m.zhi||'')+'月)생')+'</p>'+
     '<p class="portrait-text">'+esc(season[1]+' '+fit)+'</p>'+
@@ -3087,7 +3087,7 @@ function everydayTraitsHtml(result){
  return '<section class="personal-traits"><h2>사주로 살펴본 내 특징 세 가지</h2><ol>'+rows.map(function(r,i){return '<li><span class="trait-symbol">'+uiIcon(r[2])+'</span><div><small>0'+(i+1)+' · '+r[0]+'</small><p>'+esc(r[1])+'</p></div></li>';}).join('')+'</ol><p class="hint">일간과 오행 분포를 참고한 해석이에요. 실제 경험과 함께 읽어보세요.</p></section>';
 }
 function everydaySajuHtml(result){
- return '<section class="everyday-saju"><p class="editorial-tag">나의 사주팔자</p><div class="saju-result-head"><h1>'+(result.name?esc(result.name)+'님의 사주':'나의 사주')+'</h1><button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button></div>'+sajuBoardHtml(result)+sajuQuickSummaryHtml(result)+sajuHookHtml('self',result,'사주에서 먼저 보이는 '+(result.name?result.name+'님':'나'))+starGiftHtml(result)+homeContentsHtml()+'</section>';
+ return '<section class="everyday-saju"><p class="editorial-tag">나의 사주팔자</p><div class="saju-result-head"><h1>'+(result.name?esc(result.name)+'님의 사주':'나의 사주')+'</h1><button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button></div>'+sajuBoardHtml(result)+sajuQuickSummaryHtml(result)+sajuHookHtml('self',result,(result.name?result.name+'님은':'나는')+' 이런 사람이에요')+starGiftHtml(result)+homeContentsHtml()+'</section>';
 }
 var WORRY_PREVIEW_LENS={
  목:{연애:'서로의 가능성을 알아가고 함께 경험을 넓히는 관계',직장:'새로운 역할을 배우고 시도하며 방향을 만드는 과정',재물:'새로운 기회를 발견하고 자원을 활용하는 과정',건강:'활동과 회복 사이에 지속 가능한 리듬을 만드는 과정',인간관계:'새로운 만남과 기존 관계를 함께 넓혀가는 과정'},
@@ -3125,15 +3125,15 @@ function myStarCardHtml(result){
  return '<section class="my-star-card"><p class="editorial-tag">'+who+'의 별 카드</p>'+
   '<div class="my-star-body"><figure class="my-star-art"><img src="/assets/guardians/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" decoding="async"></figure>'+
   '<div class="my-star-copy"><h2>'+esc(t.title)+'</h2><p class="my-star-tags">일간 '+esc(t.stem+'('+result.day.gan+')')+' · '+esc(t.wx)+' · '+(t.polarity==='yang'?'양':'음')+'</p><p>'+esc(STAR_SELF[t.id]||'')+'</p></div></div>'+
-  '<div class="my-star-actions"><button type="button" class="btn-primary" data-star-share>내 별 카드 저장·공유</button><button type="button" class="share-btn" data-star-album>내 별첩 하늘 보기</button></div>'+
-  '<p class="hint">친구가 링크로 사주를 넣으면, 내 별첩 하늘에 그 사람의 별이 떠요.</p></section>';
+  '<div class="my-star-actions"><button type="button" class="btn-primary" data-star-share>내 별 카드 저장·공유</button><button type="button" class="share-btn" data-star-album>내 별자리 보기</button></div>'+
+  '<p class="hint">친구를 초대하면 내 별자리에 친구 별이 생겨요.</p></section>';
 }
 /* 첫 화면 큰 그림: 별 카드 세 장을 부채꼴로 */
 /* 첫 화면: 정통 사주팔자와 계산 기준을 먼저, 별 카드는 한 줄로 */
 function starHeroHtml(){
- return '<div class="saju-hero has-art"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일시로 세우는<br>나의 사주팔자</h1><p class="saju-hero-sub">태어난 순간의 여덟 글자로 타고난 성향과 앞으로의 흐름을 풀어드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"></div>'+
+ return '<div class="saju-hero has-art"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"></div>'+
   '<ul class="saju-hero-trust"><li><b>절기 기준</b><span>입춘·절기로 계산</span></li><li><b>출생지 보정</b><span>경도로 시간 보정</span></li><li><b>1만 7천 자</b><span>주제별 심층 리포트</span></li></ul>'+
-  '<p class="saju-hero-gift">✦ 풀이를 마치면 나를 닮은 별 카드가 만들어져요</p></div>';
+  '<p class="saju-hero-gift">✦ 풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
 function sajuBoardHtml(result){
@@ -3142,7 +3142,7 @@ function sajuBoardHtml(result){
 }
 function starGiftHtml(result){
  var t=myStarType(result);if(!t)return '';
- return '<section class="star-gift" data-star-gift><p class="editorial-tag">풀이를 마친 선물</p><h2>사주가 만든 나의 별 카드</h2><p class="star-gift-sub">여덟 글자 중 나를 대표하는 일간 '+esc(t.stem+'('+result.day.gan+')')+'의 기운으로 카드가 만들어져요.</p>'+
+ return '<section class="star-gift" data-star-gift><p class="editorial-tag">선물</p><h2>나의 별 카드</h2><p class="star-gift-sub">내 사주를 닮은 수호수 카드를 받아보세요.</p>'+
   '<button type="button" class="btn-primary star-make-btn" data-star-make>내 별 카드 받기</button><div class="star-stage" data-star-stage hidden></div></section>';
 }
 function starRevealKey(result){return 'byeolcheop_star_'+(result.day?result.day.gan+result.day.zhi:'')+(result.year?result.year.gan+result.year.zhi:'');}
@@ -3155,10 +3155,10 @@ function playStarReveal(scope,result){
  var glyphs=[result.time,result.day,result.month,result.year].filter(Boolean).reduce(function(a,p){return a.concat([p.gan,p.zhi]);},[]);
  btn.hidden=true;stage.hidden=false;gift.classList.add('is-playing');
  stage.innerHTML='<div class="star-orbit">'+glyphs.map(function(g,i){return '<span style="--i:'+i+';--n:'+glyphs.length+'">'+esc(g)+'</span>';}).join('')+'<i class="star-core"></i></div>'+
-  '<div class="star-flip"><div class="star-flip-inner"><div class="star-face star-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="star-face star-front"><img src="/assets/guardians/'+t.asset+'.webp" alt="" decoding="async"><b>'+esc(t.title)+'</b></div></div></div><p class="star-stage-text" aria-live="polite">여덟 글자를 모으는 중…</p>';
+  '<div class="star-flip"><div class="star-flip-inner"><div class="star-face star-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="star-face star-front"><img src="/assets/guardians/'+t.asset+'.webp" alt="" decoding="async"><b>'+esc(t.title)+'</b></div></div></div><p class="star-stage-text" aria-live="polite">사주를 읽는 중…</p>';
  var img=new Image();img.src='/assets/guardians/'+t.asset+'.webp';var back=new Image();back.src='/assets/guardians/back.webp';
- setTimeout(function(){stage.classList.add('phase-card');var tx=$('.star-stage-text',stage);if(tx)tx.textContent='카드를 새기는 중…';},1500);
- setTimeout(function(){stage.classList.add('phase-flip');try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}var tx=$('.star-stage-text',stage);if(tx)tx.textContent=t.title+' 카드가 만들어졌어요';},2700);
+ setTimeout(function(){stage.classList.add('phase-card');var tx=$('.star-stage-text',stage);if(tx)tx.textContent='카드를 만드는 중…';},1500);
+ setTimeout(function(){stage.classList.add('phase-flip');try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}var tx=$('.star-stage-text',stage);if(tx)tx.textContent=t.title+' 카드가 나왔어요';},2700);
  setTimeout(function(){starRevealDone(scope,result);},4300);
 }
 function wireStarGift(scope,result){
@@ -3168,7 +3168,7 @@ function wireStarGift(scope,result){
 }
 /* 콘텐츠 줄: 목록 API에서 자동으로 */
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
-function homeContentsHtml(){return '<section class="home-contents"><h2>내 사주로 더 읽어보기</h2><p class="hint">내 사주로 계산한 가장 먼저 좋은 해예요. 앞부분은 무료로 볼 수 있어요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
+function homeContentsHtml(){return '<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 본 가장 가까운 좋은 해예요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
 /* 콘텐츠 카드 한 줄 미리보기: 각 콘텐츠 무료 화면에서 이미 공개하는 "10년 중 가장 먼저 좋은 해"만 보여준다 */
 function homePreviewLine(c,result){
  try{
@@ -3253,7 +3253,7 @@ function albumFirstPageHtml(result,list){
 var SKY_DIR={목:0,화:90,금:180,수:-90};
 var SKY_TINT={목:'#3f9a82',화:'#c8603f',토:'#b8903f',금:'#b9b4c8',수:'#4566b8'};
 var NEBULA_ART=null; /* 성운 그림이 오면 '/assets/album/nebula.webp' */
-function skyWord(score){return score>=90?'운명처럼 닿은 인연':score>=70?'마음이 잘 맞는 인연':score>=50?'알아갈수록 편한 인연':'서로 다른 결의 인연';}
+function skyWord(score){return score>=90?'운명처럼 닿은 인연':score>=70?'마음이 잘 맞는 인연':score>=50?'알수록 편한 인연':'서로 다른 매력의 인연';}
 function skyLayout(list){
  var groups={};list.forEach(function(e,i){var wx=e.dayGanWxB||'토';(groups[wx]=groups[wx]||[]).push(i);});
  var out=[];
@@ -3271,15 +3271,15 @@ function skyHtml(result,list){
  list=list||[];var t=myStarType(result),pos=skyLayout(list),dom=result&&result.wxCount?dominantWx(result.wxCount).wx:'수';
  var lines=list.map(function(e,i){return '<line x1="180" y1="240" x2="'+pos[i].x+'" y2="'+pos[i].y+'" class="sky-line'+(pos[i].near?' is-near':'')+'"/>';}).join('');
  var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e);return '<g class="sky-star" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e.score))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+'"><circle class="sky-halo" r="'+(p.size*3.6).toFixed(1)+'"/><path class="sky-spark" d="M0 -'+(p.size*2.6).toFixed(1)+'V'+(p.size*2.6).toFixed(1)+'M-'+(p.size*2.6).toFixed(1)+' 0H'+(p.size*2.6).toFixed(1)+'"/><circle class="sky-core" r="'+(p.size*.55).toFixed(1)+'"/><text class="sky-name" y="'+(p.size+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
- var empty=list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">아직 이어지지 않은 별</text></g>';}).join(''):'';
+ var empty=list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">빈자리</text></g>';}).join(''):'';
  var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
-  '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">내 사람들로 이루어진 하늘</h2><p class="sky-sub">'+(list.length?list.length+'명의 별이 내 하늘에 떠 있어요.':'친구가 사주를 등록하면 내 하늘에 별이 하나씩 떠요.')+'</p></div>'+
+  '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(list.length?'친구 '+list.length+'명이 내 별자리에 있어요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
   '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async">':'<div class="sky-nebula" aria-hidden="true"></div>')+
    '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs><radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg>'+
-   '<button type="button" class="sky-enter" data-sky-enter><span>'+esc(dom)+' 기운으로 물든 나의 성운</span><b>눌러서 들여다보기</b></button></div>'+
-  '<p class="sky-legend">가까울수록 깊은 인연, 밝을수록 잘 맞는 사이예요. 별이 놓인 방향은 그 사람의 오행 방위예요.</p>'+
-  '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구 별 불러오기 · 궁합 링크 보내기</button>'+
+   '<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button></div>'+
+  '<p class="sky-legend">가까이, 밝게 빛날수록 잘 맞는 사이예요.</p>'+
+  '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구 초대하기</button>'+
   (list.length?'<details class="sky-list"><summary>별 목록 '+list.length+'</summary><ul>'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((type?type.title+' · ':'')+skyWord(e.score))+'</span></button></li>';}).join('')+'</ul></details>':'')+
  '</section>';
 }
@@ -3298,8 +3298,8 @@ function skyPageHtml(e){
   '<p class="sky-page-kicker">'+name+'님의 별</p><h3>'+esc(type?type.title:'아직 드러나지 않은 별')+'</h3><p class="sky-page-tag">'+esc(type?'일간 '+type.stem+' · '+type.wx+' · '+(type.polarity==='yang'?'양':'음'):'')+'</p>'+
   '<p class="sky-page-quote">'+esc(type?CARD_RELATION_QUOTES[type.id]||'':'')+'</p></article>'+
   '<article class="sky-page sky-page-right"><p class="sky-page-kicker">'+name+'님과 나</p><h3>'+skyWord(e.score)+'</h3>'+
-  (ZHI_REL_TEXT[e.zhiRel]?'<h4>관계의 결</h4><p>'+esc(ZHI_REL_TEXT[e.zhiRel])+'</p>':'')+
-  (GAN_REL_TEXT[e.ganRel]?'<h4>마음이 오가는 방향</h4><p>'+esc(GAN_REL_TEXT[e.ganRel])+'</p>':'')+
+  (ZHI_REL_TEXT[e.zhiRel]?'<h4>두 사람의 관계</h4><p>'+esc(ZHI_REL_TEXT[e.zhiRel])+'</p>':'')+
+  (GAN_REL_TEXT[e.ganRel]?'<h4>서로에게 주는 영향</h4><p>'+esc(GAN_REL_TEXT[e.ganRel])+'</p>':'')+
   '<button type="button" class="share-btn" data-sky-detail>궁합 자세히 보기</button></article>';
 }
 function openSkyBook(list,i){
@@ -3416,7 +3416,7 @@ function renderSajuResult(result){
 
   wrap.innerHTML = everydaySajuHtml(result)+html;
   var evidence=document.createElement('details');evidence.className='technical-details';
-  evidence.innerHTML='<summary><span>'+uiIcon('compass')+'<b>내 사주의 근거도 궁금하다면</b><small>원국 · 오행 · 지장간 · 십신</small></span>'+uiIcon('arrow')+'</summary>';
+  evidence.innerHTML='<summary><span>'+uiIcon('compass')+'<b>자세한 사주 정보 보기</b><small>원국 · 오행 · 지장간 · 십신</small></span>'+uiIcon('arrow')+'</summary>';
   var evCards=[];Array.from(wrap.children).slice(1).some(function(card){if(card.querySelector('#worry-chips'))return true;evCards.push(card);return false;});evCards.forEach(function(card){evidence.appendChild(card);});
   wrap.appendChild(evidence);
   wireStarGift(wrap,result);fillHomeContents(wrap,result);
@@ -3503,7 +3503,7 @@ function renderTodayView(){
     return;
   }
   root.innerHTML =
-    '<div class="tab-intro"><p class="eyebrow">나의 운세</p><h1>오늘, 어떤 흐름일까요?</h1><p class="section-desc">나의 사주로 살펴보는 하루와 앞으로의 흐름</p></div>'+
+    '<div class="tab-intro"><p class="eyebrow">나의 운세</p><h1>오늘은 어떤 하루일까요?</h1><p class="section-desc">내 사주로 보는 오늘, 이번 주, 이번 달, 올해</p></div>'+
     '<div class="seg" id="today-period-seg">'+
       '<button type="button" data-val="day" class="active">오늘</button>'+
       '<button type="button" data-val="week">이번 주</button>'+
@@ -3801,7 +3801,7 @@ function refreshCompatPersonA(){
        '<form class="card" id="compat-form">'+
          '<div><p class="eyebrow">궁합보기</p><h1 class="section-title">우리, 진짜 잘 맞는 걸까?</h1>'+
          '</div>'+
-         '<label class="check-row" id="c-use-my-saju-row" hidden><input type="checkbox" id="c-use-my-saju" checked>내 사주 정보 사용 (A)</label>'+
+         '<label class="check-row" id="c-use-my-saju-row" hidden><input type="checkbox" id="c-use-my-saju" checked>내 사주로 보기</label>'+
          '<div id="person-a-wrap">'+personFieldsHtml('a','나')+'</div>'+
          '<hr class="sep">'+
          '<div class="field">'+
@@ -3809,8 +3809,8 @@ function refreshCompatPersonA(){
            '<div class="seg" id="c-b-mode"><button type="button" data-val="kakao" class="active">링크 보내서 받기</button><button type="button" data-val="manual">직접 입력</button></div>'+
          '</div>'+
          '<div id="c-b-kakao-pane">'+
-           '<p class="section-desc">상대방의 생년월일시를 내가 몰라도 괜찮아요. 링크를 보내면 상대방이 직접 입력하고, 서로의 궁합을 확인할 수 있어요. 확인한 궁합은 나의 카드첩에 모여요.</p>'+
-           '<button type="button" class="btn-primary" id="btn-compat-kakao-invite">함께 볼 사람에게 링크 보내기</button>'+
+           '<p class="section-desc">상대의 생년월일을 몰라도 괜찮아요. 링크를 보내면 상대가 직접 입력하고, 둘의 궁합을 함께 볼 수 있어요.</p>'+
+           '<button type="button" class="btn-primary" id="btn-compat-kakao-invite">궁합 링크 보내기</button>'+
          '</div>'+
          '<div id="c-b-manual-pane" hidden>'+
            personFieldsHtml('b','상대방')+
@@ -4003,16 +4003,16 @@ function collectibleCardHtml(entry,preview){
  '<div class="destiny-copy"><span class="destiny-title">'+artTitle+'</span><span class="nm">'+esc(entry.nameB||'상대방')+'</span><div class="destiny-stats"><span>나와의 궁합 <b>'+Math.max(0,Math.min(100,Number(entry.score)||0))+'</b></span><span>'+esc(gan||spirit.symbol)+' · '+polarity+'</span></div><span class="destiny-caption">'+tier.label+' · '+spirit.tag+'</span></div></div>';
 }
 var CARD_RELATION_QUOTES={
- 'wood-yang':'네가 망설일 때, 한 걸음 먼저 길을 여는 작은 용.',
- 'wood-yin':'네 마음이 지친 날, 곁에서 다시 새싹을 틔워주는 토끼.',
- 'fire-yang':'조용했던 네 하루에, 웃음과 용기를 켜주는 불꽃새.',
- 'fire-yin':'네 마음이 추워질 때, 작은 온기를 건네는 여우.',
- 'earth-yang':'네가 흔들릴 때, 잠시 기대어 숨을 고르게 해주는 사슴.',
- 'earth-yin':'작은 약속을 차곡차곡 품어, 네 편이 되어주는 곰.',
- 'metal-yang':'네가 물러서고 싶은 순간, 함께 버텨주는 작은 호랑이.',
- 'metal-yin':'네가 놓친 반짝임까지 알아봐주는, 섬세한 고양이.',
- 'water-yang':'네 생각이 한곳에 머물 때, 새로운 물길을 보여주는 용.',
- 'water-yin':'네가 삼킨 작은 마음을, 잔잔히 받아주는 수달.'
+ 'wood-yang':'내가 망설일 때 먼저 길을 열어 주는 사람이에요.',
+ 'wood-yin':'지친 날 곁에서 다시 힘을 내게 해 주는 사람이에요.',
+ 'fire-yang':'조용한 하루에 웃음과 용기를 더해 주는 사람이에요.',
+ 'fire-yin':'마음이 추운 날 따뜻하게 챙겨 주는 사람이에요.',
+ 'earth-yang':'흔들릴 때 편하게 기댈 수 있는 사람이에요.',
+ 'earth-yin':'작은 약속도 잊지 않고 내 편이 되어 주는 사람이에요.',
+ 'metal-yang':'포기하고 싶을 때 함께 버텨 주는 사람이에요.',
+ 'metal-yin':'내가 놓친 좋은 점까지 알아봐 주는 사람이에요.',
+ 'water-yang':'생각이 막힐 때 새로운 길을 보여 주는 사람이에요.',
+ 'water-yin':'말하지 못한 마음까지 조용히 들어 주는 사람이에요.'
 };
 function cardMeaningHtml(entry){var type=cardTypeOf(entry),tier=myroomTier(entry.score);var endings={s:'말보다 마음이 먼저 닿는, 자연스럽게 가까워지는 인연.',a:'서로의 빈자리를 채우며, 함께일 때 더 빛나는 인연.',b:'처음엔 조금 달라도, 알아갈수록 편안해지는 인연.',c:'걸음의 속도는 달라도, 서로의 길을 넓혀줄 수 있는 인연.'};var headings={s:'마음이 먼저 닿는 사이',a:'서로를 채워주는 사이',b:'천천히 단단해지는 사이',c:'다른 결로 만나는 사이'};return '<section class="card-meaning"><p class="reader-kicker">너에게, 이런 존재</p><h3>'+headings[tier.key]+'</h3><p class="card-relation-quote">'+(type?CARD_RELATION_QUOTES[type.id]:'네 하루에 아직 펼쳐지지 않은 이야기를 가져올 존재.')+'</p><p class="card-relation-ending">'+endings[tier.key]+'</p></section>';}
 function myroomCardHtml(entry,rank){return collectibleCardHtml(entry,false);}
@@ -4681,7 +4681,7 @@ function sajuHookHtml(kind,result,title){
  var H=kind==='self'?HOOK_SELF:kind==='love'?HOOK_LOVE:kind==='career'?HOOK_CAREER:kind==='wealth'?HOOK_WEALTH:HOOK_MARRIAGE,stem=result.day.ganKr,dom=dominantWx(result.wxCount).wx,weak=weakestWx(result.wxCount).wx,strong=result.strength==='strong';
  var second=kind==='wealth'?(function(t){return [H.income[t],WEALTH_INCOME_TAG[t]];})(wealthProfile(result).income):kind==='career'?[H.group[careerGroup(result)],'월주 '+(result.monthSS||'')]:[H.zhi[result.day.zhiKr],'일지 '+result.day.zhiKr+'('+result.day.zhi+')'];
  var rows=[[H.stem[stem],'일간 '+stem+'('+result.day.gan+')'],second,kind==='self'&&result.monthSS?[H.group[careerGroup(result)],'월주 '+result.monthSS]:null,[H.dom[dom],dom+' 기운 강함'],weak!==dom?[H.weak[weak],weak+' 기운 약함']:null,[H.strength[strong?'strong':'weak'],strong?'신강':'신약']].filter(function(r){return r&&r[0];});
- return '<section class="saju-hook saju-hook-'+kind+'"><p class="saju-hook-kicker">'+esc(title)+'</p><ol>'+rows.map(function(r){return '<li><p>'+esc(r[0])+'</p><span>'+esc(r[1])+'</span></li>';}).join('')+'</ol><p class="saju-hook-foot">하나라도 "어? 맞는데" 싶었다면, 이건 입력한 사주로 계산한 거예요.</p></section>';
+ return '<section class="saju-hook saju-hook-'+kind+'"><p class="saju-hook-kicker">'+esc(title)+'</p><ol>'+rows.map(function(r){return '<li><p>'+esc(r[0])+'</p><span>'+esc(r[1])+'</span></li>';}).join('')+'</ol><p class="saju-hook-foot">맞는 게 있나요? 모두 입력한 사주로 계산한 결과예요.</p></section>';
 }
 /* ---- 직업 사주: 별지도 서점의 길잡이 "서림"이 일하는 방식(일간·월주)과 앞으로 10년의 커리어 흐름(월지 = 일터 자리)을 지도로 그려 읽어준다.
    무료 문구와 계산은 여기, 유료 문구는 api/_career-content.js에서 결제 확인 후 내려온다. ---- */
@@ -5743,9 +5743,9 @@ var INVITE_MYROOM_CACHE = null; /* 초대해서 실제 등록한 사람 목록(�
 function renderMyRoomLocal(root){
   if (!STATE.mySaju){
     root.innerHTML =
-      '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">내 사람들로 이루어진 하늘</h2></div>'+
+      '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">나의 별자리</h2></div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>먼저 내 사주를 입력하면 내 사주로 물든 성운이 만들어지고, 초대한 사람들이 그 하늘에 별로 떠요.</span></div>';
+      '<span>내 사주를 먼저 입력하면 나의 별자리가 만들어져요.</span></div>';
     return;
   }
   if (INVITE_MYROOM_CACHE === null){

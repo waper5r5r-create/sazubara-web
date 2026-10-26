@@ -51,7 +51,7 @@ test('album omits tier collection status panel',()=>{assert.equal(api.cardAlbumI
 
 test('all grades preserve the named animal and have distinct grade finishes',()=>{const types=[['을','목','새싹토끼','wood-yin'],['기','토','포근곰','earth-yin'],['신','금','별빛고양','metal-yin'],['계','수','이슬수달','water-yin']];for(const [stem,wx,title,asset] of types){const cards=[40,60,80,95].map(score=>api.collectibleCardHtml({id:'test',score,dayGanB:stem,dayGanWxB:wx},false));for(const [i,card] of cards.entries()){assert.ok(card.includes('/assets/guardians/'+asset+'.webp'));assert.ok(card.includes('/assets/guardians/frames/'+'cbas'[i]+'.webp'));assert.ok(card.includes(title));assert.ok(!card.includes('/premium/'));assert.ok(card.includes('card-tier-ribbon'));}assert.equal(new Set(cards).size,4);}});
 
-test('card detail uses two short relationship metaphors instead of design explanations',()=>{const text=api.cardMeaningHtml({dayGanB:'을',dayGanWxB:'목',score:80});assert.ok(text.includes('곁에서 다시 새싹'));assert.ok(text.includes('서로의 빈자리'));assert.ok(!text.includes('왜 '));assert.ok(!text.includes('프레임'));assert.ok(!text.includes('일간'));assert.ok(text.replace(/<[^>]*>/g,'').length<150);});
+test('card detail uses two short relationship metaphors instead of design explanations',()=>{const text=api.cardMeaningHtml({dayGanB:'을',dayGanWxB:'목',score:80});assert.ok(text.includes('다시 힘을 내게'));assert.ok(text.includes('서로의 빈자리'));assert.ok(!text.includes('왜 '));assert.ok(!text.includes('프레임'));assert.ok(!text.includes('일간'));assert.ok(text.replace(/<[^>]*>/g,'').length<150);});
 
 
 test('story reader is outside the app disabled while reading',()=>{assert.match(html, /id="toast-root"><\/div>\s*<\/div>\s*<!--[\s\S]*?-->\s*<div id="report-sheet-root">/);assert.equal((html.match(/id="report-sheet-root"/g)||[]).length,1);assert.ok(html.includes('touch-action:pan-y'));});
@@ -290,7 +290,7 @@ test('star card: every day stem gets its own animal card, home hero and album fi
 
 test('free result opens with a portrait and personal scene sentences',()=>{
  const base={...result,day:{...result.day,ganKr:'을',gan:'乙',zhiKr:'미',zhi:'未'},dayGanWx:'목',month:{zhiKr:'사',zhi:'巳',wxZhi:'화'},monthSS:'상관',strength:'weak',wxCount:{목:2,화:3,토:2,금:1,수:0}};
- const p=api.sajuQuickSummaryHtml(base);assert.ok(p.includes('초여름에 태어난 덩굴꽃'));assert.ok(p.includes('덩굴꽃이라'));assert.ok(p.includes('기억할 한 가지'));
+ const p=api.sajuQuickSummaryHtml(base);assert.ok(p.includes('초여름에 태어난 덩굴꽃'));assert.ok(p.includes('나답게 피어나는 사람'));assert.ok(p.includes('기억할 한 가지'));
  assert.notEqual(p,api.sajuQuickSummaryHtml({...base,month:{zhiKr:'자',zhi:'子',wxZhi:'수'}}));
  assert.equal(api.sajuQuickSummaryHtml({...base,month:null}),'');
  const main=api.everydaySajuHtml(base);assert.ok(main.includes('saju-hook-self'));assert.ok(main.includes('월주 상관'));assert.ok(main.includes('일지 미'));
