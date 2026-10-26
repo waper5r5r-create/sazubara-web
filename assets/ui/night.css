@@ -1,0 +1,59 @@
+/* 별첩 밤하늘 팔레트: 미색 종이 바탕 + 남색 테두리·글자 + 금색 포인트.
+   celestial.css(보라·분홍) 다음에 불러와 색만 덮어쓴다. 크기·간격은 건드리지 않는다. */
+:root{
+ --night:#0d1430;--night-2:#1a2450;--night-3:#26336b;--cream:#fffaf0;--paper:#f6f0e4;--paper-2:#efe7d6;--gold-light:#f1d896;--gold-mid:#c9a24e;--gold-ink:#84621f;
+ --accent:#1f2a5c;--accent-ink:#f6ecd6;--accent-soft:#1f2a5c12;--gold:#b0852f;--border:#1b21401f;--border-strong:#1b214038;--shadow:0 10px 30px #0d14300f;
+ --bg:#f6f0e4;--surface:#fffaf0;--surface-2:#efe7d6;--surface-3:#e6dcc6;--fg:#1d2240;--fg-muted:#5d6075;--fg-faint:#77798a;
+ --c-lilac-line:#e3dac6;--c-lilac-pale:#efe7d6;--c-lilac-mist:#f6f0e4;--c-plum:#2a3560;--c-plum-deep:#1b2140;--c-lavender:#4a5585;--c-paper-blush:#fffaf0
+}
+body{background:radial-gradient(ellipse at 15% 0,#e9dcc0 0,transparent 45%),radial-gradient(ellipse at 100% 45%,#e4e2ee 0,transparent 40%),#eee6d6;background-attachment:fixed;color:var(--fg)}
+.app{background:var(--paper);box-shadow:0 0 80px #0d143014}
+
+/* 머리·아래 탭: 밤하늘 */
+.app-header{background:linear-gradient(110deg,#0b1024,#141c40 60%,#1f2a5c);border-bottom:1px solid #c9a24e55;box-shadow:0 5px 22px #0d143026}
+.app-header .mark{background:linear-gradient(110deg,#fff1c8,#f1d896 55%,#d9b86a);background-clip:text;-webkit-background-clip:text}
+.app-header .sub{color:#d9cfb6}
+.app-header .header-actions .header-icon-btn,.app-header .header-actions .sound-toggle,.app-header .header-icon-btn,.app-header .sound-toggle{color:#efe3c4!important;border-color:#f1d89630!important;background:#ffffff0a!important}
+.tabs-bar{background:linear-gradient(110deg,#0b1024f7,#17204af7)!important;border-top:1px solid #c9a24e55;box-shadow:0 -8px 30px #0d143026}
+.tabs-bar .tab-btn{color:#b9b6c8}.tabs-bar .tab-btn.active{color:var(--gold-light);background:radial-gradient(ellipse at center,#c9a24e26,transparent 75%);text-shadow:none}
+.tab-btn.active svg{filter:none}.tabs-bar .tab-btn.active .ico{background:#f1d8961a;box-shadow:0 0 0 7px #f1d8961a}
+
+/* 버튼·선택: 남색 바탕 + 미색 글자 + 금색 테 */
+.btn-primary,.unlock-btn{background:linear-gradient(110deg,#141c40,#26336b)!important;color:#f8ecca!important;border:1px solid #c9a24e70;box-shadow:0 7px 20px #0d143030}
+.btn-primary:not(:disabled):hover,.unlock-btn:hover{box-shadow:0 10px 25px #0d143040}
+.btn-primary:disabled{background:#e6dcc6!important;color:#8a8573!important}
+.seg button.active,.chip-btn.active,.report-cat-chip.active{background:var(--night-2);color:#f8ecca;border-color:transparent;box-shadow:0 3px 10px #0d143026}
+.share-btn{border-color:#1b214030;color:var(--fg)}
+.field input:focus,.field select:focus{outline:2px solid #26336b;box-shadow:0 0 0 5px #26336b14}
+.saju-step-track .active{background:#e9dfc8;color:#1f2a5c}
+
+/* 표면 */
+.card{border-color:#1b21401a;box-shadow:0 8px 26px #0d14300d;background:var(--cream)}
+.tab-intro{border-color:#d9c79b80;background:radial-gradient(ellipse at top right,#f1d8963d,transparent 70%),linear-gradient(120deg,#fbf3e0,#f3ead6)}
+.tab-intro:after{border-color:#c9a24e40}.tab-intro .eyebrow{color:var(--gold-ink)}.tab-intro h1,.section-title{color:#1b2140}
+.eyebrow,.editorial-tag{color:var(--gold-ink)}
+.curiosity-strip{background:linear-gradient(100deg,#f7eedb,#efe7d6);border-color:#d9c79b}.curiosity-strip span{color:#5a4a26}
+.personal-traits{border-color:#e3dac6;background:linear-gradient(130deg,#fbf3e0,#fffaf0)}.personal-traits small{color:var(--gold-ink)}.personal-traits li p{color:#2a2f4d}.personal-traits li+li,.personal-traits li{border-color:#e3dac6}
+.lucky-chip{background:#f3ead6;border-color:#e3d6b8}.lucky-chip .ic{color:#26336b}.lucky-chip .k{color:#6d6656}.lucky-chip .v{color:#1d2240}
+.fortune-tile{background:#f7f0e2;border-color:#e3d8bf}.fortune-tile .ttl{color:#1f2a5c}.fortune-tile .body{color:#3b3f58}
+#myroom-card-wrap .myroom-count{color:var(--fg-muted)}
+
+/* 콘텐츠 목록 */
+.report-card{border-color:#d9c79b99;box-shadow:0 9px 24px #0d143012}
+.report-card .nm{color:#1b2140}.report-card .tagline,.report-grid .report-card .tagline{color:#5d6075}.report-card .report-discover{color:#1f2a5c}
+.report-card[data-cat] .report-text{background:linear-gradient(150deg,#fffaf0,#f6eedd)}
+.report-card[data-cat="연애"]{border-color:#e2c3b9}.report-card[data-cat="연애"] .report-format{color:#9b4a5c}
+.report-card[data-cat="재물"]{border-color:#d7bd8b}.report-card[data-cat="재물"] .report-format{color:#84621f}
+.report-card[data-cat="일·진로"]{border-color:#b9c7d6}.report-card[data-cat="일·진로"] .report-format{color:#2f5a7a}
+
+/* 어두운 장면 판: 보라 → 남색 */
+.journal-hero{background:radial-gradient(ellipse at 84% 25%,#c9a24e30,transparent 50%),radial-gradient(ellipse at 15% 100%,#3a4f9a55,transparent 50%),linear-gradient(145deg,#0b1024,#1a2450 58%,#141c40);border-color:#c9a24e55;box-shadow:0 16px 40px #0d143030}
+.journal-hero .editorial-tag{color:#e6cb8b}.journal-hero-copy>p:last-child{color:#dcd3be}.journal-hero:after{border-color:#f1d89630}
+.everyday-title{border-color:#c9a24e55;box-shadow:0 14px 36px #0d143030;background:radial-gradient(ellipse at 78% 50%,#3a4f9a55,transparent 56%),linear-gradient(120deg,#0b1024,#1a2450 65%,#141c40)}
+.everyday-title:after{border-color:#f1d89624}
+.report-page .reader-cover,.report-page .pocha-cover{background:radial-gradient(ellipse at top right,#3a4f9a40,transparent 60%),linear-gradient(110deg,#0b1024,#17204a);border-bottom-color:#c9a24e33}
+.report-page .reading-point{border-bottom-color:#c9a24e24}.report-page .reading-point h3{border-left-color:#c9a24e}
+.report-page .reading-preview>.reader-kicker{color:#e6cb8b}.report-page .reading-basis{color:#c7c3b4}
+.report-page .reader-offer,.report-page .pocha-offer{background:radial-gradient(ellipse at top right,#3a4f9a33,transparent 70%),#111938;border-color:#c9a24e4d}
+.report-page .reader-price-note{color:#d3cbb6}.report-page .card{background:#111938}
+.reading-intro-art{border-color:#c9a24e33;background:#0d1430}
