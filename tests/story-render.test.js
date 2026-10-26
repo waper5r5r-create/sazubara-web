@@ -298,6 +298,6 @@ test('free result opens with a portrait and personal scene sentences',()=>{
 
 test('home content cards show the first good year already shown free',()=>{
  const r=api.computeSaju({year:1993,month:5,day:14,hour:8,minute:30,isLunar:false,isLeapMonth:false,unknownTime:false,gender:'f',name:'지은',city:'seoul',useCorrection:false});
- for(const f of ['_career-content','_marriage-content','_wealth-content','_love-content']){const line=api.homePreviewLine(require('../api/'+f).concept,r);assert.match(line,/home-content-peek">✦ (올해|내년|후년|3년 뒤) · \S/);}
+ for(const f of ['_career-content','_marriage-content','_wealth-content','_love-content']){const line=api.homePreviewLine(require('../api/'+f).concept,r);assert.match(line,/home-content-peek">✦ 지은님\S.*\?<\/em>/);}
  assert.equal(api.homePreviewLine({id:'x',category:'직장'},r),'');assert.equal(api.homePreviewLine(require('../api/_career-content').concept,null),'');
 });
