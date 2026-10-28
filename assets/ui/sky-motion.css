@@ -1,0 +1,12 @@
+/* A stable viewport with independent distant nebula, dust and near stars. */
+.sky-stage,.sky-stage.is-focus{height:clamp(510px,72svh,660px);aspect-ratio:auto;background:radial-gradient(ellipse at 65% 25%,#162440,#070b1c 70%)}
+.sky-stage .sky-nebula-art,.sky-stage.is-far .sky-nebula-art{inset:-35%;width:170%;height:170%;animation:none;object-fit:cover;transform-origin:center;opacity:.8;pointer-events:none;will-change:transform;z-index:0}
+.sky-stage .sky-tint{inset:-35%;pointer-events:none;z-index:0}
+.sky-cam{z-index:2}.sky-depth{position:absolute;inset:-60%;z-index:1;pointer-events:none;opacity:.65;background-image:radial-gradient(1px 1px at 17px 23px,#fff5d9 95%,transparent),radial-gradient(1.5px 1.5px at 79px 113px,#c6d6ff 95%,transparent),radial-gradient(1px 1px at 145px 67px,#fff 95%,transparent);background-size:173px 191px,257px 283px,311px 239px;will-change:transform}
+.sky-stage.is-focus .sky-star:not(.is-cur){animation:none;opacity:.1}.sky-focus{z-index:5;background:linear-gradient(transparent 35%,#070b1ce8)}
+.sky-fcard{top:30%;width:48%;max-width:218px}.sky-panel{bottom:16px;max-height:35%;background:#101a30ed;border:1px solid #dfc58a40;color:#fff4dc;box-shadow:0 12px 30px #0005;backdrop-filter:blur(12px)}
+.sky-panel h3{color:#fff0d0}.sky-panel p{color:#d3d8e5}.sky-panel .sky-panel-kicker{color:#e7c98b}.sky-panel-nav button{background:#ffffff10;border-color:#dfc58a40;color:#f6e5c0}
+.sky-focus.in .sky-fcard{animation:skyCardIn .7s cubic-bezier(.16,1,.3,1) forwards}.sky-focus.in .sky-fcard-inner{animation:skyCardFlip .85s cubic-bezier(.4,0,.2,1) .5s both}.sky-focus.in .sky-panel{animation:skyPanelIn .65s ease-out 1.15s forwards}
+@keyframes rv-flip{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
+.rv-card{transition:filter .8s}.p4 .rv-card{filter:drop-shadow(0 0 18px #e7c98b30)}
+@media(prefers-reduced-motion:reduce){.sky-stage *,.star-stage.rv *{animation-duration:.01ms!important;animation-delay:0s!important;transition:none!important}.sky-focus.in .sky-fcard{opacity:1;transform:translate(-50%,-50%)}.sky-focus.in .sky-fcard-inner{transform:rotateY(180deg)}.sky-focus.in .sky-panel{opacity:1;transform:none}}

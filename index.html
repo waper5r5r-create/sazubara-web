@@ -1462,6 +1462,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
 <link rel="stylesheet" href="/assets/ui/night.css?v=2">
+<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=1">
 </head>
 <body>
 
@@ -3265,7 +3266,7 @@ function starGiftHtml(result){
 function starRevealKey(result){return 'byeolcheop_star_'+(result.day?result.day.gan+result.day.zhi:'')+(result.year?result.year.gan+result.year.zhi:'');}
 function starRevealSeen(result){try{return localStorage.getItem(starRevealKey(result))==='1';}catch(e){return false;}}
 function starRevealDone(scope,result){var gift=$('[data-star-gift]',scope);if(!gift)return;gift.classList.add('is-done');gift.innerHTML=myStarCardHtml(result);wireStarCard(gift);try{localStorage.setItem(starRevealKey(result),'1');}catch(e){}}
-/* 별 카드 받기 연출(약 7초, 건너뛰기 가능):
+/* 별 카드 받기 연출(약 5.6초, 공개 후 사용자가 닫을 때까지 유지):
    1) 성운 위에 내 여덟 글자가 하나씩 떠오름 → 2) 가운데로 모여 빛이 됨 → 3) 빛 속에서 카드 뒷면이 나타남
    → 4) 카드가 뒤집히며 수호수 공개, 별가루가 퍼지고 이름이 뜸 → 5) 내 별 카드 화면으로 */
 function playStarReveal(scope,result){
@@ -3276,7 +3277,7 @@ function playStarReveal(scope,result){
  var who=result.name?esc(result.name)+'님':'나';
  btn.hidden=true;stage.hidden=false;gift.classList.add('is-playing');stage.className='star-stage rv';
  stage.innerHTML='<img class="rv-sky" src="/assets/album/nebula.webp" alt="" decoding="async">'+
-  '<div class="rv-ring">'+glyphs.map(function(g,i){return '<span style="--a:'+(i*(360/glyphs.length)-90)+'deg;--d:'+(i*0.2).toFixed(2)+'s">'+esc(g)+'</span>';}).join('')+'</div>'+
+  '<div class="rv-ring">'+glyphs.map(function(g,i){return '<span style="--a:'+(i*(360/glyphs.length)-90)+'deg;--d:'+(i*0.1).toFixed(2)+'s">'+esc(g)+'</span>';}).join('')+'</div>'+
   '<i class="rv-core"></i><i class="rv-rays"></i>'+
   '<div class="rv-card"><div class="rv-card-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img src="/assets/guardians/'+t.asset+'.webp" alt="" decoding="async"></div></div></div>'+
   '<div class="rv-sparks" aria-hidden="true">'+Array.apply(null,{length:14}).map(function(_,i){return '<i style="--r:'+(i*360/14)+'deg;--l:'+(90+(i%3)*28)+'px"></i>';}).join('')+'</div>'+
@@ -3285,8 +3286,8 @@ function playStarReveal(scope,result){
  var timers=[],done=false;
  function step(cls,text,fn){return function(){stage.classList.add(cls);var tx=$('.rv-step',stage);if(tx&&text)tx.textContent=text;if(fn)fn();};}
  function finish(){if(done)return;done=true;timers.forEach(clearTimeout);starRevealDone(scope,result);}
- [[60,step('p1')],[2100,step('p2','나를 닮은 수호수를 찾는 중…')],[3100,step('p3','카드를 만드는 중…')],
-  [4700,step('p4','내 별 카드',function(){try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}})],[7600,finish]]
+ [[60,step('p1')],[1500,step('p2','나를 닮은 수호수를 찾는 중…')],[2400,step('p3','카드를 만드는 중…')],
+  [3400,step('p4','내 별 카드',function(){try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}})],[5600,function(){var skip=$('.rv-skip',stage);if(skip)skip.textContent='내 별 카드 간직하기';}]]
   .forEach(function(x){timers.push(setTimeout(x[1],x[0]));});
  $('.rv-skip',stage).addEventListener('click',finish);
 }
@@ -3408,7 +3409,7 @@ function skyHtml(result,list){
  return '<section class="sky" aria-label="나의 별첩">'+
   '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':list.length?'친구 '+list.length+'명이 내 별자리에 있어요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
   '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
-   '<div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
+   '<div class="sky-depth" data-sky-depth aria-hidden="true"></div><div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
    '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs><radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
    '<i class="sky-shoot" aria-hidden="true"></i>'+
    '<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button>'+
@@ -3432,12 +3433,15 @@ function wireSky(scope,list){
  var stage=$('[data-sky]',scope);if(!stage)return;
  var cam=$('[data-sky-cam]',stage),focus=$('[data-sky-focus]',stage),panel=$('[data-sky-panel]',stage),fimg=$('[data-sky-fimg]',stage),pos=skyLayout(list);
  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- var W,H,k,pan={x:0,y:0},cur=-1,busy=false,dragMoved=false;
- function size(){W=stage.clientWidth;H=stage.clientHeight;k=W/360;}
- function apply(S,tx,ty,anim){cam.style.transition=anim&&!reduce?'transform 1.15s cubic-bezier(.3,.1,.2,1)':'none';cam.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+S+')';}
+ var W,H,k,pan={x:0,y:0},cur=-1,busy=false,dragMoved=false,travelTimer=0,inertia=0,velocity={x:0,y:0},lastMove=0;
+ var neb=$('.sky-nebula-art',cam),tint=$('.sky-tint',cam),depth=$('[data-sky-depth]',stage);
+ if(neb)stage.insertBefore(neb,cam);if(tint)stage.insertBefore(tint,cam);
+ function cancelTravel(){clearTimeout(travelTimer);cancelAnimationFrame(inertia);}
+ function size(){W=stage.clientWidth;H=stage.clientHeight;k=W/360;cam.style.height=(480*k)+'px';}
+ function apply(S,tx,ty,anim){var ease=anim&&!reduce?'transform 1.2s cubic-bezier(.22,.65,.25,1)':'none';cam.style.transition=ease;cam.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+S+')';if(neb){neb.style.transition=ease;neb.style.transform='translate('+((tx-W*(1-S)/2)*.08)+'px,'+((ty-H*(1-S)/2)*.08)+'px) scale('+(1+(S-1)*.12)+')';}if(depth){depth.style.transition=ease;depth.style.transform='translate('+(tx*.23)+'px,'+(ty*.23)+'px) scale('+(1+(S-1)*.3)+')';}}
  function camFar(anim){size();var S=.62;apply(S,W/2-180*k*S,H/2-240*k*S,anim);}
- function camNear(anim){size();apply(1,pan.x,pan.y,anim);}
- function camFocus(i){size();var S=2.3,p=pos[i];apply(S,W/2-p.x*k*S,H*.25-p.y*k*S,true);}
+ function camNear(anim){size();apply(1,pan.x,(H-480*k)/2+pan.y,anim);}
+ function camFocus(i){size();var S=2.3,p=pos[i];apply(S,W/2-p.x*k*S,H*.30-p.y*k*S,true);}
  camFar(false);
  function enter(){if(!stage.classList.contains('is-far'))return;stage.classList.remove('is-far');stage.classList.add('is-open');camNear(true);try{soundReveal();}catch(e){}}
  function markCur(i){$all('.sky-star',stage).forEach(function(g){g.classList.toggle('is-cur',Number(g.dataset.skyStar)===i);});}
@@ -3452,26 +3456,26 @@ function wireSky(scope,list){
   if(more)more.addEventListener('click',function(){openMyroomDetail(list[cur]);});
  }
  function go(i){
-  if(busy||!list[i])return;busy=true;var first=cur<0;cur=i;
+  if(busy||!list[i])return;cancelTravel();busy=true;var first=cur<0;cur=i;
   stage.classList.add('is-focus');markCur(i);try{soundTap();}catch(e){}
   if(!first){focus.classList.remove('in');focus.classList.add('out');}
   camFocus(i);
-  setTimeout(function(){focus.classList.remove('out');showCard(i);busy=false;},reduce?0:(first?900:1000));
+  travelTimer=setTimeout(function(){if(!stage.isConnected)return;focus.classList.remove('out');showCard(i);busy=false;},reduce?0:1220);
  }
- function close(){if(cur<0)return;cur=-1;focus.classList.remove('in');focus.hidden=true;stage.classList.remove('is-focus');markCur(-1);camNear(true);}
+ function close(){if(cur<0)return;cancelTravel();busy=false;cur=-1;focus.classList.remove('in');focus.hidden=true;stage.classList.remove('is-focus');markCur(-1);camNear(true);}
  $('[data-sky-close]',stage).addEventListener('click',close);
  var enterBtn=$('[data-sky-enter]',stage);if(enterBtn)enterBtn.addEventListener('click',enter);
  $all('[data-sky-star]',scope).forEach(function(el){
   function open(){if(dragMoved)return;var i=Number(el.dataset.skyStar);
    if(!stage.contains(el))stage.scrollIntoView({behavior:'smooth',block:'center'});
-   if(stage.classList.contains('is-far')){enter();setTimeout(function(){go(i);},reduce?0:900);}else go(i);}
+   if(stage.classList.contains('is-far')){enter();travelTimer=setTimeout(function(){go(i);},reduce?0:1220);}else go(i);}
   el.addEventListener('click',open);el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
  });
  /* 끌어서 둘러보기: 펼친 상태에서만, 너무 멀리 가지 않게 */
  var start=null;
- stage.addEventListener('pointerdown',function(e){if(stage.classList.contains('is-far')||cur>=0||e.target.closest('button'))return;start={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};dragMoved=false;});
- stage.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dx)+Math.abs(dy)>6)dragMoved=true;if(!dragMoved)return;pan.x=Math.max(-90,Math.min(90,start.px+dx));pan.y=Math.max(-90,Math.min(90,start.py+dy));camNear(false);});
- function end(){if(!start)return;start=null;setTimeout(function(){dragMoved=false;},60);}
+ stage.addEventListener('pointerdown',function(e){if(stage.classList.contains('is-far')||cur>=0||e.target.closest('button'))return;cancelAnimationFrame(inertia);velocity={x:0,y:0};lastMove=performance.now();start={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};dragMoved=false;});
+ stage.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dx)+Math.abs(dy)>6)dragMoved=true;if(!dragMoved)return;if(!stage.hasPointerCapture(e.pointerId))stage.setPointerCapture(e.pointerId);var now=performance.now(),dt=Math.max(8,now-lastMove),nx=Math.max(-W*.45,Math.min(W*.45,start.px+dx)),ny=Math.max(-H*.35,Math.min(H*.35,start.py+dy));velocity.x=(nx-pan.x)*16/dt;velocity.y=(ny-pan.y)*16/dt;lastMove=now;pan.x=nx;pan.y=ny;camNear(false);});
+ function end(){if(!start)return;start=null;if(performance.now()-lastMove>90)velocity={x:0,y:0};var last=performance.now();function coast(now){if(!stage.isConnected||cur>=0||reduce)return;var dt=Math.min(32,now-last)/16;last=now;velocity.x*=Math.pow(.91,dt);velocity.y*=Math.pow(.91,dt);pan.x=Math.max(-W*.45,Math.min(W*.45,pan.x+velocity.x*dt));pan.y=Math.max(-H*.35,Math.min(H*.35,pan.y+velocity.y*dt));camNear(false);if(Math.abs(velocity.x)+Math.abs(velocity.y)>.15)inertia=requestAnimationFrame(coast);}if(dragMoved&&!reduce)inertia=requestAnimationFrame(coast);setTimeout(function(){dragMoved=false;},60);}
  stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);stage.addEventListener('pointerleave',end);
  window.addEventListener('resize',function(){if(cur>=0)camFocus(cur);else if(stage.classList.contains('is-far'))camFar(false);else camNear(false);});
 }
