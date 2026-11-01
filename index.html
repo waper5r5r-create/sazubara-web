@@ -3501,7 +3501,7 @@ function wireSky(scope,list){
  }
  function showCard(i){
   var e=list[i],type=cardTypeOf(e);fimg.src=type?'/assets/guardians/'+type.asset+'.webp':'/assets/guardians/back.webp';
-  panel.innerHTML=skyPanelHtml(e,i,list.length);expandDetail();if(typeof document!=='undefined')focus.setAttribute('aria-label',(e.nameB||'상대방')+'님과 나의 궁합');var nb=$('[data-sky-next]',panel);if(nb)nb.textContent=(list[(i+1)%list.length].nameB||'다음')+' →';
+  panel.innerHTML=skyPanelHtml(e,i,list.length);focus.hidden=false;expandDetail();if(typeof document!=='undefined')focus.setAttribute('aria-label',(e.nameB||'상대방')+'님과 나의 궁합');var nb=$('[data-sky-next]',panel);if(nb)nb.textContent=(list[(i+1)%list.length].nameB||'다음')+' →';
   focus.hidden=false;focus.classList.remove('in');void focus.offsetWidth;focus.classList.add('in');focus.classList.toggle('is-repeat',!!seenCards[i]);seenCards[i]=true;
   setTimeout(function(){try{soundReveal();}catch(x){}try{hapticPulse([10,30,14]);}catch(x){}},reduce?0:1100);
   var prev=$('[data-sky-prev]',panel),next=$('[data-sky-next]',panel),more=$('[data-sky-more]',panel);
