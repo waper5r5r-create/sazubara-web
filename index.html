@@ -1451,7 +1451,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=6">
 <link rel="stylesheet" href="/assets/ui/night.css?v=3">
 <link rel="stylesheet" href="/assets/ui/sky-motion.css?v=11">
-<link rel="stylesheet" href="/assets/ui/reading-ux-v1.css">
+<link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 </head>
 <body>
 
@@ -4491,7 +4491,7 @@ function reportCardHtml(c){
   var coverInner = coverSrc ? '<img src="'+esc(coverSrc)+'" alt="" loading="lazy" decoding="async">' : '<span class="report-cover-fallback">'+BRAND_MARK_SVG+'</span>';
   return '<button type="button" class="report-card" data-report-id="'+esc(String(c.id))+'" data-cat="'+esc(c.category||'')+'"'+(available?'':' disabled')+'>'+
       '<span class="report-cover">'+coverInner+'</span>'+
-      '<span class="report-text"><span class="report-format">'+esc(c.category||'')+(available?'':' · 준비 중')+'</span><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc(c.tagline||'')+'</span>'+
+      '<span class="report-text"><span class="report-format">'+esc(c.category||'')+(available?'':' · 준비 중')+'</span><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc(({연애:'나는 어떤 사람에게 끌릴까?',재물:'돈을 모으는 힘과 새는 습관은?',직장:'내게 맞는 일하는 방식은?',결혼:'함께 살 때 중요하게 여기는 것은?'}[c.category])||c.tagline||'')+'</span>'+
         '<span class="report-card-footer">'+
         (unlocked?'<span class="report-price">콘텐츠 보유</span>':available?('<span class="report-price">'+(c.price_krw?krwFmt(c.price_krw)+'원':'')+'</span><span class="report-discover">무료 풀이 읽기 '+uiIcon('arrow')+'</span>'):'')+'</span>'+
       '</span>'+
