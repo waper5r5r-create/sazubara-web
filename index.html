@@ -1450,7 +1450,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
 <link rel="stylesheet" href="/assets/ui/night.css?v=2">
-<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=2">
+<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=3">
 </head>
 <body>
 
@@ -3264,7 +3264,7 @@ function playStarReveal(scope,result){
  var glyphs=[result.time,result.day,result.month,result.year].filter(Boolean).reduce(function(a,p){return a.concat([p.gan,p.zhi]);},[]);
  var who=result.name?esc(result.name)+'님':'나';
  btn.hidden=true;stage.hidden=false;gift.classList.add('is-playing');stage.className='star-stage rv';
- stage.innerHTML='<img class="rv-sky" src="/assets/album/nebula.webp" alt="" decoding="async">'+
+ stage.innerHTML='<img class="rv-sky" src="/assets/album/deep-space-v2.webp" alt="" decoding="async">'+
   '<div class="rv-ring">'+glyphs.map(function(g,i){return '<span style="--a:'+(i*(360/glyphs.length)-90)+'deg;--d:'+(i*0.1).toFixed(2)+'s">'+esc(g)+'</span>';}).join('')+'</div>'+
   '<i class="rv-core"></i><i class="rv-rays"></i>'+
   '<div class="rv-card"><div class="rv-card-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img src="/assets/guardians/'+t.asset+'.webp" alt="" decoding="async"></div></div></div>'+
@@ -3369,7 +3369,7 @@ function albumFirstPageHtml(result,list){
    별을 누르면 별첩이 펼쳐져 그 사람의 수호수와 "OO님과 나"를 읽는다. 등급 글자는 쓰지 않는다. ---- */
 var SKY_DIR={목:0,화:90,금:180,수:-90};
 var SKY_TINT={목:'#3f9a82',화:'#c8603f',토:'#b8903f',금:'#b9b4c8',수:'#4566b8'};
-var NEBULA_ART='/assets/album/nebula.webp';
+var NEBULA_ART='/assets/album/deep-space-v2.webp';
 function skyWord(score){return score>=90?'운명처럼 닿은 인연':score>=70?'마음이 잘 맞는 인연':score>=50?'알수록 편한 인연':'서로 다른 매력의 인연';}
 function skyLayout(list){
  var groups={};list.forEach(function(e,i){var wx=e.dayGanWxB||'토';(groups[wx]=groups[wx]||[]).push(i);});
@@ -3426,7 +3426,7 @@ function wireSky(scope,list){
  if(neb)stage.insertBefore(neb,cam);if(tint)stage.insertBefore(tint,cam);
  function cancelTravel(){clearTimeout(travelTimer);cancelAnimationFrame(inertia);}
  function size(){W=stage.clientWidth;H=stage.clientHeight;k=W/360;cam.style.height=(480*k)+'px';}
- function apply(S,tx,ty,anim){var ease=anim&&!reduce?'transform 1.2s cubic-bezier(.22,.65,.25,1)':'none';cam.style.transition=ease;cam.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+S+')';if(neb){neb.style.transition=ease;neb.style.transform='translate('+((tx-W*(1-S)/2)*.08)+'px,'+((ty-H*(1-S)/2)*.08)+'px) scale('+(1+(S-1)*.12)+')';}if(depth){depth.style.transition=ease;depth.style.transform='translate('+(tx*.23)+'px,'+(ty*.23)+'px) scale('+(1+(S-1)*.3)+')';}}
+ function apply(S,tx,ty,anim){var ease=anim&&!reduce?'transform 1.2s cubic-bezier(.22,.65,.25,1)':'none';cam.style.transition=ease;cam.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+S+')';if(neb){neb.style.transition=ease;neb.style.transform='translate('+((tx-W*(1-S)/2)*.12)+'px,'+((ty-H*(1-S)/2)*.12)+'px) scale('+(1+(S-1)*.025)+')';}if(depth){depth.style.transition=ease;depth.style.transform='translate('+(tx*.23)+'px,'+(ty*.23)+'px) scale('+(1+(S-1)*.3)+')';}}
  function camFar(anim){size();var S=.62;apply(S,W/2-180*k*S,H/2-240*k*S,anim);}
  function camNear(anim){size();apply(1,pan.x,(H-480*k)/2+pan.y,anim);}
  function camFocus(i){size();var S=2.3,p=pos[i];apply(S,W/2-p.x*k*S,H*.30-p.y*k*S,true);}
