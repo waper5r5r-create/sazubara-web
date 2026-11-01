@@ -39,7 +39,7 @@ test('generated prologue wording changes with real saju',()=>{
 
 test('premium report adds substantive personalised chapters',()=>{ const full=api.detailReportHtml(concept,[],result);assert.ok(full.includes('십신으로'));assert.ok(full.includes('일주일 실천'));assert.ok(full.includes('수 6개'));assert.ok(full.replace(/<[^>]*>/g,'').length>3000);});
 
-test('cover and sticky stage labels omit all amounts',()=>{const card=api.reportCardHtml({...concept,price_krw:4900});assert.ok(card.includes('4,900원~'));assert.ok(!card.includes('990'));const steps=api.readerStepsHtml({access:{story:false,detail:false}},'story');assert.ok(!steps.includes('원'));assert.ok(api.stageOfferHtml(concept,'detail').includes('12,900'));});
+test('cover and sticky stage labels omit all amounts',()=>{const card=api.reportCardHtml({...concept,price_krw:4900});assert.ok(card.includes('4,900원')&&!card.includes('원~'));assert.ok(!card.includes('990'));const steps=api.readerStepsHtml({access:{story:false,detail:false}},'story');assert.ok(!steps.includes('원'));assert.ok(api.stageOfferHtml(concept,'detail').includes('12,900'));});
 
 test('collectible grades use compatibility boundaries and symbolic art uses the partner',()=>{for(const [score,grade] of [[90,'S'],[89,'A'],[70,'A'],[69,'B'],[50,'B'],[49,'C'],[0,'C']])assert.equal(api.myroomTier(score).grade,grade);for(const [wx,key] of [['목','wood'],['화','fire'],['토','earth'],['금','metal'],['수','water']]){const card=api.collectibleCardHtml({id:'test',nameB:'상대',score:95,dayGanWxA:'화',dayGanWxB:wx,cardPolarity:'yin',shinsalB:['dohwa']},false);assert.ok(card.includes('/assets/guardians/'+key+'-yin.webp')&&card.includes('/assets/guardians/frames/s.webp'));assert.ok(card.includes('data-grade="S"'));assert.ok(card.includes('꽃의 인장'));assert.ok(card.includes('음의 기운'));}});
 
@@ -61,7 +61,7 @@ test('reader keeps free opening and separate purchase gates without reviews',()=
  const data={access:{story:false,detail:false},rows:[{caption_template:'PRIVATE_SENTENCE'}]};
  const text=api.storyFlowHtml(concept,data,result);
  assert.equal(api.readerStepsHtml(data,'story'),'');
- assert.equal((text.match(/class="story-frame /g)||[]).length,3);assert.ok(text.includes('locked-peek'));
+ assert.equal((text.match(/class="story-frame /g)||[]).length,3);assert.ok(text.includes('report-real-sample'));
  assert.ok(!text.includes('PRIVATE_SENTENCE'));
  assert.ok(text.includes('data-gate="story"'));assert.ok(!text.includes('data-gate="detail"'));
  assert.ok(!text.includes('story-reviews'));
@@ -101,7 +101,7 @@ test('summary has three distinct traits grounded in the chart',()=>{
 test('all five topics have a personalised free reading before checkout',()=>{
  for(const cat of ['연애','직장','재물','건강','인간관계']){const a=api.worryPreviewHtml(result,cat),b=api.worryPreviewHtml({...result,dayGanWx:'화'},cat);assert.ok(a.includes(cat+' 무료 풀이'));assert.ok(a.replace(/<[^>]*>/g,'').length>230);assert.notEqual(a,b);assert.ok(!a.includes('unlock-btn'));}
  assert.equal(api.worryPreviewHtml(result,'invalid'),'');assert.ok(api.worryPreviewHtml(result,'건강').includes('건강은 사주로 판단할 수 없어요'));
- const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('saju-board'));assert.ok(main.includes('data-home-contents'));assert.ok(main.includes('data-star-make'));assert.ok(main.includes('btn-edit-saju'));assert.ok(main.indexOf('saju-board')<main.indexOf('data-star-make'));
+ const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('saju-board'));assert.ok(main.includes('data-home-contents'));assert.ok(main.includes('data-star-make'));assert.ok(main.includes('btn-edit-saju'));assert.ok(main.indexOf('data-star-make')<main.indexOf('saju-board'));
 });
 
 test('compatibility guidance includes all relationships without assuming romance',()=>{
@@ -133,10 +133,10 @@ test('career report: 서림 free view hides paid copy, owned stages render serve
  for(const x of rows){assert.ok(x.rel in m.story.yearByRelation);assert.ok(x.tg in m.story.yearByTenGod);}
  const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
  const card=m.story.cards[r.day.ganKr];
- assert.ok(free.includes(card.title));assert.ok(!free.includes(card.who.slice(0,15)));assert.ok(!free.includes(card.shine.slice(0,15)));assert.ok(!free.includes(m.story.burnout[r.dayGanWx].slice(0,15)));
+ assert.ok(free.includes(card.title));assert.ok(!free.includes(card.who.slice(0,15)));assert.ok(!free.includes(card.shine.slice(0,15)));assert.ok(free.includes(m.story.burnout[r.dayGanWx].slice(0,15)));
  assert.ok(free.includes('locked-peek'));assert.ok(free.includes('직업 사주 전체 보기 · 7,900원'));assert.ok(free.includes('한 번에 소장'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('서림'));
  const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
- assert.ok(free.includes('saju-hook'));assert.ok((free.match(/<li><p>/g)||[]).length>=4);assert.equal((story.match(/class="route-stop"/g)||[]).length,10);assert.ok(!story.includes('love-letter'));
+ assert.ok(free.includes('saju-hook'));assert.ok((free.match(/<li(?: class="hook-extra")?><p>/g)||[]).length>=4);assert.equal((story.match(/class="route-stop"/g)||[]).length,10);assert.ok(!story.includes('love-letter'));
  assert.ok(story.includes(card.who.slice(0,20)));assert.ok(story.includes('서림의 처방전'));assert.ok(!story.includes('data-gate'));assert.ok(!story.includes('data-gate="story"'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));assert.ok(!story.includes('deep-report'));
  for(const n of ['environment','relation','job-change','side-project','pay-growth','stuck','small-step','compass-gift','prescription','farewell'])assert.ok(story.includes('/assets/career/scenes/'+n+'.webp'),n);for(const [wx,k] of [['목','mok'],['화','hwa'],['토','to'],['금','geum'],['수','su']]){const v=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story]},{...r,dayGanWx:wx});for(const s of ['strength','burnout','rest'])assert.ok(v.includes('/assets/career/scenes/var/'+s+'-'+k+'.webp'),s+k);}assert.ok(free.includes('/assets/career/cards/card-'));
  const full=api.storyFlowHtml(m.concept,{access:{story:true,detail:true},rows:[m.story],detailRows:[m.detail]},r);
@@ -158,7 +158,7 @@ test('love report: 해랑 free view hides paid copy, owned stages render server 
  for(const x of rows){assert.ok(x.rel in m.story.yearByRelation);assert.ok(x.tg in m.story.yearByTenGod);}
  const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
  const card=m.story.cards[r.day.ganKr];
- assert.ok(free.includes(card.title));assert.ok(!free.includes(card.who.slice(0,15)));assert.ok(!free.includes(m.story.conflict[r.dayGanWx].slice(0,15)));assert.ok(!free.includes(m.story.attract[r.day.zhiKr].slice(0,15)));
+ assert.ok(free.includes(card.title));assert.ok(!free.includes(card.who.slice(0,15)));assert.ok(free.includes(m.story.conflict[r.dayGanWx].slice(0,15)));assert.ok(!free.includes(m.story.attract[r.day.zhiKr].slice(0,15)));
  assert.ok(free.includes('locked-peek'));assert.ok(free.includes('연애 사주 전체 보기 · 7,900원'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('해랑'));
  const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
  assert.ok(story.includes(card.who.slice(0,20)));assert.ok(story.includes('해랑의 처방전'));assert.ok(!story.includes('data-gate'));assert.ok(!story.includes('data-gate="story"'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));assert.ok(!story.includes('deep-report'));
@@ -212,7 +212,7 @@ test('all three free openings lead with personalised readings instead of illustr
   const text=render('수');
   assert.ok(text.includes('내 사주 무료 풀이'));assert.ok(text.includes('임(수)'));
   assert.equal((text.match(/class="reading-point"/g)||[]).length,3);
-  assert.ok(text.includes('locked-peek'));assert.ok(text.indexOf('내 사주 무료 풀이')<text.indexOf('locked-peek'));
+  assert.ok(text.includes('report-real-sample'));assert.ok(text.indexOf('내 사주 무료 풀이')<text.indexOf('report-real-sample'));
   assert.ok(!text.includes('PAID_ONLY'));assert.ok(!text.includes('story-locked-preview'));
   assert.ok(text.indexOf('reading-preview')<text.indexOf('data-gate="story"'));
   assert.equal(new Set(['목','화','토','금','수'].map(render)).size,5);
