@@ -6,12 +6,12 @@ const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),
 const source=html.slice(html.indexOf('function wireSky('),html.indexOf('function skyPageHtml('));
 function fixture(reduce=false){
  const timers=new Map();let clock=0,id=0;
- function el(classes=[]){const set=new Set(classes);return {style:{},dataset:{},hidden:true,isConnected:true,clientWidth:360,clientHeight:560,handlers:{},classList:{add(...v){v.forEach(x=>set.add(x));},remove(...v){v.forEach(x=>set.delete(x));},contains(x){return set.has(x);},toggle(x,on){on?set.add(x):set.delete(x);}},addEventListener(t,f){this.handlers[t]=f;},contains(x){return x===star;},insertBefore(){},setPointerCapture(){this.captured=true;},hasPointerCapture(){return !!this.captured;},scrollIntoView(){},getBoundingClientRect(){return {top:0,bottom:560};},offsetWidth:360};}
- const stage=el(['is-far']),cam=el(),focus=el(),panel=el(),img=el(),neb=el(),depth=el(),star=el(),close=el(),enter=el();star.dataset.skyStar='0';
- const map={'[data-sky]':stage,'[data-sky-cam]':cam,'[data-sky-focus]':focus,'[data-sky-panel]':panel,'[data-sky-fimg]':img,'.sky-nebula-art':neb,'[data-sky-depth]':depth,'[data-sky-close]':close,'[data-sky-enter]':enter};
- const ctx={window:{matchMedia:()=>({matches:reduce}),addEventListener(){},innerHeight:800},$:(q)=>map[q]||null,$all:()=>[star],skyLayout:()=>[{x:90,y:150}],cardTypeOf:()=>({asset:'fire-yin'}),skyPanelHtml:()=>'<p>friend</p>',performance:{now:()=>clock},setTimeout:(f,ms)=>{timers.set(++id,{f,ms});return id;},clearTimeout:n=>timers.delete(n),requestAnimationFrame:()=>++id,cancelAnimationFrame(){},soundTap(){},soundReveal(){},hapticPulse(){}};
+ function el(classes=[]){const set=new Set(classes);return {style:{},dataset:{},hidden:true,isConnected:true,clientWidth:360,clientHeight:560,handlers:{},classList:{add(...v){v.forEach(x=>set.add(x));},remove(...v){v.forEach(x=>set.delete(x));},contains(x){return set.has(x);},toggle(x,on){on?set.add(x):set.delete(x);}},addEventListener(t,f){this.handlers[t]=f;},removeEventListener(t){delete this.handlers[t];},appendChild(e){e.parentNode=this;},setAttribute(k,v){this[k]=v;},removeAttribute(k){delete this[k];},querySelectorAll(){return [close];},focus(){this.focused=true;},contains(x){return x===star;},insertBefore(){},setPointerCapture(){this.captured=true;},hasPointerCapture(){return !!this.captured;},scrollIntoView(){},getBoundingClientRect(){return {top:0,bottom:560};},offsetWidth:360};}
+ const stage=el(['is-far']),cam=el(),focus=el(),panel=el(),img=el(),neb=el(),depth=el(),star=el(),close=el(),enter=el(),app=el(),body=el();app.inert=false;body.style.overflow='auto';star.dataset.skyStar='0';
+ const map={'.app':app,'[data-sky]':stage,'[data-sky-cam]':cam,'[data-sky-focus]':focus,'[data-sky-panel]':panel,'[data-sky-fimg]':img,'.sky-nebula-art':neb,'[data-sky-depth]':depth,'[data-sky-close]':close,'[data-sky-enter]':enter};
+ const ctx={document:{body,activeElement:star},window:{matchMedia:()=>({matches:reduce}),addEventListener(){},innerHeight:800},$:(q)=>map[q]||null,$all:()=>[star],skyLayout:()=>[{x:90,y:150}],cardTypeOf:()=>({asset:'fire-yin'}),skyPanelHtml:()=>'<p>friend</p>',performance:{now:()=>clock},setTimeout:(f,ms)=>{timers.set(++id,{f,ms});return id;},clearTimeout:n=>timers.delete(n),requestAnimationFrame:()=>++id,cancelAnimationFrame(){},soundTap(){},soundReveal(){},hapticPulse(){}};
  vm.createContext(ctx);vm.runInContext(source,ctx);ctx.wireSky({},[{nameB:'test'}]);
- return {stage,cam,focus,star,close,enter,timers,advance(){clock+=16;},run(ms){for(const [n,t]of [...timers])if(t.ms===ms){timers.delete(n);t.f();}}};
+ return {stage,cam,focus,star,close,enter,timers,app,body,advance(){clock+=16;},run(ms){for(const [n,t]of [...timers])if(t.ms===ms){timers.delete(n);t.f();}}};
 }
 test('a star tap remains a click; pointer capture starts only when dragging',()=>{
  const f=fixture();f.enter.handlers.click();const e={clientX:50,clientY:50,pointerId:1,target:{closest:()=>null}};
@@ -28,4 +28,11 @@ test('card opens after travel; camera geometry uses its actual container',()=>{
 });
 test('reduced motion reveals the card without travel delay',()=>{
  const f=fixture(true);f.enter.handlers.click();f.star.handlers.click();f.run(0);assert.equal(f.focus.hidden,false);assert.equal(f.cam.style.transition,'none');
+});
+
+test('expanded detail leaves the clipped universe and restores focus and scroll on Escape',()=>{
+ const f=fixture();f.enter.handlers.click();f.star.handlers.click();f.run(1220);
+ assert.equal(f.focus.parentNode,f.body);assert.equal(f.focus.role,'dialog');assert.equal(f.focus['aria-modal'],'true');assert.equal(f.app.inert,true);assert.equal(f.body.style.overflow,'hidden');
+ f.focus.handlers.keydown({key:'Escape',preventDefault(){}});
+ assert.equal(f.focus.parentNode,f.stage);assert.equal(f.focus.hidden,true);assert.equal(f.app.inert,false);assert.equal(f.body.style.overflow,'auto');assert.equal(f.star.focused,true);
 });
