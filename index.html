@@ -4647,7 +4647,7 @@ var HOME_BANNERS=[
  {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',img:'/assets/banners/marriage.webp',kicker:'결혼 사주',title:'나는 언제쯤<br>결혼하게 될까?',note:'앞부분은 무료'}
 ];
 function homeBannerHtml(){
- return '<section class="home-banners" aria-label="추천 콘텐츠"><div class="banner-track" data-banner-track>'+HOME_BANNERS.map(function(b,i){return '<button type="button" class="ny-banner" data-banner-id="'+esc(b.id)+'"><img src="'+b.img+'" alt=""'+(i?' loading="lazy"':'')+' decoding="async"><span><small>'+esc(b.kicker)+'</small><b>'+b.title+'</b><em>'+esc(b.note)+'</em></span></button>';}).join('')+'</div>'+
+ return '<section class="home-banners" aria-label="추천 콘텐츠"><div class="banner-track" data-banner-track>'+HOME_BANNERS.map(function(b,i){return '<button type="button" class="ny-banner" data-banner-id="'+esc(b.id)+'"><img src="'+b.img+'" alt="" decoding="async"><span><small>'+esc(b.kicker)+'</small><b>'+b.title+'</b><em>'+esc(b.note)+'</em></span></button>';}).join('')+'</div>'+
   '<div class="banner-dots" aria-hidden="true">'+HOME_BANNERS.map(function(b,i){return '<i'+(i?'':' class="on"')+'></i>';}).join('')+'</div></section>';
 }
 function wireHomeBanners(scope){
