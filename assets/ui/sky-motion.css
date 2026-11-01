@@ -19,3 +19,9 @@
 /* Drag without tap-highlight or text-selection flashes; keep layers on the GPU. */
 .sky-stage,.sky-stage *{-webkit-tap-highlight-color:transparent}.sky-stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .sky-cam,.sky-depth,.sky-stage .sky-nebula-art{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+
+/* Android flashed the whole sky white while panning: big masked/SVG layers ran out of GPU memory.
+   Use pre-rendered images, no masks, and let the browser promote layers only while they move. */
+.sky-stage .sky-nebula-art,.sky-stage.is-far .sky-nebula-art,.star-stage.rv .rv-sky{-webkit-mask-image:none!important;mask-image:none!important;will-change:auto}
+.sky-depth{background-image:url('/assets/album/deep-stars-v3.webp');will-change:auto}
+.sky-cam{will-change:auto}
