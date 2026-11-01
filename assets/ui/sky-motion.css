@@ -15,3 +15,7 @@
 @keyframes rv-flip{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
 .rv-card{transition:filter .8s}.p4 .rv-card{filter:drop-shadow(0 0 18px #e7c98b30)}
 @media(prefers-reduced-motion:reduce){.sky-stage *,.star-stage.rv *{animation-duration:.01ms!important;animation-delay:0s!important;transition:none!important}.sky-focus.in .sky-fcard{opacity:1;transform:translate(-50%,-50%)}.sky-focus.in .sky-fcard-inner{transform:rotateY(180deg)}.sky-focus.in .sky-panel{opacity:1;transform:none}}
+
+/* Drag without tap-highlight or text-selection flashes; keep layers on the GPU. */
+.sky-stage,.sky-stage *{-webkit-tap-highlight-color:transparent}.sky-stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.sky-cam,.sky-depth,.sky-stage .sky-nebula-art{backface-visibility:hidden;-webkit-backface-visibility:hidden}

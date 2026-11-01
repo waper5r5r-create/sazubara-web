@@ -1450,7 +1450,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
 <link rel="stylesheet" href="/assets/ui/night.css?v=2">
-<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=3">
+<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=4">
 </head>
 <body>
 
@@ -3370,7 +3370,14 @@ function albumFirstPageHtml(result,list){
 var SKY_DIR={목:0,화:90,금:180,수:-90};
 var SKY_TINT={목:'#3f9a82',화:'#c8603f',토:'#b8903f',금:'#b9b4c8',수:'#4566b8'};
 var NEBULA_ART='/assets/album/deep-space-v2.webp';
-function skyWord(score){return score>=90?'운명처럼 닿은 인연':score>=70?'마음이 잘 맞는 인연':score>=50?'알수록 편한 인연':'서로 다른 매력의 인연';}
+/* 대부분의 궁합 점수가 50~69점이라 점수 구간만 쓰면 모두 같은 말이 된다. 일지 관계(7가지) → 일간 관계(5가지) 순으로 말을 고른다. */
+var SKY_ZHI_WORD={sanhe:'함께하면 힘이 나는 인연',liuhe:'편안하게 스며드는 인연',same:'닮은 점이 많은 인연',hai:'작은 오해만 조심하면 되는 인연',yuanjin:'표현이 엇갈리기 쉬운 인연',xing:'맞춰 가며 단단해지는 인연',chong:'서로에게 자극이 되는 인연'};
+var SKY_GAN_WORD={sheng:'내가 힘이 되어 주는 인연',shengBack:'나를 든든하게 받쳐 주는 인연',same:'같은 곳을 바라보는 인연',ke:'내가 이끌어 주게 되는 인연',keBack:'나를 단단하게 다듬어 주는 인연'};
+function skyWord(e){
+ if(typeof e!=='object'||!e){var n=Number(e)||0;return n>=88?'운명처럼 닿은 인연':n>=70?'마음이 잘 맞는 인연':n>=50?'알수록 편한 인연':'서로 다른 매력의 인연';}
+ if((Number(e.score)||0)>=88)return '운명처럼 닿은 인연';
+ return SKY_ZHI_WORD[e.zhiRel]||SKY_GAN_WORD[e.ganRel]||'알수록 편한 인연';
+}
 function skyLayout(list){
  var groups={};list.forEach(function(e,i){var wx=e.dayGanWxB||'토';(groups[wx]=groups[wx]||[]).push(i);});
  var out=[];
@@ -3391,7 +3398,7 @@ function skyIsDemo(){return typeof location!=='undefined'&&/[?&]skydemo/.test(lo
 function skyHtml(result,list){
  list=list||[];var t=myStarType(result),pos=skyLayout(list),dom=result&&result.wxCount?dominantWx(result.wxCount).wx:'수';
  var lines=list.map(function(e,i){return '<line pathLength="1" x1="180" y1="240" x2="'+pos[i].x+'" y2="'+pos[i].y+'" class="sky-line'+(pos[i].near?' is-near':'')+'" style="--d:'+(0.35+i*0.16).toFixed(2)+'s"/>';}).join('');
- var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e),sz=p.size;return '<g class="sky-star" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e.score))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+';--d:'+(0.5+i*0.16).toFixed(2)+'s"><g class="sky-star-in"><circle class="sky-hit" r="22"/><circle class="sky-halo" r="'+(sz*3.6).toFixed(1)+'"/><circle class="sky-burst" r="'+(sz*1.6).toFixed(1)+'"/><path class="sky-spark" d="M0 -'+(sz*2.6).toFixed(1)+'V'+(sz*2.6).toFixed(1)+'M-'+(sz*2.6).toFixed(1)+' 0H'+(sz*2.6).toFixed(1)+'"/><circle class="sky-core" r="'+(sz*.55).toFixed(1)+'"/></g><text class="sky-name" y="'+(sz+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
+ var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e),sz=p.size;return '<g class="sky-star" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+';--d:'+(0.5+i*0.16).toFixed(2)+'s"><g class="sky-star-in"><circle class="sky-hit" r="22"/><circle class="sky-halo" r="'+(sz*3.6).toFixed(1)+'"/><circle class="sky-burst" r="'+(sz*1.6).toFixed(1)+'"/><path class="sky-spark" d="M0 -'+(sz*2.6).toFixed(1)+'V'+(sz*2.6).toFixed(1)+'M-'+(sz*2.6).toFixed(1)+' 0H'+(sz*2.6).toFixed(1)+'"/><circle class="sky-core" r="'+(sz*.55).toFixed(1)+'"/></g><text class="sky-name" y="'+(sz+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
  var empty=list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">빈자리</text></g>';}).join(''):'';
  var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
@@ -3407,13 +3414,13 @@ function skyHtml(result,list){
   '</div>'+
   '<p class="sky-legend">가까이, 밝게 빛날수록 잘 맞는 사이예요. 하늘을 끌어서 둘러보세요.</p>'+
   '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구 초대하기</button>'+
-  (list.length?'<details class="sky-list"><summary>별 목록 '+list.length+'</summary><ul>'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((type?type.title+' · ':'')+skyWord(e.score))+'</span></button></li>';}).join('')+'</ul></details>':'')+
+  (list.length?'<details class="sky-list"><summary>별 목록 '+list.length+'</summary><ul>'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((type?type.title+' · ':'')+skyWord(e))+'</span></button></li>';}).join('')+'</ul></details>':'')+
  '</section>';
 }
 function skyFirst(text){text=String(text||'');var i=text.indexOf('. ');return i>0?text.slice(0,i+1):text;}
 function skyPanelHtml(e,i,n){
  var type=cardTypeOf(e),name=esc(e.nameB||'상대방');
- return '<p class="sky-panel-kicker">'+name+'님의 별 · '+esc(type?type.title:'')+'</p><h3>'+skyWord(e.score)+'</h3>'+
+ return '<p class="sky-panel-kicker">'+name+'님의 별 · '+esc(type?type.title:'')+'</p><h3>'+skyWord(e)+'</h3>'+
   (ZHI_REL_TEXT[e.zhiRel]?'<p>'+esc(skyFirst(ZHI_REL_TEXT[e.zhiRel]))+'</p>':'')+(GAN_REL_TEXT[e.ganRel]?'<p>'+esc(skyFirst(GAN_REL_TEXT[e.ganRel]))+'</p>':'')+
   '<div class="sky-panel-nav">'+(n>1?'<button type="button" data-sky-prev aria-label="이전 별">‹</button>':'')+(skyIsDemo()?'':'<button type="button" class="sky-panel-more" data-sky-more>궁합 자세히</button>')+(n>1?'<button type="button" data-sky-next aria-label="다음 별">›</button>':'')+'</div>';
 }
@@ -3426,7 +3433,7 @@ function wireSky(scope,list){
  if(neb)stage.insertBefore(neb,cam);if(tint)stage.insertBefore(tint,cam);
  function cancelTravel(){clearTimeout(travelTimer);cancelAnimationFrame(inertia);}
  function size(){W=stage.clientWidth;H=stage.clientHeight;k=W/360;cam.style.height=(480*k)+'px';}
- function apply(S,tx,ty,anim){var ease=anim&&!reduce?'transform 1.2s cubic-bezier(.22,.65,.25,1)':'none';cam.style.transition=ease;cam.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+S+')';if(neb){neb.style.transition=ease;neb.style.transform='translate('+((tx-W*(1-S)/2)*.12)+'px,'+((ty-H*(1-S)/2)*.12)+'px) scale('+(1+(S-1)*.025)+')';}if(depth){depth.style.transition=ease;depth.style.transform='translate('+(tx*.23)+'px,'+(ty*.23)+'px) scale('+(1+(S-1)*.3)+')';}}
+ function apply(S,tx,ty,anim){var ease=anim&&!reduce?'transform 1.2s cubic-bezier(.22,.65,.25,1)':'none';cam.style.transition=ease;cam.style.transform='translate3d('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px,0) scale('+S+')';if(neb){neb.style.transition=ease;neb.style.transform='translate3d('+((tx-W*(1-S)/2)*.12).toFixed(1)+'px,'+((ty-H*(1-S)/2)*.12).toFixed(1)+'px,0) scale('+(1+(S-1)*.025)+')';}if(depth){depth.style.transition=ease;depth.style.transform='translate3d('+(tx*.23).toFixed(1)+'px,'+(ty*.23).toFixed(1)+'px,0) scale('+(1+(S-1)*.3)+')';}}
  function camFar(anim){size();var S=.62;apply(S,W/2-180*k*S,H/2-240*k*S,anim);}
  function camNear(anim){size();apply(1,pan.x,(H-480*k)/2+pan.y,anim);}
  function camFocus(i){size();var S=2.3,p=pos[i];apply(S,W/2-p.x*k*S,H*.30-p.y*k*S,true);}
@@ -3460,9 +3467,9 @@ function wireSky(scope,list){
   el.addEventListener('click',open);el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
  });
  /* 끌어서 둘러보기: 펼친 상태에서만, 너무 멀리 가지 않게 */
- var start=null;
+ var start=null,raf=0;
  stage.addEventListener('pointerdown',function(e){if(stage.classList.contains('is-far')||cur>=0||e.target.closest('button'))return;cancelAnimationFrame(inertia);velocity={x:0,y:0};lastMove=performance.now();start={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};dragMoved=false;});
- stage.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dx)+Math.abs(dy)>6)dragMoved=true;if(!dragMoved)return;if(!stage.hasPointerCapture(e.pointerId))stage.setPointerCapture(e.pointerId);var now=performance.now(),dt=Math.max(8,now-lastMove),nx=Math.max(-W*.45,Math.min(W*.45,start.px+dx)),ny=Math.max(-H*.35,Math.min(H*.35,start.py+dy));velocity.x=(nx-pan.x)*16/dt;velocity.y=(ny-pan.y)*16/dt;lastMove=now;pan.x=nx;pan.y=ny;camNear(false);});
+ stage.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dx)+Math.abs(dy)>6)dragMoved=true;if(!dragMoved)return;if(!stage.hasPointerCapture(e.pointerId))stage.setPointerCapture(e.pointerId);var now=performance.now(),dt=Math.max(8,now-lastMove),nx=Math.max(-W*.45,Math.min(W*.45,start.px+dx)),ny=Math.max(-H*.35,Math.min(H*.35,start.py+dy));velocity.x=(nx-pan.x)*16/dt;velocity.y=(ny-pan.y)*16/dt;lastMove=now;pan.x=nx;pan.y=ny;if(!raf)raf=requestAnimationFrame(function(){raf=0;camNear(false);});});
  function end(){if(!start)return;start=null;if(performance.now()-lastMove>90)velocity={x:0,y:0};var last=performance.now();function coast(now){if(!stage.isConnected||cur>=0||reduce)return;var dt=Math.min(32,now-last)/16;last=now;velocity.x*=Math.pow(.91,dt);velocity.y*=Math.pow(.91,dt);pan.x=Math.max(-W*.45,Math.min(W*.45,pan.x+velocity.x*dt));pan.y=Math.max(-H*.35,Math.min(H*.35,pan.y+velocity.y*dt));camNear(false);if(Math.abs(velocity.x)+Math.abs(velocity.y)>.15)inertia=requestAnimationFrame(coast);}if(dragMoved&&!reduce)inertia=requestAnimationFrame(coast);setTimeout(function(){dragMoved=false;},60);}
  stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);stage.addEventListener('pointerleave',end);
  window.addEventListener('resize',function(){if(cur>=0)camFocus(cur);else if(stage.classList.contains('is-far'))camFar(false);else camNear(false);});
@@ -3472,7 +3479,7 @@ function skyPageHtml(e){
  return '<article class="sky-page sky-page-left">'+(type?'<img src="/assets/guardians/'+type.asset+'.webp" alt="'+esc(type.title)+'" decoding="async">':'')+
   '<p class="sky-page-kicker">'+name+'님의 별</p><h3>'+esc(type?type.title:'아직 드러나지 않은 별')+'</h3><p class="sky-page-tag">'+esc(type?'일간 '+type.stem+' · '+type.wx+' · '+(type.polarity==='yang'?'양':'음'):'')+'</p>'+
   '<p class="sky-page-quote">'+esc(type?CARD_RELATION_QUOTES[type.id]||'':'')+'</p></article>'+
-  '<article class="sky-page sky-page-right"><p class="sky-page-kicker">'+name+'님과 나</p><h3>'+skyWord(e.score)+'</h3>'+
+  '<article class="sky-page sky-page-right"><p class="sky-page-kicker">'+name+'님과 나</p><h3>'+skyWord(e)+'</h3>'+
   (ZHI_REL_TEXT[e.zhiRel]?'<h4>두 사람의 관계</h4><p>'+esc(ZHI_REL_TEXT[e.zhiRel])+'</p>':'')+
   (GAN_REL_TEXT[e.ganRel]?'<h4>서로에게 주는 영향</h4><p>'+esc(GAN_REL_TEXT[e.ganRel])+'</p>':'')+
   '<button type="button" class="share-btn" data-sky-detail>궁합 자세히 보기</button></article>';
