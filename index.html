@@ -1450,7 +1450,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=6">
 <link rel="stylesheet" href="/assets/ui/night.css?v=3">
-<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=8">
+<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=9">
 </head>
 <body>
 
@@ -3395,17 +3395,38 @@ function skyDust(){var x=7,out=[];for(var i=0;i<56;i++){x=(x*9301+49297)%233280;
    별을 누르면 그 별로 날아가 별빛이 터지고, 카드가 별에서 나와 뒤집힌 뒤 둘의 관계가 아래에서 올라온다. */
 var SKY_DEMO=[{id:'demo-1',nameB:'민지',score:94,dayGanB:'신',dayGanWxB:'금',cardPolarity:'yin',zhiRel:'liuhe',ganRel:'sheng'},{id:'demo-2',nameB:'서연',score:78,dayGanB:'병',dayGanWxB:'화',cardPolarity:'yang',zhiRel:'sanhe',ganRel:'same'},{id:'demo-3',nameB:'하준',score:61,dayGanB:'계',dayGanWxB:'수',cardPolarity:'yin',zhiRel:'none',ganRel:'ke'},{id:'demo-4',nameB:'도윤',score:38,dayGanB:'무',dayGanWxB:'토',cardPolarity:'yang',zhiRel:'chong',ganRel:'keBack'},{id:'demo-5',nameB:'지호',score:72,dayGanB:'갑',dayGanWxB:'목',cardPolarity:'yang',zhiRel:'same',ganRel:'shengBack'}];
 function skyIsDemo(){return typeof location!=='undefined'&&/[?&]skydemo/.test(location.search);}
+/* 별마다 다르게: 색 = 친구의 오행, 모양 = 양(빛줄기 4개)·음(부드러운 6갈래), 크기·밝기 = 궁합, 반짝임 박자도 제각각.
+   선 = 나에서 사방으로 뻗는 대신, 친구들을 방향 순서대로 잇는 부드러운 곡선 + 가장 잘 맞는 두 별만 나와 연결. */
+var SKY_STAR_COLOR={목:['wood','#9be8bd'],화:['fire','#ffa58a'],토:['earth','#f5d27e'],금:['metal','#eef2fb'],수:['water','#9cc0ff']};
+function skyGlowDefs(){return Object.keys(SKY_STAR_COLOR).map(function(k){var c=SKY_STAR_COLOR[k];return '<radialGradient id="sky-glow-'+c[0]+'"><stop offset="0" stop-color="'+c[1]+'" stop-opacity=".95"/><stop offset=".35" stop-color="'+c[1]+'" stop-opacity=".32"/><stop offset="1" stop-color="'+c[1]+'" stop-opacity="0"/></radialGradient>';}).join('');}
+function skyStarShape(sz,yin){
+ var L=(sz*2.8).toFixed(1),l=(sz*1.7).toFixed(1);
+ if(!yin)return 'M0 -'+L+'V'+L+'M-'+L+' 0H'+L+'M-'+l+' -'+l+'L'+l+' '+l+'M-'+l+' '+l+'L'+l+' -'+l;
+ var out='';for(var a=0;a<6;a++){var r=a*Math.PI/3,x=(Math.cos(r)*sz*2.2).toFixed(1),y=(Math.sin(r)*sz*2.2).toFixed(1);out+='M0 0L'+x+' '+y;}return out;
+}
+function skyCurves(list,pos){
+ if(list.length<2)return '';
+ var order=list.map(function(e,i){return {i:i,a:Math.atan2(pos[i].y-240,pos[i].x-180)};}).sort(function(a,b){return a.a-b.a;});
+ var out='';
+ order.forEach(function(o,k){
+  if(list.length===2&&k===1)return;
+  var n=order[(k+1)%order.length],p=pos[o.i],q=pos[n.i],mx=(p.x+q.x)/2,my=(p.y+q.y)/2,dx=mx-180,dy=my-240,d=Math.max(1,Math.hypot(dx,dy)),bend=16;
+  out+='<path pathLength="1" class="sky-curve" d="M'+p.x+' '+p.y+'Q'+(mx+dx/d*bend).toFixed(1)+' '+(my+dy/d*bend).toFixed(1)+' '+q.x+' '+q.y+'" style="--d:'+(0.9+k*0.12).toFixed(2)+'s"/>';
+ });
+ return out;
+}
 function skyHtml(result,list){
  list=list||[];var t=myStarType(result),pos=skyLayout(list),dom=result&&result.wxCount?dominantWx(result.wxCount).wx:'수';
- var lines=list.map(function(e,i){return '<line pathLength="1" x1="180" y1="240" x2="'+pos[i].x+'" y2="'+pos[i].y+'" class="sky-line'+(pos[i].near?' is-near':'')+'" style="--d:'+(0.35+i*0.16).toFixed(2)+'s"/>';}).join('');
- var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e),sz=p.size;return '<g class="sky-star" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+';--d:'+(0.5+i*0.16).toFixed(2)+'s"><g class="sky-star-in"><circle class="sky-hit" r="22"/><circle class="sky-halo" r="'+(sz*3.6).toFixed(1)+'"/><circle class="sky-burst" r="'+(sz*1.6).toFixed(1)+'"/><path class="sky-spark" d="M0 -'+(sz*2.6).toFixed(1)+'V'+(sz*2.6).toFixed(1)+'M-'+(sz*2.6).toFixed(1)+' 0H'+(sz*2.6).toFixed(1)+'"/><circle class="sky-core" r="'+(sz*.55).toFixed(1)+'"/></g><text class="sky-name" y="'+(sz+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
+ var best=list.map(function(e,i){return i;}).sort(function(a,b){return (Number(list[b].score)||0)-(Number(list[a].score)||0);}).slice(0,2);
+ var lines=best.map(function(i,k){return '<line pathLength="1" x1="180" y1="240" x2="'+pos[i].x+'" y2="'+pos[i].y+'" class="sky-line is-near" style="--d:'+(0.35+k*0.16).toFixed(2)+'s"/>';}).join('')+skyCurves(list,pos);
+ var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e),sz=p.size,col=SKY_STAR_COLOR[e.dayGanWxB]||SKY_STAR_COLOR['토'],yin=type?type.polarity==='yin':e.cardPolarity==='yin',beat=(2.6+((i*37)%17)/10).toFixed(1);return '<g class="sky-star sky-'+col[0]+'" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+';--d:'+(0.5+i*0.16).toFixed(2)+'s;--sc:'+col[1]+';--beat:'+beat+'s"><g class="sky-star-in"><circle class="sky-hit" r="22"/><circle class="sky-halo" r="'+(sz*3.8).toFixed(1)+'" style="fill:url(#sky-glow-'+col[0]+')"/><circle class="sky-burst" r="'+(sz*1.6).toFixed(1)+'"/><path class="sky-spark'+(yin?' is-yin':'')+'" d="'+skyStarShape(sz,yin)+'"/><circle class="sky-core" r="'+(sz*.6).toFixed(1)+'"/></g><text class="sky-name" y="'+(sz+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
  var empty=list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">빈자리</text></g>';}).join(''):'';
  var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
   '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':list.length?'친구 '+list.length+'명이 내 별자리에 있어요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
   '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
    '<div class="sky-depth" data-sky-depth aria-hidden="true"></div><div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
-   '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs><radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
+   '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs>'+skyGlowDefs()+'<radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
    '<i class="sky-shoot" aria-hidden="true"></i>'+
    '<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button>'+
    '<div class="sky-focus" data-sky-focus hidden><button type="button" class="sky-focus-close" data-sky-close aria-label="별자리로 돌아가기">✕</button>'+
