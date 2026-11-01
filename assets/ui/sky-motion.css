@@ -53,3 +53,18 @@
 .sky-stage.is-far .sky-curve{opacity:0}
 .sky-stage.is-focus .sky-curve{opacity:.12;transition:opacity .6s}
 .sky-name{font-weight:500}
+
+/* Softer stars: tapered light rays that sway, a small companion constellation per friend, names in the star's colour */
+.sky-star .sky-spark,.sky-star .sky-spark.is-yin{stroke:none;opacity:calc(.55 + var(--glow)*.5);transform-box:fill-box;transform-origin:center;rotate:var(--tilt,0deg)}
+.sky-star .sky-spark.is-yin{stroke:var(--sc);stroke-width:.6;stroke-linejoin:round;stroke-opacity:.35}
+.sky-stage.is-open .sky-star .sky-spark{animation:skySway calc(var(--beat,3.4s)*1.7) ease-in-out var(--d,0s) infinite alternate}
+@keyframes skySway{from{transform:rotate(-8deg) scale(.92)}to{transform:rotate(8deg) scale(1.06)}}
+.sky-star .sky-halo{opacity:calc(.55 + var(--glow)*.45)}
+.sky-mini{opacity:0;pointer-events:none}
+.sky-mini path{fill:none;stroke:var(--sc);stroke-width:.6;stroke-opacity:.38;stroke-linecap:round;stroke-linejoin:round}
+.sky-mini circle{fill:var(--sc);animation:skyTw 3.2s ease-in-out infinite;animation-delay:var(--tw,0s)}
+.sky-stage.is-open .sky-mini{animation:skyAppear 1s ease-out calc(var(--d,0s) + .6s) forwards}
+.sky-stage.is-focus .sky-star:not(.is-cur) .sky-mini{opacity:0}
+.sky-star .sky-name{fill:var(--sc);fill-opacity:.92}
+.sky-star.sky-metal .sky-name{fill:#f3e8cf}
+.sky-curve{stroke-width:.7;opacity:.3;stroke-linecap:round}
