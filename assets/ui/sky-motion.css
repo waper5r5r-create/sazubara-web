@@ -25,3 +25,9 @@
 .sky-stage .sky-nebula-art,.sky-stage.is-far .sky-nebula-art,.star-stage.rv .rv-sky{-webkit-mask-image:none!important;mask-image:none!important;will-change:auto}
 .sky-depth{background-image:url('/assets/album/deep-stars-v3.webp');will-change:auto}
 .sky-cam{will-change:auto}
+
+/* While the camera moves: freeze twinkles and pulses so the star layer is not repainted every frame,
+   and keep the rounded frame as its own layer so clipping does not repaint the inside. */
+.sky-stage{isolation:isolate;transform:translateZ(0);-webkit-transform:translateZ(0)}
+.sky-stage.is-moving .sky-dust,.sky-stage.is-moving .sky-star-in,.sky-stage.is-moving .sky-shoot,.sky-stage.is-moving .sky-star{animation-play-state:paused!important}
+.sky-panel{backdrop-filter:none;-webkit-backdrop-filter:none;background:#101a30f7}
