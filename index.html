@@ -1450,7 +1450,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
 <link rel="stylesheet" href="/assets/ui/night.css?v=2">
-<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=6">
+<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=7">
 </head>
 <body>
 
@@ -3422,10 +3422,12 @@ function skyPanelHtml(e,i,n){
  var type=cardTypeOf(e),name=esc(e.nameB||'상대방');
  return '<p class="sky-panel-kicker">'+name+'님의 별 · '+esc(type?type.title:'')+'</p><h3>'+skyWord(e)+'</h3>'+
   (ZHI_REL_TEXT[e.zhiRel]?'<p>'+esc(skyFirst(ZHI_REL_TEXT[e.zhiRel]))+'</p>':'')+(GAN_REL_TEXT[e.ganRel]?'<p>'+esc(skyFirst(GAN_REL_TEXT[e.ganRel]))+'</p>':'')+
-  '<div class="sky-panel-nav">'+(n>1?'<button type="button" data-sky-prev aria-label="이전 별">‹</button>':'')+(skyIsDemo()?'':'<button type="button" class="sky-panel-more" data-sky-more>궁합 자세히</button>')+(n>1?'<button type="button" data-sky-next aria-label="다음 별">›</button>':'')+'</div>';
+  '<div class="sky-panel-nav">'+(n>1?'<button type="button" data-sky-prev aria-label="이전 별">‹</button>':'')+(skyIsDemo()?'':'<button type="button" class="sky-panel-more" data-sky-more>궁합 자세히</button>')+(n>1?'<button type="button" data-sky-next aria-label="다음 별">›</button>':'')+'</div>'+
+  '<button type="button" class="sky-panel-close" data-sky-back>별자리로 돌아가기</button>';
 }
 function wireSky(scope,list){
  var stage=$('[data-sky]',scope);if(!stage)return;
+ var off=typeof location==='undefined'?null:(location.search.match(/[?&]skyoff=([a-z,]+)/)||[])[1];if(off)off.split(',').forEach(function(k){stage.classList.add('off-'+k);});
  var cam=$('[data-sky-cam]',stage),focus=$('[data-sky-focus]',stage),panel=$('[data-sky-panel]',stage),fimg=$('[data-sky-fimg]',stage),pos=skyLayout(list);
  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  var W,H,k,pan={x:0,y:0},cur=-1,busy=false,dragMoved=false,travelTimer=0,inertia=0,velocity={x:0,y:0},lastMove=0;
@@ -3433,8 +3435,7 @@ function wireSky(scope,list){
  if(neb)stage.insertBefore(neb,cam);if(tint)stage.insertBefore(tint,cam);
  function cancelTravel(){clearTimeout(travelTimer);cancelAnimationFrame(inertia);}
  function size(){W=stage.clientWidth;H=stage.clientHeight;k=W/360;cam.style.height=(480*k)+'px';}
- var movingTimer=0;function moving(ms){stage.classList.add('is-moving');clearTimeout(movingTimer);movingTimer=setTimeout(function(){stage.classList.remove('is-moving');},ms);}
- function apply(S,tx,ty,anim){var ease=anim&&!reduce?'transform 1.2s cubic-bezier(.22,.65,.25,1)':'none';if(anim&&!reduce)moving(1300);cam.style.transition=ease;cam.style.transform='translate3d('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px,0) scale('+S+')';if(neb){neb.style.transition=ease;neb.style.transform='translate3d('+((tx-W*(1-S)/2)*.12).toFixed(1)+'px,'+((ty-H*(1-S)/2)*.12).toFixed(1)+'px,0) scale('+(1+(S-1)*.025)+')';}if(depth){depth.style.transition=ease;depth.style.transform='translate3d('+(tx*.23).toFixed(1)+'px,'+(ty*.23).toFixed(1)+'px,0) scale('+(1+(S-1)*.3)+')';}}
+ function apply(S,tx,ty,anim){var ease=anim&&!reduce?'transform 1.2s cubic-bezier(.22,.65,.25,1)':'none';cam.style.transition=ease;cam.style.transform='translate3d('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px,0) scale('+S+')';if(neb){neb.style.transition=ease;neb.style.transform='translate3d('+((tx-W*(1-S)/2)*.12).toFixed(1)+'px,'+((ty-H*(1-S)/2)*.12).toFixed(1)+'px,0) scale('+(1+(S-1)*.025)+')';}if(depth){depth.style.transition=ease;depth.style.transform='translate3d('+(tx*.23).toFixed(1)+'px,'+(ty*.23).toFixed(1)+'px,0) scale('+(1+(S-1)*.3)+')';}}
  function camFar(anim){size();var S=.62;apply(S,W/2-180*k*S,H/2-240*k*S,anim);}
  function camNear(anim){size();apply(1,pan.x,(H-480*k)/2+pan.y,anim);}
  function camFocus(i){size();var S=2.3,p=pos[i];apply(S,W/2-p.x*k*S,H*.30-p.y*k*S,true);}
@@ -3450,16 +3451,19 @@ function wireSky(scope,list){
   if(prev)prev.addEventListener('click',function(){go((cur-1+list.length)%list.length);});
   if(next)next.addEventListener('click',function(){go((cur+1)%list.length);});
   if(more)more.addEventListener('click',function(){openMyroomDetail(list[cur]);});
+  var back=$('[data-sky-back]',panel);if(back)back.addEventListener('click',close);
  }
  function go(i){
   if(busy||!list[i])return;cancelTravel();busy=true;var first=cur<0;cur=i;
   stage.classList.add('is-focus');markCur(i);try{soundTap();}catch(e){}
+  var rect=stage.getBoundingClientRect();if(rect.top<0||rect.bottom>window.innerHeight)stage.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
   if(!first){focus.classList.remove('in');focus.classList.add('out');}
   camFocus(i);
   travelTimer=setTimeout(function(){if(!stage.isConnected)return;focus.classList.remove('out');showCard(i);busy=false;},reduce?0:1220);
  }
  function close(){if(cur<0)return;cancelTravel();busy=false;cur=-1;focus.classList.remove('in');focus.hidden=true;stage.classList.remove('is-focus');markCur(-1);camNear(true);}
  $('[data-sky-close]',stage).addEventListener('click',close);
+ focus.addEventListener('click',function(e){if(e.target===focus)close();});
  var enterBtn=$('[data-sky-enter]',stage);if(enterBtn)enterBtn.addEventListener('click',enter);
  $all('[data-sky-star]',scope).forEach(function(el){
   function open(){if(dragMoved)return;var i=Number(el.dataset.skyStar);
@@ -3470,8 +3474,8 @@ function wireSky(scope,list){
  /* 끌어서 둘러보기: 펼친 상태에서만, 너무 멀리 가지 않게 */
  var start=null,raf=0;
  stage.addEventListener('pointerdown',function(e){if(stage.classList.contains('is-far')||cur>=0||e.target.closest('button'))return;cancelAnimationFrame(inertia);velocity={x:0,y:0};lastMove=performance.now();start={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};dragMoved=false;});
- stage.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dx)+Math.abs(dy)>6)dragMoved=true;if(!dragMoved)return;if(!stage.hasPointerCapture(e.pointerId))stage.setPointerCapture(e.pointerId);var now=performance.now(),dt=Math.max(8,now-lastMove),nx=Math.max(-W*.45,Math.min(W*.45,start.px+dx)),ny=Math.max(-H*.35,Math.min(H*.35,start.py+dy));velocity.x=(nx-pan.x)*16/dt;velocity.y=(ny-pan.y)*16/dt;lastMove=now;pan.x=nx;pan.y=ny;moving(400);if(!raf)raf=requestAnimationFrame(function(){raf=0;camNear(false);});});
- function end(){if(!start)return;start=null;if(performance.now()-lastMove>90)velocity={x:0,y:0};var last=performance.now();function coast(now){if(!stage.isConnected||cur>=0||reduce)return;var dt=Math.min(32,now-last)/16;last=now;velocity.x*=Math.pow(.91,dt);velocity.y*=Math.pow(.91,dt);pan.x=Math.max(-W*.45,Math.min(W*.45,pan.x+velocity.x*dt));pan.y=Math.max(-H*.35,Math.min(H*.35,pan.y+velocity.y*dt));camNear(false);moving(250);if(Math.abs(velocity.x)+Math.abs(velocity.y)>.15)inertia=requestAnimationFrame(coast);}if(dragMoved&&!reduce)inertia=requestAnimationFrame(coast);setTimeout(function(){dragMoved=false;},60);}
+ stage.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(!dragMoved&&Math.abs(dy)>Math.abs(dx))return;if(Math.abs(dx)>6)dragMoved=true;if(!dragMoved)return;dy=0;if(!stage.hasPointerCapture(e.pointerId))stage.setPointerCapture(e.pointerId);var now=performance.now(),dt=Math.max(8,now-lastMove),nx=Math.max(-W*.45,Math.min(W*.45,start.px+dx)),ny=Math.max(-H*.35,Math.min(H*.35,start.py+dy));velocity.x=(nx-pan.x)*16/dt;velocity.y=(ny-pan.y)*16/dt;lastMove=now;pan.x=nx;pan.y=ny;if(!raf)raf=requestAnimationFrame(function(){raf=0;camNear(false);});});
+ function end(){if(!start)return;start=null;if(performance.now()-lastMove>90)velocity={x:0,y:0};var last=performance.now();function coast(now){if(!stage.isConnected||cur>=0||reduce)return;var dt=Math.min(32,now-last)/16;last=now;velocity.x*=Math.pow(.91,dt);velocity.y*=Math.pow(.91,dt);pan.x=Math.max(-W*.45,Math.min(W*.45,pan.x+velocity.x*dt));pan.y=Math.max(-H*.35,Math.min(H*.35,pan.y+velocity.y*dt));camNear(false);if(Math.abs(velocity.x)+Math.abs(velocity.y)>.15)inertia=requestAnimationFrame(coast);}if(dragMoved&&!reduce)inertia=requestAnimationFrame(coast);setTimeout(function(){dragMoved=false;},60);}
  stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);stage.addEventListener('pointerleave',end);
  window.addEventListener('resize',function(){if(cur>=0)camFocus(cur);else if(stage.classList.contains('is-far'))camFar(false);else camNear(false);});
 }

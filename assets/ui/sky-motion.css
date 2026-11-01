@@ -26,8 +26,13 @@
 .sky-depth{background-image:url('/assets/album/deep-stars-v3.webp');will-change:auto}
 .sky-cam{will-change:auto}
 
-/* While the camera moves: freeze twinkles and pulses so the star layer is not repainted every frame,
-   and keep the rounded frame as its own layer so clipping does not repaint the inside. */
-.sky-stage{isolation:isolate;transform:translateZ(0);-webkit-transform:translateZ(0)}
-.sky-stage.is-moving .sky-dust,.sky-stage.is-moving .sky-star-in,.sky-stage.is-moving .sky-shoot,.sky-stage.is-moving .sky-star{animation-play-state:paused!important}
 .sky-panel{backdrop-filter:none;-webkit-backdrop-filter:none;background:#101a30f7}
+
+/* Vertical swipes scroll the page even over the sky; sideways swipes pan the sky. */
+.sky-stage,.sky-stage.is-open,.sky-stage.is-focus{touch-action:pan-y}
+.sky-panel-close{display:block;width:100%;margin-top:8px;padding:8px;border:0;background:none;color:#cfc6b0;font-size:.8125rem;text-decoration:underline;text-underline-offset:3px}
+/* Flicker test switches (?skyoff=neb,depth,anim,round) */
+.sky-stage.off-neb .sky-nebula-art,.sky-stage.off-neb .sky-tint{display:none}
+.sky-stage.off-depth .sky-depth{display:none}
+.sky-stage.off-anim *{animation:none!important;transition:none!important}
+.sky-stage.off-round{border-radius:0!important;transform:none;-webkit-transform:none}
