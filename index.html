@@ -7274,7 +7274,6 @@ function init(){
   initAuth().catch(function(){/* Other features remain available if the auth SDK cannot load. */});
   var invited = initDevice();
   handleTossPaymentCallback();
-  if(/[?&]newyear/.test(location.search))openNewYearViewer(NEWYEAR_CONCEPT);
   pullPaidUnlocks();
   pullReportUnlocks();
   var btnOpenInvite = $('#btn-open-invite'); if (btnOpenInvite) btnOpenInvite.addEventListener('click', openInviteSheet);
@@ -7296,6 +7295,8 @@ function init(){
   })();
 
   loadState();
+  /* 저장된 사주를 읽고 첫 화면을 그린 다음에 연다 */
+  if(/[?&]newyear/.test(location.search))setTimeout(function(){openNewYearViewer(NEWYEAR_CONCEPT);},0);
   initSajuForm();
   initSajuStoryForm();
   initVisualFeedback();
