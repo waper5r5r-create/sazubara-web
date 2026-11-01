@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={newYearPageHtml,sajuQuickSummaryHtml,skyHtml,skyLayout,skyPageHtml,homePreviewLine,reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={homeBannerHtml,newYearPageHtml,sajuQuickSummaryHtml,skyHtml,skyLayout,skyPageHtml,homePreviewLine,reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -315,4 +315,13 @@ test('new year page: free shows the paywall, owner sees every letter and no payw
   assert.equal((owned.match(/class="ny-letter"/g) || []).length, 12);
   assert.ok(owned.includes('좋은 한 해 보내요'));
   assert.ok(!owned.includes('undefined'));
+});
+
+test('home banners link one slide to each live content', () => {
+  const html = api.homeBannerHtml();
+  assert.equal((html.match(/data-banner-id="/g) || []).length, 5);
+  for (const c of [require('../api/_newyear-content').concept, require('../api/_career-content').concept, require('../api/_marriage-content').concept]) assert.ok(html.includes('data-banner-id="' + c.id + '"'));
+  assert.ok(html.includes('data-banner-id="운명의-사람은-언제-올까-fyq1z"'));
+  assert.ok(html.includes('data-banner-id="타고난-재물복은-얼마나-될까-k7dxw"'));
+  assert.equal((html.match(/<i[ >]/g) || []).length, 5);
 });
