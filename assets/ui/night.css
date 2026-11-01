@@ -6,7 +6,7 @@
  --bg:#f6f0e4;--surface:#fffaf0;--surface-2:#efe7d6;--surface-3:#e6dcc6;--fg:#1d2240;--fg-muted:#5d6075;--fg-faint:#77798a;
  --c-lilac-line:#e3dac6;--c-lilac-pale:#efe7d6;--c-lilac-mist:#f6f0e4;--c-plum:#2a3560;--c-plum-deep:#1b2140;--c-lavender:#4a5585;--c-paper-blush:#fffaf0
 }
-body{background:radial-gradient(ellipse at 10% 0,#f6dcc4 0,transparent 45%),radial-gradient(ellipse at 100% 40%,#dfe6f3 0,transparent 42%),#f1e9da;background-attachment:fixed;color:var(--fg)}
+body{background:radial-gradient(ellipse at 10% 0,#f6dcc4 0,transparent 45%),radial-gradient(ellipse at 100% 40%,#dfe6f3 0,transparent 42%),#f1e9da;background-attachment:scroll;color:var(--fg)}
 .app{background:var(--paper);box-shadow:0 0 80px #0d143014}
 
 /* 머리·아래 탭: 밝은 종이 + 남색 글자. 남색은 그림·별자리·카드에만 크게 쓴다. */

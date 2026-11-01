@@ -1448,9 +1448,9 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 @keyframes skyPanelIn{to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.sky-nebula-art,.sky-dust,.sky-shoot,.sky-star-in{animation:none!important}.sky-focus.in .sky-fcard,.sky-focus.in .sky-fcard-inner,.sky-focus.in .sky-panel{animation-duration:.01s!important;animation-delay:0s!important}}
 </style>
-<link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
-<link rel="stylesheet" href="/assets/ui/night.css?v=2">
-<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=7">
+<link rel="stylesheet" href="/assets/ui/celestial.css?v=6">
+<link rel="stylesheet" href="/assets/ui/night.css?v=3">
+<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=8">
 </head>
 <body>
 
@@ -3474,7 +3474,7 @@ function wireSky(scope,list){
  /* 끌어서 둘러보기: 펼친 상태에서만, 너무 멀리 가지 않게 */
  var start=null,raf=0;
  stage.addEventListener('pointerdown',function(e){if(stage.classList.contains('is-far')||cur>=0||e.target.closest('button'))return;cancelAnimationFrame(inertia);velocity={x:0,y:0};lastMove=performance.now();start={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};dragMoved=false;});
- stage.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(!dragMoved&&Math.abs(dy)>Math.abs(dx))return;if(Math.abs(dx)>6)dragMoved=true;if(!dragMoved)return;dy=0;if(!stage.hasPointerCapture(e.pointerId))stage.setPointerCapture(e.pointerId);var now=performance.now(),dt=Math.max(8,now-lastMove),nx=Math.max(-W*.45,Math.min(W*.45,start.px+dx)),ny=Math.max(-H*.35,Math.min(H*.35,start.py+dy));velocity.x=(nx-pan.x)*16/dt;velocity.y=(ny-pan.y)*16/dt;lastMove=now;pan.x=nx;pan.y=ny;if(!raf)raf=requestAnimationFrame(function(){raf=0;camNear(false);});});
+ stage.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(!dragMoved&&Math.abs(dy)>Math.abs(dx)*1.6)return;if(Math.abs(dx)+Math.abs(dy)>6)dragMoved=true;if(!dragMoved)return;if(!stage.hasPointerCapture(e.pointerId))stage.setPointerCapture(e.pointerId);var now=performance.now(),dt=Math.max(8,now-lastMove),nx=Math.max(-W*.45,Math.min(W*.45,start.px+dx)),ny=Math.max(-H*.35,Math.min(H*.35,start.py+dy));velocity.x=(nx-pan.x)*16/dt;velocity.y=(ny-pan.y)*16/dt;lastMove=now;pan.x=nx;pan.y=ny;if(!raf)raf=requestAnimationFrame(function(){raf=0;camNear(false);});});
  function end(){if(!start)return;start=null;if(performance.now()-lastMove>90)velocity={x:0,y:0};var last=performance.now();function coast(now){if(!stage.isConnected||cur>=0||reduce)return;var dt=Math.min(32,now-last)/16;last=now;velocity.x*=Math.pow(.91,dt);velocity.y*=Math.pow(.91,dt);pan.x=Math.max(-W*.45,Math.min(W*.45,pan.x+velocity.x*dt));pan.y=Math.max(-H*.35,Math.min(H*.35,pan.y+velocity.y*dt));camNear(false);if(Math.abs(velocity.x)+Math.abs(velocity.y)>.15)inertia=requestAnimationFrame(coast);}if(dragMoved&&!reduce)inertia=requestAnimationFrame(coast);setTimeout(function(){dragMoved=false;},60);}
  stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);stage.addEventListener('pointerleave',end);
  window.addEventListener('resize',function(){if(cur>=0)camFocus(cur);else if(stage.classList.contains('is-far'))camFar(false);else camNear(false);});

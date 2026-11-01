@@ -36,3 +36,8 @@
 .sky-stage.off-depth .sky-depth{display:none}
 .sky-stage.off-anim *{animation:none!important;transition:none!important}
 .sky-stage.off-round{border-radius:0!important;transform:none;-webkit-transform:none}
+
+/* Android flicker: the oversized depth layer and rounded clipping of moving layers were the heaviest parts. */
+.sky-depth{inset:-12%;opacity:.7}
+.sky-stage,.sky-stage.is-focus{border-radius:0;overflow:hidden;margin-left:-20px;margin-right:-20px}
+@media(max-width:374px){.sky-stage,.sky-stage.is-focus{margin-left:-16px;margin-right:-16px}}

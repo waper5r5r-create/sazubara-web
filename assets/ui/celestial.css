@@ -1,6 +1,6 @@
 /* Vivid celestial identity; reading surfaces remain quiet and legible. */
 :root{--accent:#6174bf;--accent-ink:var(--c-white);--accent-soft:#6577c014;--gold:#bc8333;--border:#465aaa22;--border-strong:#465aaa40;--shadow:0 12px 34px #37478610}
-body{background:radial-gradient(ellipse at 10% 0,#f6efe1 0,transparent 46%),radial-gradient(ellipse at 100% 40%,#f8f2e6 0,transparent 42%),#faf7f0;background-attachment:fixed}
+body{background:radial-gradient(ellipse at 10% 0,#f6efe1 0,transparent 46%),radial-gradient(ellipse at 100% 40%,#f8f2e6 0,transparent 42%),#faf7f0;background-attachment:scroll}
 .app{background:linear-gradient(180deg,#fefdfaed,#fff9f7ed 70%);box-shadow:0 0 80px #40529c16}
 .app-header{background:linear-gradient(110deg,#202a4f,#303e76 65%,#38498a);border-bottom:1px solid #ffe3a357;box-shadow:0 5px 22px #202a5020}
 .app-header .mark{background:linear-gradient(110deg,#fff1ba,#f2e7d2 60%,#f3e9d5);background-clip:text;-webkit-background-clip:text;color:transparent!important}
