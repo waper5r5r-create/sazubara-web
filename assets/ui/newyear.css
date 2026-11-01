@@ -1,0 +1,54 @@
+/* 2027 신년운세: 남색 밤하늘 위에 미색 편지지 */
+.ny-page,.ny-page .ny{background:radial-gradient(ellipse at 80% 0,#2c3a7a55,transparent 55%),#0d1430;color:#f6ecd6}
+.ny{display:flex;flex-direction:column;gap:22px;padding:0 16px 48px;font-family:var(--font-body)}
+.ny img{display:block;width:100%;height:auto;max-width:none}
+.ny h1,.ny h2,.ny h3{font-family:var(--font-serif-heading);letter-spacing:-.03em;margin:0}
+.ny-cover{position:relative;margin:0 -16px;overflow:hidden}
+.ny-cover>div{position:absolute;left:0;right:0;top:0;padding:26px 22px 60px;text-align:center;background:linear-gradient(#0d1430d9,#0d143080 60%,transparent)}
+.ny-cover p{margin:0 0 8px;color:#f1d896;font-size:.8125rem;letter-spacing:.06em}
+.ny-cover h1{color:#fff8e6;font-size:1.625rem;line-height:1.35;text-shadow:0 2px 12px #0d1430}
+.ny-talk{display:flex;align-items:flex-start;gap:10px}
+.ny .ny-talk img{flex:none;width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:top;border:2px solid #d9a957;background:#fff8e6}
+.ny-talk p{margin:0;padding:11px 14px;border-radius:4px 16px 16px 16px;background:#fff8e6;color:#1d2240;font-size:.875rem;line-height:1.65}
+.ny-year,.ny-letter,.ny-offer,.ny-end{padding:20px 18px;border-radius:18px;background:#fbf4e4;color:#1d2240;border:1px solid #d9c79b;box-shadow:0 12px 30px #03071466}
+.ny-year>img,.ny-offer>img,.ny-end>img{margin:-20px -18px 18px;width:calc(100% + 36px);border-radius:17px 17px 0 0}
+.ny-kicker{margin:0 0 6px;color:#84621f;font-size:.75rem;font-weight:700}
+.ny-year h2,.ny-offer h2,.ny-end h2{font-size:1.25rem;line-height:1.4;color:#1b2140}
+.ny-basis{margin:6px 0 14px;color:#6d6656;font-size:.75rem}
+.ny-year>p:not(.ny-kicker):not(.ny-basis),.ny-offer>p,.ny-end>p{margin:0 0 10px;font-size:.9375rem;line-height:1.75}
+.ny-months{display:grid;grid-template-columns:1.6fr 1fr;gap:8px;margin-top:14px}
+.ny-months>div{padding:10px 12px;border-radius:12px;background:#f1e6c8;text-align:center}
+.ny-months small{display:block;color:#6d6656;font-size:.6875rem;margin-bottom:3px}
+.ny-months b{color:#1b2140;font-size:.9375rem}
+.ny-months>div+div{background:#f5e0d8}
+.ny-nav{position:sticky;top:0;z-index:3;display:flex;gap:6px;overflow-x:auto;margin:0 -16px;padding:10px 16px;background:#0d1430f2;scrollbar-width:none}
+.ny-nav::-webkit-scrollbar{display:none}
+.ny-nav button{flex:none;min-height:36px;padding:0 13px;border:1px solid #d9a95766;border-radius:18px;background:#fff8e614;color:#f6ecd6;font-size:.8125rem}
+.ny-nav button.is-locked{color:#a9a6a0;border-color:#ffffff22}
+.ny-scene{position:relative;margin:0;border-radius:18px;overflow:hidden}
+.ny-scene figcaption{position:absolute;left:0;right:0;top:0;padding:16px 16px 34px;text-align:center;color:#fff8e6;font-family:var(--font-serif-heading);font-size:1.125rem;text-shadow:0 1px 8px #0d1430;background:linear-gradient(#0d143099,transparent)}
+.ny-letter{scroll-margin-top:62px;display:flex;flex-direction:column;gap:12px}
+.ny-letter-head{display:flex;align-items:center;gap:12px}
+.ny .ny-letter-head img{flex:none;width:52px;height:52px}
+.ny-letter-head small{display:block;color:#84621f;font-size:.6875rem;margin-bottom:3px}
+.ny-letter-head h3{font-size:1.125rem;line-height:1.35;color:#1b2140}
+.ny-letter .ny-talk p{background:#f1e6c8}
+.ny-note{margin:0;padding:10px 12px;border-left:3px solid #d9a957;background:#f6edd8;font-size:.8125rem;line-height:1.65;color:#3b3f58}
+.ny-areas{margin:0;display:flex;flex-direction:column}
+.ny-areas>div{padding:11px 0;border-top:1px solid #e3d6b8}
+.ny-areas dt{display:flex;align-items:center;gap:6px;font-weight:700;font-size:.8125rem;color:#1b2140;margin-bottom:4px}
+.ny .ny-areas dt img{width:22px;height:22px}
+.ny-areas dd{margin:0;font-size:.9rem;line-height:1.7;color:#2a2f4d}
+.ny-tip{margin:0;padding:12px 14px;border-radius:12px;background:#1f2a5c;color:#f6ecd6;font-size:.875rem;line-height:1.6}
+.ny-tip b{display:block;color:#f1d896;font-size:.6875rem;margin-bottom:3px}
+.ny-offer{scroll-margin-top:62px;text-align:center}
+.ny-teasers{list-style:none;margin:14px 0 16px;padding:0;text-align:left}
+.ny-teasers li{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid #e3d6b8;font-size:.8125rem}
+.ny .ny-teasers img{flex:none;width:26px;height:26px}
+.ny-teasers span{flex:none;width:30px;color:#84621f;font-weight:700}
+.ny-teasers b{font-weight:500;color:#1d2240}
+.ny-offer .btn-primary{width:100%;min-height:52px;font-size:1rem}
+.ny-offer .ny-price-note{margin:9px 0 0;color:#6d6656;font-size:.75rem}
+.ny-end{text-align:center}
+.ny-share{width:100%;min-height:46px;background:#fff8e614;color:#f6ecd6;border-color:#d9a95766}
+.ny-disclaimer{color:#a9a6a0;font-size:.6875rem;line-height:1.6;margin:0}

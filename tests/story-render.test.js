@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={sajuQuickSummaryHtml,skyHtml,skyLayout,skyPageHtml,homePreviewLine,reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={newYearPageHtml,sajuQuickSummaryHtml,skyHtml,skyLayout,skyPageHtml,homePreviewLine,reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -300,4 +300,19 @@ test('home content cards show the first good year already shown free',()=>{
  const r=api.computeSaju({year:1993,month:5,day:14,hour:8,minute:30,isLunar:false,isLeapMonth:false,unknownTime:false,gender:'f',name:'지은',city:'seoul',useCorrection:false});
  for(const f of ['_career-content','_marriage-content','_wealth-content','_love-content']){const line=api.homePreviewLine(require('../api/'+f).concept,r);assert.match(line,/home-content-peek">✦ 지은님\S.*\?<\/em>/);}
  assert.equal(api.homePreviewLine({id:'x',category:'직장'},r),'');assert.equal(api.homePreviewLine(require('../api/_career-content').concept,null),'');
+});
+
+test('new year page: free shows the paywall, owner sees every letter and no paywall', () => {
+  const newyear = require('../api/_newyear-content');
+  const c = newyear.compose({gan: '甲', zhi: '子'});
+  const free = api.newYearPageHtml({name: '민지'}, {free: c.free, paid: null, access: {story: false}});
+  assert.ok(free.includes('민지님께'));
+  assert.ok(free.includes('data-ny-buy'));
+  assert.equal((free.match(/class="ny-letter"/g) || []).length, 1);
+  assert.ok(!free.includes('undefined'));
+  const owned = api.newYearPageHtml({name: '민지'}, {free: c.free, paid: c.paid, access: {story: true}});
+  assert.ok(!owned.includes('data-ny-buy'));
+  assert.equal((owned.match(/class="ny-letter"/g) || []).length, 12);
+  assert.ok(owned.includes('좋은 한 해 보내요'));
+  assert.ok(!owned.includes('undefined'));
 });

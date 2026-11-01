@@ -4,6 +4,7 @@ const career = require('../_career-content');
 const marriage = require('../_marriage-content');
 const love = require('../_love-content');
 const wealth = require('../_wealth-content');
+const newyear = require('../_newyear-content');
 const { sbFetch, getQuery, checkAdminSecret } = require('../_supabase');
 const { STAGE_PRICE, rowsAt, reportAccess } = require('../_report-access');
 
@@ -24,6 +25,12 @@ module.exports = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
   const q = getQuery(req), conceptId = q.conceptId || '';
   try {
+    if (conceptId === newyear.concept.id) {
+      const letters = newyear.compose({gan: q.gan, zhi: q.zhi, weak: q.weak});
+      if (!letters) return res.status(400).json({ok:false, error:'MISSING_SAJU'});
+      const access = await reportAccess(q.device_id || '', conceptId);
+      return res.status(200).json({ok:true, rows:[], access, preview:!access.story, free:letters.free, paid:access.story ? letters.paid : null});
+    }
     if (conceptId === career.concept.id) {
       const access = await reportAccess(q.device_id || '', conceptId);
       return res.status(200).json({ok:true, rows:access.story ? [career.story] : [], detailRows:access.detail ? [career.detail] : [], access, preview:!access.story, storyCount:1});

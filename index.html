@@ -1451,6 +1451,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=6">
 <link rel="stylesheet" href="/assets/ui/night.css?v=3">
 <link rel="stylesheet" href="/assets/ui/sky-motion.css?v=11">
+<link rel="stylesheet" href="/assets/ui/newyear.css?v=1">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 </head>
 <body>
@@ -2719,14 +2720,14 @@ function loadKakaoSdk(){
 }
 var KAKAO_SHARE_IMAGE = 'https://sazubara-web.vercel.app/kakao-share-v1.jpg';
 /* 카카오 말풍선은 가로가 좁아서, 글자가 잘리지 않는 정사각형 그림을 따로 쓴다. */
-function kakaoShare(text, url, buttonTitle, title){
+function kakaoShare(text, url, buttonTitle, title, image){
   return loadKakaoSdk().then(function(Kakao){
     Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
         title: title || '별첩사주',
         description: text,
-        imageUrl: KAKAO_SHARE_IMAGE,
+        imageUrl: image || KAKAO_SHARE_IMAGE,
         imageWidth: 800,
         imageHeight: 800,
         link: { mobileWebUrl: url, webUrl: url }
@@ -2872,6 +2873,7 @@ function handleTossPaymentCallback(){
   var clean=new URL(location.href);['paid','order','report','stage','tab'].forEach(function(k){clean.searchParams.delete(k);});
   history.replaceState({},'',clean.pathname+clean.search+clean.hash);
   Promise.all([pullPaidUnlocks(),pullReportUnlocks()]).then(function(){
+    if(reportId===NEWYEAR_CONCEPT.id){openNewYearViewer(NEWYEAR_CONCEPT);return;}
     if(reportId){switchTab('reports');return loadReportList(true).then(function(list){var c=list.filter(function(x){return String(x.id)===reportId;})[0];if(c)openReportViewer(c,stage);});}
     switchTab(returnTab);if(STATE.mySaju)renderSajuResult(STATE.mySaju);showToast('구매한 풀이가 열렸어요.');
   }).catch(function(){showToast('구매 내역을 불러오지 못했어요. 잠시 후 다시 열어주세요.');});
@@ -4612,11 +4614,12 @@ function startReportUnlock(concept,stage){
   Promise.all([loadTossSdk(),fetch('/api/reports/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'prepare',deviceId:DEVICE.shareCode,conceptId:concept.id,stage:stage})}).then(function(r){return r.json();}).then(function(data){if(!data.ok){var error=new Error(data.message||'결제 준비에 실패했어요.');error.code=data.error;throw error;}return data;})]).then(function(values){
     var ctx=values[0],checkout=values[1];
     return ctx.TossPayments(ctx.clientKey).requestPayment('카드',{
-      amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+' (이야기+심층 리포트)',
+      amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+(isNewYear(concept)?'':' (이야기+심층 리포트)'),
       successUrl:location.origin+'/success.html?type=report&conceptId='+encodeURIComponent(concept.id)+'&stage='+stage+'&quote='+encodeURIComponent(checkout.quote),
       failUrl:location.origin+'/fail.html?report='+encodeURIComponent(concept.id)+'&stage='+stage
     });
   }).catch(function(error){
+    if(error&&error.code==='ALREADY_OWNED'&&isNewYear(concept)){openNewYearViewer(concept);return;}
     if(error&&error.code==='ALREADY_OWNED'){return loadReportReader(concept).then(function(data){REPORT_READER.data=data;if(data.access.story)DEVICE.unlocked[reportStageKey(concept,'story')]=true;if(data.access.detail)DEVICE.unlocked[reportStageKey(concept,'detail')]=true;saveDevice();renderReportPanels(concept,data,'story');showToast('보유한 이야기로 다시 열었어요.');}).catch(function(){showToast('보유 내역을 다시 확인하지 못했어요. 잠시 후 이야기를 다시 열어주세요.');});}
     if(error&&error.code==='USER_CANCEL')showToast('결제를 취소했어요. 이어서 둘러보세요.');
     else showToast(error&&error.message||'결제창을 열지 못했어요. 잠시 후 다시 시도해주세요.');
@@ -4654,7 +4657,72 @@ function openPendingReport(){
   var note=$('#pending-report-note');if(note)note.remove();
   setTimeout(function(){openReportViewer(pr.concept,pr.stage);},400);
 }
+/* 2027 신년운세: 다온이 전하는 편지 12통. 문장은 서버(api/_newyear-content.js)가 내 일간·일지로 조합하고, 2~12월은 결제 후에만 내려온다. */
+var NEWYEAR_CONCEPT={id:'20270101-7a3e-4c1d-9b52-6d0e8f4a1c27',title:'2027 신년운세',tagline:'2027년이 보낸 편지 12통',category:'신년운세',cover_img_url:'/assets/daon/cover.webp',active:true,price_krw:7900};
+var NY_AREAS=[['love','연애'],['money','돈'],['work','일'],['health','건강']];
+function isNewYear(concept){return !!concept&&String(concept.id)===NEWYEAR_CONCEPT.id;}
+function nyLetterHtml(l){
+ return '<article class="ny-letter" id="ny-m'+l.month+'"><header class="ny-letter-head"><img src="/assets/daon/'+esc(l.seal)+'.webp" alt="" loading="lazy" decoding="async"><div><small>'+l.month+'월 편지 · '+esc(l.pillar)+'월 · '+esc(l.ss)+'</small><h3>'+esc(l.title)+'</h3></div></header>'+
+  '<div class="ny-talk"><img src="/assets/daon/f-'+esc(l.mood)+'.webp" alt="" loading="lazy" decoding="async"><p>'+esc(l.opening)+'</p></div>'+
+  (l.note||[]).map(function(t){return '<p class="ny-note">'+esc(t)+'</p>';}).join('')+
+  '<dl class="ny-areas">'+NY_AREAS.map(function(a){return '<div><dt><img src="/assets/daon/i-'+a[0]+'.webp" alt="" loading="lazy" decoding="async">'+a[1]+'</dt><dd>'+esc(l[a[0]])+'</dd></div>';}).join('')+'</dl>'+
+  '<p class="ny-tip"><b>이달의 한 가지</b>'+esc(l.tip)+'</p></article>';
+}
+function newYearPageHtml(result,data){
+ var free=data.free,paid=data.paid,owned=!!(data.access&&data.access.story&&paid),name=result&&result.name?esc(result.name)+'님':'',year=free.year;
+ var letters=[free.letter].concat(owned?paid.letters:[]);
+ var SEASON={2:['spring','봄 편지'],5:['summer','여름 편지'],8:['autumn','가을 편지'],11:['winter','겨울 편지']};
+ var html='<section class="ny-cover"><img src="/assets/daon/cover.webp" alt="눈 오는 밤, 편지를 내미는 다온" decoding="async"><div><p>2027년이 보낸 편지</p><h1>'+(name?name+'께<br>':'')+'편지 왔어요</h1></div></section>'+
+  '<div class="ny-talk ny-talk-hello"><img src="/assets/daon/f-wink.webp" alt="" decoding="async"><p>안녕하세요, 편지 배달부 다온이에요. 2027년이 '+(name||'나')+'에게 보낸 편지 12통을 가져왔어요. 한 해 이야기부터 읽어 드릴게요.</p></div>'+
+  '<section class="ny-year"><img src="/assets/daon/read.webp" alt="" loading="lazy" decoding="async"><p class="ny-kicker">2027년 한 해 총평</p><h2>'+esc(year.title)+'</h2><p class="ny-basis">2027 정미년 · 내 일간 '+esc(year.dayGan)+' 기준 · '+esc(year.ss)+'의 해</p>'+
+  year.body.map(function(t){return '<p>'+esc(t)+'</p>';}).join('')+
+  '<div class="ny-months"><div><small>흐름이 좋은 달</small><b>'+free.best.map(function(m){return m+'월';}).join(' · ')+'</b></div><div><small>조심할 달</small><b>'+free.watch+'월</b></div></div></section>';
+ html+='<nav class="ny-nav" aria-label="달별 편지">'+[1,2,3,4,5,6,7,8,9,10,11,12].map(function(m){var open=m===1||owned;return '<button type="button" data-ny-go="'+m+'"'+(open?'':' class="is-locked"')+'>'+m+'월</button>';}).join('')+'</nav>';
+ html+='<figure class="ny-scene"><img src="/assets/daon/jan.webp" alt="" loading="lazy" decoding="async"><figcaption>첫 번째 편지</figcaption></figure>';
+ letters.forEach(function(l){if(SEASON[l.month])html+='<figure class="ny-scene"><img src="/assets/daon/'+SEASON[l.month][0]+'.webp" alt="" loading="lazy" decoding="async"><figcaption>'+SEASON[l.month][1]+'</figcaption></figure>';html+=nyLetterHtml(l);});
+ if(!owned){
+  html+='<section class="ny-offer" id="ny-offer"><img src="/assets/daon/bundle.webp" alt="리본으로 묶은 편지 11통" loading="lazy" decoding="async"><h2>나머지 편지 11통도 받아 볼래요?</h2><p>2월부터 12월까지, 달마다 연애·돈·일·건강을 내 사주로 풀어 드려요.</p>'+
+   '<ul class="ny-teasers">'+free.teasers.map(function(t){return '<li><img src="/assets/daon/'+esc(t.seal)+'.webp" alt="" loading="lazy" decoding="async"><span>'+t.month+'월</span><b>'+esc(t.title)+'</b></li>';}).join('')+'</ul>'+
+   '<button type="button" class="btn-primary report-stage-buy" data-ny-buy>'+krwFmt(NEWYEAR_CONCEPT.price_krw)+'원에 11통 모두 받기</button><p class="ny-price-note">1회 결제, 기간 제한 없이 다시 볼 수 있어요.</p></section>';
+ }else{
+  html+='<section class="ny-end"><img src="/assets/daon/bye.webp" alt="손 흔들어 배웅하는 다온" loading="lazy" decoding="async"><h2>좋은 한 해 보내요</h2><p>'+(name?name+', ':'')+'편지 12통을 모두 전해 드렸어요. 생각날 때 언제든 다시 꺼내 읽어 주세요.</p></section>';
+ }
+ html+='<button type="button" class="share-btn ny-share" data-ny-share>친구에게 신년운세 알려주기</button>'+
+  '<p class="disclaimer ny-disclaimer">일간과 일지를 2027년의 달별 기운에 대조한 참고용 풀이예요. 건강과 돈에 관한 중요한 결정은 전문가와 상의해 주세요.</p>';
+ return html;
+}
+function wireNewYear(root,concept){
+ $all('[data-ny-go]',root).forEach(function(b){b.addEventListener('click',function(){var el=root.querySelector('#ny-m'+b.dataset.nyGo)||root.querySelector('#ny-offer');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});});});
+ var buy=$('[data-ny-buy]',root);if(buy)buy.addEventListener('click',function(){startReportUnlock(concept,'story');});
+ var share=$('[data-ny-share]',root);if(share)share.addEventListener('click',function(){var url=location.origin+'/?newyear=1';kakaoShare('생년월일만 넣으면 2027년 한 해 총평과 1월 편지를 무료로 받아요.',url,'내 편지 받기','2027년이 보낸 편지가 도착했어요',location.origin+'/assets/daon/kakao-v1.jpg').catch(function(){if(navigator.clipboard)navigator.clipboard.writeText(url).then(function(){showToast('링크를 복사했어요.');});else showToast('공유하지 못했어요.');});});
+}
+function openNewYearViewer(concept){
+ var root=$('#report-sheet-root');if(!root)return;
+ if(!STATE.mySaju){rememberPendingReport(concept,'story');return;}
+ var requestId=++reportViewerRequest,my=STATE.mySaju;
+ if(!$('#report-page-root')){REPORT_READER.previousOverflow=document.body.style.overflow;REPORT_READER.previousFocus=document.activeElement;}
+ REPORT_READER.concept=concept;REPORT_READER.stage='story';REPORT_READER.data=null;
+ document.body.style.overflow='hidden';$('.app').inert=true;
+ root.innerHTML='<div class="report-page ny-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title"><div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="돌아가기">‹</button><span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div><div class="report-page-body ny" id="report-panel-list"><p class="section-desc" role="status">편지를 가져오는 중이에요...</p></div></div>';
+ $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
+ document.removeEventListener('keydown',readerKeydown);document.addEventListener('keydown',readerKeydown);
+ var list=$('#report-panel-list');
+ fetch('/api/reports/list?conceptId='+encodeURIComponent(concept.id)+'&device_id='+encodeURIComponent(DEVICE.shareCode||'')+'&gan='+encodeURIComponent(my.day.gan)+'&zhi='+encodeURIComponent(my.day.zhi)+'&weak='+encodeURIComponent(reportVariables(my).weakWx||''))
+  .then(function(r){if(!r.ok)throw new Error('READER_FAILED');return r.json();})
+  .then(function(data){
+   if(requestId!==reportViewerRequest)return;
+   if(!data.ok||!data.free)throw new Error('READER_FAILED');
+   REPORT_READER.data=data;
+   if(data.access&&data.access.story){DEVICE.unlocked[reportStageKey(concept,'story')]=true;saveDevice();}
+   list.innerHTML=newYearPageHtml(my,data);wireNewYear(list,concept);
+  }).catch(function(){
+   if(requestId!==reportViewerRequest)return;
+   list.innerHTML='<p class="section-desc">편지를 가져오지 못했어요.</p><button type="button" class="share-btn" id="reader-retry">다시 불러오기</button>';
+   $('#reader-retry').addEventListener('click',function(){openNewYearViewer(concept);});
+  });
+}
 function openReportViewer(concept,stage){
+  if(isNewYear(concept)){openNewYearViewer(concept);return;}
   var root=$('#report-sheet-root');if(!root)return;
   if(storyCategory(concept)==='unsupported'){showToast('이 주제의 콘텐츠를 준비하고 있어요.');return;}
   if(!STATE.mySaju){rememberPendingReport(concept,stage);return;}
@@ -7206,6 +7274,7 @@ function init(){
   initAuth().catch(function(){/* Other features remain available if the auth SDK cannot load. */});
   var invited = initDevice();
   handleTossPaymentCallback();
+  if(/[?&]newyear/.test(location.search))openNewYearViewer(NEWYEAR_CONCEPT);
   pullPaidUnlocks();
   pullReportUnlocks();
   var btnOpenInvite = $('#btn-open-invite'); if (btnOpenInvite) btnOpenInvite.addEventListener('click', openInviteSheet);
