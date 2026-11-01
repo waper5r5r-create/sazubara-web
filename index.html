@@ -264,18 +264,6 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 }
 @keyframes myroomHolo{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 @media (prefers-reduced-motion: reduce){ .myroom-card[data-frame="holo"]::after{ animation:none; } }
-.frame-picker{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
-.frame-swatch{
-  position:relative; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 4px 8px;
-  border-radius:12px; border:1.5px solid var(--border); background:var(--surface-2); cursor:pointer; min-width:0;
-}
-.frame-swatch.active{border-color:var(--accent); background:var(--accent-soft); box-shadow:0 2px 10px -3px var(--sw-color,var(--accent));}
-.frame-swatch .ring{width:26px; height:26px; border-radius:50%; flex:none; border:2.5px solid var(--sw-color,var(--accent)); box-shadow:0 0 0 3px color-mix(in srgb, var(--sw-color,var(--accent)) 20%, transparent);}
-.frame-swatch .ring.holo{border-color:rgba(255,255,255,.7); background:linear-gradient(115deg,#bac2e3,#ffd27a,#8cdcff,#adb7de);}
-.frame-swatch .lbl{ font-weight:700; color:var(--fg-muted); text-align:center;}
-.frame-swatch .pr{ color:var(--fg-faint);}
-.frame-swatch .pr.owned{color:var(--good);}
-.frame-swatch.none-swatch .ring{border-style:dashed; border-color:var(--border-strong);}
 /* ---- 마이룸 도감(수집 앨범) ---- */
 .myroom-dex-btn{
   display:inline-flex; align-items:center; gap:4px; border:1px solid var(--border-strong); border-radius:999px; font-weight:700; cursor:pointer; flex:none;
@@ -929,7 +917,7 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 @media(max-width:374px){.report-page .reader-cover,.report-page .pocha-cover{grid-template-columns:76px minmax(0,1fr);gap:14px;padding:18px 20px}}
 /* ==== type-floor ==== */
 /* Minimum readable size for UI labels (collectible card miniatures and legal notices excluded). */
-.saju-step-track span,.report-format,.curiosity-strip span,.personal-traits small,.wx-donut-center .lb,.frame-swatch .pr,.frame-swatch .lbl,.report-card .report-play,.myroom-shinsal .chip,.chat-ai-badge,.reader-steps small,.reader-steps button>span,.card-symbol-grid small,.reader-cover .reader-kicker,.report-page .reader-kicker,.daeun-chip .ss,.daeun-chip .age,.app-header .sub,.myroom-chemi,.pack-card .unit,.month-cell,.report-cost-badge,.today-note small,.personal-traits>.hint,.tab-btn,.login-status,.card-meaning small,.detail-sample>span:first-child,.review-privacy,.eyebrow,.worry-preview .eyebrow,.technical-details summary small,.myroom-dex-btn,.repeat-badge,.shinsal-badge .hj,.report-preview-label,.everyday-questions small,.myroom-card .owner-tag,.myroom-new,.dex-card-id,.editorial-tag{font-size:.6875rem}
+.saju-step-track span,.report-format,.curiosity-strip span,.personal-traits small,.wx-donut-center .lb,.report-card .report-play,.myroom-shinsal .chip,.chat-ai-badge,.reader-steps small,.reader-steps button>span,.card-symbol-grid small,.reader-cover .reader-kicker,.report-page .reader-kicker,.daeun-chip .ss,.daeun-chip .age,.app-header .sub,.myroom-chemi,.pack-card .unit,.month-cell,.report-cost-badge,.today-note small,.personal-traits>.hint,.tab-btn,.login-status,.card-meaning small,.detail-sample>span:first-child,.review-privacy,.eyebrow,.worry-preview .eyebrow,.technical-details summary small,.myroom-dex-btn,.repeat-badge,.shinsal-badge .hj,.report-preview-label,.everyday-questions small,.myroom-card .owner-tag,.myroom-new,.dex-card-id,.editorial-tag{font-size:.6875rem}
 .report-real-sample .sample-method,.worry-preview .preview-scope{font-size:.6875rem!important}
 /* ==== marriage-report ==== */
 /* 결혼 사주: 배우자 별 카드와 10년 타임라인 */
@@ -1462,7 +1450,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=5">
 <link rel="stylesheet" href="/assets/ui/night.css?v=2">
-<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=1">
+<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=2">
 </head>
 <body>
 
@@ -4071,7 +4059,7 @@ function myroomTier(score){
   for (var i=0;i<MYROOM_TIERS.length;i++){ if (score >= MYROOM_TIERS[i].min) return MYROOM_TIERS[i]; }
   return MYROOM_TIERS[MYROOM_TIERS.length-1];
 }
-/* 마이룸 카드 꾸미기(프레임) — 전부 무료로 바로 적용할 수 있다. */
+/* 이전 카드에 저장된 프레임은 읽기 전용으로 보존한다. */
 var FRAME_DEFS = [
   { key:'rose',   label:'로즈',     color:'#ff8fa8', soft:'rgba(255,143,168,.28)' },
   { key:'gold',   label:'골드',     color:'#e0ad55', soft:'rgba(224,173,85,.28)' },
@@ -4090,13 +4078,6 @@ function loadMyRoomFrames(){
   try{ var raw = localStorage.getItem(MYROOM_FRAMES_KEY); return raw ? JSON.parse(raw) : {}; }catch(e){ return {}; }
 }
 function getMyRoomFrame(id){ return loadMyRoomFrames()[id] || ''; }
-function setMyRoomFrame(id, frameKey){
-  try{
-    var m = loadMyRoomFrames();
-    if (frameKey) m[id] = frameKey; else delete m[id];
-    localStorage.setItem(MYROOM_FRAMES_KEY, JSON.stringify(m));
-  }catch(e){}
-}
 function loadMyRoomList(){
   try{
     var raw = localStorage.getItem(MYROOM_KEY);
@@ -4250,10 +4231,6 @@ function openMyroomDetail(entry){
   var dateTxt = d ? '지난 '+(d.getMonth()+1)+'월 '+d.getDate()+'일에 확인한 궁합이에요.' : '';
   var root = $('#myroom-sheet-root');
   if (!root) return;
-  var curFrame = getMyRoomFrame(entry.id);
-  var frameAttr = curFrame ? ' data-frame="'+curFrame+'"' : '';
-  var legendCls = (tier.key==='s') ? ' is-legend' : '';
-  var pct = Math.max(4, Math.min(100, entry.score||0));
   root.innerHTML =
     '<div class="sheet-backdrop" id="myroom-detail-backdrop">'+
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
@@ -4279,13 +4256,11 @@ function openMyroomDetail(entry){
         (ZHI_REL_MARRIAGE_TEXT[entry.zhiRel] ? '<div class="detail-block"><p class="ttl">'+uiIcon('people')+' 관계를 이어가는 방법</p>'+autoParas(ZHI_REL_MARRIAGE_TEXT[entry.zhiRel])+'</div>' : '')+
         (GAN_REL_TALK_TEXT[entry.ganRel] ? '<div class="detail-block"><p class="ttl">💬 대화 스타일</p>'+autoParas(GAN_REL_TALK_TEXT[entry.ganRel])+'</div>' : '')+
         (dateTxt ? '<p class="hint">'+dateTxt+'</p>' : '')+
-        '<div class="detail-block"><p class="ttl">'+ICO_GEM+' 카드 꾸미기</p>'+frameSwatchesHtml(entry)+'</div>'+
         '<div class="detail-block" id="myroom-delete-zone">'+myroomDeleteZoneHtml()+'</div>'+
       '</div>'+
     '</div>';
   $('#myroom-detail-backdrop').addEventListener('click', closeMyroomDetail);
   $('#myroom-detail-close').addEventListener('click', closeMyroomDetail);
-  wireFrameSwatches(entry);
   wireMyroomDeleteBtn(entry);
   if (chemi) renderChemiDetailSlot(entry, chemi);
 }
@@ -4346,31 +4321,6 @@ function chemiDetailHtml(chemi){
     '<p class="sub-ttl">⚠ 오늘 조심할 점</p><p class="section-desc">'+d.avoid+'</p>'+
     '<p class="sub-ttl">✅ 오늘 추천 행동</p><p class="section-desc">'+d.action+'</p>'+
   '</div>';
-}
-function frameSwatchesHtml(entry){
-  var cur = getMyRoomFrame(entry.id);
-  var noneActive = cur==='' ? ' active' : '';
-  var cells = '<div class="frame-swatch none-swatch'+noneActive+'" data-frame=""><span class="ring"></span><span class="lbl">없음</span><span class="pr">&nbsp;</span></div>';
-  cells += FRAME_DEFS.map(function(f){
-    var active = cur===f.key ? ' active' : '';
-    var ringCls = f.key==='holo' ? 'ring holo' : 'ring';
-    return '<div class="frame-swatch'+active+'" data-frame="'+f.key+'" style="--sw-color:'+(f.color||'#fff')+';">'+
-      '<span class="'+ringCls+'"></span><span class="lbl">'+f.label+'</span><span class="pr">&nbsp;</span>'+
-    '</div>';
-  }).join('');
-  return '<div class="frame-picker">'+cells+'</div>'+
-    '<p class="hint">프레임은 무료로 자유롭게 바꿔 낄 수 있어요.</p>';
-}
-function wireFrameSwatches(entry){
-  $all('.frame-swatch', $('#myroom-sheet-root')).forEach(function(el){
-    el.addEventListener('click', function(){
-      var key = el.dataset.frame;
-      if (key && !frameDef(key)) return;
-      setMyRoomFrame(entry.id, key);
-      openMyroomDetail(entry);
-      renderMyRoom();
-    });
-  });
 }
 /* ---- 마이룸 도감(수집 앨범): 내가 모은 궁합 카드를 등급별로 모아보는 무료 수집 보상 화면 ---- */
 function myroomDexBtnHtml(){

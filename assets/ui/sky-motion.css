@@ -1,5 +1,5 @@
 /* A stable viewport with independent distant nebula, dust and near stars. */
-.sky-stage,.sky-stage.is-focus{height:clamp(510px,72svh,660px);aspect-ratio:auto;background:radial-gradient(ellipse at 65% 25%,#162440,#070b1c 70%)}
+.sky-stage,.sky-stage.is-focus{height:clamp(510px,72svh,660px);aspect-ratio:auto;overflow:clip;background:radial-gradient(ellipse at 65% 25%,#162440,#070b1c 70%)}
 .sky-stage .sky-nebula-art,.sky-stage.is-far .sky-nebula-art{inset:-35%;width:170%;height:170%;animation:none;object-fit:cover;transform-origin:center;opacity:.8;pointer-events:none;will-change:transform;z-index:0}
 .sky-stage .sky-tint{inset:-35%;pointer-events:none;z-index:0}
 .sky-cam{z-index:2}.sky-depth{position:absolute;inset:-60%;z-index:1;pointer-events:none;opacity:.65;background-image:radial-gradient(1px 1px at 17px 23px,#fff5d9 95%,transparent),radial-gradient(1.5px 1.5px at 79px 113px,#c6d6ff 95%,transparent),radial-gradient(1px 1px at 145px 67px,#fff 95%,transparent);background-size:173px 191px,257px 283px,311px 239px;will-change:transform}
