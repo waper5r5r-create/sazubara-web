@@ -55,7 +55,7 @@
 .sky-name{font-weight:500}
 
 /* Softer stars: tapered light rays that sway, a small companion constellation per friend, names in the star's colour */
-.sky-star .sky-spark,.sky-star .sky-spark.is-yin{stroke:none;opacity:calc(.55 + var(--glow)*.5);transform-box:fill-box;transform-origin:center;rotate:var(--tilt,0deg)}
+.sky-star .sky-spark,.sky-star .sky-spark.is-yin{stroke:none;opacity:calc(.7 + var(--glow)*.4);transform-box:fill-box;transform-origin:center;rotate:var(--tilt,0deg)}
 .sky-star .sky-spark.is-yin{stroke:var(--sc);stroke-width:.6;stroke-linejoin:round;stroke-opacity:.35}
 .sky-stage.is-open .sky-star .sky-spark{animation:skySway calc(var(--beat,3.4s)*1.7) ease-in-out var(--d,0s) infinite alternate}
 @keyframes skySway{from{transform:rotate(-8deg) scale(.92)}to{transform:rotate(8deg) scale(1.06)}}

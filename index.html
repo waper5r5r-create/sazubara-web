@@ -1450,7 +1450,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=6">
 <link rel="stylesheet" href="/assets/ui/night.css?v=3">
-<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=10">
+<link rel="stylesheet" href="/assets/ui/sky-motion.css?v=11">
 </head>
 <body>
 
@@ -3399,11 +3399,11 @@ function skyIsDemo(){return typeof location!=='undefined'&&/[?&]skydemo/.test(lo
    선 = 나에서 사방으로 뻗는 대신, 친구들을 방향 순서대로 잇는 부드러운 곡선 + 가장 잘 맞는 두 별만 나와 연결. */
 var SKY_STAR_COLOR={목:['wood','#9be8bd'],화:['fire','#ffa58a'],토:['earth','#f5d27e'],금:['metal','#eef2fb'],수:['water','#9cc0ff']};
 function skyGlowDefs(){return Object.keys(SKY_STAR_COLOR).map(function(k){var c=SKY_STAR_COLOR[k];return '<radialGradient id="sky-glow-'+c[0]+'"><stop offset="0" stop-color="'+c[1]+'" stop-opacity=".95"/><stop offset=".35" stop-color="'+c[1]+'" stop-opacity=".32"/><stop offset="1" stop-color="'+c[1]+'" stop-opacity="0"/></radialGradient>'+
- '<radialGradient id="sky-ray-'+c[0]+'"><stop offset="0" stop-color="#fffdf6"/><stop offset=".22" stop-color="'+c[1]+'" stop-opacity=".95"/><stop offset="1" stop-color="'+c[1]+'" stop-opacity="0"/></radialGradient>';}).join('');}
+ '<radialGradient id="sky-ray-'+c[0]+'"><stop offset="0" stop-color="#fffdf6"/><stop offset=".3" stop-color="'+c[1]+'"/><stop offset=".75" stop-color="'+c[1]+'" stop-opacity=".55"/><stop offset="1" stop-color="'+c[1]+'" stop-opacity=".12"/></radialGradient>';}).join('');}
 /* 선 대신 끝이 가늘어지는 빛줄기 면. 양 = 길고 짧은 빛줄기 8개, 음 = 둥글고 짧은 6갈래. */
 function skyStarShape(sz,yin){
  var tips=yin?6:8,pts=[];
- for(var t=0;t<tips*2;t++){var a=(t*180/tips-90+(yin?30:0))*Math.PI/180,r=t%2?sz*(yin?.62:.3):yin?sz*2.3:(t%4===0?sz*3.3:sz*1.5);pts.push((Math.cos(a)*r).toFixed(1)+' '+(Math.sin(a)*r).toFixed(1));}
+ for(var t=0;t<tips*2;t++){var a=(t*180/tips-90+(yin?30:0))*Math.PI/180,r=t%2?sz*(yin?.62:.3):yin?sz*2.6:(t%4===0?sz*3.9:sz*1.7);pts.push((Math.cos(a)*r).toFixed(1)+' '+(Math.sin(a)*r).toFixed(1));}
  return 'M'+pts.join('L')+'Z';
 }
 function skyHash(s){return String(s).split('').reduce(function(a,c){return (a*31+c.charCodeAt(0))%9973;},11);}
