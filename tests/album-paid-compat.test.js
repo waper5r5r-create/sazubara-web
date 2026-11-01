@@ -1,0 +1,6 @@
+const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs');
+const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
+const source=html.slice(html.indexOf('function skyCompatPair('),html.indexOf('var COMPAT_DETAIL_PRICE'));
+function fixture(){const a={day:{gan:'甲',zhi:'子'}},calls=[];const ctx={STATE:{mySaju:a},renderCompatDetailSection(...args){calls.push(args);}};vm.createContext(ctx);vm.runInContext(source,ctx);return {ctx,a,calls};}
+test('invited and received cards reuse the original paid compatibility key',()=>{for(const id of ['invite-device','invited-by-device']){const {ctx,calls}=fixture(),body={};ctx.renderSkyPremium({id,_sajuB:{day:{gan:'乙',zhi:'丑'},dayGanWx:'木'},zhiRel:'liuhe',ganRel:'sheng'},body);assert.equal(calls[0][3],'compat-甲子-乙丑');assert.equal(calls[0][4],body);}});
+test('legacy cards resolve their original key, and demo cards never offer payment',()=>{const {ctx,calls}=fixture();assert.equal(ctx.skyCompatPair({id:'compat-甲子-乙丑'}).key,'compat-甲子-乙丑');const body={};ctx.renderSkyPremium({id:'demo-1'},body);assert.equal(calls.length,0);assert.ok(body.innerHTML.includes('결제할 수 없어요'));assert.ok(!body.innerHTML.includes('unlock-btn'));});
