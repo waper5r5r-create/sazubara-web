@@ -1451,7 +1451,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=6">
 <link rel="stylesheet" href="/assets/ui/night.css?v=3">
 <link rel="stylesheet" href="/assets/ui/sky-motion.css?v=11">
-<link rel="stylesheet" href="/assets/ui/newyear.css?v=2">
+<link rel="stylesheet" href="/assets/ui/newyear.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 </head>
 <body>
@@ -3289,15 +3289,16 @@ function wireStarGift(scope,result){
 }
 /* 콘텐츠 줄: 목록 API에서 자동으로 */
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
-function homeContentsHtml(){return '<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
+function homeContentsHtml(){return '<button type="button" class="ny-banner" data-ny-banner><img src="/assets/daon/banner.webp" alt="" decoding="async"><span><small>2027 신년운세</small><b>2027년이 보낸<br>편지가 도착했어요</b><em>한 해 총평과 1월 편지는 무료</em></span></button>'+'<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
 /* 콘텐츠 카드 한 줄: 연도는 멀게 느껴져서, 그 콘텐츠가 답해 주는 질문을 내 이름으로 던진다 */
-var HOME_PREVIEW_Q={love:'은 언제, 어떤 사람과 이어질까?',wealth:'의 돈은 어디서 들어오고 어디로 샐까?',career:'에게 맞는 일은 따로 있을까?',marriage:'은 언제쯤 결혼하게 될까?'};
+var HOME_PREVIEW_Q={newyear:'의 2027년, 언제 가장 좋을까?',love:'은 언제, 어떤 사람과 이어질까?',wealth:'의 돈은 어디서 들어오고 어디로 샐까?',career:'에게 맞는 일은 따로 있을까?',marriage:'은 언제쯤 결혼하게 될까?'};
 function homePreviewLine(c,result){
  var cat=isPocha(c)?'career':storyCategory(c),q=HOME_PREVIEW_Q[cat];
  if(!q||!result||!result.day)return '';
  return '<em class="home-content-peek">✦ '+(result.name?esc(result.name)+'님'+q:'나'+q.replace(/^은/,'는'))+'</em>';
 }
 function fillHomeContents(scope,result){
+ wireNewYearBanner(scope);
  var row=$('[data-home-contents]',scope);if(!row)return;
  loadReportList().then(function(list){
   var items=(list||[]).filter(function(c){return storyCategory(c)!=='unsupported';});
@@ -4459,6 +4460,7 @@ function reportCoverSource(c,result){
 function reportCardHtml(c){
   var unlocked = reportStageOwned(c,'story'),available=storyCategory(c)!=='unsupported';
   var coverSrc=reportCoverSource(c,STATE.mySaju);
+  if(isNewYear(c))coverSrc='/assets/daon/cover-thumb.webp';
   if(coverSrc==='/assets/career/scenes/cover.webp')coverSrc='/assets/career/scenes/cover-thumb.webp';
   if(coverSrc==='/assets/love/scenes/cover.webp')coverSrc='/assets/love/scenes/cover-thumb.webp';
   if(coverSrc==='/assets/marriage/scenes/cover.webp')coverSrc='/assets/marriage/scenes/cover-thumb.webp';
@@ -4507,8 +4509,10 @@ function renderReportsTabView(){
   var view = $('#view-reports');
   if (!view) return;
   view.innerHTML =
+        '<button type="button" class="ny-banner" data-ny-banner><img src="/assets/daon/banner.webp" alt="" decoding="async"><span><small>2027 신년운세</small><b>2027년이 보낸<br>편지가 도착했어요</b><em>한 해 총평과 1월 편지는 무료</em></span></button>'+
         '<div class="chip-row report-cat-chips" id="report-cat-chips" hidden></div>'+
     '<div class="report-grid" id="report-grid"><p class="section-desc">불러오는 중...</p></div>';
+  wireNewYearBanner(view);
   loadReportList().then(function(list){
     var cats = reportCategoriesFrom(list);
     var chipsEl = $('#report-cat-chips');
@@ -4557,7 +4561,7 @@ var reportSectionHtml=function(panel,result){
     '<p class="scene-result-bubble">'+esc(bubble)+'</p></div>'+(parts.length?'<div class="webtoon-narration">'+parts.map(function(part){return '<p class="report-caption">'+esc(part)+'</p>';}).join('')+'</div>':'')+'</section>';
 };
 function reportShareBtnHtml(){return '<button type="button" class="share-btn" id="btn-share-report">'+uiIcon('share')+' 이 이야기 공유하기</button>';}
-function storyCategory(c){if(isMarriage(c))return 'marriage';if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
+function storyCategory(c){if(isNewYear(c))return 'newyear';if(isMarriage(c))return 'marriage';if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
 function prologueDialogue(c,result){
   var v=reportVariables(result),money=storyCategory(c)==='wealth';
   var loveVoice={목:'함께라면, 조금 더 나다운 사람이 될 것 같아.',화:'좋아하는 마음은, 숨기고 싶지 않아.',토:'설렘보다 오래 남는 편안함이 좋아.',금:'쉽게 마음을 주진 않아. 그래서 더 신중해.',수:'생각은 깊은데, 마음은 쉽게 꺼내지 못해.'};
@@ -4634,6 +4638,7 @@ function openPendingReport(){
 var NEWYEAR_CONCEPT={id:'20270101-7a3e-4c1d-9b52-6d0e8f4a1c27',title:'2027 신년운세',tagline:'2027년이 보낸 편지 12통',category:'신년운세',cover_img_url:'/assets/daon/cover.webp',active:true,price_krw:7900};
 var NY_AREAS=[['love','연애'],['money','돈'],['work','일'],['health','건강']];
 function isNewYear(concept){return !!concept&&String(concept.id)===NEWYEAR_CONCEPT.id;}
+function wireNewYearBanner(scope){var b=$('[data-ny-banner]',scope);if(b)b.addEventListener('click',function(){openReportViewer(NEWYEAR_CONCEPT,'story');});}
 function nyLetterHtml(l){
  return '<article class="ny-letter" id="ny-m'+l.month+'"><header class="ny-letter-head"><img src="/assets/daon/'+esc(l.seal)+'.webp" alt="" loading="lazy" decoding="async"><div><small>'+l.month+'월 편지 · '+esc(l.pillar)+'월 · '+esc(l.ss)+'</small><h3>'+esc(l.title)+'</h3></div></header>'+
   '<div class="ny-talk"><img src="/assets/daon/f-'+esc(l.mood)+'.webp" alt="" loading="lazy" decoding="async"><p>'+esc(l.opening)+'</p></div>'+

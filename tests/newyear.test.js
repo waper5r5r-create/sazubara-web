@@ -49,7 +49,9 @@ test('owner receives the paid letters', async () => {
   assert.equal(body.access.story, true);
   assert.equal(body.paid.letters.length, 11);
 });
-test('list stays hidden until launch', async () => {
+test('list shows the new year fortune first', async () => {
   const {body} = await call(list, {}, []);
-  assert.ok(!body.rows.some(r => r.id === newyear.concept.id));
+  assert.equal(body.rows[0].id, newyear.concept.id);
+  assert.equal(body.rows.filter(r => r.id === newyear.concept.id).length, 1);
+  assert.equal(body.rows[0].price_krw, 7900);
 });

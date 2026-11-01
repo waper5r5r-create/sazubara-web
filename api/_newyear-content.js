@@ -6,7 +6,7 @@ const concept = {
   title: '2027 신년운세',
   tagline: '2027년이 보낸 편지 12통',
   category: '신년운세',
-  cover_img_url: '/assets/daon/cover.webp',
+  cover_img_url: '/assets/daon/cover-thumb.webp',
   active: true,
   price_krw: 7900
 };

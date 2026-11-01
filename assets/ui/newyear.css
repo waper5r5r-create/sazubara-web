@@ -52,3 +52,10 @@
 .ny-end{text-align:center}
 .ny-share{width:100%;min-height:46px;background:#fff8e614;color:#f6ecd6;border-color:#d9a95766}
 .ny-disclaimer{color:#a9a6a0;font-size:.6875rem;line-height:1.6;margin:0}
+/* 홈·콘텐츠 탭 배너: 왼쪽 하늘에 글자, 오른쪽에 다온 */
+.ny-banner{position:relative;display:block;width:100%;aspect-ratio:16/9;padding:0;border:1px solid #d9a95766;border-radius:18px;overflow:hidden;background:#0d1430;text-align:left;cursor:pointer;margin-bottom:16px}
+.ny-banner img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:right center}
+.ny-banner span{position:absolute;left:0;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 16px;width:62%;word-break:keep-all;color:#fff8e6;background:linear-gradient(90deg,#0d1430cc,#0d143066 70%,transparent)}
+.ny-banner small{color:#f1d896;font-size:.75rem;font-weight:700}
+.ny-banner b{font-family:var(--font-serif-heading);font-size:1.0625rem;line-height:1.4;font-weight:700}
+.ny-banner em{font-style:normal;font-size:.75rem;color:#e8e2d2}

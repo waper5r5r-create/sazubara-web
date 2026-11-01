@@ -69,6 +69,6 @@ module.exports = async (req, res) => {
     const r = await sbFetch('/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,price_krw,category&order=sort_order.asc');
     if (!r.ok) throw new Error('QUERY_FAILED');
     const rows = (await r.json()).map(c => ({ ...presentConcept(c), price_krw: STAGE_PRICE.story }));
-    res.status(200).json({ ok: true, rows: rows.concat([career.concept, marriage.concept]) });
+    res.status(200).json({ ok: true, rows: [newyear.concept].concat(rows, [career.concept, marriage.concept]) });
   } catch (e) { res.status(500).json({ ok: false, error: 'SERVER_ERROR' }); }
 };
