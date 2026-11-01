@@ -4641,10 +4641,10 @@ function isNewYear(concept){return !!concept&&String(concept.id)===NEWYEAR_CONCE
 /* 홈·콘텐츠 탭 상단 배너. 넘기기는 브라우저 스크롤에 맡기고, 가만히 두면 5초마다 다음 장으로 넘어간다. */
 var HOME_BANNERS=[
  {id:NEWYEAR_CONCEPT.id,img:'/assets/daon/banner.webp',kicker:'2027 신년운세',title:'2027년이 보낸<br>편지가 도착했어요',note:'한 해 총평과 1월 편지는 무료'},
- {id:'운명의-사람은-언제-올까-fyq1z',img:'/assets/banners/love.webp',kicker:'연애 사주',title:'언제, 어떤 사람과<br>이어질까?',note:'앞부분은 무료'},
- {id:'타고난-재물복은-얼마나-될까-k7dxw',img:'/assets/banners/wealth.webp',kicker:'재물 사주',title:'내 돈은 어디서 들어오고<br>어디로 샐까?',note:'앞부분은 무료'},
- {id:'7c5db9e6-59cb-4a81-8b0a-73da4db7b051',img:'/assets/banners/career.webp',kicker:'직업 사주',title:'나에게 맞는 일은<br>따로 있을까?',note:'앞부분은 무료'},
- {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',img:'/assets/banners/marriage.webp',kicker:'결혼 사주',title:'나는 언제쯤<br>결혼하게 될까?',note:'앞부분은 무료'}
+ {id:'운명의-사람은-언제-올까-fyq1z',img:'/assets/banners/love-v2.webp',kicker:'연애 사주',title:'언제, 어떤 사람과<br>이어질까?',note:'앞부분은 무료'},
+ {id:'타고난-재물복은-얼마나-될까-k7dxw',img:'/assets/banners/wealth-v2.webp',kicker:'재물 사주',title:'내 돈은 어디서 들어오고<br>어디로 샐까?',note:'앞부분은 무료'},
+ {id:'7c5db9e6-59cb-4a81-8b0a-73da4db7b051',img:'/assets/banners/career-v2.webp',kicker:'직업 사주',title:'나에게 맞는 일은<br>따로 있을까?',note:'앞부분은 무료'},
+ {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',img:'/assets/banners/marriage-v2.webp',kicker:'결혼 사주',title:'나는 언제쯤<br>결혼하게 될까?',note:'앞부분은 무료'}
 ];
 function homeBannerHtml(){
  return '<section class="home-banners" aria-label="추천 콘텐츠"><div class="banner-track" data-banner-track>'+HOME_BANNERS.map(function(b,i){return '<button type="button" class="ny-banner" data-banner-id="'+esc(b.id)+'"><img src="'+b.img+'" alt="" decoding="async"><span><small>'+esc(b.kicker)+'</small><b>'+b.title+'</b><em>'+esc(b.note)+'</em></span></button>';}).join('')+'</div>'+
