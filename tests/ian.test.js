@@ -1,0 +1,81 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+process.env.SUPABASE_URL = 'https://database.invalid';
+process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-key';
+process.env.TOSS_SECRET_KEY = 'test-secret-key';
+const ian = require('../api/_ian-content');
+const list = require('../api/reports/list');
+const GANS = '甲乙丙丁戊己庚辛壬癸', ZHIS = '子丑寅卯辰巳午未申酉戌亥';
+const base = {year:'癸酉', month:'乙卯', day:'甲午', time:'丙寅', gender:'f', strength:'weak', wx:'3,2,0,1,1'};
+
+function call(handler, query, rows) {
+  const realFetch = global.fetch;
+  global.fetch = async () => new Response(JSON.stringify(rows), {status: 200, headers: {'Content-Type': 'application/json'}});
+  const qs = new URLSearchParams(query).toString();
+  return new Promise(resolve => {
+    const res = {statusCode: 200, setHeader() {}, status(c) { this.statusCode = c; return this; }, json(b) { global.fetch = realFetch; resolve({status: this.statusCode, body: b}); }};
+    handler({method: 'GET', url: '/api/reports/list?' + qs, query, headers: {host: 'x'}}, res);
+  });
+}
+const allBlocks = c => c.free.intro.concat(...c.free.sections, ...c.paid.sections);
+const words = c => JSON.stringify(allBlocks(c).filter(b => b.t === 'say' || b.t === 'big' || b.line).map(b => b.text || b.line));
+
+test('도화 and 홍염 are read from the chart', () => {
+  const r = ian.readChart(ian.parseChart(base), [3,2,0,1,1]);
+  assert.deepEqual(r.dohwa, ['month']);
+  assert.deepEqual(r.hong, ['day']);
+  assert.deepEqual(r.marks, {month:['도화'], day:['홍염']});
+  const none = ian.readChart(ian.parseChart({year:'甲子', month:'丙子', day:'甲申', time:'甲子'}), [3,0,0,1,4]);
+  assert.deepEqual(none.hong, []);
+  const noTime = ian.readChart(ian.parseChart({year:'癸酉', month:'甲子', day:'甲申'}), [2,0,0,2,2]);
+  assert.deepEqual(noTime.dohwa, ['year']);
+});
+test('the 재성 of a man and the 관성 of a woman are the opposite-sex stars', () => {
+  assert.equal(ian.role('목', '토'), 'jaeseong');
+  assert.equal(ian.role('목', '금'), 'gwanseong');
+  assert.equal(ian.loverLevel([1,1,0,3,1], '목', 'm'), 'none');
+  assert.equal(ian.loverLevel([1,1,0,3,1], '목', 'f'), 'many');
+});
+test('every day pillar gets complete chapters with existing art and no banned words', () => {
+  const dir = path.join(__dirname, '..', 'assets', 'ian');
+  for (const g of GANS) for (const z of ZHIS) for (const gender of ['m', 'f']) for (const strength of ['strong', 'weak']) {
+    const c = ian.compose({...base, day: g + z, gender, strength});
+    assert.equal(c.free.sections.length, 3);
+    assert.equal(c.paid.sections.length, 5);
+    assert.equal(c.teasers.length, 5);
+    for (const b of allBlocks(c)) {
+      for (const [k, v] of Object.entries(b)) if (k !== 'line') assert.ok(v !== undefined && v !== '', g + z + b.t + k);
+      if (b.t === 'cut') assert.ok(fs.existsSync(path.join(dir, b.img + '.webp')), b.img);
+    }
+    assert.doesNotMatch(words(c), /끌림|궁합|환각|성인|19금|undefined/);
+  }
+});
+test('men and women read the same chapters and the same reading', () => {
+  const heads = c => allBlocks(c).filter(b => b.t === 'chapter').map(b => b.n + b.title + b.basis);
+  const m = ian.compose({...base, gender: 'm'}), f = ian.compose({...base, gender: 'f'});
+  assert.deepEqual(heads(m), heads(f));
+  assert.equal(heads(m).length, 7);
+});
+test('rejects a missing or invalid saju', () => {
+  for (const bad of [undefined, {}, {...base, day: 'xx'}, {...base, year: undefined}, {...base, month: '甲'}]) assert.equal(ian.compose(bad), null);
+  assert.ok(ian.compose({...base, time: ''}));
+});
+test('free response carries no paid chapter text', async () => {
+  const {status, body} = await call(list, {...base, conceptId: ian.concept.id, device_id: 'd1'}, []);
+  assert.equal(status, 200);
+  assert.equal(body.paid, null);
+  const text = JSON.stringify(body), c = ian.compose(base);
+  for (const sec of c.paid.sections) for (const b of sec) if (b.t === 'big') assert.ok(!text.includes(b.text), 'leak ' + b.text);
+  assert.equal(body.free.sections.length, 3);
+});
+test('owner receives the paid chapters', async () => {
+  const {body} = await call(list, {...base, conceptId: ian.concept.id, device_id: 'd1'}, [{unlock_key: 'report-story-' + ian.concept.id, concept_id: ian.concept.id}]);
+  assert.equal(body.access.story, true);
+  assert.equal(body.paid.sections.length, 5);
+});
+test('stays out of the public list until launch', async () => {
+  const {body} = await call(list, {}, []);
+  assert.equal(body.rows.filter(r => r.id === ian.concept.id).length, 0);
+});

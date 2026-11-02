@@ -5,6 +5,7 @@ const marriage = require('../_marriage-content');
 const love = require('../_love-content');
 const wealth = require('../_wealth-content');
 const newyear = require('../_newyear-content');
+const ian = require('../_ian-content');
 const { sbFetch, getQuery, checkAdminSecret } = require('../_supabase');
 const { STAGE_PRICE, rowsAt, reportAccess } = require('../_report-access');
 
@@ -30,6 +31,12 @@ module.exports = async (req, res) => {
       if (!letters) return res.status(400).json({ok:false, error:'MISSING_SAJU'});
       const access = await reportAccess(q.device_id || '', conceptId);
       return res.status(200).json({ok:true, rows:[], access, preview:!access.story, free:letters.free, paid:access.story ? letters.paid : null});
+    }
+    if (conceptId === ian.concept.id) {
+      const story = ian.compose(q);
+      if (!story) return res.status(400).json({ok:false, error:'MISSING_SAJU'});
+      const access = await reportAccess(q.device_id || '', conceptId);
+      return res.status(200).json({ok:true, rows:[], access, preview:!access.story, free:story.free, teasers:story.teasers, paid:access.story ? story.paid : null});
     }
     if (conceptId === career.concept.id) {
       const access = await reportAccess(q.device_id || '', conceptId);

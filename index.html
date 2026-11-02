@@ -1452,6 +1452,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/night.css?v=3">
 <link rel="stylesheet" href="/assets/ui/sky-motion.css?v=11">
 <link rel="stylesheet" href="/assets/ui/newyear.css?v=4">
+<link rel="stylesheet" href="/assets/ui/ian.css?v=1">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
 </head>
@@ -2875,6 +2876,7 @@ function handleTossPaymentCallback(){
   history.replaceState({},'',clean.pathname+clean.search+clean.hash);
   Promise.all([pullPaidUnlocks(),pullReportUnlocks()]).then(function(){
     if(reportId===NEWYEAR_CONCEPT.id){openNewYearViewer(NEWYEAR_CONCEPT);return;}
+    if(reportId===IAN_CONCEPT.id){openIanViewer(IAN_CONCEPT);return;}
     if(reportId){switchTab('reports');return loadReportList(true).then(function(list){var c=list.filter(function(x){return String(x.id)===reportId;})[0];if(c)openReportViewer(c,stage);});}
     switchTab(returnTab);if(STATE.mySaju)renderSajuResult(STATE.mySaju);showToast('구매한 풀이가 열렸어요.');
   }).catch(function(){showToast('구매 내역을 불러오지 못했어요. 잠시 후 다시 열어주세요.');});
@@ -4604,12 +4606,13 @@ function startReportUnlock(concept,stage){
   Promise.all([loadTossSdk(),fetch('/api/reports/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'prepare',deviceId:DEVICE.shareCode,conceptId:concept.id,stage:stage})}).then(function(r){return r.json();}).then(function(data){if(!data.ok){var error=new Error(data.message||'결제 준비에 실패했어요.');error.code=data.error;throw error;}return data;})]).then(function(values){
     var ctx=values[0],checkout=values[1];
     return ctx.TossPayments(ctx.clientKey).requestPayment('카드',{
-      amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+(isNewYear(concept)?'':' (이야기+심층 리포트)'),
+      amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+(isNewYear(concept)||isIan(concept)?'':' (이야기+심층 리포트)'),
       successUrl:location.origin+'/success.html?type=report&conceptId='+encodeURIComponent(concept.id)+'&stage='+stage+'&quote='+encodeURIComponent(checkout.quote),
       failUrl:location.origin+'/fail.html?report='+encodeURIComponent(concept.id)+'&stage='+stage
     });
   }).catch(function(error){
     if(error&&error.code==='ALREADY_OWNED'&&isNewYear(concept)){openNewYearViewer(concept);return;}
+    if(error&&error.code==='ALREADY_OWNED'&&isIan(concept)){openIanViewer(concept);return;}
     if(error&&error.code==='ALREADY_OWNED'){return loadReportReader(concept).then(function(data){REPORT_READER.data=data;if(data.access.story)DEVICE.unlocked[reportStageKey(concept,'story')]=true;if(data.access.detail)DEVICE.unlocked[reportStageKey(concept,'detail')]=true;saveDevice();renderReportPanels(concept,data,'story');showToast('보유한 이야기로 다시 열었어요.');}).catch(function(){showToast('보유 내역을 다시 확인하지 못했어요. 잠시 후 이야기를 다시 열어주세요.');});}
     if(error&&error.code==='USER_CANCEL')showToast('결제를 취소했어요. 이어서 둘러보세요.');
     else showToast(error&&error.message||'결제창을 열지 못했어요. 잠시 후 다시 시도해주세요.');
@@ -4742,8 +4745,112 @@ function openNewYearViewer(concept){
    $('#reader-retry').addEventListener('click',function(){openNewYearViewer(concept);});
   });
 }
+/* 이안의 비밀: 조향사 이안이 내 사주를 읽어 준다. 문장은 서버(api/_ian-content.js)가 내 사주로 조합하고, 3~7장은 결제 후에만 내려온다.
+   아직 목록에는 올리지 않아, ?ian 링크로만 열린다. */
+var IAN_CONCEPT={id:'20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',title:'이안의 비밀',tagline:'내 사주 속 숨겨 둔 얼굴',category:'연애',cover_img_url:'/assets/ian/bottle.webp',active:true,price_krw:7900};
+function isIan(concept){return !!concept&&String(concept.id)===IAN_CONCEPT.id;}
+function ianText(t){return esc(t).replace(/\n/g,'<br>');}
+function ianChartHtml(result,marks,noTime){
+ var cols=[['시','time',result.time],['일','day',result.day],['월','month',result.month],['년','year',result.year]];
+ return '<section class="ian-chart ian-rv"><p>'+(result.name?esc(result.name)+' 님의 사주팔자':'내 사주팔자')+'</p><div class="ian-pillars">'+cols.map(function(c){
+  if(!c[2])return '<div class="is-empty"><small>'+c[0]+'</small><b>모름</b><b>모름</b></div>';
+  var m=(marks&&marks[c[1]])||[];
+  return '<div'+(c[1]==='day'?' class="is-me"':'')+'><small>'+c[0]+'</small><b>'+esc(c[2].ganKr)+'</b><b'+(m.length?' class="is-hot"':'')+'>'+esc(c[2].zhiKr)+(m.length?'<em>'+esc(m.join('·'))+'</em>':'')+'</b></div>';
+ }).join('')+'</div>'+(noTime?'<small>태어난 시간을 몰라서 세 기둥으로 읽었어요.</small>':'')+'</section>';
+}
+function ianBlockHtml(b,result){
+ if(b.t==='cut')return '<figure class="ian-cut ian-rv" style="aspect-ratio:'+esc(b.ratio)+'"><img src="/assets/ian/'+esc(b.img)+'.webp" alt="" loading="lazy" decoding="async">'+(b.line?'<figcaption class="ian-line at-'+esc(b.at)+'">'+ianText(b.line)+'</figcaption>':'')+'</figure>';
+ if(b.t==='say')return '<p class="ian-say tone-'+esc(b.tone)+' ian-rv">'+ianText(b.text)+'</p>';
+ if(b.t==='big')return '<p class="ian-big ian-rv">'+ianText(b.text)+'</p>';
+ if(b.t==='sfx')return '<p class="ian-sfx">'+esc(b.text)+'</p>';
+ if(b.t==='chapter')return '<header class="ian-chapter"><small>'+b.n+'장 · '+esc(b.basis)+'</small><h2>'+esc(b.title)+'</h2></header>';
+ if(b.t==='chart')return ianChartHtml(result,b.marks,b.noTime);
+ if(b.t==='hold')return '<section class="ian-hold" data-ian-hold><div class="ian-strip" role="button" tabindex="0" aria-label="'+esc(b.label)+' 맡아 보기"><i></i><b>'+esc(b.label)+'</b></div><p>시향지를 길게 눌러 주세요</p></section>';
+ if(b.t==='card')return '<section class="ian-card ian-rv"><h3>당신의 향</h3><dl><div><dt>첫 향</dt><dd>'+esc(b.top)+'</dd></div><div><dt>중간 향</dt><dd>'+esc(b.mid)+'</dd></div><div><dt>끝 향</dt><dd>'+esc(b.base)+'</dd></div></dl></section>';
+ return '';
+}
+function ianPageHtml(result,data){
+ var owned=!!(data.access&&data.access.story&&data.paid),free=data.free;
+ var door=free.intro.filter(function(b){return b.t==='door';})[0];
+ var html=free.intro.filter(function(b){return b.t!=='door';}).map(function(b){return ianBlockHtml(b,result);}).join('')+
+  '<figure class="ian-cut" style="aspect-ratio:'+esc(door.ratio)+'"><img src="/assets/ian/'+esc(door.img)+'.webp" alt="'+esc(door.alt)+'" decoding="async"><button type="button" class="ian-door" data-ian-door>문 열기</button></figure>';
+ var sections=free.sections.slice();
+ if(owned){sections[sections.length-1]=sections[sections.length-1].concat([data.paid.gate]);sections=sections.concat(data.paid.sections);}
+ html+=sections.map(function(blocks,i){return '<div class="ian-sec" data-ian-sec="'+i+'" hidden>'+blocks.map(function(b){return ianBlockHtml(b,result);}).join('')+
+  (!owned&&i===sections.length-1?ianOfferHtml(result,data):'')+
+  (i===sections.length-1?'<p class="ian-foot">사주 풀이를 이야기로 꾸민 콘텐츠예요. 재미로 즐겨 주세요.</p>':'')+'</div>';}).join('');
+ return html;
+}
+function ianOfferHtml(result,data){
+ return '<section class="ian-offer"><img class="ian-offer-art" src="/assets/ian/c14.webp" alt="붉은 병과 푸른 병을 내미는 이안" loading="lazy" decoding="async"><h2>'+(result.name?esc(result.name)+' 님':'당신')+' 사주의 비밀은<br>아직 다섯 개 남았어요</h2><p>여기부터는 남들이 모르는 쪽이에요.</p>'+
+  '<ul class="ian-teasers">'+data.teasers.map(function(t){return '<li><b>'+esc(t.title)+'</b><span>'+esc(t.note)+'</span></li>';}).join('')+'</ul>'+
+  '<button type="button" class="btn-primary report-stage-buy" data-ian-buy>'+krwFmt(IAN_CONCEPT.price_krw)+'원에 끝까지 보기</button><p class="ian-note">1회 결제, 기간 제한 없이 다시 볼 수 있어요.<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></p></section>';
+}
+function ianLoadProgress(){try{return parseInt(localStorage.getItem('ian-progress'),10)||0;}catch(e){return 0;}}
+function ianSaveProgress(n){try{localStorage.setItem('ian-progress',String(n));}catch(e){}}
+function wireIan(root,concept){
+ var io=window.IntersectionObserver?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-in');io.unobserve(e.target);}});},{threshold:.1}):null;
+ function watch(scope){$all('.ian-rv',scope).forEach(function(el){if(io)io.observe(el);else el.classList.add('is-in');});}
+ function openSec(i,scroll){
+  var sec=root.querySelector('[data-ian-sec="'+i+'"]');if(!sec)return null;
+  sec.hidden=false;watch(sec);
+  var prev=root.querySelector('[data-ian-sec="'+(i-1)+'"]'),left=prev&&prev.querySelector('[data-ian-hold]');if(left)left.classList.add('is-done');
+  if(scroll)sec.scrollIntoView();
+  return sec;
+ }
+ watch(root);
+ var door=$('[data-ian-door]',root);
+ if(door)door.addEventListener('click',function(){door.hidden=true;openSec(0,true);ianSaveProgress(Math.max(ianLoadProgress(),1));});
+ $all('[data-ian-hold]',root).forEach(function(box){
+  var strip=box.querySelector('.ian-strip'),timer=null,sec=box.closest('[data-ian-sec]'),next=Number(sec.dataset.ianSec)+1;
+  function done(){
+   strip.classList.remove('is-on');
+   var smoke=$('.ian-smoke',root.parentNode);if(smoke)smoke.classList.add('is-on');
+   setTimeout(function(){openSec(next,true);ianSaveProgress(Math.max(ianLoadProgress(),next+1));setTimeout(function(){if(smoke)smoke.classList.remove('is-on');},350);},smoke?700:0);
+  }
+  function stop(){clearTimeout(timer);strip.classList.remove('is-on');}
+  strip.addEventListener('pointerdown',function(e){e.preventDefault();strip.classList.add('is-on');clearTimeout(timer);timer=setTimeout(done,1200);});
+  ['pointerup','pointerleave','pointercancel'].forEach(function(n){strip.addEventListener(n,stop);});
+  strip.addEventListener('contextmenu',function(e){e.preventDefault();});
+  strip.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();done();}});
+ });
+ var buy=$('[data-ian-buy]',root);if(buy)buy.addEventListener('click',function(){startReportUnlock(concept,'story');});
+ /* 다시 들어오면 읽던 장에서 이어 본다. */
+ var seen=ianLoadProgress(),count=$all('[data-ian-sec]',root).length,last=null;
+ if(seen>0&&door)door.hidden=true;
+ for(var i=0;i<Math.min(seen,count);i++)last=openSec(i,false);
+ if(last)setTimeout(function(){last.scrollIntoView();},0);
+}
+function openIanViewer(concept){
+ var root=$('#report-sheet-root');if(!root)return;
+ if(!STATE.mySaju){rememberPendingReport(concept,'story');return;}
+ var requestId=++reportViewerRequest,my=STATE.mySaju,w=my.wxCount||{};
+ if(!$('#report-page-root')){REPORT_READER.previousOverflow=document.body.style.overflow;REPORT_READER.previousFocus=document.activeElement;}
+ REPORT_READER.concept=concept;REPORT_READER.stage='story';REPORT_READER.data=null;
+ document.body.style.overflow='hidden';$('.app').inert=true;
+ root.innerHTML='<div class="report-page ian-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title"><div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="돌아가기">‹</button><span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div><div class="report-page-body ian" id="report-panel-list"><p class="section-desc" role="status">불러오는 중이에요...</p></div><div class="ian-smoke" aria-hidden="true"></div></div>';
+ $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
+ document.removeEventListener('keydown',readerKeydown);document.addEventListener('keydown',readerKeydown);
+ var list=$('#report-panel-list');
+ function gz(p){return p?p.gan+p.zhi:'';}
+ var params={conceptId:concept.id,device_id:DEVICE.shareCode||'',year:gz(my.year),month:gz(my.month),day:gz(my.day),time:gz(my.time),gender:(my.gender==='m'||my.gender==='male')?'m':'f',strength:my.strength||'',wx:[w.목||0,w.화||0,w.토||0,w.금||0,w.수||0].join(',')};
+ fetch('/api/reports/list?'+new URLSearchParams(params).toString())
+  .then(function(r){if(!r.ok)throw new Error('READER_FAILED');return r.json();})
+  .then(function(data){
+   if(requestId!==reportViewerRequest)return;
+   if(!data.ok||!data.free)throw new Error('READER_FAILED');
+   REPORT_READER.data=data;
+   if(data.access&&data.access.story){DEVICE.unlocked[reportStageKey(concept,'story')]=true;saveDevice();}
+   list.innerHTML=ianPageHtml(my,data);wireIan(list,concept);
+  }).catch(function(){
+   if(requestId!==reportViewerRequest)return;
+   list.innerHTML='<p class="section-desc">불러오지 못했어요.</p><button type="button" class="share-btn" id="reader-retry">다시 불러오기</button>';
+   $('#reader-retry').addEventListener('click',function(){openIanViewer(concept);});
+  });
+}
 function openReportViewer(concept,stage){
   if(isNewYear(concept)){openNewYearViewer(concept);return;}
+  if(isIan(concept)){openIanViewer(concept);return;}
   var root=$('#report-sheet-root');if(!root)return;
   if(storyCategory(concept)==='unsupported'){showToast('이 주제의 콘텐츠를 준비하고 있어요.');return;}
   if(!STATE.mySaju){rememberPendingReport(concept,stage);return;}
@@ -7331,6 +7438,7 @@ function init(){
   loadState();
   /* 저장된 사주를 읽고 첫 화면을 그린 다음에 연다 */
   if(/[?&]newyear/.test(location.search))setTimeout(function(){openNewYearViewer(NEWYEAR_CONCEPT);},0);
+  if(/[?&]ian/.test(location.search))setTimeout(function(){openIanViewer(IAN_CONCEPT);},0);
   initSajuForm();
   initSajuStoryForm();
   initVisualFeedback();

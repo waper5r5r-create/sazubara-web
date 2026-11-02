@@ -1,0 +1,57 @@
+/* 이안의 비밀: 그림이 화면 끝까지 차는 세로 스크롤 화면. 글은 짧게, 이안의 말만. */
+.ian-page,.ian-page .ian{background:#10131c;color:#fff6e8}
+.report-page-body.ian{padding:0 0 56px;font-family:var(--font-body);word-break:keep-all;overflow-wrap:break-word}
+.ian img{display:block;width:100%;height:100%;object-fit:cover;max-width:none}
+.ian-cut{position:relative;margin:0;overflow:hidden;background:#1b1f2c}
+.ian-line{position:absolute;left:6%;right:6%;margin:0;font-family:var(--font-serif-heading);font-weight:500;font-size:1.0625rem;line-height:1.55;text-shadow:0 1px 3px #000,0 1px 12px #000c}
+.ian-line.at-t{top:6%}.ian-line.at-b{bottom:6%}
+.ian-say{margin:0;padding:30px 26px;text-align:center;font-family:var(--font-serif-heading);font-weight:500;font-size:1.0625rem;line-height:1.65}
+.ian-say.tone-room{background:#dfe3ec;color:#1a2030}
+.ian-say.tone-night{background:#160c05}
+.ian-say.tone-soft{background:#10131c;color:#ffffffd0;font-size:.9375rem}
+.ian-big{margin:0;padding:60px 26px;text-align:center;background:#10131c;font-family:var(--font-serif-heading);font-weight:700;font-size:1.5rem;line-height:1.45}
+.ian-sfx{margin:0;padding:28px 26px;text-align:center;font-size:.875rem;color:#ffffffb0}
+.ian-chapter{padding:54px 26px 30px;text-align:center;background:#10131c}
+.ian-chapter small{display:block;margin-bottom:8px;font-size:.75rem;color:#9db8ee}
+.ian-chapter h2{margin:0;font-family:var(--font-serif-heading);font-size:1.5rem;line-height:1.35;color:#fff6e8}
+.ian-door{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);z-index:2;min-height:48px;padding:0 28px;border:1px solid #e9b87288;border-radius:24px;background:#10131ccc;color:#fff6e8;font-family:var(--font-serif-heading);font-size:1rem;cursor:pointer}
+.ian-chart{padding:30px 20px;background:#dfe3ec;color:#1a2030;text-align:center}
+.ian-chart>p{margin:0 0 14px;font-family:var(--font-serif-heading);font-weight:700;font-size:1.0625rem}
+.ian-chart>small{display:block;margin-top:12px;font-size:.75rem;color:#4a5268}
+.ian-pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ian-pillars>div{display:flex;flex-direction:column;gap:6px}
+.ian-pillars small{font-size:.75rem;color:#4a5268}
+.ian-pillars b{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:66px;border-radius:10px;background:#10131c;color:#fff6e8;font-family:var(--font-serif-heading);font-size:1.375rem;font-weight:700}
+.ian-pillars .is-me b:first-of-type{outline:2px solid #3f6fc4}
+.ian-pillars b.is-hot{background:#8c1f2d;box-shadow:0 0 16px #c9354a88}
+.ian-pillars em{margin-top:2px;font-style:normal;font-family:var(--font-body);font-size:.6875rem;font-weight:500;color:#ffd9cf}
+.ian-pillars .is-empty b{background:#c6ccd9;color:#4a5268;font-size:.8125rem}
+.ian-hold{display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 24px 52px;background:#dfe3ec;color:#1a2030;text-align:center}
+.ian-strip{position:relative;width:88px;height:230px;padding:0;border:1px solid #b9c0d0;border-radius:4px;background:#fff;box-shadow:0 12px 26px #10131c33;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:pointer}
+.ian-strip i{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(0deg,#3f6fc4,#3f6fc400);transition:height .25s}
+.ian-strip.is-on i{height:100%;transition:height 1.2s linear}
+.ian-strip b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif-heading);font-weight:500;writing-mode:vertical-rl;letter-spacing:.2em;color:#3a4358}
+.ian-hold p{margin:0;font-size:.875rem;color:#4a5268}
+.ian-hold.is-done{display:none}
+.ian-smoke{position:fixed;inset:0;z-index:2000;pointer-events:none;opacity:0;background:radial-gradient(circle at 30% 30%,#ffe3b0,transparent 45%),radial-gradient(circle at 70% 60%,#c9803f,transparent 50%),#1c0f06;transition:opacity .7s}
+.ian-smoke.is-on{opacity:1}
+.ian-offer{padding:0 22px 44px;background:#dfe3ec;color:#1a2030;text-align:center}
+.ian-offer .ian-offer-art{height:auto;width:calc(100% + 44px);margin:0 -22px 24px}
+.ian-offer h2{margin:0 0 8px;font-family:var(--font-serif-heading);font-size:1.375rem;line-height:1.4;color:#1a2030}
+.ian-offer>p{margin:0;font-size:.9375rem;line-height:1.7}
+.ian-teasers{display:grid;gap:10px;margin:22px 0;padding:0;list-style:none;text-align:left}
+.ian-teasers li{padding:13px 14px;border-radius:12px;background:#10131c;color:#fff6e8;font-size:.875rem;line-height:1.5}
+.ian-teasers b{display:block;margin-bottom:2px;font-size:.9375rem}
+.ian-teasers span{color:#c9d6f2}
+.ian-offer .ian-note{margin-top:12px;font-size:.75rem;line-height:1.6;color:#4a5268}
+.ian-offer .ian-note a{color:inherit}
+.ian-card{margin:0;padding:44px 26px;text-align:center;background:#160c05}
+.ian-card h3{margin:0 0 18px;font-family:var(--font-serif-heading);font-size:1.25rem;color:#fff6e8}
+.ian-card dl{display:grid;gap:10px;margin:0 auto;max-width:280px}
+.ian-card dl div{display:flex;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid #ffffff2e}
+.ian-card dt{font-size:.8125rem;color:#e9b872}
+.ian-card dd{margin:0;font-family:var(--font-serif-heading)}
+.ian-foot{margin:0;padding:24px 22px 0;font-size:.75rem;line-height:1.6;color:#ffffffa0;text-align:center}
+.ian-rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.ian-rv.is-in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.ian-rv{opacity:1;transform:none;transition:none}.ian-smoke{transition:none}}

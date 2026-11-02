@@ -1,7 +1,8 @@
 const career = require('../_career-content');
 const marriage = require('../_marriage-content');
 const newyear = require('../_newyear-content');
-const STATIC_CONCEPTS = {[career.concept.id]: career.concept, [marriage.concept.id]: marriage.concept, [newyear.concept.id]: newyear.concept};
+const ian = require('../_ian-content');
+const STATIC_CONCEPTS = {[career.concept.id]: career.concept, [marriage.concept.id]: marriage.concept, [newyear.concept.id]: newyear.concept, [ian.concept.id]: ian.concept};
 // Two independent purchases; historic report_unlocks still grants both stages.
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('../_supabase');
 const { STAGE_PRICE, STAGES, stageKey, rowsAt, reportAccess } = require('../_report-access');
