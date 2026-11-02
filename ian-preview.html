@@ -5,27 +5,22 @@
 <style>
 :root{--ink:#10131c;--room:#dfe3ec;--blue:#3f6fc4;--amber:#e9b872;--cream:#fff6e8;--serif:'Noto Serif KR',serif;--sans:'Noto Sans KR',sans-serif}
 *{box-sizing:border-box}html{background:#000}body{margin:0 auto;max-width:480px;background:var(--ink);color:var(--cream);font-family:var(--sans);word-break:keep-all;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
-.note{position:sticky;top:0;z-index:30;padding:8px 14px;background:#000d;font-size:.75rem;color:#cfd4e0;text-align:center}
+.note{margin:0;padding:8px 14px;background:#000;font-size:.75rem;color:#cfd4e0;text-align:center}
 .cut{position:relative;overflow:hidden;background:#222}
-.cut .art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:18% 12%;text-align:center;font-size:.75rem;line-height:1.6;color:#ffffff99}
-.cut .art span{padding:8px 10px;border:1px dashed #ffffff55;border-radius:8px}
-.cut img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%}
-.tag{position:absolute;right:8px;top:8px;z-index:3;padding:2px 7px;border-radius:9px;background:#0008;color:#fff;font-size:.625rem}
-.tall{aspect-ratio:3/4.4}.wide{aspect-ratio:16/10}.square{aspect-ratio:1}.slim{aspect-ratio:16/6}
-.line{position:absolute;z-index:2;max-width:78%;line-height:1.55;text-shadow:0 1px 10px #000c}
+.cut img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.tall{aspect-ratio:3/4}.wide{aspect-ratio:16/9}.square{aspect-ratio:1}.slim{aspect-ratio:21/9}
+.line{position:absolute;z-index:2;margin:0;max-width:78%;line-height:1.55;text-shadow:0 1px 3px #000,0 1px 12px #000c}
 .say{font-family:var(--serif);font-weight:500;font-size:1.0625rem}
 .big{font-family:var(--serif);font-weight:700;font-size:1.625rem;line-height:1.35}
 .soft{font-size:.8125rem;color:#ffffffd0}
-.think{font-size:.875rem;font-style:italic;color:#d9e4ff}
-.t{top:7%}.b{bottom:7%}.m{top:50%;translate:0 -50%}.l{left:6%}.r{right:6%;text-align:right}.c{left:50%;translate:-50% 0;text-align:center;width:84%;max-width:none}
+.t{top:6%}.b{bottom:6%}.l{left:6%}.r{right:6%;text-align:right}
 .gap{display:flex;align-items:center;justify-content:center;padding:64px 26px;text-align:center}
 .gap.small{padding:30px 26px}
-.gap p{margin:0}
-.room{background:var(--room);color:#1a2030}.room .think{color:#3f6fc4;font-style:italic}
-.split{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#000}
-.tilt-a{clip-path:polygon(0 0,100% 0,88% 100%,0 100%)}.tilt-b{clip-path:polygon(12% 0,100% 0,100% 100%,0 100%);margin-left:-12%}
+.gap p{margin:0;line-height:1.6}
+.room{background:var(--room);color:#1a2030}
+.night{background:#160c05}
 .rv{opacity:0;transform:translateY(14px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
-.hold-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:44px 24px 56px;background:var(--room);color:#1a2030;text-align:center}
+.hold-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 24px 52px;background:var(--room);color:#1a2030;text-align:center}
 .strip{position:relative;width:88px;height:230px;border:1px solid #b9c0d0;border-radius:4px;background:#fff;box-shadow:0 12px 26px #10131c33;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:pointer}
 .strip i{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(0deg,#3f6fc4,#3f6fc400);transition:height .25s}
 .strip.on i{height:100%;transition:height 1.6s linear}
@@ -33,13 +28,7 @@
 .smoke{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:0;background:radial-gradient(circle at 30% 30%,#ffe3b0,transparent 45%),radial-gradient(circle at 70% 60%,#c9803f,transparent 50%),#1c0f06;transition:opacity .9s}
 .smoke.on{opacity:1}
 .scene{background:#160c05}.scene[hidden]{display:none}
-.offer{padding:40px 22px 56px;background:var(--room);color:#1a2030;text-align:center}
-.offer h2{font-family:var(--serif);font-size:1.375rem;line-height:1.4;margin:0 0 8px}
-.offer p{font-size:.875rem;line-height:1.7;margin:0}
-.notes{display:grid;gap:10px;margin:22px 0;text-align:left}
-.notes div{padding:13px 14px;border-radius:12px;background:#10131c;color:var(--cream)}
-.notes small{display:block;color:#9db8ee;font-size:.6875rem;margin-bottom:3px}
-.door-btn{position:absolute;left:50%;bottom:7%;translate:-50% 0;z-index:3;min-height:48px;padding:0 28px;border:1px solid #e9b87288;border-radius:24px;background:#10131ccc;color:var(--cream);font-family:var(--serif);font-size:1rem}
+.door-btn{position:absolute;left:50%;bottom:6%;translate:-50% 0;z-index:3;min-height:48px;padding:0 28px;border:1px solid #e9b87288;border-radius:24px;background:#10131ccc;color:var(--cream);font-family:var(--serif);font-size:1rem;cursor:pointer}
 .chart{padding:30px 20px;background:var(--room);color:#1a2030;text-align:center}
 .chart-head{margin:0 0 14px;font-family:var(--serif);font-weight:700;font-size:1.0625rem}
 .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -50,49 +39,62 @@
 .pillars b.hot{background:#8c1f2d;box-shadow:0 0 16px #c9354a88}
 .pillars em{font-style:normal;font-family:var(--sans);font-size:.6875rem;font-weight:500;color:#ffd9cf;margin-top:2px}
 .chart-note{margin:12px 0 0;font-size:.6875rem;color:#5a6378}
+.offer{padding:0 22px 56px;background:var(--room);color:#1a2030;text-align:center}
+.offer>img{display:block;width:calc(100% + 44px);margin:0 -22px 24px;height:auto}
+.offer h2{font-family:var(--serif);font-size:1.375rem;line-height:1.4;margin:0 0 8px}
+.offer p{font-size:.875rem;line-height:1.7;margin:0}
+.notes{display:grid;gap:10px;margin:22px 0;text-align:left}
+.notes div{padding:13px 14px;border-radius:12px;background:#10131c;color:var(--cream);font-size:.9rem;line-height:1.5}
+.notes small{display:block;color:#9db8ee;font-size:.6875rem;margin-bottom:3px}
 .buy{width:100%;min-height:52px;border:0;border-radius:14px;background:var(--ink);color:var(--cream);font-weight:700;font-size:1rem}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.smoke{transition:none}}
 </style></head><body>
-<p class="note">시안이에요. 점선 칸은 나중에 그림이 들어갈 자리예요.</p>
+<p class="note">시안이에요. 표의 사주는 예시이고, 실제로는 내 사주가 들어가요.</p>
 
-<div class="cut tall door"><div class="art" style="background:linear-gradient(#0b1224,#1a2a4a 60%,#3a2a18)"><span>내 눈으로 보는 장면: 비 오는 밤, 내 손이 유리문 손잡이에 닿아 있고 문 너머로 호박색 불빛과 이안의 뒷모습</span></div><i class="tag">1</i><button type="button" class="door-btn" id="door">문 열기</button></div>
+<div class="cut tall door"><img src="/assets/ian/c01.webp" alt="비 오는 밤, 내 손이 잡은 유리문 너머 이안의 뒷모습"><button type="button" class="door-btn" id="door">문 열기</button></div>
 <div id="inside" hidden>
 <div class="gap small rv"><p class="soft">딸랑.</p></div>
-<div class="cut tall rv"><img src="/assets/ian/f-bottle.webp" alt=""><i class="tag">2</i><p class="line say b l">어서 와요.<br>기다렸어요.</p></div>
-<div class="split rv"><div class="cut square tilt-a"><div class="art" style="background:#20283c"><span>스포이드에서 떨어지는 한 방울</span></div><i class="tag">3</i></div><div class="cut square tilt-b"><img src="/assets/ian/f-side.webp" alt=""><i class="tag">4</i></div></div>
-<div class="cut wide rv"><div class="art" style="background:linear-gradient(120deg,#d9dfeb,#b8c2d6);color:#2a3350"><span>조향대 위로 몸을 숙이는 이안. 코트를 벗은 터틀넥 차림</span></div><i class="tag">5</i><p class="line say t l" style="color:#10131c;text-shadow:none">태어난 날이랑 시간,<br>알려 줘요.</p></div>
+<div class="cut tall rv"><img src="/assets/ian/c02.webp" alt="" loading="lazy" decoding="async"><p class="line say b l">어서 와요.<br>기다렸어요.</p></div>
+<div class="cut square rv"><img src="/assets/ian/c03.webp" alt="" loading="lazy" decoding="async"></div>
+<div class="gap small room rv"><p class="say">태어난 날이랑 시간,<br>알려 줘요.</p></div>
+<div class="cut tall rv"><img src="/assets/ian/c04.webp" alt="" loading="lazy" decoding="async"></div>
 <section class="chart rv"><p class="chart-head">민지 님의 사주팔자</p><div class="pillars">
  <div><small>시</small><b>병</b><b>인</b></div>
  <div class="me"><small>일</small><b>갑</b><b class="hot">오<em>홍염</em></b></div>
  <div><small>월</small><b>을</b><b class="hot">묘<em>도화</em></b></div>
  <div><small>년</small><b>계</b><b>유</b></div>
-</div><p class="chart-note">입력한 생년월일시로 계산해 실제 내 글자가 들어가요</p></section>
-<div class="cut slim rv"><div class="art" style="background:#1a1f2e"><span>차트를 내려다보다 눈을 드는 이안, 눈만 크게</span></div><i class="tag">6</i></div>
+</div><p class="chart-note">입력한 생년월일시로 계산한 내 글자가 들어가요</p></section>
+<div class="cut slim rv"><img src="/assets/ian/c05.webp" alt="" loading="lazy" decoding="async"></div>
 <div class="gap small room rv"><p class="say">갑목 일간. 곧게 크는 나무인데,<br>바로 아래에 불이 붙어 있네요.</p></div>
 <div class="gap rv"><p class="big">도화가 하나.<br>홍염도 하나.</p></div>
-<div class="cut tall rv"><div class="art" style="background:linear-gradient(#3a2a18,#120a05)"><span>책상 너머로 가까이 다가와 내 턱을 살짝 드는 이안</span></div><i class="tag">7</i><p class="line say t l">도화는 사람을 끌어당겨요.<br>홍염은, 한번 붙으면 안 꺼지고요.</p></div>
-<div class="gap small room rv"><p class="say">겉은 단정한데 밑은 타고 있어요.<br>본인만 모르죠.</p></div>
-<div class="cut tall rv"><img src="/assets/ian/f-smell.webp" alt=""><i class="tag">8</i><p class="line say t r">당신 도화부터<br>보여 줄게요.</p></div>
+<div class="cut tall rv"><img src="/assets/ian/c06.webp" alt="" loading="lazy" decoding="async"></div>
+<div class="gap small room rv"><p class="say">도화는 사람을 끌어당겨요.<br>홍염은, 한번 붙으면 안 꺼지고요.</p></div>
+<div class="gap small rv"><p class="say">겉은 단정한데 밑은 타고 있어요.<br>본인만 모르죠.</p></div>
+<div class="cut tall rv"><img src="/assets/ian/c07.webp" alt="" loading="lazy" decoding="async"></div>
+<div class="gap small room rv"><p class="say">당신 도화부터 보여 줄게요.</p></div>
+<div class="cut tall rv"><img src="/assets/ian/c08.webp" alt="" loading="lazy" decoding="async"></div>
 <section class="hold-wrap" id="hold"><p class="say" style="margin:0">눈 감고. 천천히.</p><div class="strip" id="strip" role="button" aria-label="길게 눌러 내 도화 보기"><i></i><b>월지의 도화</b></div><p class="soft" style="color:#4a5268;margin:0">시향지를 길게 눌러 보세요</p></section>
 
 <section class="scene" id="scene" hidden>
- <div class="cut tall rv"><div class="art" style="background:linear-gradient(#2a1608,#7a4416 70%,#3a1f0a)"><span>사람들로 가득한 호텔 라운지. 장소는 내 도화가 앉은 자리(년·월·일·시)에 따라 달라져요</span></div><i class="tag">9</i><p class="line say t l">눈 떠요.<br>여기가 당신 도화가 피는 자리예요.</p></div>
- <div class="cut wide rv"><div class="art" style="background:#2a1608"><span>건너편 자리, 얼굴이 보이지 않는 사람의 실루엣. 잔을 내려놓는 손</span></div><i class="tag">10</i></div>
- <div class="gap small rv"><p class="say">봐요. 벌써 당신을 보고 있잖아요.</p></div>
- <div class="cut tall rv"><div class="art" style="background:linear-gradient(160deg,#4a2510,#160c05)"><span>드레스 차림의 이안이 바 끝에 기대 이쪽을 보는 장면. 이 세계의 안내자</span></div><i class="tag">11</i><p class="line say b l">월지의 도화예요.<br>일터나 모임에서 사람이 먼저 와요.</p></div>
- <div class="gap rv"><p class="say">당신은 먼저 다가가지 않아요.<br>대신 눈을 안 피하죠.<br>그게 더 위험하다는 걸 모르고.</p></div>
- <div class="cut wide rv"><div class="art" style="background:#1c0f06"><span>내 손목 가까이 다가온 손가락. 닿기 직전에서 멈춤</span></div><i class="tag">12</i><p class="line say t r">이 손 잡으면,<br>어떻게 될 것 같아요?</p></div>
+ <div class="cut tall rv"><img src="/assets/ian/c09.webp" alt="" loading="lazy" decoding="async"><p class="line say t l">눈 떠요.<br>여기가 당신 도화가 피는 자리예요.</p></div>
+ <div class="gap small night rv"><p class="say">월지의 도화예요.<br>일터나 모임에서 사람이 먼저 와요.</p></div>
+ <div class="cut wide rv"><img src="/assets/ian/c10.webp" alt="" loading="lazy" decoding="async"></div>
+ <div class="gap small night rv"><p class="say">봐요. 벌써 당신을 보고 있잖아요.</p></div>
+ <div class="cut tall rv"><img src="/assets/ian/c11.webp" alt="" loading="lazy" decoding="async"><p class="line say b l">당신은 먼저 다가가지 않아요.<br>대신 눈을 안 피하죠.</p></div>
+ <div class="gap night rv"><p class="say">그게 더 위험하다는 걸 모르고.</p></div>
+ <div class="cut wide rv"><img src="/assets/ian/c12.webp" alt="" loading="lazy" decoding="async"></div>
+ <div class="gap small night rv"><p class="say">이 손 잡으면,<br>어떻게 될 것 같아요?</p></div>
  <div class="gap small rv"><p class="soft">탁.</p></div>
- <div class="cut tall rv"><img src="/assets/ian/f-shh.webp" alt=""><i class="tag">13</i><p class="line say t l">여기까지가 도화예요.</p><p class="line soft b r">일지의 홍염은 아직 안 열었어요.</p></div>
- <section class="offer rv"><h2>민지 님 사주의 비밀은<br>아직 두 개 남았어요</h2><p>일지에 앉은 글자는 내 가장 깊은 곳이에요.</p>
+ <div class="cut tall rv"><img src="/assets/ian/c13.webp" alt="" loading="lazy" decoding="async"><p class="line say b r">여기까지가 도화예요.<br>일지의 홍염은 아직 안 열었어요.</p></div>
+ <section class="offer rv"><img src="/assets/ian/c14.webp" alt="붉은빛과 푸른빛 약병을 내미는 이안" loading="lazy" decoding="async"><h2>민지 님 사주의 비밀은<br>아직 두 개 남았어요</h2><p>일지에 앉은 글자는 내 가장 깊은 곳이에요.</p>
   <div class="notes"><div><small>일지의 홍염</small>갑오 일주, 내가 무너지는 순간과 상대</div><div><small>일지, 배우자 자리</small>불 꺼진 뒤 끝내 원하는 사람</div></div>
-  <button class="buy" type="button">7,900원에 끝까지 맡아 보기</button></section>
+  <button class="buy" type="button">7,900원에 끝까지 보기</button></section>
 </section>
 </div>
 <div class="smoke" id="smoke" aria-hidden="true"></div>
 <script>
 (function(){
- var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.2});
+ var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.15});
  document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
  var door=document.getElementById('door'),inside=document.getElementById('inside');
  door.addEventListener('click',function(){door.hidden=true;inside.hidden=false;inside.scrollIntoView({behavior:'smooth'});});
