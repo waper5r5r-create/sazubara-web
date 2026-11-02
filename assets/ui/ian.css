@@ -4,7 +4,10 @@
 .ian img{display:block;width:100%;height:100%;object-fit:cover;max-width:none}
 .ian-cut{position:relative;margin:0;overflow:hidden;background:#1b1f2c}
 .ian-line{position:absolute;left:6%;right:6%;margin:0;font-family:var(--font-serif-heading);font-weight:500;font-size:1.0625rem;line-height:1.55;text-shadow:0 1px 3px #000,0 1px 12px #000c}
-.ian-line.at-t{top:6%}.ian-line.at-b{bottom:6%}
+.ian-line{left:0;right:0;padding:22px 6% 26px;background:linear-gradient(180deg,#000a,#0000)}
+.ian-line.at-t{top:0}
+.ian-line.at-b{bottom:0;padding:26px 6% 22px;background:linear-gradient(0deg,#000a,#0000)}
+.ian-sec{scroll-margin-top:52px}
 .ian-say{margin:0;padding:30px 26px;text-align:center;font-family:var(--font-serif-heading);font-weight:500;font-size:1.0625rem;line-height:1.65}
 .ian-say.tone-room{background:#dfe3ec;color:#1a2030}
 .ian-say.tone-night{background:#160c05}

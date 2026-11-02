@@ -79,3 +79,23 @@ test('stays out of the public list until launch', async () => {
   const {body} = await call(list, {}, []);
   assert.equal(body.rows.filter(r => r.id === ian.concept.id).length, 0);
 });
+test('free readers get the offer, owners get every chapter and no offer', () => {
+  const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+  let source = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x => x[1]).join('\n');
+  source = source.replace(/\}\)\(\);\s*$/, 'globalThis.ianTest={ianPageHtml};})();');
+  const sandbox = {document: {readyState: 'loading', addEventListener() {}}, window: {}, localStorage: {getItem() { return null; }}, console, setTimeout() {}, clearTimeout() {}, URLSearchParams, URL, Date, Math, Intl};
+  require('node:vm').createContext(sandbox);
+  require('node:vm').runInContext(source, sandbox);
+  const p = (g, z) => ({ganKr: g, zhiKr: z});
+  const my = {name: '민지', year: p('계', '유'), month: p('을', '묘'), day: p('갑', '오'), time: p('병', '인')};
+  const c = ian.compose(base);
+  const free = sandbox.ianTest.ianPageHtml(my, {access: {story: false}, free: c.free, teasers: c.teasers, paid: null});
+  assert.ok(free.includes('data-ian-buy'));
+  assert.equal((free.match(/data-ian-sec=/g) || []).length, 3);
+  const owned = sandbox.ianTest.ianPageHtml(my, {access: {story: true}, free: c.free, teasers: c.teasers, paid: c.paid});
+  assert.ok(!owned.includes('data-ian-buy'));
+  assert.equal((owned.match(/data-ian-sec=/g) || []).length, 8);
+  assert.ok(owned.includes('당신의 향'));
+  assert.ok(free.includes('<em>도화</em>'));
+  assert.ok(free.includes('<em>홍염</em>'));
+});
