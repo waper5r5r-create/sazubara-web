@@ -20,7 +20,8 @@ function call(handler, query, rows) {
   });
 }
 const allBlocks = c => c.free.intro.concat(...c.free.sections, ...c.paid.sections);
-const words = c => JSON.stringify(allBlocks(c).filter(b => b.t === 'say' || b.t === 'big' || b.line).map(b => b.text || b.line));
+const words = c => JSON.stringify(allBlocks(c).filter(b => b.t === 'say' || b.t === 'big' || b.t === 'real' || b.t === 'card' || b.line).map(b => b.text || b.line || b.rows));
+const paidChars = c => c.paid.sections.flat().map(b => (b.text || '') + (b.line || '') + (b.rows || []).map(r => r.join('')).join('')).join('').replace(/\s/g, '').length;
 
 test('도화 and 홍염 are read from the chart', () => {
   const r = ian.readChart(ian.parseChart(base), [3,2,0,1,1]);
@@ -66,6 +67,16 @@ test('a chart with neither mark still gets a reading, and both marks are explain
   assert.match(say(none), /도화는 .*홍염은/);
   assert.match(say(ian.compose(base)), /도화 1개, 홍염 1개[\s\S]*남들한테 안 보여 준 쪽/);
 });
+test('every paid chapter ends with a real-life reading and the ending has a summary card', () => {
+  for (const g of GANS) for (const z of ZHIS) for (const gender of ['m', 'f']) {
+    const c = ian.compose({...base, day: g + z, gender});
+    for (const sec of c.paid.sections) assert.equal(sec.filter(b => b.t === 'real').length, 1);
+    assert.ok(paidChars(c) >= 1100, g + z + paidChars(c));
+    const card = c.paid.sections[4].find(b => b.t === 'card');
+    assert.equal(card.rows.length, 6);
+    assert.ok(card.rows.every(r => r[1] && !/원해요/.test(r[1])));
+  }
+});
 test('rejects a missing or invalid saju', () => {
   for (const bad of [undefined, {}, {...base, day: 'xx'}, {...base, year: undefined}, {...base, month: '甲'}]) assert.equal(ian.compose(bad), null);
   assert.ok(ian.compose({...base, time: ''}));
@@ -75,7 +86,10 @@ test('free response carries no paid chapter text', async () => {
   assert.equal(status, 200);
   assert.equal(body.paid, null);
   const text = JSON.stringify(body), c = ian.compose(base);
-  for (const sec of c.paid.sections) for (const b of sec) if (b.t === 'big') assert.ok(!text.includes(b.text), 'leak ' + b.text);
+  for (const sec of c.paid.sections) for (const b of sec) {
+    if (b.t === 'big') assert.ok(!text.includes(b.text), 'leak ' + b.text);
+    if (b.t === 'real') for (const r of b.rows) assert.ok(!text.includes(r[1]), 'leak ' + r[1]);
+  }
   assert.equal(body.free.sections.length, 3);
 });
 test('owner receives the paid chapters', async () => {
@@ -106,6 +120,9 @@ test('free readers get the offer, owners get every chapter and no offer', () => 
   assert.ok(!owned.includes('data-ian-buy'));
   assert.equal((owned.match(/data-ian-sec=/g) || []).length, 8);
   assert.ok(owned.includes('당신의 향'));
+  assert.ok(owned.includes('data-ian-save'));
+  assert.ok(owned.includes('현실에선요.'));
+  assert.ok(!free.includes('현실에선요.'));
   assert.ok(free.includes('<em>도화</em>'));
   assert.ok(free.includes('<em>홍염</em>'));
 });

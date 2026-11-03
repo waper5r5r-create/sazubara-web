@@ -1452,7 +1452,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/night.css?v=3">
 <link rel="stylesheet" href="/assets/ui/sky-motion.css?v=11">
 <link rel="stylesheet" href="/assets/ui/newyear.css?v=4">
-<link rel="stylesheet" href="/assets/ui/ian.css?v=2">
+<link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
 </head>
@@ -4767,7 +4767,8 @@ function ianBlockHtml(b,result){
  if(b.t==='chapter')return '<header class="ian-chapter"><small>'+b.n+'장 · '+esc(b.basis)+'</small><h2>'+esc(b.title)+'</h2></header>';
  if(b.t==='chart')return ianChartHtml(result,b.marks,b.noTime);
  if(b.t==='hold')return '<section class="ian-hold" data-ian-hold><div class="ian-strip" role="button" tabindex="0" aria-label="'+esc(b.label)+' 맡아 보기"><i></i><b>'+esc(b.label)+'</b></div><p>시향지를 길게 눌러 주세요</p></section>';
- if(b.t==='card')return '<section class="ian-card ian-rv"><h3>당신의 향</h3><dl><div><dt>첫 향</dt><dd>'+esc(b.top)+'</dd></div><div><dt>중간 향</dt><dd>'+esc(b.mid)+'</dd></div><div><dt>끝 향</dt><dd>'+esc(b.base)+'</dd></div></dl></section>';
+ if(b.t==='real')return '<section class="ian-real ian-rv"><p class="ian-real-head">현실에선요.</p>'+b.rows.map(function(r){return '<div><h3>'+esc(r[0])+'</h3><p>'+esc(r[1])+'</p></div>';}).join('')+'</section>';
+ if(b.t==='card')return '<section class="ian-card ian-rv"><h3>'+(result&&result.name?esc(result.name)+' 님':'당신')+'의 비밀</h3><dl class="ian-card-sum">'+(b.rows||[]).map(function(r){return '<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>';}).join('')+'</dl><h4>당신의 향</h4><dl><div><dt>첫 향</dt><dd>'+esc(b.top)+'</dd></div><div><dt>중간 향</dt><dd>'+esc(b.mid)+'</dd></div><div><dt>끝 향</dt><dd>'+esc(b.base)+'</dd></div></dl><button type="button" class="ian-save" data-ian-save>카드 저장하기</button></section>';
  return '';
 }
 function ianPageHtml(result,data){
@@ -4783,9 +4784,42 @@ function ianPageHtml(result,data){
  return html;
 }
 function ianOfferHtml(result,data){
- return '<section class="ian-offer"><img class="ian-offer-art" src="/assets/ian/c14.webp" alt="붉은 병과 푸른 병을 내미는 이안" loading="lazy" decoding="async"><h2>'+(result.name?esc(result.name)+' 님':'당신')+' 사주의 비밀은<br>아직 다섯 개 남았어요</h2><p>여기부터는 남들이 모르는 쪽이에요.</p>'+
+ return '<section class="ian-offer"><img class="ian-offer-art" src="/assets/ian/c14.webp" alt="붉은 병과 푸른 병을 내미는 이안" loading="lazy" decoding="async"><h2>'+(result.name?esc(result.name)+' 님':'당신')+' 사주의 비밀은<br>아직 다섯 개 남았어요</h2><p>여기부터는 남들이 모르는 쪽이에요.<br>반복되는 모습과 잡아야 할 사람까지 짚어 줄게요.<br>마지막엔 내 사주 요약 카드도 드려요.</p>'+
   '<ul class="ian-teasers">'+data.teasers.map(function(t){return '<li><b>'+esc(t.title)+'</b><span>'+esc(t.note)+'</span></li>';}).join('')+'</ul>'+
   '<button type="button" class="btn-primary report-stage-buy" data-ian-buy>'+krwFmt(IAN_CONCEPT.price_krw)+'원에 끝까지 보기</button><p class="ian-note">1회 결제, 기간 제한 없이 다시 볼 수 있어요.<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></p></section>';
+}
+function ianCardBlock(){var data=REPORT_READER.data,found=null;((data&&data.paid&&data.paid.sections)||[]).forEach(function(s){s.forEach(function(b){if(b.t==='card')found=b;});});return found;}
+/* 요약 카드 저장 이미지 (1080×1350). 그림은 노출 없는 c13만 쓴다. */
+function buildIanCard(card,name){
+ var W=1080,H=1350,canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;var ctx=canvas.getContext('2d');
+ var fontsReady=(document.fonts&&document.fonts.load)?Promise.all([document.fonts.load('700 56px "Noto Serif KR"'),document.fonts.load('500 30px "Noto Sans KR"')]).catch(function(){}):Promise.resolve();
+ return fontsReady.then(function(){return loadImageAsync('/assets/ian/c13.webp');}).then(function(img){
+  ctx.fillStyle='#160c05';ctx.fillRect(0,0,W,H);
+  var artH=430,sh=img.width*artH/W;ctx.drawImage(img,0,img.height*.27,img.width,sh,0,0,W,artH);
+  var fade=ctx.createLinearGradient(0,artH-70,0,artH);fade.addColorStop(0,'rgba(22,12,5,0)');fade.addColorStop(1,'#160c05');ctx.fillStyle=fade;ctx.fillRect(0,artH-70,W,70);
+  ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillStyle='#fff6e8';ctx.font='700 52px "Noto Serif KR",serif';ctx.fillText((name?name+' 님':'당신')+'의 비밀',W/2,470);
+  var rows=card.rows.concat([['당신의 향',card.top+' · '+card.mid+' · '+card.base]]),top=540,gap=100;
+  rows.forEach(function(row,i){
+   var y=top+gap*i+gap/2,size=42;
+   ctx.textAlign='left';ctx.fillStyle='#e9b872';ctx.font='500 32px "Noto Sans KR",sans-serif';ctx.fillText(row[0],80,y);
+   ctx.textAlign='right';ctx.fillStyle='#fff6e8';ctx.font='500 '+size+'px "Noto Serif KR",serif';
+   while(size>26&&ctx.measureText(row[1]).width>660){size-=2;ctx.font='500 '+size+'px "Noto Serif KR",serif';}
+   ctx.fillText(row[1],W-80,y);
+   if(i<rows.length-1){ctx.fillStyle='rgba(255,255,255,.18)';ctx.fillRect(80,y+gap/2,W-160,2);}
+  });
+  ctx.textAlign='center';ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='500 26px "Noto Sans KR",sans-serif';ctx.fillText('별첩사주 · 이안의 비밀',W/2,H-50);
+  return canvas;
+ });
+}
+function saveIanCard(btn){
+ var card=ianCardBlock();if(!card)return;
+ var fail=function(){showToast('카드를 저장하지 못했어요. 다시 시도해 주세요.');};
+ btn.disabled=true;
+ buildIanCard(card,STATE.mySaju&&STATE.mySaju.name).then(function(canvas){return new Promise(function(resolve,reject){canvas.toBlob(function(blob){if(blob)resolve(blob);else reject(new Error('NO_BLOB'));},'image/png');});}).then(function(blob){
+  var file=window.File?new File([blob],'ian-secret.png',{type:'image/png'}):null;
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]}))return navigator.share({files:[file]}).catch(function(e){if(!e||e.name!=='AbortError')fail();});
+  var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ian-secret.png';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);showToast('카드를 저장했어요.');
+ }).catch(fail).finally(function(){btn.disabled=false;});
 }
 function ianLoadProgress(){try{return parseInt(localStorage.getItem('ian-progress'),10)||0;}catch(e){return 0;}}
 function ianSaveProgress(n){try{localStorage.setItem('ian-progress',String(n));}catch(e){}}
@@ -4816,6 +4850,7 @@ function wireIan(root,concept,justPaid){
   strip.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();done();}});
  });
  var buy=$('[data-ian-buy]',root);if(buy)buy.addEventListener('click',function(){startReportUnlock(concept,'story');});
+ var save=$('[data-ian-save]',root);if(save)save.addEventListener('click',function(){saveIanCard(save);});
  /* 다시 들어오면 읽던 장에서 이어 본다. */
  var seen=ianLoadProgress(),count=$all('[data-ian-sec]',root).length,last=null;
  if(seen>0&&door)door.hidden=true;

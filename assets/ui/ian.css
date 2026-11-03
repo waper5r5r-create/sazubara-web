@@ -54,6 +54,16 @@
 .ian-card dl div{display:flex;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid #ffffff2e}
 .ian-card dt{font-size:.8125rem;color:#e9b872}
 .ian-card dd{margin:0;font-family:var(--font-serif-heading)}
+.ian-real{padding:34px 26px 38px;background:#1a1f2d;border-top:1px solid #ffffff1a}
+.ian-real-head{margin:0 0 18px;font-family:var(--font-serif-heading);font-size:1.125rem;font-weight:700;color:#fff6e8}
+.ian-real div+div{margin-top:18px}
+.ian-real h3{margin:0 0 6px;font-family:var(--font-body);font-size:.8125rem;font-weight:700;color:#e9b872}
+.ian-real div p{margin:0;font-size:.9688rem;line-height:1.75;color:#ffffffe0}
+.ian-card h4{margin:30px 0 14px;font-family:var(--font-serif-heading);font-size:1rem;font-weight:700;color:#fff6e8}
+.ian-card dl.ian-card-sum{max-width:320px;text-align:left}
+.ian-card-sum dd{text-align:right}
+.ian-save{display:block;width:100%;max-width:320px;min-height:48px;margin:30px auto 0;border:1px solid #e9b87288;border-radius:24px;background:transparent;color:#fff6e8;font-family:var(--font-body);font-size:.9375rem;font-weight:700;cursor:pointer}
+.ian-save:disabled{opacity:.5}
 .ian-foot{margin:0;padding:24px 22px 0;font-size:.75rem;line-height:1.6;color:#ffffffa0;text-align:center}
 .ian-rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
 .ian-rv.is-in{opacity:1;transform:none}
