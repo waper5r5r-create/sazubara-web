@@ -5,7 +5,7 @@
 const concept = {
   id: '20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',
   title: '이안의 비밀',
-  tagline: '내 사주 속 숨겨 둔 얼굴',
+  tagline: '누가 나에게 빠지고, 나는 언제 무너질까',
   category: '연애',
   cover_img_url: '/assets/ian/bottle.webp',
   active: true,

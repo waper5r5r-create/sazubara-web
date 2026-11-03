@@ -1521,10 +1521,11 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
         <div class="two-col">
           <div class="field">
             <label for="f-time">출생시간</label>
-            <input type="time" id="f-time" value="14:30">
+            <input type="time" id="f-time">
           </div>
           <div class="field" style="justify-content:flex-end;">
             <label class="check-row"><input type="checkbox" id="f-unknown-time">태어난 시간 모름</label>
+            <p class="hint">모르면 비워 두어도 돼요.</p>
           </div>
         </div>
 
@@ -3138,7 +3139,6 @@ function sajuQuickSummaryHtml(result){
   return '<div class="saju-quick-summary saju-portrait" aria-label="나의 사주 한 줄">'+
     '<p class="quick-heading">나를 닮은 풍경</p>'+
     '<h2 class="portrait-title">'+esc(season[0])+'에 태어난 '+esc(img)+'</h2>'+
-    '<p class="portrait-tags">'+esc(stem+result.dayGanWx+'('+result.day.gan+') 일간 · '+m.zhiKr+'월('+(m.zhi||'')+'月)생')+'</p>'+
     '<p class="portrait-text">'+esc(season[1]+' '+fit)+'</p>'+
     (SELF_TIP[weak]?'<p class="portrait-tip"><b>기억할 한 가지</b>'+esc(SELF_TIP[weak])+'</p>':'')+'</div>';
 }
@@ -3244,7 +3244,6 @@ function myStarCardHtml(result){
 /* 첫 화면: 정통 사주팔자와 계산 기준을 먼저, 별 카드는 한 줄로 */
 function starHeroHtml(){
  return '<div class="saju-hero has-art"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"></div>'+
-  '<ul class="saju-hero-trust"><li><b>절기 기준</b><span>입춘·절기로 계산</span></li><li><b>출생지 보정</b><span>경도로 시간 보정</span></li><li><b>내 성향과 선택</b><span>주제별 풀이와 행동 가이드</span></li></ul>'+
   '<p class="saju-hero-gift">✦ 풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
@@ -3254,7 +3253,7 @@ function sajuBoardHtml(result){
 }
 function starGiftHtml(result){
  var t=myStarType(result);if(!t)return '';
- return '<section class="star-gift" data-star-gift><p class="editorial-tag">선물</p><h2>나의 별 카드</h2><p class="star-gift-sub">내 사주를 닮은 수호수 카드를 받아보세요.</p>'+
+ return '<section class="star-gift" data-star-gift><p class="editorial-tag">선물</p><h2>나의 별 카드</h2><p class="star-gift-sub">내 사주를 닮은 카드를 받아보세요.</p>'+
   '<button type="button" class="btn-primary star-make-btn" data-star-make>내 별 카드 받기</button><div class="star-stage" data-star-stage hidden></div></section>';
 }
 function starRevealKey(result){return 'byeolcheop_star_'+(result.day?result.day.gan+result.day.zhi:'')+(result.year?result.year.gan+result.year.zhi:'');}
@@ -3280,7 +3279,7 @@ function playStarReveal(scope,result){
  var timers=[],done=false;
  function step(cls,text,fn){return function(){stage.classList.add(cls);var tx=$('.rv-step',stage);if(tx&&text)tx.textContent=text;if(fn)fn();};}
  function finish(){if(done)return;done=true;timers.forEach(clearTimeout);starRevealDone(scope,result);}
- [[60,step('p1')],[1500,step('p2','나를 닮은 수호수를 찾는 중…')],[2400,step('p3','카드를 만드는 중…')],
+ [[60,step('p1')],[1500,step('p2','나를 닮은 카드를 찾는 중…')],[2400,step('p3','카드를 만드는 중…')],
   [3400,step('p4','내 별 카드',function(){try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}})],[5600,function(){var skip=$('.rv-skip',stage);if(skip)skip.textContent='내 별 카드 간직하기';}]]
   .forEach(function(x){timers.push(setTimeout(x[1],x[0]));});
  $('.rv-skip',stage).addEventListener('click',finish);
@@ -3294,7 +3293,7 @@ function wireStarGift(scope,result){
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
 function homeContentsHtml(){return homeBannerHtml()+'<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
 /* 콘텐츠 카드 한 줄: 연도는 멀게 느껴져서, 그 콘텐츠가 답해 주는 질문을 내 이름으로 던진다 */
-var HOME_PREVIEW_Q={newyear:'의 2027년, 언제 가장 좋을까?',ian:'의 사주에 숨겨 둔 얼굴은?',love:'은 언제, 어떤 사람과 이어질까?',wealth:'의 돈은 어디서 들어오고 어디로 샐까?',career:'에게 맞는 일은 따로 있을까?',marriage:'은 언제쯤 결혼하게 될까?'};
+var HOME_PREVIEW_Q={newyear:'의 2027년, 언제 가장 좋을까?',ian:'에게 빠지는 사람은 누구일까?',love:'은 언제, 어떤 사람과 이어질까?',wealth:'의 돈은 어디서 들어오고 어디로 샐까?',career:'에게 맞는 일은 따로 있을까?',marriage:'은 언제쯤 결혼하게 될까?'};
 function homePreviewLine(c,result){
  var cat=isPocha(c)?'career':storyCategory(c),q=HOME_PREVIEW_Q[cat];
  if(!q||!result||!result.day)return '';
@@ -4654,12 +4653,12 @@ function openPendingReport(){
 var NEWYEAR_CONCEPT={id:'20270101-7a3e-4c1d-9b52-6d0e8f4a1c27',title:'2027 신년운세',tagline:'2027년이 보낸 편지 12통',category:'신년운세',cover_img_url:'/assets/daon/cover.webp',active:true,price_krw:7900};
 var NY_AREAS=[['love','연애'],['money','돈'],['work','일'],['health','건강']];
 function isNewYear(concept){return !!concept&&String(concept.id)===NEWYEAR_CONCEPT.id;}
-var IAN_CONCEPT={id:'20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',title:'이안의 비밀',tagline:'내 사주 속 숨겨 둔 얼굴',category:'연애',cover_img_url:'/assets/ian/bottle.webp',active:true,price_krw:7900};
+var IAN_CONCEPT={id:'20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',title:'이안의 비밀',tagline:'누가 나에게 빠지고, 나는 언제 무너질까',category:'연애',cover_img_url:'/assets/ian/bottle.webp',active:true,price_krw:7900};
 function isIan(concept){return !!concept&&String(concept.id)===IAN_CONCEPT.id;}
 /* 홈·콘텐츠 탭 상단 배너. 넘기기는 브라우저 스크롤에 맡기고, 가만히 두면 5초마다 다음 장으로 넘어간다. */
 var HOME_BANNERS=[
  {id:NEWYEAR_CONCEPT.id,img:'/assets/daon/banner.webp',kicker:'2027 신년운세',title:'2027년이 보낸<br>편지가 도착했어요',note:'한 해 총평과 1월 편지는 무료'},
- {id:IAN_CONCEPT.id,img:'/assets/banners/ian.webp',kicker:'이안의 비밀',title:'내 사주 속<br>숨겨 둔 얼굴',note:'앞부분은 무료'},
+ {id:IAN_CONCEPT.id,img:'/assets/banners/ian.webp',kicker:'이안의 비밀',title:'누가 나에게 빠지고,<br>나는 언제 무너질까?',note:'앞부분은 무료'},
  {id:'운명의-사람은-언제-올까-fyq1z',img:'/assets/banners/love-v2.webp',kicker:'연애 사주',title:'언제, 어떤 사람과<br>이어질까?',note:'앞부분은 무료'},
  {id:'타고난-재물복은-얼마나-될까-k7dxw',img:'/assets/banners/wealth-v2.webp',kicker:'재물 사주',title:'내 돈은 어디로<br>새고 있을까?',note:'앞부분은 무료'},
  {id:'7c5db9e6-59cb-4a81-8b0a-73da4db7b051',img:'/assets/banners/career-v2.webp',kicker:'직업 사주',title:'나에게 맞는 일은<br>따로 있을까?',note:'앞부분은 무료'},
@@ -7230,6 +7229,7 @@ function advanceSajuStep(){
   showSajuStep(Math.min(2,SAJU_FORM_STEP+1),true);
 }
 function showSajuStep(step,focus){
+  var hero=$('.saju-story-welcome');if(hero)hero.hidden=step>0&&!SAJU_FORM_FULL;
   SAJU_FORM_STEP=step;var form=$('#saju-form');
   var name=$('#f-name').value.trim(),hello=name?name+'님, ':'당신의 ';
   var lines=['풀이를 볼 분의 이름과 성별을 입력해주세요. 이름은 생략할 수 있어요.','양력·음력을 확인하고 생년월일을 입력해주세요.','출생시간과 태어난 지역을 입력해주세요. 시간을 모르면 ‘모름’을 선택하세요.'];
@@ -7269,7 +7269,7 @@ function initSajuForm(){
         hour:timeParts[0], minute:timeParts[1],
         isLunar: segValue($('#f-calendar'))==='lunar',
         isLeapMonth: segValue($('#f-calendar'))==='lunar' && $('#f-leap').checked,
-        unknownTime: $('#f-unknown-time').checked,
+        unknownTime: $('#f-unknown-time').checked || !$('#f-time').value,
         gender: segValue($('#f-gender')),
         name: $('#f-name').value.trim(),
         city: $('#f-city').value,
@@ -7478,6 +7478,8 @@ function init(){
   /* 저장된 사주를 읽고 첫 화면을 그린 다음에 연다 */
   if(/[?&]newyear/.test(location.search))setTimeout(function(){openNewYearViewer(NEWYEAR_CONCEPT);},0);
   if(/[?&]ian/.test(location.search))setTimeout(function(){openIanViewer(IAN_CONCEPT);},0);
+  var goId=({love:'운명의-사람은-언제-올까-fyq1z',wealth:'타고난-재물복은-얼마나-될까-k7dxw',career:'7c5db9e6-59cb-4a81-8b0a-73da4db7b051',marriage:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0'})[(location.search.match(/[?&]go=([a-z]+)/)||[])[1]];
+  if(goId)loadReportList().then(function(list){var c=list.filter(function(x){return String(x.id)===goId;})[0];if(c)openReportViewer(c);}).catch(function(){});
   initSajuForm();
   initSajuStoryForm();
   initVisualFeedback();
