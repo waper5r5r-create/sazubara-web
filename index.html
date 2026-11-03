@@ -2876,7 +2876,7 @@ function handleTossPaymentCallback(){
   history.replaceState({},'',clean.pathname+clean.search+clean.hash);
   Promise.all([pullPaidUnlocks(),pullReportUnlocks()]).then(function(){
     if(reportId===NEWYEAR_CONCEPT.id){openNewYearViewer(NEWYEAR_CONCEPT);return;}
-    if(reportId===IAN_CONCEPT.id){openIanViewer(IAN_CONCEPT);return;}
+    if(reportId===IAN_CONCEPT.id){openIanViewer(IAN_CONCEPT,true);return;}
     if(reportId){switchTab('reports');return loadReportList(true).then(function(list){var c=list.filter(function(x){return String(x.id)===reportId;})[0];if(c)openReportViewer(c,stage);});}
     switchTab(returnTab);if(STATE.mySaju)renderSajuResult(STATE.mySaju);showToast('구매한 풀이가 열렸어요.');
   }).catch(function(){showToast('구매 내역을 불러오지 못했어요. 잠시 후 다시 열어주세요.');});
@@ -4789,7 +4789,7 @@ function ianOfferHtml(result,data){
 }
 function ianLoadProgress(){try{return parseInt(localStorage.getItem('ian-progress'),10)||0;}catch(e){return 0;}}
 function ianSaveProgress(n){try{localStorage.setItem('ian-progress',String(n));}catch(e){}}
-function wireIan(root,concept){
+function wireIan(root,concept,justPaid){
  var io=window.IntersectionObserver?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-in');io.unobserve(e.target);}});},{threshold:.1}):null;
  function watch(scope){$all('.ian-rv',scope).forEach(function(el){if(io)io.observe(el);else el.classList.add('is-in');});}
  function openSec(i,scroll){
@@ -4820,9 +4820,12 @@ function wireIan(root,concept){
  var seen=ianLoadProgress(),count=$all('[data-ian-sec]',root).length,last=null;
  if(seen>0&&door)door.hidden=true;
  for(var i=0;i<Math.min(seen,count);i++)last=openSec(i,false);
- if(last)setTimeout(function(){last.scrollIntoView();},0);
+ /* 결제 직후에는 이미 읽은 장을 건너뛰고 바로 다음 시향지 앞으로 보낸다. */
+ var gate=justPaid&&last&&last.querySelector('[data-ian-hold]');
+ if(last)setTimeout(function(){if(gate)gate.scrollIntoView({block:'center'});else last.scrollIntoView();},0);
+ if(justPaid)showToast('결제가 완료됐어요. 이어서 볼 수 있어요.');
 }
-function openIanViewer(concept){
+function openIanViewer(concept,justPaid){
  var root=$('#report-sheet-root');if(!root)return;
  if(!STATE.mySaju){rememberPendingReport(concept,'story');return;}
  var requestId=++reportViewerRequest,my=STATE.mySaju,w=my.wxCount||{};
@@ -4842,7 +4845,7 @@ function openIanViewer(concept){
    if(!data.ok||!data.free)throw new Error('READER_FAILED');
    REPORT_READER.data=data;
    if(data.access&&data.access.story){DEVICE.unlocked[reportStageKey(concept,'story')]=true;saveDevice();}
-   list.innerHTML=ianPageHtml(my,data);wireIan(list,concept);
+   list.innerHTML=ianPageHtml(my,data);wireIan(list,concept,justPaid);
   }).catch(function(){
    if(requestId!==reportViewerRequest)return;
    list.innerHTML='<p class="section-desc">불러오지 못했어요.</p><button type="button" class="share-btn" id="reader-retry">다시 불러오기</button>';
