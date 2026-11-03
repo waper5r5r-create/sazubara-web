@@ -50,7 +50,7 @@ test('every day pillar gets complete chapters with existing art and no banned wo
       for (const [k, v] of Object.entries(b)) if (k !== 'line') assert.ok(v !== undefined && v !== '', g + z + b.t + k);
       if (b.t === 'cut') assert.ok(fs.existsSync(path.join(dir, b.img + '.webp')), b.img);
     }
-    assert.doesNotMatch(words(c), /끌림|궁합|환각|성인|19금|undefined/);
+    assert.doesNotMatch(words(c), /끌림|궁합|환각|성인|19금|undefined|일간|일지|월지|년지|시지|신강|신약|비겁|식상|재성|관성|인성/);
   }
 });
 test('men and women read the same chapters and the same reading', () => {
@@ -59,13 +59,11 @@ test('men and women read the same chapters and the same reading', () => {
   assert.deepEqual(heads(m), heads(f));
   assert.equal(heads(m).length, 7);
 });
-test('a chart with neither mark still gets a reading, and both marks are explained', () => {
+test('a chart with neither mark is never told what it lacks', () => {
   const say = c => c.free.sections[0].filter(b => b.t === 'say').map(b => b.text).join(' ');
   const none = ian.compose({year:'癸酉', month:'乙卯', day:'乙未', time:'癸未', gender:'m', strength:'strong', wx:'2,0,3,1,2'});
-  assert.match(say(none), /도화 없음, 홍염 없음/);
-  assert.match(say(none), /잘못 봐요/);
-  assert.match(say(none), /도화는 .*홍염은/);
-  assert.match(say(ian.compose(base)), /도화 1개, 홍염 1개[\s\S]*남들한테 안 보여 준 쪽/);
+  assert.doesNotMatch(JSON.stringify(none.free) + JSON.stringify(none.teasers), /없음|없어요|없네요|도화|홍염/);
+  assert.match(say(ian.compose(base)), /도화.*홍염/);
 });
 test('every paid chapter ends with a real-life reading and the ending has a summary card', () => {
   for (const g of GANS) for (const z of ZHIS) for (const gender of ['m', 'f']) {
