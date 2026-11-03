@@ -58,6 +58,14 @@ test('men and women read the same chapters and the same reading', () => {
   assert.deepEqual(heads(m), heads(f));
   assert.equal(heads(m).length, 7);
 });
+test('a chart with neither mark still gets a reading, and both marks are explained', () => {
+  const say = c => c.free.sections[0].filter(b => b.t === 'say').map(b => b.text).join(' ');
+  const none = ian.compose({year:'癸酉', month:'乙卯', day:'乙未', time:'癸未', gender:'m', strength:'strong', wx:'2,0,3,1,2'});
+  assert.match(say(none), /도화 없음, 홍염 없음/);
+  assert.match(say(none), /잘못 봐요/);
+  assert.match(say(none), /도화는 .*홍염은/);
+  assert.match(say(ian.compose(base)), /도화 1개, 홍염 1개[\s\S]*남들한테 안 보여 준 쪽/);
+});
 test('rejects a missing or invalid saju', () => {
   for (const bad of [undefined, {}, {...base, day: 'xx'}, {...base, year: undefined}, {...base, month: '甲'}]) assert.equal(ian.compose(bad), null);
   assert.ok(ian.compose({...base, time: ''}));

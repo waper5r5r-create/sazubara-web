@@ -76,11 +76,11 @@ const STRENGTH = {
   }
 };
 const ROLE = {
-  bigyeop:['비겁이 많아요. 나를 세우는 기운이요.','그래서 지기 싫은 상대에게 약해요.','눈 안 피하고 맞서는 사람. 싸우다가 분위기가 달라지는 사람이요.'],
-  siksang:['식상이 많아요. 밖으로 꺼내는 기운이요.','그래서 말에 약해요.','귓가에 낮게 깔리는 목소리, 농담인지 진심인지 모를 한마디에요.'],
-  jaeseong:['재성이 많아요. 손에 쥐는 기운이요.','그래서 감각에 약해요.','스치는 향, 손끝의 온도, 옷깃의 질감. 머리보다 몸이 먼저 기억해요.'],
-  gwanseong:['관성이 많아요. 나를 누르는 기운이요.','그래서 넘으면 안 되는 선에 약해요.','안 된다고 할수록 더 생각나요. 단호하게 나를 멈춰 세우는 사람이요.'],
-  inseong:['인성이 많아요. 나를 품어 주는 기운이요.','그래서 다정함에 약해요.','머리를 넘겨 주는 손, 괜찮다는 한마디에 그동안 세운 벽이 다 무너져요.']
+  bigyeop:['비겁이 가장 많아요. 나를 세우는 기운이요.','그래서 지기 싫은 상대에게 약해요.','눈 안 피하고 맞서는 사람. 싸우다가 분위기가 달라지는 사람이요.'],
+  siksang:['식상이 가장 많아요. 밖으로 꺼내는 기운이요.','그래서 말에 약해요.','귓가에 낮게 깔리는 목소리, 농담인지 진심인지 모를 한마디에요.'],
+  jaeseong:['재성이 가장 많아요. 손에 쥐는 기운이요.','그래서 감각에 약해요.','스치는 향, 손끝의 온도, 옷깃의 질감. 머리보다 몸이 먼저 기억해요.'],
+  gwanseong:['관성이 가장 많아요. 나를 누르는 기운이요.','그래서 넘으면 안 되는 선에 약해요.','안 된다고 할수록 더 생각나요. 단호하게 나를 멈춰 세우는 사람이요.'],
+  inseong:['인성이 가장 많아요. 나를 품어 주는 기운이요.','그래서 다정함에 약해요.','머리를 넘겨 주는 손, 괜찮다는 한마디에 그동안 세운 벽이 다 무너져요.']
 };
 const LOVER = {
   m:{name:'재성', none:'남자 사주에서 이성을 보는 재성이 없어요.', few:'남자 사주에서 이성을 보는 재성이 적당히 있어요.', many:'남자 사주에서 이성을 보는 재성이 많아요.'},
@@ -180,8 +180,8 @@ function compose(q) {
   const counts = parseCounts(q.wx, pillars), r = readChart(pillars, counts);
   const male = gender === 'm', d = pillars.day, g = DAY_GAN[d.gan];
   const dayName = GAN_KR[d.gan] + r.dayWx + ' 일간', noTime = !pillars.time;
-  const dohwaSummary = r.dohwa.length ? '도화 ' + r.dohwa.length : '도화 없음';
-  const hongSummary = r.hong.length ? '홍염 ' + r.hong.length : '홍염 없음';
+  const dohwaSummary = r.dohwa.length ? '도화 ' + r.dohwa.length + '개' : '도화 없음';
+  const hongSummary = r.hong.length ? '홍염 ' + r.hong.length + '개' : '홍염 없음';
   const firstDohwa = r.dohwa[0];
 
   const intro = [
@@ -198,7 +198,8 @@ function compose(q) {
     cut('o-paper'),
     {t:'chart', marks:r.marks, noTime},
     say(dayName + '. ' + dohwaSummary + ', ' + hongSummary + '.', 'room'),
-    say('이게 당신 비밀이에요.\n남들한테 안 보여 준 쪽이요.', 'room'),
+    say('도화는 사람 눈길이 머무는 기운, 홍염은 속에 숨은 불이에요.', 'room'),
+    say(r.dohwa.length || r.hong.length ? '이게 당신 비밀이에요.\n남들한테 안 보여 준 쪽이요.' : '둘 다 겉으로 안 드러나 있네요.\n그래서 다들 당신을 잘못 봐요. 그게 당신 비밀이에요.', 'room'),
     cut('c05'),
     say('향을 맡으면 그 자리로 데려다줄게요.\n눈 감아요.', 'room'),
     cut('o-wrist'),
@@ -206,7 +207,7 @@ function compose(q) {
   ];
   const ch1 = [
     head(1, '내 매력', '일간 ' + GAN_KR[d.gan] + r.dayWx),
-    cut(male ? 'dress-stool' : 'mirror', '눈 떠요.\n당신을 보는 사람들 자리예요.', 't'),
+    cut(male ? 'dress-stool' : 'mirror', '눈 떠요.\n당신을 보는 사람들 자리예요.'),
     say(g[0], 'night'),
     cut('z-chin'),
     big(g[1]),
@@ -220,7 +221,7 @@ function compose(q) {
   const ch2 = [
     head(2, '누가 왜 나에게 빠지는지', r.dohwa.length ? '도화 ' + ZHI_KR[DOHWA[d.zhi]] : '도화 없음'),
     cut('w-ballroom'),
-    cut('party-laugh', '봐요.\n다들 여기 있는데, 누굴 보고 있는지.', 't'),
+    cut('party-laugh', '봐요.\n다들 여기 있는데, 누굴 보고 있는지.'),
     say(dohwaLines[0], 'night'),
     cut(male ? 'c09' : 'z-glass'),
     big(dohwaLines[1])
@@ -234,7 +235,7 @@ function compose(q) {
   const st = STRENGTH[strength], rl = ROLE[r.domRole], level = loverLevel(counts, r.dayWx, gender);
   const ch3 = [
     head(3, '주도권', strength === 'strong' ? '신강' : '신약'),
-    cut('lift-lean', '문 닫혔어요.\n이제 둘뿐이에요.', 't'),
+    cut('lift-lean', '문 닫혔어요.\n이제 둘뿐이에요.'),
     say(st.title, 'night'),
     cut(male ? 'lift-tug' : 'o-tie'),
     big(st[gender]),
@@ -254,7 +255,7 @@ function compose(q) {
     big(rl[1]),
     cut('o-strap'),
     say(rl[2], 'night'),
-    cut(male ? 'hall-heels' : 'x-fluster'),
+    cut('hall-heels'),
     say(LOVER[gender][level], 'night'),
     cut('card'),
     say(LOVER_READ[level], 'night'),
@@ -265,13 +266,13 @@ function compose(q) {
   const ch5 = [
     head(5, '달아오르는 속도', '가장 많은 ' + r.dom + ', 가장 적은 ' + r.weak),
     cut('w-pool'),
-    cut(male ? 'pool-rise' : 'z-water', '물에 들어와요.\n온도를 재 볼게요.', 't'),
+    cut(male ? 'pool-rise' : 'z-water', '물에 들어와요.\n온도를 재 볼게요.', male ? 'b' : 't'),
     say(sp[0], 'night'),
     cut(male ? 'pool-splash' : 'pool'),
     big(sp[1]),
     cut(male ? 'pool' : 'pool-water'),
     say(sp[2], 'night'),
-    cut(male ? 'z-water' : 'x-tongue'),
+    cut(male ? 'z-water' : 'pool-splash'),
     say(COOL[r.weak], 'night'),
     hold('여섯 번째 시향지')
   ];
@@ -295,7 +296,7 @@ function compose(q) {
   const ch7 = [
     head(7, '끝내 원하는 사람', '일지 ' + ZHI_KR[d.zhi]),
     cut('w-rooftop'),
-    cut('robe-window', '일지는 배우자 자리예요.\n내 가장 깊은 곳이고요.', 't'),
+    cut('robe-window', '일지는 배우자 자리예요.\n내 가장 깊은 곳이고요.'),
     say(dz[0], 'night'),
     cut('z-robe'),
     big(dz[1]),
@@ -303,7 +304,7 @@ function compose(q) {
     say(dz[2], 'night'),
     cut(male ? 'morning' : 'robe-smile'),
     say('아침이에요.\n여기까지가 당신 비밀이에요.', 'soft'),
-    cut(male ? 'robe-bed' : 'x-sigh'),
+    cut('robe-bed'),
     {t:'card', top:NOTE_TOP[d.gan], mid:NOTE_MID[r.dom], base:NOTE_BASE[d.zhi]},
     cut('c13', '오늘 들은 건, 우리 둘만 아는 걸로 해요.')
   ];
