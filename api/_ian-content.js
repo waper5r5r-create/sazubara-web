@@ -1,6 +1,6 @@
 // "이안의 비밀". 조향사 이안이 내 사주를 읽어 주는 그림 위주 콘텐츠.
 // 화면은 읽는 사람의 눈이고 말하는 사람은 이안뿐이다. 향은 장면을 옮기는 장치, 내용은 사주다.
-// 남녀 모두 같은 장, 같은 사주 항목, 같은 풀이를 본다. 성별로 달라지는 건 그림 순서와 말투, 전통 기준의 이성 글자(남 재성, 여 관성)뿐이다.
+// 남녀 모두 같은 장, 같은 사주 항목, 같은 풀이를 본다. 성별로 달라지는 건 그림(여성 화면엔 m- 남자 주인공 컷)과 말투, 전통 기준의 이성 글자(남 재성, 여 관성)뿐이다.
 // 무료(들어가기, 1~2장)와 유료(3~7장)를 나눠, 결제 전에는 유료 문장이 응답에 실리지 않는다.
 const concept = {
   id: '20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',
@@ -30,10 +30,10 @@ function role(dayWx, wx) {
 }
 
 // 그림의 세로·가로 비율. 화면이 이미지를 받기 전에 자리를 잡는 데 쓴다.
-const RATIO = {'w-':'4/3','z-':'4/5','o-paper':'840/501','o-tie':'840/433',c05:'16/9',c10:'16/9',c12:'16/9'};
+const RATIO = {'w-':'4/3','z-':'4/5','m-w':'4/3','m-z':'4/5','o-paper':'840/501','o-tie':'840/433',c05:'16/9',c10:'16/9',c12:'16/9'};
 function ratioOf(img) {
   if (RATIO[img]) return RATIO[img];
-  return RATIO[img.slice(0, 2)] || '3/4';
+  return RATIO[img.slice(0, 3)] || RATIO[img.slice(0, 2)] || '3/4';
 }
 const cut = (img, line, at) => ({t:'cut', img, ratio:ratioOf(img), line:line || '', at:at || 'b'});
 const say = (text, tone) => ({t:'say', text, tone:tone || 'night'});
@@ -297,7 +297,7 @@ function compose(q) {
   ];
   const ch1 = [
     head(1, '내 매력', '일간 ' + GAN_KR[d.gan] + r.dayWx),
-    cut(male ? 'dress-stool' : 'mirror', '눈 떠요.\n당신을 보는 사람들 자리예요.'),
+    cut(male ? 'dress-stool' : 'm-p-glass', '눈 떠요.\n당신을 보는 사람들 자리예요.'),
     say(g[0], 'night'),
     cut('z-chin'),
     big(g[1]),
@@ -311,7 +311,7 @@ function compose(q) {
   const ch2 = [
     head(2, '누가 왜 나에게 빠지는지', r.dohwa.length ? '도화 ' + ZHI_KR[DOHWA[d.zhi]] : '도화 없음'),
     cut('w-ballroom'),
-    cut('party-laugh', '봐요.\n다들 여기 있는데, 누굴 보고 있는지.'),
+    cut(male ? 'party-laugh' : 'm-w-party', '봐요.\n다들 여기 있는데, 누굴 보고 있는지.'),
     say(dohwaLines[0], 'night'),
     cut(male ? 'c09' : 'z-glass'),
     big(dohwaLines[1])
@@ -325,13 +325,13 @@ function compose(q) {
   const st = STRENGTH[strength], rl = ROLE[r.domRole], level = loverLevel(counts, r.dayWx, gender);
   const ch3 = [
     head(3, '주도권', strength === 'strong' ? '신강' : '신약'),
-    cut('lift-lean', '문 닫혔어요.\n이제 둘뿐이에요.'),
+    cut(male ? 'lift-lean' : 'm-p-lift', '문 닫혔어요.\n이제 둘뿐이에요.'),
     say(st.title, 'night'),
     cut(male ? 'lift-tug' : 'o-tie'),
     big(st[gender]),
     cut('z-ear'),
     say(st.turn, 'night'),
-    cut(male ? 'o-tie' : 'lift-tug'),
+    ...(male ? [cut('o-tie')] : []),
     say(st.end, 'night'),
     cut('lift-hand'),
     real([['반복되는 모습', STRENGTH_REAL[strength][0]], ['이렇게 해 봐요', STRENGTH_REAL[strength][1]], ['잘 맞는 사람', STRENGTH_MATCH[strength]]]),
@@ -340,11 +340,11 @@ function compose(q) {
   const ch4 = [
     head(4, '유독 약한 것', '십성 ' + {bigyeop:'비겁',siksang:'식상',jaeseong:'재성',gwanseong:'관성',inseong:'인성'}[r.domRole]),
     cut('w-corridor'),
-    cut(male ? 'hall' : 'hall-back', '이 복도에 있는 방은 전부 당신 약점이에요.', 't'),
+    cut(male ? 'hall' : 'm-w-hall', '이 복도에 있는 방은 전부 당신 약점이에요.', male ? 't' : 'b'),
     say(rl[0], 'night'),
-    cut('o-heel'),
+    cut(male ? 'o-heel' : 'm-z-ear'),
     big(rl[1]),
-    cut('o-strap'),
+    cut(male ? 'o-strap' : 'm-z-hair'),
     say(rl[2], 'night'),
     cut('hall-heels'),
     say(LOVER[gender][level], 'night'),
@@ -358,13 +358,13 @@ function compose(q) {
   const ch5 = [
     head(5, '달아오르는 속도', '가장 많은 ' + r.dom + ', 가장 적은 ' + r.weak),
     cut('w-pool'),
-    cut(male ? 'pool-rise' : 'z-water', '물에 들어와요.\n온도를 재 볼게요.', male ? 'b' : 't'),
+    cut(male ? 'pool-rise' : 'm-w-pool', '물에 들어와요.\n온도를 재 볼게요.'),
     say(sp[0], 'night'),
-    cut(male ? 'pool-splash' : 'pool'),
+    cut(male ? 'pool-splash' : 'z-water'),
     big(sp[1]),
-    cut(male ? 'pool' : 'pool-water'),
+    cut(male ? 'pool' : 'm-z-water'),
     say(sp[2], 'night'),
-    cut(male ? 'z-water' : 'pool-splash'),
+    ...(male ? [cut('z-water')] : []),
     say(COOL[r.weak], 'night'),
     real([['반복되는 모습', SPEED_REAL[r.dom][0]], ['이럴 때 식어요', SPEED_COOL[r.dom]], ['이렇게 해 봐요', SPEED_REAL[r.dom][1]]]),
     hold('여섯 번째 시향지')
@@ -375,11 +375,11 @@ function compose(q) {
     cut('w-rain'),
     cut('o-handprint'),
     say(hg[0], 'night'),
-    cut(male ? 'wet' : 'rain'),
+    cut(male ? 'wet' : 'm-w-rain'),
     big(hg[1]),
-    cut('z-wet'),
+    cut(male ? 'z-wet' : 'm-z-wet'),
     say(hg[2], 'night'),
-    cut('hand'),
+    cut(male ? 'hand' : 'm-p-window'),
     sfx('…'),
     cut('o-candle'),
     real([['반복되는 모습', HONG_REAL[hgKey][0]], ['버티는 법', HONG_REAL[hgKey][1]], ['곁에 둘 사람', HONG_KEEP[hgKey]]]),
@@ -390,16 +390,16 @@ function compose(q) {
   const ch7 = [
     head(7, '끝내 원하는 사람', '일지 ' + ZHI_KR[d.zhi]),
     cut('w-rooftop'),
-    cut('robe-window', '일지는 배우자 자리예요.\n내 가장 깊은 곳이고요.'),
+    cut(male ? 'robe-window' : 'm-w-roof', '일지는 배우자 자리예요.\n내 가장 깊은 곳이고요.'),
     say(dz[0], 'night'),
-    cut('z-robe'),
+    cut(male ? 'z-robe' : 'robe-window'),
     big(dz[1]),
     cut('o-shadow'),
     say(dz[2], 'night'),
     real([['잡아야 할 사람', DAY_ZHI_REAL[d.zhi][0]], ['놓아야 할 사람', DAY_ZHI_REAL[d.zhi][1]], ['오래 가는 법', DAY_ZHI_KEEP[d.zhi]]]),
-    cut(male ? 'morning' : 'robe-smile'),
+    cut(male ? 'morning' : 'm-p-coffee'),
     say('아침이에요.\n여기까지가 당신 비밀이에요.', 'soft'),
-    cut('robe-bed'),
+    cut(male ? 'robe-bed' : 'm-z-hands'),
     say(LAST_WORD[d.gan], 'night'),
     {t:'card', top:NOTE_TOP[d.gan], mid:NOTE_MID[r.dom], base:NOTE_BASE[d.zhi], rows:[
       ['타고난 모습', g[2]],

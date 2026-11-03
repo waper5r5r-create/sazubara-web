@@ -77,6 +77,14 @@ test('every paid chapter ends with a real-life reading and the ending has a summ
     assert.ok(card.rows.every(r => r[1] && !/원해요/.test(r[1])));
   }
 });
+test('the male lead appears only on the female path, and the swimwear and bedsheet cuts only on the male path', () => {
+  const imgs = c => allBlocks(c).filter(b => b.t === 'cut').map(b => b.img);
+  const f = imgs(ian.compose({...base, gender: 'f'})), m = imgs(ian.compose({...base, gender: 'm'}));
+  assert.equal(new Set(f.filter(i => i.startsWith('m-'))).size, 14);
+  assert.equal(m.filter(i => i.startsWith('m-')).length, 0);
+  for (const i of ['pool', 'pool-rise', 'pool-splash', 'pool-water', 'hand', 'morning']) assert.ok(!f.includes(i), i);
+  assert.ok(f.filter(i => i.startsWith('m-w-')).every(i => ian.compose({...base, gender: 'f'}).free.sections.flat().concat(...ian.compose({...base, gender: 'f'}).paid.sections).find(b => b.img === i).ratio === '4/3'));
+});
 test('rejects a missing or invalid saju', () => {
   for (const bad of [undefined, {}, {...base, day: 'xx'}, {...base, year: undefined}, {...base, month: '甲'}]) assert.equal(ian.compose(bad), null);
   assert.ok(ian.compose({...base, time: ''}));
