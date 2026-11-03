@@ -3241,7 +3241,7 @@ function myStarCardHtml(result){
   '<p class="hint">친구를 초대하면 내 별자리에 친구 별이 생겨요.</p></section>';
 }
 /* 첫 화면 큰 그림: 별 카드 세 장을 부채꼴로 */
-/* 첫 화면: 정통 사주팔자와 계산 기준을 먼저, 별 카드는 한 줄로 */
+/* 첫 화면: 광고로 온 사람이 바로 입력하도록 계산 방식 설명은 빼고, 별 카드는 한 줄로 */
 function starHeroHtml(){
  return '<div class="saju-hero has-art"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"></div>'+
   '<p class="saju-hero-gift">✦ 풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
@@ -3253,7 +3253,7 @@ function sajuBoardHtml(result){
 }
 function starGiftHtml(result){
  var t=myStarType(result);if(!t)return '';
- return '<section class="star-gift" data-star-gift><p class="editorial-tag">선물</p><h2>나의 별 카드</h2><p class="star-gift-sub">내 사주를 닮은 카드를 받아보세요.</p>'+
+ return '<section class="star-gift" data-star-gift><p class="editorial-tag">선물</p><h2>나의 별 카드</h2><p class="star-gift-sub">내 사주를 닮은 동물 카드를 받아보세요.</p>'+
   '<button type="button" class="btn-primary star-make-btn" data-star-make>내 별 카드 받기</button><div class="star-stage" data-star-stage hidden></div></section>';
 }
 function starRevealKey(result){return 'byeolcheop_star_'+(result.day?result.day.gan+result.day.zhi:'')+(result.year?result.year.gan+result.year.zhi:'');}
@@ -3279,7 +3279,7 @@ function playStarReveal(scope,result){
  var timers=[],done=false;
  function step(cls,text,fn){return function(){stage.classList.add(cls);var tx=$('.rv-step',stage);if(tx&&text)tx.textContent=text;if(fn)fn();};}
  function finish(){if(done)return;done=true;timers.forEach(clearTimeout);starRevealDone(scope,result);}
- [[60,step('p1')],[1500,step('p2','나를 닮은 카드를 찾는 중…')],[2400,step('p3','카드를 만드는 중…')],
+ [[60,step('p1')],[1500,step('p2','나를 닮은 동물을 찾는 중…')],[2400,step('p3','카드를 만드는 중…')],
   [3400,step('p4','내 별 카드',function(){try{soundReveal();}catch(e){}try{hapticPulse([12,40,18]);}catch(e){}})],[5600,function(){var skip=$('.rv-skip',stage);if(skip)skip.textContent='내 별 카드 간직하기';}]]
   .forEach(function(x){timers.push(setTimeout(x[1],x[0]));});
  $('.rv-skip',stage).addEventListener('click',finish);
