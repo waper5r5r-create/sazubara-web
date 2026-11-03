@@ -75,9 +75,11 @@ test('owner receives the paid chapters', async () => {
   assert.equal(body.access.story, true);
   assert.equal(body.paid.sections.length, 5);
 });
-test('stays out of the public list until launch', async () => {
+test('is listed once, right after the new year content', async () => {
   const {body} = await call(list, {}, []);
-  assert.equal(body.rows.filter(r => r.id === ian.concept.id).length, 0);
+  assert.equal(body.rows.filter(r => r.id === ian.concept.id).length, 1);
+  assert.equal(body.rows[1].id, ian.concept.id);
+  assert.equal(body.rows[1].category, '연애');
 });
 test('free readers get the offer, owners get every chapter and no offer', () => {
   const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');

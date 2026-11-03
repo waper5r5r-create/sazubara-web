@@ -319,9 +319,9 @@ test('new year page: free shows the paywall, owner sees every letter and no payw
 
 test('home banners link one slide to each live content', () => {
   const html = api.homeBannerHtml();
-  assert.equal((html.match(/data-banner-id="/g) || []).length, 5);
-  for (const c of [require('../api/_newyear-content').concept, require('../api/_career-content').concept, require('../api/_marriage-content').concept]) assert.ok(html.includes('data-banner-id="' + c.id + '"'));
+  assert.equal((html.match(/data-banner-id="/g) || []).length, 6);
+  for (const c of [require('../api/_newyear-content').concept, require('../api/_ian-content').concept, require('../api/_career-content').concept, require('../api/_marriage-content').concept]) assert.ok(html.includes('data-banner-id="' + c.id + '"'));
   assert.ok(html.includes('data-banner-id="운명의-사람은-언제-올까-fyq1z"'));
   assert.ok(html.includes('data-banner-id="타고난-재물복은-얼마나-될까-k7dxw"'));
-  assert.equal((html.match(/<i[ >]/g) || []).length, 5);
+  assert.equal((html.match(/<i[ >]/g) || []).length, 6);
 });

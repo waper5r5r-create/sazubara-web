@@ -3294,7 +3294,7 @@ function wireStarGift(scope,result){
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
 function homeContentsHtml(){return homeBannerHtml()+'<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
 /* 콘텐츠 카드 한 줄: 연도는 멀게 느껴져서, 그 콘텐츠가 답해 주는 질문을 내 이름으로 던진다 */
-var HOME_PREVIEW_Q={newyear:'의 2027년, 언제 가장 좋을까?',love:'은 언제, 어떤 사람과 이어질까?',wealth:'의 돈은 어디서 들어오고 어디로 샐까?',career:'에게 맞는 일은 따로 있을까?',marriage:'은 언제쯤 결혼하게 될까?'};
+var HOME_PREVIEW_Q={newyear:'의 2027년, 언제 가장 좋을까?',ian:'의 사주에 숨겨 둔 얼굴은?',love:'은 언제, 어떤 사람과 이어질까?',wealth:'의 돈은 어디서 들어오고 어디로 샐까?',career:'에게 맞는 일은 따로 있을까?',marriage:'은 언제쯤 결혼하게 될까?'};
 function homePreviewLine(c,result){
  var cat=isPocha(c)?'career':storyCategory(c),q=HOME_PREVIEW_Q[cat];
  if(!q||!result||!result.day)return '';
@@ -4483,7 +4483,7 @@ function reportCardHtml(c){
   var coverInner = coverSrc ? '<img src="'+esc(coverSrc)+'" alt="" loading="lazy" decoding="async">' : '<span class="report-cover-fallback">'+BRAND_MARK_SVG+'</span>';
   return '<button type="button" class="report-card" data-report-id="'+esc(String(c.id))+'" data-cat="'+esc(c.category||'')+'"'+(available?'':' disabled')+'>'+
       '<span class="report-cover">'+coverInner+'</span>'+
-      '<span class="report-text"><span class="report-format">'+esc(c.category||'')+(available?'':' · 준비 중')+'</span><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc(({연애:'나는 어떤 사람에게 끌릴까?',재물:'돈을 모으는 힘과 새는 습관은?',직장:'내게 맞는 일하는 방식은?',결혼:'함께 살 때 중요하게 여기는 것은?'}[c.category])||c.tagline||'')+'</span>'+
+      '<span class="report-text"><span class="report-format">'+esc(c.category||'')+(available?'':' · 준비 중')+'</span><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc((!isIan(c)&&{연애:'나는 어떤 사람에게 끌릴까?',재물:'돈을 모으는 힘과 새는 습관은?',직장:'내게 맞는 일하는 방식은?',결혼:'함께 살 때 중요하게 여기는 것은?'}[c.category])||c.tagline||'')+'</span>'+
         '<span class="report-card-footer">'+
         (unlocked?'<span class="report-price">콘텐츠 보유</span>':available?('<span class="report-price">'+(c.price_krw?krwFmt(c.price_krw)+'원':'')+'</span><span class="report-discover">무료 풀이 읽기 '+uiIcon('arrow')+'</span>'):'')+'</span>'+
       '</span>'+
@@ -4576,7 +4576,7 @@ var reportSectionHtml=function(panel,result){
     '<p class="scene-result-bubble">'+esc(bubble)+'</p></div>'+(parts.length?'<div class="webtoon-narration">'+parts.map(function(part){return '<p class="report-caption">'+esc(part)+'</p>';}).join('')+'</div>':'')+'</section>';
 };
 function reportShareBtnHtml(){return '<button type="button" class="share-btn" id="btn-share-report">'+uiIcon('share')+' 이 이야기 공유하기</button>';}
-function storyCategory(c){if(isNewYear(c))return 'newyear';if(isMarriage(c))return 'marriage';if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
+function storyCategory(c){if(isNewYear(c))return 'newyear';if(isIan(c))return 'ian';if(isMarriage(c))return 'marriage';if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
 function prologueDialogue(c,result){
   var v=reportVariables(result),money=storyCategory(c)==='wealth';
   var loveVoice={목:'함께라면, 조금 더 나다운 사람이 될 것 같아.',화:'좋아하는 마음은, 숨기고 싶지 않아.',토:'설렘보다 오래 남는 편안함이 좋아.',금:'쉽게 마음을 주진 않아. 그래서 더 신중해.',수:'생각은 깊은데, 마음은 쉽게 꺼내지 못해.'};
@@ -4654,9 +4654,12 @@ function openPendingReport(){
 var NEWYEAR_CONCEPT={id:'20270101-7a3e-4c1d-9b52-6d0e8f4a1c27',title:'2027 신년운세',tagline:'2027년이 보낸 편지 12통',category:'신년운세',cover_img_url:'/assets/daon/cover.webp',active:true,price_krw:7900};
 var NY_AREAS=[['love','연애'],['money','돈'],['work','일'],['health','건강']];
 function isNewYear(concept){return !!concept&&String(concept.id)===NEWYEAR_CONCEPT.id;}
+var IAN_CONCEPT={id:'20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',title:'이안의 비밀',tagline:'내 사주 속 숨겨 둔 얼굴',category:'연애',cover_img_url:'/assets/ian/bottle.webp',active:true,price_krw:7900};
+function isIan(concept){return !!concept&&String(concept.id)===IAN_CONCEPT.id;}
 /* 홈·콘텐츠 탭 상단 배너. 넘기기는 브라우저 스크롤에 맡기고, 가만히 두면 5초마다 다음 장으로 넘어간다. */
 var HOME_BANNERS=[
  {id:NEWYEAR_CONCEPT.id,img:'/assets/daon/banner.webp',kicker:'2027 신년운세',title:'2027년이 보낸<br>편지가 도착했어요',note:'한 해 총평과 1월 편지는 무료'},
+ {id:IAN_CONCEPT.id,img:'/assets/banners/ian.webp',kicker:'이안의 비밀',title:'내 사주 속<br>숨겨 둔 얼굴',note:'앞부분은 무료'},
  {id:'운명의-사람은-언제-올까-fyq1z',img:'/assets/banners/love-v2.webp',kicker:'연애 사주',title:'언제, 어떤 사람과<br>이어질까?',note:'앞부분은 무료'},
  {id:'타고난-재물복은-얼마나-될까-k7dxw',img:'/assets/banners/wealth-v2.webp',kicker:'재물 사주',title:'내 돈은 어디로<br>새고 있을까?',note:'앞부분은 무료'},
  {id:'7c5db9e6-59cb-4a81-8b0a-73da4db7b051',img:'/assets/banners/career-v2.webp',kicker:'직업 사주',title:'나에게 맞는 일은<br>따로 있을까?',note:'앞부분은 무료'},
@@ -4747,8 +4750,6 @@ function openNewYearViewer(concept){
 }
 /* 이안의 비밀: 조향사 이안이 내 사주를 읽어 준다. 문장은 서버(api/_ian-content.js)가 내 사주로 조합하고, 3~7장은 결제 후에만 내려온다.
    아직 목록에는 올리지 않아, ?ian 링크로만 열린다. */
-var IAN_CONCEPT={id:'20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',title:'이안의 비밀',tagline:'내 사주 속 숨겨 둔 얼굴',category:'연애',cover_img_url:'/assets/ian/bottle.webp',active:true,price_krw:7900};
-function isIan(concept){return !!concept&&String(concept.id)===IAN_CONCEPT.id;}
 function ianText(t){return esc(t).replace(/\n/g,'<br>');}
 function ianChartHtml(result,marks,noTime){
  var cols=[['시','time',result.time],['일','day',result.day],['월','month',result.month],['년','year',result.year]];
