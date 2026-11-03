@@ -61,10 +61,7 @@ module.exports = async (req, res) => {
       return;
     }
     if (!redeemRes.ok) {
-      const text = await redeemRes.text().catch(function () {
-        return '';
-      });
-      res.status(500).json({ ok: false, error: 'REDEEM_INSERT_FAILED', message: text });
+      res.status(500).json({ ok: false, error: 'REDEEM_INSERT_FAILED' });
       return;
     }
 
@@ -95,6 +92,6 @@ module.exports = async (req, res) => {
 
     res.status(200).json({ ok: true, unlockKeys: PROMO_UNLOCK_KEYS });
   } catch (e) {
-    res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
+    res.status(500).json({ ok: false, error: 'SERVER_ERROR' });
   }
 };
