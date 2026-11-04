@@ -251,10 +251,11 @@ function parseCounts(s, pillars) {
   for (const k of POS) if (pillars[k]) { out[WX.indexOf(ganWx(pillars[k].gan))]++; out[WX.indexOf(zhiWx[pillars[k].zhi])]++; }
   return out;
 }
-// 앱이 쓰는 dominantWx·weakestWx와 같은 규칙. 동률이면 목화토금수 순서에서 앞의 것.
-function extremes(counts) {
-  let dom = 0, weak = 0;
-  counts.forEach((n, i) => { if (n > counts[dom]) dom = i; if (n < counts[weak]) weak = i; });
+// 앱의 dominantWx·fillWx와 같은 규칙. 동률이면 목화토금수 순서에서 앞의 것. 적은 기운에서는 내 기운을 뺀다.
+function extremes(counts, dayWx) {
+  const self = WX.indexOf(dayWx);
+  let dom = 0, weak = self === 0 ? 1 : 0;
+  counts.forEach((n, i) => { if (n > counts[dom]) dom = i; if (i !== self && n < counts[weak]) weak = i; });
   return {dom:WX[dom], weak:WX[weak]};
 }
 
@@ -267,7 +268,7 @@ function readChart(pillars, counts) {
   const hong = POS.filter(k => pillars[k] && pillars[k].zhi === hongZhi);
   dohwa.forEach(k => add(k, '도화'));
   hong.forEach(k => add(k, '홍염'));
-  const {dom, weak} = extremes(counts);
+  const {dom, weak} = extremes(counts, ganWx(d.gan));
   return {dohwa, hong, marks, dom, weak, dayWx:ganWx(d.gan), domRole:role(ganWx(d.gan), dom)};
 }
 function loverLevel(counts, dayWx, gender) {

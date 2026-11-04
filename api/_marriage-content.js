@@ -29,7 +29,7 @@ const spouseCards = {
 
 // 연도별 흐름: 그해의 지지가 일지와 맺는 관계
 const yearByRelation = {
-  liuhe: {label: '인연이 자연스럽게 닿는 해', text: '그해 기운이 배우자 자리와 서로 끌어당겨요. 애쓰지 않아도 마음 편한 사람이 곁에 오기 쉬워요. 만나는 사람이 있다면 결혼 이야기를 꺼내기 좋은 해예요.'},
+  liuhe: {label: '인연이 자연스럽게 닿는 해', text: '그해 기운과 배우자 자리가 서로 끌어당겨요. 애쓰지 않아도 마음 편한 사람이 곁에 오기 쉬워요. 만나는 사람이 있다면 결혼 이야기를 꺼내기 좋은 해예요.'},
   sanhe: {label: '만남이 많아지는 해', text: '그해 기운이 배우자 자리와 힘을 모아요. 소개, 모임, 지인 결혼식처럼 사람이 모이는 자리에서 인연이 생기기 쉬워요. 초대받은 자리엔 되도록 나가보세요.'},
   chong: {label: '관계에 큰 변화가 오는 해', text: '그해 기운이 배우자 자리와 부딪혀요. 이어질 관계는 이때 확실해지고, 아닌 관계는 정리되기 쉬워요. 이사나 이직 같은 생활 변화와 함께 오기도 해요.'},
   same: {label: '원하는 결혼이 또렷해지는 해', text: '그해 기운이 배우자 자리와 같은 글자로 겹쳐요. 내가 원하는 결혼의 모습이 분명해지는 해예요. 어떤 사람과 어떤 하루를 보내고 싶은지 적어보면 사람을 보는 눈이 생겨요.'},
@@ -92,5 +92,6 @@ const story = {spouseCards, yearByRelation, yearByTenGod, daeunText, detailByWx,
 // 12,900원: 리포트 형식의 결혼 심층 리포트
 const detail = require('./_marriage-deep');
 
+require('./_stem-persona').marriage(story, detail);
 detail.relLabel = Object.fromEntries(Object.entries(story.yearByRelation).map(([k, v]) => [k, v.label]));
 module.exports = {concept, story, detail};

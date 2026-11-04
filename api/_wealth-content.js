@@ -155,5 +155,6 @@ const story = {cards, income, leak, leakBigyeop, impulse, save, storage, ledgerH
 // 같은 결제에 포함된 리포트 형식의 재물 심층 리포트
 const detail = require('./_wealth-deep');
 
+require('./_stem-persona').wealth(story, detail);
 detail.relLabel = Object.fromEntries(Object.entries(story.yearByRelation).map(([k, v]) => [k, v.label]));
 module.exports = {concept, story, detail};

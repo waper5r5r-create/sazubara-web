@@ -325,3 +325,20 @@ test('home banners link one slide to each live content', () => {
   assert.ok(html.includes('data-banner-id="타고난-재물복은-얼마나-될까-k7dxw"'));
   assert.equal((html.match(/<i[ >]/g) || []).length, 6);
 });
+
+test('persona phrases: 을·정·임 do not get the behaviour text written for the other stem of their element',()=>{
+ const love=require('../api/_love-content.js'),career=require('../api/_career-content.js'),marriage=require('../api/_marriage-content.js'),wealth=require('../api/_wealth-content.js');
+ const bad={'乙':/물러서지 않는|새 일을 벌이는 속도|해결책부터 내미는|새로운 것에 돈이 새요/,'丁':/감정이 확 올라왔다|화가 빨리 올라오고|그 자리에서 바로 서운함|기분과 분위기에 돈이 새요/,'壬':/입을 닫고|침묵을 그 사람|말없이 생각에 잠겨|메시지 하나를 보내도 여러 번/};
+ const seen={};
+ for(let y=1980;y<1996;y++)for(let m=1;m<=12;m++)for(const d of [3,7,11,16,20,24,28]){
+  const r=api.computeSaju({year:y,month:m,day:d,hour:8,minute:30,isLunar:false,isLeapMonth:false,unknownTime:false,gender:'f',name:'지은',city:'seoul',useCorrection:false});
+  if(seen[r.day.gan]>=4)continue;seen[r.day.gan]=(seen[r.day.gan]||0)+1;
+  for(const c of [love,career,marriage,wealth]){
+   const full=api.storyFlowHtml(c.concept,{access:{story:true,detail:true},rows:[c.story],detailRows:[c.detail]},r).replace(/<[^>]+>/g,' ');
+   const free=api.storyFlowHtml(c.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r).replace(/<[^>]+>/g,' ');
+   assert.doesNotMatch(full+free,/undefined|NaN/,c.concept.title+' '+r.day.gan);
+   if(bad[r.day.gan])assert.doesNotMatch(full+free,bad[r.day.gan],c.concept.title+' '+r.day.gan);
+  }
+ }
+ assert.equal(Object.keys(seen).length,10);
+});
