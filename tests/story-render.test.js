@@ -293,7 +293,7 @@ test('free result opens with a portrait and personal scene sentences',()=>{
  const p=api.sajuQuickSummaryHtml(base);assert.ok(p.includes('초여름에 태어난 덩굴꽃'));assert.ok(p.includes('나답게 피어나는 사람'));assert.ok(p.includes('기억할 한 가지'));
  assert.notEqual(p,api.sajuQuickSummaryHtml({...base,month:{zhiKr:'자',zhi:'子',wxZhi:'수'}}));
  assert.equal(api.sajuQuickSummaryHtml({...base,month:null}),'');
- const main=api.everydaySajuHtml(base);assert.ok(main.includes('saju-hook-self'));assert.ok(main.includes('월주 상관'));assert.ok(main.includes('일지 미'));
+ const main=api.everydaySajuHtml(base);assert.ok(main.includes('saju-hook-self'));assert.ok(main.includes('일터 자리'));assert.ok(main.includes('배우자 자리'));assert.doesNotMatch(main.slice(main.indexOf("saju-hook-self"),main.indexOf("</section>",main.indexOf("saju-hook-self"))),/일간|일지|월주|신강|신약/);
 });
 
 test('home content cards show the first good year already shown free',()=>{

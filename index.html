@@ -162,6 +162,7 @@ button{font-family:var(--font-body);}
 }
 .today-ganzhi{display:flex; align-items:center; gap:10px;}
 .today-ganzhi .hanja{font-family:var(--font-display); font-size:2.5rem; font-weight:700; line-height:1;}
+.today-ganzhi .today-theme{font-size:1.2rem; font-weight:700; line-height:1.3;}
 .fortune-grid{display:grid;}
 .fortune-tile{ display:flex; flex-direction:column; min-width:0;
 }
@@ -1764,52 +1765,52 @@ var SITUATION_TEXT = {
    일간과 음양이 같은지(편재=역동적) 다른지(정재=안정적)에 따라 실제로 느낌이 꽤 달라서,
    그 차이를 각 필드에서 구체적으로 다르게 써서 다양성과 전문성을 함께 끌어올렸다. */
 var FORTUNE_TEXT = {
-  비견:{label:'비견운',
+  비견:{label:'내 페이스대로 갈 때',
     total:'나와 같은 편에 선 동료의 기운이 짙어지는 날이에요. 혼자 밀어붙이기보다 또래나 동료와 나란히 움직일 때 유독 힘이 실리는 하루라, 팀 작업이나 품앗이하듯 서로 돕는 일이 특히 잘 풀려요. 다만 "우리끼리"라는 마음이 지나치면 새로운 의견을 밀어내는 분위기로 흐를 수 있으니, 익숙한 사람들 사이에서도 다른 목소리 하나쯤은 귀 기울여 들어보세요.',
     money:'동료나 친구와 함께 쓰는 돈은 아깝지 않게 느껴지는 날이에요. 더치페이하거나 함께 투자하는 모임이 있다면 무난하게 흘러가지만, "다 같이 하는 거니까"라는 분위기에 휩쓸려 원래 계획에 없던 지출까지 떠안지 않도록 내 몫만큼은 미리 선을 그어두세요.',
     love:'친구처럼 편안한 관계에서 특히 빛을 발하는 날이에요. 연인과는 거창한 이벤트보다 함께 아는 사람들과 어울리는 자리가 더 즐거운 하루가 되고, 혼자라면 동호회나 모임처럼 또래가 모이는 자리에서 자연스러운 인연을 만날 가능성이 커요.',
     health:'또래와 함께 움직이는 운동이 특히 잘 맞는 날이에요. 혼자 하는 루틴보다 누군가와 약속을 잡고 함께 몸을 움직이면 의욕이 배로 살아나니, 오늘은 운동 메이트에게 먼저 연락해보는 것도 좋은 선택이에요.'},
-  겁재:{label:'겁재운',
+  겁재:{label:'내 것을 지킬 때',
     total:'승부욕이 평소보다 날카롭게 솟아오르는 날이에요. 경쟁하는 자리에서는 그 기운이 멋진 추진력으로 작용하지만, 일상적인 대화에서까지 "내가 이겨야 한다"는 마음이 묻어나면 주변 사람과 괜한 신경전으로 번질 수 있어요. 오늘만큼은 이기고 지는 게임이 아닌 자리에서는 한 걸음 양보해보세요.',
     money:'돈이 걸린 경쟁이나 베팅성 지출에 유독 끌리는 날이에요. 공동 투자나 동업, 지인과의 금전 거래는 오늘은 신중하게 거리를 두는 것이 좋고, 특히 "질 수 없다"는 마음으로 무리하게 베팅하는 충동은 반드시 하루 묵혀 식혀보세요.',
     love:'은근한 라이벌 의식이 관계에 스며들기 쉬운 날이에요. 연인과는 사소한 일에도 "누가 더 맞다"를 가리려는 신경전이 붙기 쉬우니, 말다툼이 시작되려 하면 승패를 가리기보다 먼저 멈추는 쪽이 관계를 지켜요. 짝사랑 중이라면 경쟁자가 신경 쓰이더라도 조급하게 움직이지 않는 편이 나아요.',
     health:'과격한 운동이나 무리한 승부욕으로 몸을 다치기 쉬운 날이에요. 평소보다 강도를 한 단계 낮추고, 누군가와 겨루는 운동이라면 특히 부상에 주의해서 몸을 쓰세요.'},
-  식신:{label:'식신운',
+  식신:{label:'즐겁게 풀리는 때',
     total:'느긋하고 여유로운 기운이 몸 전체에 퍼지는 날이에요. 서두르지 않아도 할 일이 자연스럽게 풀려나가는 흐름이라, 급하게 몰아치기보다 하나씩 차근차근 처리하는 쪽이 오히려 더 좋은 결과를 만들어요. 누군가를 챙기거나 보살피는 일에서 특히 마음이 따뜻하게 채워지는 하루예요.',
     money:'맛있는 음식이나 편안한 경험에 쓰는 돈이 아깝지 않게 느껴지는 날이에요. 품위 있게 누리는 소비는 오늘의 운과 잘 맞지만, 느긋한 기분에 이끌려 씀씀이의 고삐를 완전히 놓아버리지 않도록 "오늘 예산은 여기까지"라는 기준 하나만 마음에 심어두세요.',
     love:'포근하고 다정한 기운이 관계에 스며드는 날이에요. 상대를 직접 챙겨주는 행동(음식을 만들어주거나 따뜻한 말 한마디를 건네는 것)이 평소보다 훨씬 크게 가닿는 하루이니, 작은 돌봄의 표현을 아끼지 마세요.',
     health:'소화기와 입맛을 신경 쓰면 좋은 날이에요. 식욕이 유독 좋아지는 흐름이라 과식하기 쉬우니, 천천히 꼭꼭 씹어 먹는 습관으로 포만감을 미리 챙겨두세요.'},
-  상관:{label:'상관운',
+  상관:{label:'말을 고를 때',
     total:'날카로운 통찰과 재기가 번뜩이는 날이에요. 남들이 보지 못한 허점이나 개선점이 유독 또렷하게 눈에 들어와 문제 해결에 강한 힘을 발휘하지만, 그 직설이 걸러지지 않고 튀어나오면 상대의 마음을 베는 말이 될 수 있어요. 하고 싶은 말을 꺼내기 전에 "이걸 꼭 지금, 이렇게 해야 하나"를 한 번 되짚어보세요.',
     money:'틀에서 벗어난 새로운 수익 아이디어가 떠오르기 좋은 날이지만, 즉흥적으로 벌이는 지출이나 "이번엔 다를 거야"라는 확신으로 미뤄둔 규칙을 깨는 소비는 오늘은 피하는 것이 좋아요.',
     love:'할 말은 하는 솔직함이 매력으로 비치는 날이지만, 그 직설이 때로는 너무 날카롭게 들릴 수 있어요. 상대의 단점이 눈에 띄더라도 오늘만큼은 지적보다 유머로 부드럽게 풀어보세요.',
     health:'신경이 예민해지기 쉬운 날이에요. 두통이나 목·어깨의 긴장으로 이어지기 쉬우니, 날카로워진 신경을 가라앉히는 가벼운 스트레칭이나 산책을 틈틈이 끼워 넣어보세요.'},
-  편재:{label:'편재운',
+  편재:{label:'기회가 보일 때',
     total:'기회를 포착하면 바람처럼 움직이는 역동적인 기운이 솟아나는 날이에요. 여러 갈래의 일을 동시에 벌이고 싶어지는 하루라, 새로운 제안이나 낯선 기회가 들어오면 적극적으로 움직여볼 만해요. 다만 한꺼번에 너무 많은 일을 벌이면 끝맺음이 흐지부지될 수 있으니 우선순위를 먼저 정해두세요.',
     money:'들어오고 나가는 돈의 흐름이 모두 커지는 날이에요. 과감한 투자나 새로운 수익 모델을 시도하기에 좋은 타이밍이지만, 그만큼 충동적인 지출의 유혹도 커지니 "이건 투자인가 충동인가"를 스스로에게 꼭 물어보세요.',
     love:'화끈하고 즉흥적인 매력이 피어나는 날이에요. 계획 없이 떠나는 즉흥 데이트나 깜짝 이벤트가 유독 잘 통하는 하루이니, 평소라면 망설였을 과감한 제안을 오늘은 던져보세요.',
     health:'활동 반경이 넓어지며 몸이 여기저기 바빠지는 날이에요. 이동이 많아 피로가 쌓이기 쉬우니 중간중간 짧게라도 쉬는 시간을 꼭 확보하세요.'},
-  정재:{label:'정재운',
+  정재:{label:'차곡차곡 쌓을 때',
     total:'꾸준함과 성실함이 결실을 맺는 차분한 날이에요. 화려하진 않아도 한 걸음씩 쌓아온 노력이 조용히 인정받는 흐름이라, 오늘은 거창한 시도보다 하던 일을 흔들림 없이 이어가는 쪽이 더 좋은 결과를 만들어요.',
     money:'재물이 안정적으로 쌓이는 날이에요. 적금이나 정기적인 저축, 꼼꼼한 가계부 정리처럼 차근차근 쌓아가는 방식이 오늘의 기운과 잘 맞으니, 미뤄둔 재테크 계획을 점검해보기 좋은 타이밍이에요.',
     love:'한결같은 믿음이 관계를 단단하게 만드는 날이에요. 화려한 이벤트보다 "늘 그 자리에 있어주는" 꾸준한 마음이 상대에게 더 크게 가닿으니, 소소하지만 변함없는 일상의 약속을 오늘도 지켜보세요.',
     health:'규칙적인 생활 리듬이 몸에 특히 잘 맞는 날이에요. 평소 루틴(식사 시간, 취침 시간)을 흐트러뜨리지 않고 그대로 지키는 것만으로도 컨디션이 안정적으로 유지돼요.'},
-  편관:{label:'편관운',
+  편관:{label:'부담을 넘을 때',
     total:'위기감과 긴장감이 오히려 눈빛을 또렷하게 만드는 날이에요. 압박이 심한 상황에서 평소보다 강한 돌파력을 발휘할 수 있는 흐름이지만, 그만큼 스트레스를 몸으로 고스란히 떠안기 쉬우니 중요한 일을 처리한 뒤엔 반드시 의식적으로 긴장을 풀어주는 시간을 가지세요.',
     money:'큰 결단이 필요한 지출이나 협상에서 승부수를 띄우기 좋은 날이에요. 다만 압박감에 쫓겨 충분히 검토하지 않고 서둘러 계약하는 것은 피하고, 중요한 서명 앞에서는 한 번 더 숨을 고르세요.',
     love:'강렬한 끌림이나 긴장감 있는 밀당이 오가기 쉬운 날이에요. 다소 거칠게 느껴지는 직진도 오늘은 매력으로 비칠 수 있지만, 그 긴장감이 다툼으로 번지지 않도록 감정이 격해질 땐 잠시 거리를 두고 숨을 고르세요.',
     health:'스트레스가 몸으로 가장 먼저 드러나기 쉬운 날이에요. 어깨나 턱에 힘이 들어가 있지 않은지 틈틈이 점검하고, 깊게 숨을 내쉬는 것만으로도 긴장이 한결 풀려요.'},
-  정관:{label:'정관운',
+  정관:{label:'인정받을 때',
     total:'규칙과 책임을 또렷하게 의식하게 되는 반듯한 날이에요. 정해진 절차를 성실히 따르는 모습이 주변의 신뢰로 돌아오는 흐름이라, 오늘만큼은 "내 방식대로"보다 "정해진 대로"가 더 좋은 평판을 만들어요.',
     money:'계획에 맞춰 지출을 관리하기 좋은 날이에요. 세금, 보험, 공과금처럼 꼭 챙겨야 할 의무적인 지출을 점검하고 정리하기에 특히 좋은 타이밍이에요.',
     love:'관계에서 책임감 있는 태도가 신뢰로 이어지는 날이에요. 약속을 정확히 지키고 상대와의 미래를 진지하게 이야기하기 좋은 하루지만, 지나치게 원칙만 고수하면 딱딱하게 느껴질 수 있으니 가끔은 부드럽게 풀어주세요.',
     health:'규칙적인 관리가 특히 효과를 보는 날이에요. 건강검진 예약이나 미뤄둔 병원 방문이 있다면 오늘 챙겨보는 것도 좋고, 정해진 루틴을 성실히 따르는 것이 컨디션 유지에 도움이 돼요.'},
-  편인:{label:'편인운',
+  편인:{label:'혼자 생각할 때',
     total:'남들과 다른 각도에서 세상을 바라보는 독창적인 영감이 떠오르는 날이에요. 혼자 깊이 몰입해 새로운 아이디어를 파고들기 좋은 흐름이지만, 그 몰입이 지나치면 혼자만의 결론으로 성급히 빠질 수 있으니 중요한 판단은 믿을 만한 사람에게 한 번 물어보세요.',
     money:'남들이 눈여겨보지 않는 독특한 분야에 관심이 쏠리는 날이에요. 색다른 취미나 전문 분야에 투자하는 돈은 아깝지 않게 느껴지지만, 충분히 검증되지 않은 정보만 믿고 큰돈을 움직이는 것은 피하세요.',
     love:'신비롭고 독특한 매력이 돋보이는 날이에요. 평범하지 않은 대화 주제나 색다른 데이트가 오히려 좋은 인상을 남기지만, 혼자만의 생각에 빠져 상대를 신경 쓰지 못하는 순간이 없도록 가끔 상대의 눈을 들여다봐 주세요.',
     health:'생각이 많아지며 혼자만의 시간이 필요해지는 날이에요. 충분히 사색할 수 있는 조용한 시간을 따로 마련해두면 마음이 한결 가벼워지고, 과도한 걱정은 글로 적어 정리해보는 것도 도움이 돼요.'},
-  정인:{label:'정인운',
+  정인:{label:'도움받을 때',
     total:'주변의 도움과 반가운 소식이 조용히 찾아드는 포근한 날이에요. 혼자 끙끙대던 문제가 있다면 오늘은 솔직하게 털어놓아보세요, 생각보다 선뜻 손을 내미는 사람을 만날 수 있어요. 배우고 익히는 일에 유난히 마음이 끌리는 하루이기도 해요.',
     money:'큰 지출보다 공부나 자기계발에 투자하기 좋은 날이에요. 책 한 권, 강의 하나에 쓰는 돈은 아끼지 않아도 되지만, 충동적인 쇼핑은 아직 때가 아니니 며칠 더 묵혀보는 것을 추천해요.',
     love:'편안하고 안정적인 공기가 감도는 날이에요. 화려한 이벤트보다 상대의 이야기를 가만히 들어주고 공감해주는 것이 오늘은 더 큰 감동을 남기니, "요즘 힘든 거 없어?"라고 먼저 물어봐주세요.',
@@ -3803,7 +3804,7 @@ function renderTimeBlockContent(my, body){
       '<hr class="sep">'+
       '<div class="detail-block"><p class="ttl">'+ICO_MOON+' 저녁</p>'+autoParas(tb.evening)+'</div>'
     )+
-    '<p class="disclaimer">일간과 오늘 일진의 관계를 세 시간대로 나누어 본 참고용 콘텐츠예요.</p>';
+    '<p class="disclaimer">오늘의 기운을 세 시간대로 나누어 본 참고용 콘텐츠예요.</p>';
 }
 
 function dayFortuneHtml(my){
@@ -3823,9 +3824,8 @@ function dayFortuneHtml(my){
       '<div class="today-ganzhi-panel">'+
         '<div class="today-ganzhi">'+
           '<span class="dot" style="width:14px;height:14px;background:var('+dayInfo.var+')"></span>'+
-          '<span class="hanja">'+today.gan+today.zhi+'</span>'+
+          '<span class="today-theme">'+ft.label+'</span>'+
         '</div>'+
-        '<span class="hangul" style="font-size:.86rem;color:var(--fg-muted)">'+today.ganKr+today.zhiKr+'일<br>'+ft.label+'</span>'+
       '</div>'+
       personaWrap('today', autoParas(ft.total))+
     '</div>'+
@@ -3845,7 +3845,7 @@ function dayFortuneHtml(my){
         '<div class="lucky-chip"><span class="ic">'+uiIcon('compass')+'</span><p class="k">행운의 방향</p><p class="v">'+luckyInfo.dir+'</p></div>'+
         '<div class="lucky-chip"><span class="ic">'+uiIcon('spark')+'</span><p class="k">행운의 아이템</p><p class="v">'+luckyInfo.item+'</p></div>'+
       '</div>'+
-      '<p class="disclaimer">오늘의 운세는 일간 오행과 일진의 상생·상극 관계를 바탕으로 한 참고용 콘텐츠예요.</p>'+
+      '<p class="disclaimer">내 사주와 오늘의 기운을 견주어 본 참고용 콘텐츠예요.</p>'+
       '<button type="button" class="share-btn" id="btn-share-today">'+uiIcon('share')+' 오늘의 운세 공유하기</button>'+
     '</div>';
 }
@@ -3874,9 +3874,8 @@ function premiumPeriodUnlockedHtml(my, period){
       '<div class="today-ganzhi-panel">'+
         '<div class="today-ganzhi">'+
           '<span class="dot" style="width:14px;height:14px;background:var('+lucky.var+')"></span>'+
-          '<span class="hanja">'+pillar.gan+pillar.zhi+'</span>'+
+          '<span class="today-theme">'+ft.label+'</span>'+
         '</div>'+
-        '<span class="hangul" style="font-size:.86rem;color:var(--fg-muted)">'+pillar.ganKr+pillar.zhiKr+' '+pillarLabel+'<br>'+ft.label+'</span>'+
       '</div>'+
       personaWrap('today', autoParas(ft.total))+
     '</div>'+
@@ -3943,7 +3942,7 @@ function weekFortuneHtml(my){
     '</div>'+
     '<div class="card"><p class="section-title" style="font-size:.95rem;">요일별 흐름 <span class="hint">(눌러서 자세히 보기)</span></p>'+
       '<div class="period-week-list">'+rowsHtml+'</div>'+
-      '<p class="disclaimer">일간과 일진의 관계를 바탕으로 한 참고용 콘텐츠예요.</p>'+
+      '<p class="disclaimer">내 사주와 그날 기운을 견주어 본 참고용 콘텐츠예요.</p>'+
     '</div>';
 }
 
@@ -3977,7 +3976,7 @@ function monthFortuneHtml(my){
       '<div class="period-week-list">'+listHtml(best)+'</div></div>'+
     '<div class="card"><p class="section-title" style="font-size:.95rem;">'+ICO_CLOUD+' 남은 달에 주의할 날 <span class="hint">(눌러서 자세히 보기)</span></p>'+
       '<div class="period-week-list">'+listHtml(worst)+'</div>'+
-      '<p class="disclaimer">일간과 각 날짜의 일진 관계를 바탕으로 산출한 참고용 콘텐츠예요.</p>'+
+      '<p class="disclaimer">내 사주와 날짜별 기운을 견주어 본 참고용 콘텐츠예요.</p>'+
     '</div>';
 }
 
@@ -4688,7 +4687,7 @@ function wireHomeBanners(scope){
  },5000);
 }
 function nyLetterHtml(l){
- return '<article class="ny-letter" id="ny-m'+l.month+'"><header class="ny-letter-head"><img src="/assets/daon/'+esc(l.seal)+'.webp" alt="" loading="lazy" decoding="async"><div><small>'+l.month+'월 편지 · '+esc(l.pillar)+'월 · '+esc(l.ss)+'</small><h3>'+esc(l.title)+'</h3></div></header>'+
+ return '<article class="ny-letter" id="ny-m'+l.month+'"><header class="ny-letter-head"><img src="/assets/daon/'+esc(l.seal)+'.webp" alt="" loading="lazy" decoding="async"><div><small>'+l.month+'월 편지</small><h3>'+esc(l.title)+'</h3></div></header>'+
   '<div class="ny-talk"><img src="/assets/daon/f-'+esc(l.mood)+'.webp" alt="" loading="lazy" decoding="async"><p>'+esc(l.opening)+'</p></div>'+
   (l.note||[]).map(function(t){return '<p class="ny-note">'+esc(t)+'</p>';}).join('')+
   '<dl class="ny-areas">'+NY_AREAS.map(function(a){return '<div><dt><img src="/assets/daon/i-'+a[0]+'.webp" alt="" loading="lazy" decoding="async">'+a[1]+'</dt><dd>'+esc(l[a[0]])+'</dd></div>';}).join('')+'</dl>'+
@@ -4700,7 +4699,7 @@ function newYearPageHtml(result,data){
  var SEASON={2:['spring','봄 편지'],5:['summer','여름 편지'],8:['autumn','가을 편지'],11:['winter','겨울 편지']};
  var html='<section class="ny-cover"><img src="/assets/daon/cover.webp" alt="눈 오는 밤, 편지를 내미는 다온" decoding="async"><div><p>2027년이 보낸 편지</p><h1>'+(name?name+'께<br>':'')+'편지 왔어요</h1></div></section>'+
   '<div class="ny-talk ny-talk-hello"><img src="/assets/daon/f-wink.webp" alt="" decoding="async"><p>안녕하세요, 편지 배달부 다온이에요. 2027년이 '+(name||'나')+'에게 보낸 편지 12통을 가져왔어요. 한 해 이야기부터 읽어 드릴게요.</p></div>'+
-  '<section class="ny-year"><img src="/assets/daon/read.webp" alt="" loading="lazy" decoding="async"><p class="ny-kicker">2027년 한 해 총평</p><h2>'+esc(year.title)+'</h2><p class="ny-basis">2027 정미년 · 내 일간 '+esc(year.dayGan)+' 기준 · '+esc(year.ss)+'의 해</p>'+
+  '<section class="ny-year"><img src="/assets/daon/read.webp" alt="" loading="lazy" decoding="async"><p class="ny-kicker">2027년 한 해 총평</p><h2>'+esc(year.title)+'</h2><p class="ny-basis">2027년 · 내 사주 기준</p>'+
   year.body.map(function(t){return '<p>'+esc(t)+'</p>';}).join('')+
   '<div class="ny-months"><div><small>흐름이 좋은 달</small><b>'+free.best.map(function(m){return m+'월';}).join(' · ')+'</b></div><div><small>조심할 달</small><b>'+free.watch+'월</b></div></div></section>';
  html+='<nav class="ny-nav" aria-label="달별 편지">'+[1,2,3,4,5,6,7,8,9,10,11,12].map(function(m){var open=m===1||owned;return '<button type="button" data-ny-go="'+m+'"'+(open?'':' class="is-locked"')+'>'+m+'월</button>';}).join('')+'</nav>';
@@ -4714,7 +4713,7 @@ function newYearPageHtml(result,data){
   html+='<section class="ny-end"><img src="/assets/daon/bye.webp" alt="손 흔들어 배웅하는 다온" loading="lazy" decoding="async"><h2>좋은 한 해 보내요</h2><p>'+(name?name+', ':'')+'편지 12통을 모두 전해 드렸어요. 생각날 때 언제든 다시 꺼내 읽어 주세요.</p></section>';
  }
  html+='<button type="button" class="share-btn ny-share" data-ny-share>친구에게 신년운세 알려주기</button>'+
-  '<p class="disclaimer ny-disclaimer">일간과 일지를 2027년의 달별 기운에 대조한 참고용 풀이예요. 건강과 돈에 관한 중요한 결정은 전문가와 상의해 주세요.</p>';
+  '<p class="disclaimer ny-disclaimer">내 사주를 2027년의 달별 기운에 견주어 본 참고용 풀이예요. 건강과 돈에 관한 중요한 결정은 전문가와 상의해 주세요.</p>';
  return html;
 }
 function wireNewYear(root,concept){
@@ -5109,8 +5108,8 @@ var HOOK_MARRIAGE={
 /* 다섯 문장 + 근거 태그. 순서: 일간 → 자리(일지/월주) → 강한 기운 → 약한 기운 → 신강약 */
 function sajuHookHtml(kind,result,title){
  var H=kind==='self'?HOOK_SELF:kind==='love'?HOOK_LOVE:kind==='career'?HOOK_CAREER:kind==='wealth'?HOOK_WEALTH:HOOK_MARRIAGE,stem=result.day.ganKr,dom=dominantWx(result.wxCount).wx,weak=weakestWx(result.wxCount).wx,strong=result.strength==='strong';
- var second=kind==='wealth'?(function(t){return [H.income[t],WEALTH_INCOME_TAG[t]];})(wealthProfile(result).income):kind==='career'?[H.group[careerGroup(result)],'월주 '+(result.monthSS||'')]:[H.zhi[result.day.zhiKr],'일지 '+result.day.zhiKr+'('+result.day.zhi+')'];
- var rows=[[H.stem[stem],'일간 '+stem+'('+result.day.gan+')'],second,kind==='self'&&result.monthSS?[H.group[careerGroup(result)],'월주 '+result.monthSS]:null,[H.dom[dom],dom+' 기운 강함'],weak!==dom?[H.weak[weak],weak+' 기운 약함']:null,[H.strength[strong?'strong':'weak'],strong?'신강':'신약']].filter(function(r){return r&&r[0];});
+ var second=kind==='wealth'?(function(t){return [H.income[t],WEALTH_INCOME_TAG[t]];})(wealthProfile(result).income):kind==='career'?[H.group[careerGroup(result)],'일터 자리']:[H.zhi[result.day.zhiKr],'배우자 자리'];
+ var rows=[[H.stem[stem],'타고난 성향'],second,kind==='self'&&result.monthSS?[H.group[careerGroup(result)],'일터 자리']:null,[H.dom[dom],'많은 기운 · '+dom],weak!==dom?[H.weak[weak],'적은 기운 · '+weak]:null,[H.strength[strong?'strong':'weak'],strong?'내 기운이 센 편':'주변 기운이 큰 편']].filter(function(r){return r&&r[0];});
  return '<section class="saju-hook saju-hook-'+kind+'"><p class="saju-hook-kicker">'+esc(title)+'</p><ol>'+rows.map(function(r,i){return '<li'+(i>=3?' class="hook-extra"':'')+'><p>'+esc(r[0])+'</p><span>'+esc(r[1])+'</span></li>';}).join('')+'</ol><button type="button" class="btn-link hook-toggle" aria-expanded="false">나머지 특징 펼치기</button><p class="saju-hook-foot">맞는 게 있나요? 모두 입력한 사주로 계산한 결과예요.</p></section>';
 }
 /* ---- 직업 사주: 별지도 서점의 길잡이 "서림"이 일하는 방식(일간·월주)과 앞으로 10년의 커리어 흐름(월지 = 일터 자리)을 지도로 그려 읽어준다.
@@ -5166,7 +5165,7 @@ function freeChapterHtml(kind,result){
  if(kind==='love'){title='다툼이 반복될 때, 내가 먼저 바꿀 한 가지';a=d.conflict[wx];b=d.makeup[wx];}
  if(kind==='marriage'){title='함께 살기 전에 나눠볼 대화';a=d.detailByWx[wx].conflict;b=d.detailByWx[wx].talk.concat([d.checklistByWeakWx[weak]]);}
  if(kind==='wealth'){title='사고 난 뒤 후회를 줄이는 기준';a=d.impulse[wx];b=d.ledgerHabit[result.strength];}
- if(!a)return '';return '<section class="free-chapter"><p class="reader-kicker">무료 공개 · 생활 속 행동 가이드</p><h2>'+esc(title)+'</h2><p class="reading-basis">일간 '+esc(result.day.ganKr)+' · '+esc(wx)+' / 보완할 기운 '+esc(weak)+'</p><p>'+esc(a)+'</p><div class="free-action"><h3>오늘 적용해보기</h3>'+(Array.isArray(b)?'<ul>'+b.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'<p>'+esc(b||'')+'</p>')+'</div><p class="reading-note">유료 본문의 행동 가이드 일부를 무료로 공개했어요. 내 경험과 맞는 부분부터 적용해보세요.</p></section>';
+ if(!a)return '';return '<section class="free-chapter"><p class="reader-kicker">무료 공개 · 생활 속 행동 가이드</p><h2>'+esc(title)+'</h2><p class="reading-basis">타고난 기운 '+esc(wx)+' / 보완할 기운 '+esc(weak)+'</p><p>'+esc(a)+'</p><div class="free-action"><h3>오늘 적용해보기</h3>'+(Array.isArray(b)?'<ul>'+b.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'<p>'+esc(b||'')+'</p>')+'</div><p class="reading-note">유료 본문의 행동 가이드 일부를 무료로 공개했어요. 내 경험과 맞는 부분부터 적용해보세요.</p></section>';
 }
 
 function careerPreviewHtml(concept,result,rows){
@@ -5178,14 +5177,14 @@ function careerPreviewHtml(concept,result,rows){
   sajuHookHtml('career',result,'서림이 사주에서 먼저 짚은 것')+freeChapterHtml('career',result)+
   '<figure class="love-free-card career-free-card">'+careerCardArt(stem)+'<figcaption>당신 일의 지도 · <strong>'+esc(CAREER_TITLE[stem]||'')+'</strong></figcaption></figure>'+
   seorimSay('explain','<p>여기서부터 풀이를 시작할게요. 당신 일하는 스타일을 한 단어로 하면 <strong>「'+esc(CAREER_TITLE[stem]||'')+'」</strong>이에요.</p>')+
-  '<ol class="route">'+routeStop(1,'출발점','지금 서 있는 곳','intro','빈 두루마리에 붓으로 첫 선을 그으려는 서림','<p>'+esc(CAREER_FREE[stem]||'')+'</p>','일간 '+stem+'('+result.day.gan+') · 일터 자리 '+mz)+
-  (first?routeStop(2,'가장 가까운 이정표','길이 열리는 첫 번째 해','listen','작업상 너머로 이야기를 듣는 서림','<p><strong class="wolha-year">'+first.year+'년</strong>, '+esc(first.ganKr+first.zhiKr)+'년의 기운이 일터 자리 '+esc(mz)+'에 닿는 <strong>'+esc(careerYearLabel(first))+'</strong>예요. 앞으로 10년 중 특히 좋은 해는 세 번이에요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','월지 × 그해 지지 · 천간 십신'):'')+'</ol>'+
+  '<ol class="route">'+routeStop(1,'출발점','지금 서 있는 곳','intro','빈 두루마리에 붓으로 첫 선을 그으려는 서림','<p>'+esc(CAREER_FREE[stem]||'')+'</p>','타고난 성향 · 일터 자리')+
+  (first?routeStop(2,'가장 가까운 이정표','길이 열리는 첫 번째 해','listen','작업상 너머로 이야기를 듣는 서림','<p><strong class="wolha-year">'+first.year+'년</strong>, '+esc(first.ganKr+first.zhiKr)+'년의 기운이 일터 자리 '+esc(mz)+'에 닿는 <strong>'+esc(careerYearLabel(first))+'</strong>예요. 앞으로 10년 중 특히 좋은 해는 세 번이에요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','해마다 달라지는 기운'):'')+'</ol>'+
   lockedPeekHtml('<section class="spouse-card career-card">'+careerCardArt(stem)+'<p class="reader-kicker">일의 지도 카드</p><h2>'+esc(CAREER_TITLE[stem]||'')+'</h2><h3>나는 어떤 일꾼일까</h3><p>'+esc(CAREER_FREE[stem]||'')+'</p></section>'+careerTimelineHtml(rows,function(r){return esc(careerYearLabel(r));}))+
  '</section>';
 }
 function careerOffer(stage){
  var detail=stage==='detail';
- var benefits=detail?['한눈에 보는 직업 사주 요약표, 일간별 일하는 방식, 월주로 보는 일터의 나','십신·오행·신살·신강약으로 읽는 적성과 맞는 분야, 추천 직무','10년 커리어 흐름의 해마다 할 일, 가장 강한 해의 월별 흐름, 대운 속 커리어','이직·퇴사 판단 기준, 일터 관계 6장면 대응법, 연봉 협상 가이드','번아웃 신호와 회복법, 커리어 로드맵 5단계, 스스로에게 던질 질문 24개']:['일의 지도 카드와 현실 장면 10개로 보는 나의 일하는 방식','앞으로 10년의 커리어 흐름과 길이 크게 열리는 세 해, 서림의 처방전','18개 항목 직업 심층 리포트: 적성과 추천 직무, 이직 판단, 연봉 협상, 번아웃, 커리어 로드맵'];
+ var benefits=detail?['한눈에 보는 직업 사주 요약표, 나의 일하는 방식, 일터에서의 나','타고난 기운으로 읽는 적성과 맞는 분야, 추천 직무','10년 커리어 흐름의 해마다 할 일, 가장 강한 해의 월별 흐름, 10년 단위로 보는 커리어','이직·퇴사 판단 기준, 일터 관계 6장면 대응법, 연봉 협상 가이드','번아웃 신호와 회복법, 커리어 로드맵 5단계, 스스로에게 던질 질문 24개']:['일의 지도 카드와 현실 장면 10개로 보는 나의 일하는 방식','앞으로 10년의 커리어 흐름과 길이 크게 열리는 세 해, 서림의 처방전','18개 항목 직업 심층 리포트: 적성과 추천 직무, 이직 판단, 연봉 협상, 번아웃, 커리어 로드맵'];
  return '<section class="reader-offer marriage-offer career-offer" data-gate="'+stage+'">'+seorimScene(detail?'detail':'lock',detail?'기록책을 펼쳐두고 맞은편 자리를 권하는 서림':'두루마리를 입가에 대고 윙크하는 서림',!detail)+'<p class="reader-kicker">'+(detail?'직업 심층 리포트':'직업 사주 · 서림')+'</p><h2>'+(detail?'내 직업 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'직업 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 직업 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 function careerStoryHtml(story,result,rows){
@@ -5196,16 +5195,16 @@ function careerStoryHtml(story,result,rows){
  var P=function(t){return '<p>'+esc(t||'')+'</p>';};
  var html='<section class="wolha-talk seorim-talk">'+seorimScene('map-reveal','다 그린 일의 지도를 펼쳐 보이는 서림')+
   seorimSay('smile','<p>'+who+' 일 사주를 순서대로 정리했어요. 1번부터 읽어 내려가면 돼요.</p>')+
-  '<section class="spouse-card career-card">'+careerCardArt(stem)+'<p class="reader-kicker">일의 지도 카드 · 일간 '+esc(stem+'('+result.day.gan+')')+'</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 일꾼일까</h3><p>'+esc(card.who||'')+'</p><h3>잘 맞는 일</h3><p>'+esc(card.fields||'')+'</p><h3>이 길을 오래 걷는 법</h3><p>'+esc(card.keep||'')+'</p></section>'+
+  '<section class="spouse-card career-card">'+careerCardArt(stem)+'<p class="reader-kicker">일의 지도 카드</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 일꾼일까</h3><p>'+esc(card.who||'')+'</p><h3>잘 맞는 일</h3><p>'+esc(card.fields||'')+'</p><h3>이 길을 오래 걷는 법</h3><p>'+esc(card.keep||'')+'</p></section>'+
   '<ol class="route">'+
-  routeStop(1,'출발점','가장 빛나는 순간',careerVarScene('strength',wx),'가장 빛나는 순간의 장면',P(card.shine),'일간 '+stem)+
-  routeStop(2,'머물 곳','나에게 맞는 일터','environment','조용한 개인 작업 공간과 북적이는 협업 공간 사이에 선 장면',P(story.environment[strong?'strong':'weak'])+P(story.envByWx[dom]),(strong?'신강':'신약')+' · 가장 강한 기운 '+dom)+
-  routeStop(3,'동행','상사·동료와의 관계','relation','작은 회의실에서 상사와 마주 앉아 이야기하는 장면',P(story.relation[g]),'월주 십신 '+(result.monthSS||''))+
-  routeStop(4,'위험 구간','지치는 조건',careerVarScene('burnout',wx),'지치는 순간의 장면',P(story.burnout[wx]),'일간 오행 '+wx)+
+  routeStop(1,'출발점','가장 빛나는 순간',careerVarScene('strength',wx),'가장 빛나는 순간의 장면',P(card.shine),'타고난 성향')+
+  routeStop(2,'머물 곳','나에게 맞는 일터','environment','조용한 개인 작업 공간과 북적이는 협업 공간 사이에 선 장면',P(story.environment[strong?'strong':'weak'])+P(story.envByWx[dom]),(strong?'내 기운이 센 편':'주변 기운이 큰 편')+' · 가장 많은 기운 '+dom)+
+  routeStop(3,'동행','상사·동료와의 관계','relation','작은 회의실에서 상사와 마주 앉아 이야기하는 장면',P(story.relation[g]),'일터 자리')+
+  routeStop(4,'위험 구간','지치는 조건',careerVarScene('burnout',wx),'지치는 순간의 장면',P(story.burnout[wx]),wx+' 기운')+
   routeStop(5,'막힌 길','막혔을 때 돌아가는 법','stuck','알림이 쌓인 모니터 앞에서 멈춘 손',P(story.stuck[weak]),'가장 약한 기운 '+weak)+
-  routeStop(6,'샛길','새로운 도전과 부업','side-project','퇴근 후 스탠드 아래에서 부업을 준비하는 장면',P(story.side[gods.siksang?'has':'none']),'식상 '+(gods.siksang?'있음':'드러나지 않음'))+
-  routeStop(7,'보상','돈과 성장','pay-growth','동전과 새싹이 그려진 두 장의 서류를 비교하는 손',P(story.money[gods.jaeseong?'has':'none']),'재성 '+(gods.jaeseong?'있음':'드러나지 않음'))+
-  routeStop(8,'갈림길','앞으로 10년, 길이 열리는 해','job-change','카페 창가에서 휴대폰과 봉투를 앞에 두고 고민하는 장면','<p>해마다 일터 자리에 닿는 기운이 달라요. 별이 찍힌 세 해에 길이 크게 열려요.</p>'+careerTimelineHtml(rows,function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return (r.top?'★ ':'')+esc(r.top?careerYearLabel(r):rel.label);})+tops.map(function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return '<div class="route-year"><p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(careerYearLabel(r))+'</p>'+P(rel.text)+P(story.yearByTenGod[r.tg])+'</div>';}).join('')+(best&&good.length?'<p>'+best.year+'년 안에서 특히 길이 잘 열리는 달</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>':''),'월지 × 그해 지지 · 천간 십신 · 대운')+
+  routeStop(6,'샛길','새로운 도전과 부업','side-project','퇴근 후 스탠드 아래에서 부업을 준비하는 장면',P(story.side[gods.siksang?'has':'none']),'표현하는 기운 '+(gods.siksang?'있음':'약함'))+
+  routeStop(7,'보상','돈과 성장','pay-growth','동전과 새싹이 그려진 두 장의 서류를 비교하는 손',P(story.money[gods.jaeseong?'has':'none']),'거두는 기운 '+(gods.jaeseong?'있음':'약함'))+
+  routeStop(8,'갈림길','앞으로 10년, 길이 열리는 해','job-change','카페 창가에서 휴대폰과 봉투를 앞에 두고 고민하는 장면','<p>해마다 일터 자리에 닿는 기운이 달라요. 별이 찍힌 세 해에 길이 크게 열려요.</p>'+careerTimelineHtml(rows,function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return (r.top?'★ ':'')+esc(r.top?careerYearLabel(r):rel.label);})+tops.map(function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return '<div class="route-year"><p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(careerYearLabel(r))+'</p>'+P(rel.text)+P(story.yearByTenGod[r.tg])+'</div>';}).join('')+(best&&good.length?'<p>'+best.year+'년 안에서 특히 길이 잘 열리는 달</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>':''),'해마다 달라지는 기운')+
   routeStop(9,'쉼터','쉬어 가는 법',careerVarScene('rest',wx),'쉬는 장면',P(story.rest[wx]),'')+
   routeStop(10,'첫걸음','이번 주 작은 한 걸음','small-step','메모지 세 장 중 하나에 체크 표시를 하는 손','<ul class="seorim-steps">'+(story.smallStep[wx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>','')+
   '</ol>';
@@ -5231,37 +5230,37 @@ function careerDeepHtml(deep,result,rows){
  var stars=function(s){var k=s>=5?5:s>=4?4:s>=3?3:s>=1?2:1;return '<span class="deep-stars" aria-label="'+k+'점">'+'★★★★★'.slice(0,k)+'<i>'+'★★★★★'.slice(k)+'</i></span>';};
  var changeYears=rows.filter(function(r){return r.rel==='chong';}),payYears=rows.filter(function(r){return r.tg==='jaeseong';});
  var html='<div class="deep-report seorim-deep">'+
-  '<header class="deep-head">'+seorimSay('serious','<p>여기부터는 자세한 리포트예요. 목차에서 궁금한 항목부터 골라 읽어도 괜찮아요.</p>')+'<p class="deep-kicker">직업 심층 리포트</p><h2>'+who+'의 직업 사주</h2><p class="deep-sub">18개 항목 · 일간·월주·오행·십신·신살·신강약·대운·세운·월운 기준</p>'+
-  '<ol class="deep-toc">'+['한눈에 보는 직업 사주','나의 일하는 방식','일터에서의 나','십신으로 보는 적성 유형','기둥별 십신의 직업 의미','오행으로 보는 맞는 분야','다섯 기운 하나하나','신살로 보는 직업','나의 힘과 일하는 구조','추천 직무','10년 커리어 흐름 상세','가장 강한 해의 월별 흐름','대운 속 커리어','이직·퇴사 판단 가이드','일터 관계 대응법','연봉·보상 협상 가이드','번아웃 예방과 회복','커리어 로드맵과 스스로에게 던질 질문'].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol></header>';
+  '<header class="deep-head">'+seorimSay('serious','<p>여기부터는 자세한 리포트예요. 목차에서 궁금한 항목부터 골라 읽어도 괜찮아요.</p>')+'<p class="deep-kicker">직업 심층 리포트</p><h2>'+who+'의 직업 사주</h2><p class="deep-sub">18개 항목 · 내 사주와 앞으로의 흐름 기준</p>'+
+  '<ol class="deep-toc">'+['한눈에 보는 직업 사주','나의 일하는 방식','일터에서의 나','내 적성의 다섯 가지 힘','태어난 해·달·시간으로 보는 일','오행으로 보는 맞는 분야','다섯 기운 하나하나','타고난 일 기질','나의 힘과 일하는 구조','추천 직무','10년 커리어 흐름 상세','가장 강한 해의 월별 흐름','10년 단위로 보는 커리어','이직·퇴사 판단 가이드','일터 관계 대응법','연봉·보상 협상 가이드','번아웃 예방과 회복','커리어 로드맵과 스스로에게 던질 질문'].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol></header>';
  html+=sec('한눈에 보는 직업 사주','<dl class="deep-summary">'+
-  '<div><dt>일간 (나)</dt><dd>'+esc(stem+'('+result.day.gan+') · '+wx+' · '+(CAREER_TITLE[stem]||''))+'</dd></div>'+
-  '<div><dt>일터 자리 (월주)</dt><dd>'+esc(result.month.ganKr+result.month.zhiKr+' · 십신 '+(result.monthSS||''))+'</dd></div>'+
-  '<div><dt>나의 힘</dt><dd>'+(strong?'신강 · 스스로 길을 내는 힘':'신약 · 함께 길을 넓히는 힘')+'</dd></div>'+
+  '<div><dt>나</dt><dd>'+esc(stem+'('+result.day.gan+') · '+wx+' · '+(CAREER_TITLE[stem]||''))+'</dd></div>'+
+  '<div><dt>일터 자리</dt><dd>'+esc(result.month.ganKr+result.month.zhiKr+'')+'</dd></div>'+
+  '<div><dt>나의 힘</dt><dd>'+(strong?'스스로 길을 내는 힘':'함께 길을 넓히는 힘')+'</dd></div>'+
   '<div><dt>강한 기운 / 약한 기운</dt><dd>'+esc(domWx+' / '+weakWx)+'</dd></div>'+
-  (cur?'<div><dt>지금의 대운</dt><dd>'+esc(cur.startYear+'~'+cur.endYear+' · '+cur.ganKr+cur.zhiKr+' ('+cur.ss+')')+'</dd></div>':'')+
+  (cur?'<div><dt>지금의 10년</dt><dd>'+esc(cur.startYear+'~'+cur.endYear)+'</dd></div>':'')+
   '<div><dt>길이 열리는 해</dt><dd>'+tops.slice().sort(function(a,b){return a.year-b.year;}).map(function(r){return r.year+'년';}).join(' · ')+'</dd></div></dl>'+
   '<h4>핵심 다섯 줄</h4>'+tips([best?'가장 좋은 시기: '+best.year+'년, '+careerYearLabel(best)+'예요.':'',(deep.jobs[wx]||[])[0]?'가장 먼저 볼 직무: '+deep.jobs[wx].slice(0,3).map(function(j){return j.name;}).join(', ')+'.':'',sv.grow?'성장의 열쇠: '+sv.grow:'',ew.tips&&ew.tips[0]?'먼저 바꿀 습관: '+ew.tips[0]:'',changeYears[0]?'자리가 움직이는 해: '+changeYears.map(function(r){return r.year+'년';}).join(', ')+'에는 이직·이동 제안이 생기기 쉬워요.':'큰 자리 변동의 해가 두드러지지 않아요. 지금 자리에서 깊이를 쌓기 좋은 10년이에요.'].filter(Boolean))+'<p class="deep-muted">이 리포트의 모든 해석은 위 요약의 값에서 출발해요. 읽다가 궁금하면 이 표로 돌아와 근거를 확인해보세요.</p>');
- html+=sec('나의 일하는 방식 · 일간 '+stem+'('+result.day.gan+')',p(sv.view)+'<h4>일을 풀어가는 방식</h4>'+p(sv.style)+'<div class="deep-two">'+box('good','일터에서의 강점',p(sv.strength))+box('warn','조심할 점',p(sv.weak))+'</div>'+box('','성장 포인트',p(sv.grow))+box('','리더가 되었을 때',p(sv.boss))+box('warn','빠지기 쉬운 커리어 함정',p((deep.stemExtra[stem]||{}).trap))+box('good','함께하면 좋은 동료',p((deep.stemExtra[stem]||{}).partner)));
- html+=sec('일터에서의 나 · 월주 '+(result.monthSS||''),p(deep.monthRole[result.monthSS]||deep.monthRole['일주'])+'<h4>일터 자리 '+esc(mz+'('+result.month.zhi+')')+'</h4>'+p(deep.monthZhi[mz])+box('',deep.tenGodPresence[g].title.split(' · ')[0]+'의 자리를 고르는 법',p(deep.jobsByGroup[g])));
- html+=sec('십신으로 보는 적성 유형','<p class="deep-muted">연·월·시 천간 십신: '+esc([result.yearSS,result.monthSS,result.timeSS].filter(Boolean).join(' · '))+'</p>'+['siksang','jaeseong','gwanseong','inseong','bigyeop'].map(function(k){var t=deep.tenGodPresence[k],has=!!gods[k];return box(has?'good':'',t.title+(has?' · 있음':' · 드러나지 않음'),p(has?t.has:t.none)+tips((deep.tenGodTips[k]||{})[has?'has':'none']));}).join(''));
- html+=sec('기둥별 십신의 직업 의미',[['연주',result.yearSS],['월주',result.monthSS],['시주',result.timeSS]].filter(function(x){return deep.pillarTenGod[x[1]];}).map(function(x){return box('',x[0]+' · '+x[1],p(deep.pillarTenGod[x[1]])+'<p class="deep-muted">'+esc(deep.palacePosition[x[0]]||'')+'</p>');}).join('')||'<p class="deep-muted">출생시간을 몰라 확인할 수 있는 기둥이 적어요.</p>');
+ html+=sec('나의 일하는 방식',p(sv.view)+'<h4>일을 풀어가는 방식</h4>'+p(sv.style)+'<div class="deep-two">'+box('good','일터에서의 강점',p(sv.strength))+box('warn','조심할 점',p(sv.weak))+'</div>'+box('','성장 포인트',p(sv.grow))+box('','리더가 되었을 때',p(sv.boss))+box('warn','빠지기 쉬운 커리어 함정',p((deep.stemExtra[stem]||{}).trap))+box('good','함께하면 좋은 동료',p((deep.stemExtra[stem]||{}).partner)));
+ html+=sec('일터에서의 나',p(deep.monthRole[result.monthSS]||deep.monthRole['일주'])+'<h4>일터 자리 '+esc(mz+'('+result.month.zhi+')')+'</h4>'+p(deep.monthZhi[mz])+box('',deep.tenGodPresence[g].title.split(' · ')[0]+'의 자리를 고르는 법',p(deep.jobsByGroup[g])));
+ html+=sec('내 적성의 다섯 가지 힘',['siksang','jaeseong','gwanseong','inseong','bigyeop'].map(function(k){var t=deep.tenGodPresence[k],has=!!gods[k];return box(has?'good':'',t.title,p(has?t.has:t.none)+tips((deep.tenGodTips[k]||{})[has?'has':'none']));}).join(''));
+ html+=sec('태어난 해·달·시간으로 보는 일',[['연주',result.yearSS],['월주',result.monthSS],['시주',result.timeSS]].filter(function(x){return deep.pillarTenGod[x[1]];}).map(function(x){return box('',({연주:'태어난 해',월주:'태어난 달',시주:'태어난 시간'})[x[0]],p(deep.pillarTenGod[x[1]])+'<p class="deep-muted">'+esc(deep.palacePosition[x[0]]||'')+'</p>');}).join('')||'<p class="deep-muted">출생시간을 몰라 확인할 수 있는 기둥이 적어요.</p>');
  html+=sec('오행으로 보는 맞는 분야','<h4>가장 강한 기운 · '+esc(domWx)+'</h4>'+p(es.text)+box('good','이 기운이 살아나는 분야',tips(es.fields))+tips(es.tips)+(weakWx!==domWx?'<h4>가장 약한 기운 · '+esc(weakWx)+'</h4>'+p(ew.text)+tips(ew.tips):''));
  html+=sec('다섯 기운 하나하나',['목','화','토','금','수'].map(function(k){var c=Number(result.wxCount[k])||0,t=deep.elementCount[k]||{};return box(c>=3?'good':c===0?'warn':'',k+' '+c+'개',p(c===0?t.none:c>=3?t.many:t.few));}).join(''));
- html+=sec('신살로 보는 직업',['yeokma','dohwa','hwagae'].map(function(k){var t=deep.shinsalText[k],has=(result.shinsal||[]).indexOf(k)>=0;return box(has?'good':'',t.name+(has?' · 있음':' · 없음'),p(has?t.has:t.none));}).join(''));
+ html+=sec('타고난 일 기질',['yeokma','dohwa','hwagae'].map(function(k){var t=deep.shinsalText[k],has=(result.shinsal||[]).indexOf(k)>=0;return box(has?'good':'',has?t.name:({yeokma:'한곳에서 깊어지는 커리어',dohwa:'실력으로 인정받는 타입',hwagae:'함께 일할 때 커지는 힘'})[k],p(has?t.has:t.none));}).join(''));
  html+=sec('나의 힘과 일하는 구조 · '+st.title,p(st.text)+tips(st.tips)+'<h4>일하는 구조별로 보면</h4>'+deep.workType.map(function(w){return box('',w.name,p(strong?w.strong:w.weak));}).join(''));
- html+=sec('추천 직무','<p class="deep-muted">일간 '+esc(wx)+' 기운을 중심으로 고른 직무예요. 직업 이름보다 "왜 맞는지"를 내 경험과 비교해 보세요.</p>'+(deep.jobs[wx]||[]).map(function(j){return box('',j.name,p(j.why));}).join('')+(domWx!==wx&&deep.jobs[domWx]?'<h4>가장 강한 기운 '+esc(domWx)+'으로 넓혀 보면</h4>'+tips(deep.jobs[domWx].slice(0,3).map(function(j){return j.name+' · '+j.why;})):'')+p(deep.jobsByGroup[g]));
- html+=sec('10년 커리어 흐름 상세','<p class="deep-muted">해마다 그해의 지지가 일터 자리 '+esc(mz)+'에 닿는 방식과 천간의 십신, 그해가 속한 대운을 함께 읽었어요.</p><ol class="deep-years">'+rows.map(function(r){var todo=deep.yearTodo[r.rel]||deep.yearTodo.none;return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'★ ':'')+esc(r.top?careerYearLabel(r):(r.rel==='chong'?'길이 바뀌는 해':CAREER_TOP_LABEL[r.tg]))+'</p>'+p(deep.yearAction[r.rel]||deep.yearAction.none)+p(deep.yearTenGodLong[r.tg])+(function(){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],dgk=du&&SS_GROUP[du.ss];return dgk&&deep.yearDaeun[dgk]?'<p class="deep-muted">'+esc(r.year+'년은 '+du.ganKr+du.zhiKr+' 대운('+du.ss+') 안에 있어요. '+deep.yearDaeun[dgk])+'</p>':'';})()+'<p class="deep-label">이 해에 해볼 일</p>'+tips(todo)+'</li>';}).join('')+'</ol>');
+ html+=sec('추천 직무','<p class="deep-muted">'+esc(wx)+' 기운을 중심으로 고른 직무예요. 직업 이름보다 "왜 맞는지"를 내 경험과 비교해 보세요.</p>'+(deep.jobs[wx]||[]).map(function(j){return box('',j.name,p(j.why));}).join('')+(domWx!==wx&&deep.jobs[domWx]?'<h4>가장 강한 기운 '+esc(domWx)+'으로 넓혀 보면</h4>'+tips(deep.jobs[domWx].slice(0,3).map(function(j){return j.name+' · '+j.why;})):'')+p(deep.jobsByGroup[g]));
+ html+=sec('10년 커리어 흐름 상세','<p class="deep-muted">해마다 그해 기운이 일터 자리에 닿는 방식을 읽었어요.</p><ol class="deep-years">'+rows.map(function(r){var todo=deep.yearTodo[r.rel]||deep.yearTodo.none;return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'★ ':'')+esc(r.top?careerYearLabel(r):(r.rel==='chong'?'길이 바뀌는 해':CAREER_TOP_LABEL[r.tg]))+'</p>'+p(deep.yearAction[r.rel]||deep.yearAction.none)+p(deep.yearTenGodLong[r.tg])+(function(){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],dgk=du&&SS_GROUP[du.ss];return dgk&&deep.yearDaeun[dgk]?'<p class="deep-muted">'+esc(deep.yearDaeun[dgk])+'</p>':'';})()+'<p class="deep-label">이 해에 해볼 일</p>'+tips(todo)+'</li>';}).join('')+'</ol>');
  if(best)html+=sec('가장 강한 해의 월별 흐름',tops.slice(0,3).map(function(ty,yi){var months=careerMonths(result,ty.year);return '<h4>'+ty.year+'년'+(yi===0?' · 가장 강한 해':yi===1?' · 두 번째로 강한 해':' · 세 번째로 강한 해')+'</h4><p class="deep-muted">★ 표시는 그해에서 가장 좋은 세 달이에요.</p><ol class="deep-months">'+months.map(function(m){return '<li class="'+(m.top?'is-top':'')+'"><b>'+m.month+'월</b><span>'+esc(m.ganKr+m.zhiKr)+'</span><p>'+(m.top?'★ ':'')+esc(deep.monthByRelation[m.rel]||deep.monthByRelation.none)+'</p><p class="deep-muted">'+esc(deep.monthAdvice[m.rel]||deep.monthAdvice.none)+' '+esc(deep.monthTenGod[m.tg]||'')+'</p></li>';}).join('')+'</ol>';}).join(''));
- html+=sec('대운 속 커리어',periods.length?periods.map(function(d,i){var dgk=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear+' '+d.ganKr+d.zhiKr+' ('+d.ss+')',p(deep.daeunDeep[dgk])+p(deep.daeunAdvice[dgk]));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
+ html+=sec('10년 단위로 보는 커리어',periods.length?periods.map(function(d,i){var dgk=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear,p(deep.daeunDeep[dgk])+p(deep.daeunAdvice[dgk]));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
  var cg=deep.changeGuide[wx]||{};
  html+=sec('이직·퇴사 판단 가이드',p(cg.text)+'<div class="deep-two">'+box('good','머물러도 좋은 신호',tips(cg.stay))+box('warn','떠날 때가 된 신호',tips(cg.leave))+'</div>'+(changeYears.length?box('','자리가 움직이기 쉬운 해',p(changeYears.map(function(r){return r.year+'년('+r.ganKr+r.zhiKr+')';}).join(', ')+'은 그해 기운이 일터 자리와 부딪히는 해예요. 이직을 고민 중이라면 이 해를 기준으로 준비 일정을 거꾸로 세워보세요.')):'')+'<h4>움직이기 전 점검</h4>'+tips(deep.changeChecks)+'<h4>면접에서 꼭 물어볼 질문</h4>'+tips(deep.changeAsk[wx]));
- html+=sec('일터 관계 대응법','<p class="deep-muted">일간 '+esc(wx)+' 기운이 일터에서 자주 보이는 반응과, 대신 꺼내볼 말이에요.</p>'+(deep.workScenes[wx]||[]).map(function(c){return box('',c.scene,'<p><span class="deep-label">나의 패턴</span>'+esc(c.pattern)+'</p><p class="deep-say"><span class="deep-label">이렇게 말해보세요</span>'+esc(c.say)+'</p><p class="deep-avoid"><span class="deep-label">피해야 할 말</span>'+esc(deep.sceneAvoid[c.scene]||'')+'</p>');}).join(''));
+ html+=sec('일터 관계 대응법','<p class="deep-muted">'+esc(wx)+' 기운이 일터에서 자주 보이는 반응과, 대신 꺼내볼 말이에요.</p>'+(deep.workScenes[wx]||[]).map(function(c){return box('',c.scene,'<p><span class="deep-label">나의 패턴</span>'+esc(c.pattern)+'</p><p class="deep-say"><span class="deep-label">이렇게 말해보세요</span>'+esc(c.say)+'</p><p class="deep-avoid"><span class="deep-label">피해야 할 말</span>'+esc(deep.sceneAvoid[c.scene]||'')+'</p>');}).join(''));
  var pg=deep.payGuide[strong?'strong':'weak'];
- html+=sec('연봉·보상 협상 가이드',p(pg.text)+p(deep.payByMoney[gods.jaeseong?'has':'none'])+tips(pg.tips)+'<h4>협상 자리에서 꺼낼 문장</h4>'+tips(deep.payScript)+(payYears.length?box('good','보상을 말하기 좋은 해',p(payYears.map(function(r){return r.year+'년';}).join(', ')+'은 천간으로 재성이 들어오는 해예요. 연봉 협상이나 단가 인상을 이 해에 맞춰 준비해 보세요.')):''));
+ html+=sec('연봉·보상 협상 가이드',p(pg.text)+p(deep.payByMoney[gods.jaeseong?'has':'none'])+tips(pg.tips)+'<h4>협상 자리에서 꺼낼 문장</h4>'+tips(deep.payScript)+(payYears.length?box('good','보상을 말하기 좋은 해',p(payYears.map(function(r){return r.year+'년';}).join(', ')+'은 돈과 성과의 기운이 들어오는 해예요. 연봉 협상이나 단가 인상을 이 해에 맞춰 준비해 보세요.')):''));
  var bd=deep.burnoutDeep[wx]||{};
  html+=sec('번아웃 예방과 회복',p(bd.text)+'<div class="deep-two">'+box('warn','이런 신호가 오면 멈추세요',tips(bd.signs))+box('good','당신에게 맞는 회복법',tips(bd.recover))+'</div>');
- html+=sec('커리어 로드맵과 스스로에게 던질 질문','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b>'+p(r.text)+'<p class="deep-note">'+(strong?'신강인 당신에게: ':'신약인 당신에게: ')+esc(strong?r.strong:r.weak)+'</p><p class="deep-label">이 단계의 점검</p>'+tips(deep.roadmapChecks[i])+'</li>';}).join('')+'</ol>'+'<p class="deep-muted">답을 노트에 적어보세요. 같은 질문에 1년 뒤 다시 답하면 내가 얼마나 걸어왔는지 보여요.</p>'+deep.questions.map(function(q){return '<h4>'+esc(q.topic)+'</h4><ol class="deep-q">'+q.items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>';}).join('')+'<h4>'+esc(weakWx)+' 기운이 약한 당신을 위한 질문</h4><ol class="deep-q">'+(deep.customQuestions[weakWx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>');
- html+='<footer class="deep-foot">'+seorimSay('cheer','<p>여기까지예요. 이직이나 큰 결정을 앞두고 다시 열어보세요.</p>')+'<p class="deep-muted">일간·월주·오행 분포·천간 십신·신살·간이 신강약·대운·세운·월운을 바탕으로 한 해석이에요. 출생시간을 모르면 시주는 제외해요. 직업의 적합성이나 이직 결과를 확정하는 해석은 아니에요.</p></footer></div>';
+ html+=sec('커리어 로드맵과 스스로에게 던질 질문','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b>'+p(r.text)+'<p class="deep-note">'+(strong?'내 기운이 센 당신에게: ':'주변 기운이 큰 당신에게: ')+esc(strong?r.strong:r.weak)+'</p><p class="deep-label">이 단계의 점검</p>'+tips(deep.roadmapChecks[i])+'</li>';}).join('')+'</ol>'+'<p class="deep-muted">답을 노트에 적어보세요. 같은 질문에 1년 뒤 다시 답하면 내가 얼마나 걸어왔는지 보여요.</p>'+deep.questions.map(function(q){return '<h4>'+esc(q.topic)+'</h4><ol class="deep-q">'+q.items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>';}).join('')+'<h4>'+esc(weakWx)+' 기운이 약한 당신을 위한 질문</h4><ol class="deep-q">'+(deep.customQuestions[weakWx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>');
+ html+='<footer class="deep-foot">'+seorimSay('cheer','<p>여기까지예요. 이직이나 큰 결정을 앞두고 다시 열어보세요.</p>')+'<p class="deep-muted">입력한 사주를 바탕으로 한 해석이에요. 출생시간을 모르면 그 자리는 빼고 읽어요. 직업의 적합성이나 이직 결과를 확정하는 해석은 아니에요.</p></footer></div>';
  return html;
 }
 function careerFlow(concept,data,result){
@@ -5328,13 +5327,13 @@ function lovePreviewHtml(concept,result,rows){
   sajuHookHtml('love',result,'해랑이 사주에서 먼저 본 것')+freeChapterHtml('love',result)+
   '<figure class="love-free-card">'+loveCardArt(stem)+'<figcaption>당신 마음의 꽃 · <strong>'+esc(LOVE_TITLE[stem]||'')+'</strong></figcaption></figure>'+
   haerangSay('wink','<p>맞죠? 이제 연애하면서 자주 하는 고민들에 하나씩 답해볼게요.</p>')+
-  (first?loveLetter('나 언제쯤 연애할 수 있을까?','listen','찻잔을 들고 이야기를 듣는 해랑','<p>앞으로 10년 중 연애운이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년 기운이 연인 자리 '+esc(dz)+'와 잘 맞아서, <strong>'+esc(loveYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','연인 자리(일지) '+dz+' · 일간 '+stem+'('+result.day.gan+')'):'')+
+  (first?loveLetter('나 언제쯤 연애할 수 있을까?','listen','찻잔을 들고 이야기를 듣는 해랑','<p>앞으로 10년 중 연애운이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년 기운이 연인 자리 '+esc(dz)+'와 잘 맞아서, <strong>'+esc(loveYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','연인 자리 · 타고난 성향'):'')+
   lockedPeekHtml('<section class="spouse-card love-card">'+loveCardArt(stem)+'<p class="reader-kicker">마음의 꽃 카드</p><h2>'+esc(LOVE_TITLE[stem]||'')+'</h2><h3>나는 어떤 연인일까</h3><p>'+esc(LOVE_FREE[stem]||'')+'</p></section>'+loveTimelineHtml(rows,function(r){return esc(loveYearLabel(r));}))+
  '</section>';
 }
 function loveOffer(stage){
  var detail=stage==='detail';
- var benefits=detail?['한눈에 보는 연애 사주 요약표, 일간별 연애 방식, 연인 자리(일지) 심층 분석','십신·오행·신살·신강약으로 읽는 연애 성향과 보완 습관','10년 인연 흐름의 해마다 할 일, 꽃 피는 세 해의 월별 흐름, 대운 속 연애','잘 맞는 띠·일지 궁합 가이드, 연애 상황 6가지 대응법(해볼 말, 피할 말)','연인에게 건네는 나 사용설명서, 이별과 회복, 연애 로드맵과 질문 24개']:['마음의 꽃 카드와 연애 장면 10개로 보는 나의 연애 방식','앞으로 10년의 인연 흐름과 꽃 피는 세 해, 해랑의 처방전','18개 항목 연애 심층 리포트: 연인 자리, 궁합, 상황별 대응법, 나 사용설명서, 이별과 회복'];
+ var benefits=detail?['한눈에 보는 연애 사주 요약표, 나의 연애 방식, 연인 자리 심층 분석','타고난 기운으로 읽는 연애 성향과 보완 습관','10년 인연 흐름의 해마다 할 일, 꽃 피는 세 해의 월별 흐름, 10년 단위로 보는 연애','잘 맞는 띠·일지 궁합 가이드, 연애 상황 6가지 대응법(해볼 말, 피할 말)','연인에게 건네는 나 사용설명서, 이별과 회복, 연애 로드맵과 질문 24개']:['마음의 꽃 카드와 연애 장면 10개로 보는 나의 연애 방식','앞으로 10년의 인연 흐름과 꽃 피는 세 해, 해랑의 처방전','18개 항목 연애 심층 리포트: 연인 자리, 궁합, 상황별 대응법, 나 사용설명서, 이별과 회복'];
  return '<section class="reader-offer marriage-offer love-offer" data-gate="'+stage+'">'+haerangScene(detail?'detail':'lock',detail?'꽃 도감을 펼쳐두고 맞은편 자리를 권하는 해랑':'꽃다발을 등 뒤로 숨기며 웃는 해랑',!detail)+'<p class="reader-kicker">'+(detail?'연애 심층 리포트':'연애 사주 · 해랑')+'</p><h2>'+(detail?'내 연애 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'연애 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 연애 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 function loveStoryHtml(story,result,rows){
@@ -5345,17 +5344,17 @@ function loveStoryHtml(story,result,rows){
  var P=function(t){return '<p>'+esc(t||'')+'</p>';};
  var html='<section class="wolha-talk haerang-talk">'+haerangScene('bouquet-reveal','다 엮은 꽃다발을 내밀어 보여주는 해랑')+
   haerangSay('smile','<p>'+who+' 연애 사주, 다 봤어요. 많이들 물어보는 고민 열 가지로 정리했어요.</p>')+
-  '<section class="spouse-card love-card">'+loveCardArt(stem)+'<p class="reader-kicker">마음의 꽃 카드 · 일간 '+esc(stem+'('+result.day.gan+')')+'</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 연인일까</h3><p>'+esc(card.who||'')+'</p><h3>내 매력</h3><p>'+esc(card.charm||'')+'</p><h3>잘 맞는 연애</h3><p>'+esc(card.fit||'')+'</p><h3>이 꽃을 오래 피우는 법</h3><p>'+esc(card.keep||'')+'</p></section>'+
-  loveLetter('나는 왜 맨날 비슷한 사람만 좋아하지?','attraction','서점에서 같은 책을 집으려던 두 손이 겹치는 장면',P(story.attract[result.day.zhiKr])+P(story.dohwa[hasDohwa?'has':'none']),'연인 자리(일지) '+result.day.zhiKr+'('+result.day.zhi+') · 도화 '+(hasDohwa?'있음':'없음'))+
-  loveLetter('답장 늦으면 왜 이렇게 신경 쓰이지?',loveVarScene('waiting',wx),'답장을 기다리는 장면',P(story.contact[wx]),'일간 오행 '+wx)+
-  loveLetter('나 연애할 때 너무 빠른 편이야, 느린 편이야?','date','해 질 녘 강변을 나란히 걷는 두 사람',P(story.pace[strong?'strong':'weak']),'간이 신강·신약 분류 '+(strong?'신강':'신약'))+
-  loveLetter('좋아한다는 말, 어떻게 꺼내지?',loveVarScene('confession',wx),'마음을 전하는 장면',P(story.express[gods.siksang?'has':'none']),'식상(표현의 기운) '+(gods.siksang?'있음':'드러나지 않음'))+
-  loveLetter('왜 싸울 때마다 똑같은 패턴으로 싸우지?',loveVarScene('conflict',wx),'다투는 장면',P(story.conflict[wx]),'일간 오행 '+wx)+
+  '<section class="spouse-card love-card">'+loveCardArt(stem)+'<p class="reader-kicker">마음의 꽃 카드</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 연인일까</h3><p>'+esc(card.who||'')+'</p><h3>내 매력</h3><p>'+esc(card.charm||'')+'</p><h3>잘 맞는 연애</h3><p>'+esc(card.fit||'')+'</p><h3>이 꽃을 오래 피우는 법</h3><p>'+esc(card.keep||'')+'</p></section>'+
+  loveLetter('나는 왜 맨날 비슷한 사람만 좋아하지?','attraction','서점에서 같은 책을 집으려던 두 손이 겹치는 장면',P(story.attract[result.day.zhiKr])+P(story.dohwa[hasDohwa?'has':'none']),(hasDohwa?'연인 자리 · 도화 있음':'연인 자리'))+
+  loveLetter('답장 늦으면 왜 이렇게 신경 쓰이지?',loveVarScene('waiting',wx),'답장을 기다리는 장면',P(story.contact[wx]),wx+' 기운')+
+  loveLetter('나 연애할 때 너무 빠른 편이야, 느린 편이야?','date','해 질 녘 강변을 나란히 걷는 두 사람',P(story.pace[strong?'strong':'weak']),(strong?'내 기운이 센 편':'주변 기운이 큰 편'))+
+  loveLetter('좋아한다는 말, 어떻게 꺼내지?',loveVarScene('confession',wx),'마음을 전하는 장면',P(story.express[gods.siksang?'has':'none']),'표현의 기운 '+(gods.siksang?'있음':'약함'))+
+  loveLetter('왜 싸울 때마다 똑같은 패턴으로 싸우지?',loveVarScene('conflict',wx),'다투는 장면',P(story.conflict[wx]),wx+' 기운')+
   loveLetter('싸우고 나서 먼저 연락하기 너무 어색해','makeup','커피잔 사이로 손을 맞잡는 두 사람',P(story.makeup[wx]),'')+
   loveLetter('솔로 기간이 길어지니까 좀 불안해','alone','비 오는 창가에 혼자 앉은 장면',P(story.alone[weak]),'가장 약한 기운 '+weak)+
   loveLetter('연애하면서 괜히 불안해질 땐 어떡해?','anxious','엎어둔 휴대폰 위에서 머뭇거리는 손',P(story.anxious[strong?'strong':'weak']),'')+
-  loveLetter('나도 오래가는 연애 할 수 있을까?','everyday','작은 주방에서 함께 요리하는 두 사람',P(story.lasting[gods.gwanseong?'has':'none']),'관성(약속의 기운) '+(gods.gwanseong?'있음':'드러나지 않음'))+
-  loveLetter('그래서 나 언제 연애운 좋아?','future','달력과 지도를 함께 짚으며 계획하는 두 손','<p>앞으로 10년 연애운이에요. ❀ 표시가 있는 세 해가 특히 좋아요.</p>'+loveTimelineHtml(rows,function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return (r.top?'❀ ':'')+esc(r.top?loveYearLabel(r):rel.label);})+tops.map(function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return '<div class="love-year"><p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(loveYearLabel(r))+'</p>'+P(rel.text)+P(story.yearByTenGod[r.tg])+'</div>';}).join('')+(best&&good.length?'<p>'+best.year+'년 중에서도 특히 좋은 달이에요.</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>':''),'연인 자리 '+result.day.zhiKr+' × 그해 지지 · 천간 십신 · 대운');
+  loveLetter('나도 오래가는 연애 할 수 있을까?','everyday','작은 주방에서 함께 요리하는 두 사람',P(story.lasting[gods.gwanseong?'has':'none']),'약속의 기운 '+(gods.gwanseong?'있음':'약함'))+
+  loveLetter('그래서 나 언제 연애운 좋아?','future','달력과 지도를 함께 짚으며 계획하는 두 손','<p>앞으로 10년 연애운이에요. ❀ 표시가 있는 세 해가 특히 좋아요.</p>'+loveTimelineHtml(rows,function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return (r.top?'❀ ':'')+esc(r.top?loveYearLabel(r):rel.label);})+tops.map(function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return '<div class="love-year"><p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(loveYearLabel(r))+'</p>'+P(rel.text)+P(story.yearByTenGod[r.tg])+'</div>';}).join('')+(best&&good.length?'<p>'+best.year+'년 중에서도 특히 좋은 달이에요.</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>':''),'해마다 달라지는 기운');
  html+=haerangScene('flower-gift','노란 프리지어 응원 꽃다발을 건네는 해랑')+haerangSay('cheer','<p>마지막으로 앞으로 10년 큰 흐름 하나만 말할게요.</p>'+(dg&&story.daeunText[dg]?'<p>'+esc(story.daeunText[dg])+'</p>':''))+
   '<section class="love-steps"><p class="love-a-to">이번 주 작은 한 걸음</p><ul class="seorim-steps">'+(story.smallStep[wx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></section>'+
   haerangScene('prescription','리본으로 묶은 카드를 건네는 해랑',true)+
@@ -5379,36 +5378,36 @@ function loveDeepHtml(deep,result,rows){
  var p=function(t){return '<p>'+esc(t||'')+'</p>';};
  var stars=function(s){var k=s>=5?5:s>=4?4:s>=3?3:s>=1?2:1;return '<span class="deep-stars" aria-label="'+k+'점">'+'★★★★★'.slice(0,k)+'<i>'+'★★★★★'.slice(k)+'</i></span>';};
  var html='<div class="deep-report haerang-deep">'+
-  '<header class="deep-head">'+haerangSay('serious','<p>여기부터는 자세한 리포트예요. 궁금한 항목부터 편하게 읽어보세요.</p>')+'<p class="deep-kicker">연애 심층 리포트</p><h2>'+who+'의 연애 사주</h2><p class="deep-sub">18개 항목 · 일간·일지·오행·십신·신살·신강약·대운·세운·월운 기준</p>'+
-  '<ol class="deep-toc">'+['한눈에 보는 연애 사주','나의 연애 방식','연인 자리 심층 분석','연인 자리를 둘러싼 기운','십신으로 보는 연애 성향','기둥별 십신의 연애 의미','오행 균형과 연애','다섯 기운 하나하나','신살로 보는 연애','나의 힘과 연애의 주도권','10년 인연 흐름 상세','꽃 피는 해의 월별 흐름','대운 속 연애','궁합 가이드','연애 상황별 대응법','연인에게 건네는 나 사용설명서','이별과 회복','연애 로드맵과 스스로에게 던질 질문'].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol></header>';
+  '<header class="deep-head">'+haerangSay('serious','<p>여기부터는 자세한 리포트예요. 궁금한 항목부터 편하게 읽어보세요.</p>')+'<p class="deep-kicker">연애 심층 리포트</p><h2>'+who+'의 연애 사주</h2><p class="deep-sub">18개 항목 · 내 사주와 앞으로의 흐름 기준</p>'+
+  '<ol class="deep-toc">'+['한눈에 보는 연애 사주','나의 연애 방식','연인 자리 심층 분석','연인 자리를 둘러싼 기운','내 연애의 다섯 가지 힘','태어난 해·달·시간으로 보는 연애','오행 균형과 연애','다섯 기운 하나하나','타고난 연애 기질','나의 힘과 연애의 주도권','10년 인연 흐름 상세','꽃 피는 해의 월별 흐름','10년 단위로 보는 연애','궁합 가이드','연애 상황별 대응법','연인에게 건네는 나 사용설명서','이별과 회복','연애 로드맵과 스스로에게 던질 질문'].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol></header>';
  html+=sec('한눈에 보는 연애 사주','<dl class="deep-summary">'+
-  '<div><dt>일간 (나)</dt><dd>'+esc(stem+'('+result.day.gan+') · '+wx+' · '+(LOVE_TITLE[stem]||''))+'</dd></div>'+
-  '<div><dt>연인 자리 (일지)</dt><dd>'+esc(zhi+'('+result.day.zhi+') · '+ZHI_ANIMAL[result.day.zhi]+'띠의 자리')+'</dd></div>'+
-  '<div><dt>나의 힘</dt><dd>'+(strong?'신강 · 관계를 이끄는 힘':'신약 · 관계에 스며드는 힘')+'</dd></div>'+
+  '<div><dt>나</dt><dd>'+esc(stem+'('+result.day.gan+') · '+wx+' · '+(LOVE_TITLE[stem]||''))+'</dd></div>'+
+  '<div><dt>연인 자리</dt><dd>'+esc(zhi+'('+result.day.zhi+') · '+ZHI_ANIMAL[result.day.zhi]+'띠의 자리')+'</dd></div>'+
+  '<div><dt>나의 힘</dt><dd>'+(strong?'관계를 이끄는 힘':'관계에 스며드는 힘')+'</dd></div>'+
   '<div><dt>강한 기운 / 약한 기운</dt><dd>'+esc(domWx+' / '+weakWx)+'</dd></div>'+
-  (cur?'<div><dt>지금의 대운</dt><dd>'+esc(cur.startYear+'~'+cur.endYear+' · '+cur.ganKr+cur.zhiKr+' ('+cur.ss+')')+'</dd></div>':'')+
+  (cur?'<div><dt>지금의 10년</dt><dd>'+esc(cur.startYear+'~'+cur.endYear)+'</dd></div>':'')+
   '<div><dt>꽃 피는 해</dt><dd>'+tops.slice().sort(function(a,b){return a.year-b.year;}).map(function(r){return r.year+'년';}).join(' · ')+'</dd></div>'+
-  (mt.liuhe[0]?'<div><dt>가장 잘 맞는 상대 일지</dt><dd>'+esc(zhiTag(mt.liuhe[0]))+'</dd></div>':'')+'</dl>'+
+  (mt.liuhe[0]?'<div><dt>가장 잘 맞는 상대(태어난 날 기준)</dt><dd>'+esc(zhiTag(mt.liuhe[0]))+'</dd></div>':'')+'</dl>'+
   (function(){var bm=best?loveMonths(result,best.year).filter(function(x){return x.top;}).sort(function(x,y){return x.month-y.month;}):[];var hard=rows.filter(function(r){return LOVE_REL_SCORE[r.rel]<0;})[0];return '<h4>핵심 다섯 줄</h4>'+tips([best?'가장 좋은 시기: '+best.year+'년'+(bm.length?' '+bm.map(function(x){return x.month+'월';}).join('·'):'')+', '+loveYearLabel(best)+'예요.':'',zd.pull?'끌리는 사람: '+zd.pull:'',sv.grow?'관계의 열쇠: '+sv.grow:'',ew.tips&&ew.tips[0]?'먼저 바꿀 습관: '+ew.tips[0]:'',hard?'조심할 해: '+hard.year+'년은 '+({xing:'예민해지기 쉬운 해',hai:'오해가 쌓이기 쉬운 해',yuanjin:'거리를 조절할 해'}[hard.rel]||'조심할 해')+'라, 서운함은 그때그때 짧게 나누세요.':'크게 엇갈리는 해가 두드러지지 않아요. 흐름을 믿고 천천히 마음을 나누세요.'].filter(Boolean));})()+'<p class="deep-muted">이 리포트의 모든 해석은 위 요약의 값에서 출발해요. 읽다가 궁금하면 이 표로 돌아와 근거를 확인해보세요.</p>');
- html+=sec('나의 연애 방식 · 일간 '+stem+'('+result.day.gan+')',p(sv.view)+'<h4>사랑을 표현하는 방식</h4>'+p(sv.love)+'<div class="deep-two">'+box('good','연인으로서의 강점',p(sv.strength))+box('warn','조심할 점',p(sv.weak))+'</div>'+box('','성장 포인트',p(sv.grow))+box('','그 사람에게 보여줄 한 줄',p(sv.tip))+box('warn','빠지기 쉬운 연애 함정',p((deep.stemExtra[stem]||{}).trap))+box('good','잘 맞는 연인',p((deep.stemExtra[stem]||{}).partner)));
- html+=sec('연인 자리 심층 분석 · 일지 '+zhi+'('+result.day.zhi+')',p(zd.nature)+'<h4>이런 사람에게 끌려요</h4>'+p(zd.pull)+'<h4>부딪히기 쉬운 지점</h4>'+p(zd.friction)+'<div class="deep-two">'+box('good','관계가 깊어지는 습관',p(zd.fit))+box('warn','주의할 점',p(zd.caution))+'</div>'+box('','만남이 시작되는 장면',p((function(){var a={자:'늦은 밤의 대화, 조용한 카페',축:'일터나 꾸준히 다니는 모임',인:'여행, 운동, 새 프로젝트',묘:'취미 모임, 지인 소개',진:'여러 사람이 모인 자리',사:'배움의 자리, 일로 만난 자리',오:'축제, 공연, 여행',미:'함께 밥 먹는 자리, 동네',신:'토론, 함께 문제를 푸는 자리',유:'취향이 맞는 정돈된 모임',술:'오래 알던 친구나 동료',해:'여행지, 온라인, 낯선 곳'};return '당신의 인연은 '+(a[zhi]||'일상의 자리')+'에서 시작되기 쉬워요. 이런 자리를 일부러 늘려보세요.';})())));
- html+=sec('연인 자리를 둘러싼 기운',palace.length?palace.map(function(x){return box('',x.pos+' '+(ZHI_KR[x.other]||x.other)+' ↔ 일주 '+zhi+' · '+x.label,p(deep.palaceRel[x.rel])+'<p class="deep-muted">'+esc(deep.palacePosition[x.pos])+'</p>');}).join(''):p(deep.palaceNone));
- html+=sec('십신으로 보는 연애 성향','<p class="deep-muted">연·월·시 천간 십신: '+esc([result.yearSS,result.monthSS,result.timeSS].filter(Boolean).join(' · '))+'</p>'+['siksang','jaeseong','gwanseong','inseong','bigyeop'].map(function(k){var t=deep.tenGodPresence[k],has=!!gods[k];return box(has?'good':'',t.title+(has?' · 있음':' · 드러나지 않음'),p(has?t.has:t.none)+tips((deep.tenGodTips[k]||{})[has?'has':'none']));}).join(''));
- html+=sec('기둥별 십신의 연애 의미',[['연주',result.yearSS],['월주',result.monthSS],['시주',result.timeSS]].filter(function(x){return deep.pillarTenGod[x[1]];}).map(function(x){return box('',x[0]+' · '+x[1],p(deep.pillarTenGod[x[1]])+'<p class="deep-muted">'+esc(deep.palacePosition[x[0]]||'')+'</p>');}).join('')||'<p class="deep-muted">출생시간을 몰라 확인할 수 있는 기둥이 적어요.</p>');
+ html+=sec('나의 연애 방식',p(sv.view)+'<h4>사랑을 표현하는 방식</h4>'+p(sv.love)+'<div class="deep-two">'+box('good','연인으로서의 강점',p(sv.strength))+box('warn','조심할 점',p(sv.weak))+'</div>'+box('','성장 포인트',p(sv.grow))+box('','그 사람에게 보여줄 한 줄',p(sv.tip))+box('warn','빠지기 쉬운 연애 함정',p((deep.stemExtra[stem]||{}).trap))+box('good','잘 맞는 연인',p((deep.stemExtra[stem]||{}).partner)));
+ html+=sec('연인 자리 심층 분석',p(zd.nature)+'<h4>이런 사람에게 끌려요</h4>'+p(zd.pull)+'<h4>부딪히기 쉬운 지점</h4>'+p(zd.friction)+'<div class="deep-two">'+box('good','관계가 깊어지는 습관',p(zd.fit))+box('warn','주의할 점',p(zd.caution))+'</div>'+box('','만남이 시작되는 장면',p((function(){var a={자:'늦은 밤의 대화, 조용한 카페',축:'일터나 꾸준히 다니는 모임',인:'여행, 운동, 새 프로젝트',묘:'취미 모임, 지인 소개',진:'여러 사람이 모인 자리',사:'배움의 자리, 일로 만난 자리',오:'축제, 공연, 여행',미:'함께 밥 먹는 자리, 동네',신:'토론, 함께 문제를 푸는 자리',유:'취향이 맞는 정돈된 모임',술:'오래 알던 친구나 동료',해:'여행지, 온라인, 낯선 곳'};return '당신의 인연은 '+(a[zhi]||'일상의 자리')+'에서 시작되기 쉬워요. 이런 자리를 일부러 늘려보세요.';})())));
+ html+=sec('연인 자리를 둘러싼 기운',palace.length?palace.map(function(x){return box('',({연주:'태어난 해',월주:'태어난 달',시주:'태어난 시간'})[x.pos]+' 자리와의 사이',p(deep.palaceRel[x.rel])+'<p class="deep-muted">'+esc(deep.palacePosition[x.pos])+'</p>');}).join(''):p(deep.palaceNone));
+ html+=sec('내 연애의 다섯 가지 힘',['siksang','jaeseong','gwanseong','inseong','bigyeop'].map(function(k){var t=deep.tenGodPresence[k],has=!!gods[k];return box(has?'good':'',t.title,p(has?t.has:t.none)+tips((deep.tenGodTips[k]||{})[has?'has':'none']));}).join(''));
+ html+=sec('태어난 해·달·시간으로 보는 연애',[['연주',result.yearSS],['월주',result.monthSS],['시주',result.timeSS]].filter(function(x){return deep.pillarTenGod[x[1]];}).map(function(x){return box('',({연주:'태어난 해',월주:'태어난 달',시주:'태어난 시간'})[x[0]],p(deep.pillarTenGod[x[1]])+'<p class="deep-muted">'+esc(deep.palacePosition[x[0]]||'')+'</p>');}).join('')||'<p class="deep-muted">출생시간을 몰라 확인할 수 있는 기둥이 적어요.</p>');
  html+=sec('오행 균형과 연애','<h4>가장 강한 기운 · '+esc(domWx)+'</h4>'+p(es.text)+tips(es.tips)+box('good',domWx+' 기운이 살아나는 데이트',tips(deep.dateIdeas[domWx]))+(weakWx!==domWx?'<h4>가장 약한 기운 · '+esc(weakWx)+'</h4>'+p(ew.text)+tips(ew.tips):''));
  html+=sec('다섯 기운 하나하나',['목','화','토','금','수'].map(function(k){var c=Number(result.wxCount[k])||0,t=deep.elementCount[k]||{};return box(c>=3?'good':c===0?'warn':'',k+' '+c+'개',p(c===0?t.none:c>=3?t.many:t.few));}).join(''));
- html+=sec('신살로 보는 연애',['dohwa','yeokma','hwagae'].map(function(k){var t=deep.shinsalText[k],has=(result.shinsal||[]).indexOf(k)>=0;return box(has?'good':'',t.name+(has?' · 있음':' · 없음'),p(has?t.has:t.none));}).join(''));
+ html+=sec('타고난 연애 기질',['dohwa','yeokma','hwagae'].map(function(k){var t=deep.shinsalText[k],has=(result.shinsal||[]).indexOf(k)>=0;return box(has?'good':'',has?t.name:({dohwa:'알아갈수록 깊어지는 매력',yeokma:'가까이에서 쌓이는 인연',hwagae:'어울릴 때 커지는 마음'})[k],p(has?t.has:t.none));}).join(''));
  html+=sec('나의 힘과 연애의 주도권 · '+st.title,p(st.text)+tips(st.tips)+'<h4>연애 단계별로 보면</h4>'+deep.stageType.map(function(w){return box('',w.name,p(strong?w.strong:w.weak));}).join(''));
- html+=sec('10년 인연 흐름 상세','<p class="deep-muted">해마다 그해의 지지가 연인 자리 '+esc(zhi)+'에 닿는 방식과 천간의 십신, 그해가 속한 대운을 함께 읽었어요.</p><ol class="deep-years">'+rows.map(function(r){var todo=deep.yearTodo[r.rel]||deep.yearTodo.none;return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'❀ ':'')+esc(loveYearLabel(r))+'</p>'+p(deep.yearAction[r.rel]||deep.yearAction.none)+p(deep.yearTenGodLong[r.tg])+'<div class="deep-two">'+box('','혼자라면',p(deep.yearSolo[r.rel]||deep.yearSolo.none))+box('','연애 중이라면',p(deep.yearCouple[r.rel]||deep.yearCouple.none))+'</div>'+(function(){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],dgk=du&&SS_GROUP[du.ss];return dgk&&deep.yearDaeun[dgk]?'<p class="deep-muted">'+esc(r.year+'년은 '+du.ganKr+du.zhiKr+' 대운('+du.ss+') 안에 있어요. '+deep.yearDaeun[dgk])+'</p>':'';})()+'<p class="deep-label">이 해에 해볼 일</p>'+tips(todo)+'</li>';}).join('')+'</ol>');
+ html+=sec('10년 인연 흐름 상세','<p class="deep-muted">해마다 그해 기운이 연인 자리에 닿는 방식을 읽었어요.</p><ol class="deep-years">'+rows.map(function(r){var todo=deep.yearTodo[r.rel]||deep.yearTodo.none;return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'❀ ':'')+esc(loveYearLabel(r))+'</p>'+p(deep.yearAction[r.rel]||deep.yearAction.none)+p(deep.yearTenGodLong[r.tg])+'<div class="deep-two">'+box('','혼자라면',p(deep.yearSolo[r.rel]||deep.yearSolo.none))+box('','연애 중이라면',p(deep.yearCouple[r.rel]||deep.yearCouple.none))+'</div>'+(function(){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],dgk=du&&SS_GROUP[du.ss];return dgk&&deep.yearDaeun[dgk]?'<p class="deep-muted">'+esc(deep.yearDaeun[dgk])+'</p>':'';})()+'<p class="deep-label">이 해에 해볼 일</p>'+tips(todo)+'</li>';}).join('')+'</ol>');
  if(best)html+=sec('꽃 피는 해의 월별 흐름',tops.slice(0,3).map(function(ty,yi){var months=loveMonths(result,ty.year);return '<h4>'+ty.year+'년'+(yi===0?' · 가장 크게 피는 해':yi===1?' · 두 번째로 피는 해':' · 세 번째로 피는 해')+'</h4><p class="deep-muted">❀ 표시는 그해에서 가장 좋은 세 달이에요.</p><ol class="deep-months">'+months.map(function(m){return '<li class="'+(m.top?'is-top':'')+'"><b>'+m.month+'월</b><span>'+esc(m.ganKr+m.zhiKr)+'</span><p>'+(m.top?'❀ ':'')+esc(deep.monthByRelation[m.rel]||deep.monthByRelation.none)+'</p><p class="deep-muted">'+esc(deep.monthAdvice[m.rel]||deep.monthAdvice.none)+' '+esc(deep.monthTenGod[m.tg]||'')+'</p></li>';}).join('')+'</ol>';}).join(''));
- html+=sec('대운 속 연애',periods.length?periods.map(function(d,i){var dgk=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear+' '+d.ganKr+d.zhiKr+' ('+d.ss+')',p(deep.daeunDeep[dgk])+p(deep.daeunAdvice[dgk]));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
- html+=sec('궁합 가이드',['liuhe','sanhe','chong','yuanjin'].filter(function(k){return mt[k].length;}).map(function(k){var good=k==='liuhe'||k==='sanhe';return box(good?'good':'warn',(good?'잘 맞는 상대 · ':'조율이 필요한 상대 · ')+mt[k].map(zhiTag).join(', '),p(deep.matchLong[k])+mt[k].map(function(z){var o=deep.zhiDeep[ZHI_KR[z]]||{};return '<p class="deep-partner"><span class="deep-label">그 사람의 일지가 '+esc(ZHI_KR[z]+'('+z+')')+'라면</span>'+esc(o.nature||'')+'</p><p class="deep-muted">그 사람이 끌리는 사람: '+esc(o.pull||'')+'</p><p class="deep-muted">잘 지내려면: '+esc(o.fit||'')+'</p>';}).join(''));}).join('')+'<p class="deep-muted">'+esc(deep.matchNote)+'</p>');
- html+=sec('연애 상황별 대응법','<p class="deep-muted">일간 '+esc(wx)+' 기운이 연애에서 자주 보이는 반응과, 대신 꺼내볼 말이에요.</p>'+(deep.scenes[wx]||[]).map(function(c){return box('',c.scene,'<p><span class="deep-label">나의 패턴</span>'+esc(c.pattern)+'</p><p class="deep-say"><span class="deep-label">이렇게 말해보세요</span>'+esc(c.say)+'</p><p class="deep-avoid"><span class="deep-label">피해야 할 말</span>'+esc(deep.sceneAvoid[c.scene]||'')+'</p>');}).join(''));
- html+=sec('연인에게 건네는 나 사용설명서','<p class="deep-muted">캡처해서 그 사람에게 보여줘도 좋아요.</p>'+box('good','내가 줄 수 있는 사랑 · 일간 '+stem,tips(deep.whatIGive[stem]))+box('','나를 사랑하는 법 · 일지 '+zhi,tips(deep.howToLoveMe[zhi])));
+ html+=sec('10년 단위로 보는 연애',periods.length?periods.map(function(d,i){var dgk=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear,p(deep.daeunDeep[dgk])+p(deep.daeunAdvice[dgk]));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
+ html+=sec('궁합 가이드',['liuhe','sanhe','chong','yuanjin'].filter(function(k){return mt[k].length;}).map(function(k){var good=k==='liuhe'||k==='sanhe';return box(good?'good':'warn',(good?'잘 맞는 상대 · ':'조율이 필요한 상대 · ')+mt[k].map(zhiTag).join(', '),p(deep.matchLong[k])+mt[k].map(function(z){var o=deep.zhiDeep[ZHI_KR[z]]||{};return '<p class="deep-partner"><span class="deep-label">그 사람 태어난 날 글자가 '+esc(ZHI_KR[z]+'('+z+')')+'라면</span>'+esc(o.nature||'')+'</p><p class="deep-muted">그 사람이 끌리는 사람: '+esc(o.pull||'')+'</p><p class="deep-muted">잘 지내려면: '+esc(o.fit||'')+'</p>';}).join(''));}).join('')+'<p class="deep-muted">'+esc(deep.matchNote)+'</p>');
+ html+=sec('연애 상황별 대응법','<p class="deep-muted">'+esc(wx)+' 기운이 연애에서 자주 보이는 반응과, 대신 꺼내볼 말이에요.</p>'+(deep.scenes[wx]||[]).map(function(c){return box('',c.scene,'<p><span class="deep-label">나의 패턴</span>'+esc(c.pattern)+'</p><p class="deep-say"><span class="deep-label">이렇게 말해보세요</span>'+esc(c.say)+'</p><p class="deep-avoid"><span class="deep-label">피해야 할 말</span>'+esc(deep.sceneAvoid[c.scene]||'')+'</p>');}).join(''));
+ html+=sec('연인에게 건네는 나 사용설명서','<p class="deep-muted">캡처해서 그 사람에게 보여줘도 좋아요.</p>'+box('good','내가 줄 수 있는 사랑',tips(deep.whatIGive[stem]))+box('','나를 사랑하는 법',tips(deep.howToLoveMe[zhi])));
  var hd=deep.healDeep[wx]||{};
  html+=sec('이별과 회복',p(hd.text)+'<div class="deep-two">'+box('warn','아직 마음이 아프다는 신호',tips(hd.signs))+box('good','당신에게 맞는 회복법',tips(hd.recover))+'</div>');
- html+=sec('연애 로드맵과 스스로에게 던질 질문','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b>'+p(r.text)+'<p class="deep-note">'+(strong?'신강인 당신에게: ':'신약인 당신에게: ')+esc(strong?r.strong:r.weak)+'</p><p class="deep-label">이 단계의 점검</p>'+tips(deep.roadmapChecks[i])+'</li>';}).join('')+'</ol>'+'<p class="deep-muted">답을 노트에 적어보세요. 연애가 끝나거나 시작될 때 다시 답해보면 내 마음이 어떻게 자랐는지 보여요.</p>'+deep.questions.map(function(q){return '<h4>'+esc(q.topic)+'</h4><ol class="deep-q">'+q.items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>';}).join('')+'<h4>'+esc(weakWx)+' 기운이 약한 당신을 위한 질문</h4><ol class="deep-q">'+(deep.customQuestions[weakWx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>');
- html+='<footer class="deep-foot">'+haerangSay('cheer','<p>여기까지예요. 연애하다 마음이 복잡할 때 다시 열어봐요.</p>')+'<p class="deep-muted">일간·일지·오행 분포·천간 십신·신살·간이 신강약·대운·세운·월운을 바탕으로 한 해석이에요. 출생시간을 모르면 시주는 제외해요. 인연의 결과를 확정하는 해석은 아니에요.</p></footer></div>';
+ html+=sec('연애 로드맵과 스스로에게 던질 질문','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b>'+p(r.text)+'<p class="deep-note">'+(strong?'내 기운이 센 당신에게: ':'주변 기운이 큰 당신에게: ')+esc(strong?r.strong:r.weak)+'</p><p class="deep-label">이 단계의 점검</p>'+tips(deep.roadmapChecks[i])+'</li>';}).join('')+'</ol>'+'<p class="deep-muted">답을 노트에 적어보세요. 연애가 끝나거나 시작될 때 다시 답해보면 내 마음이 어떻게 자랐는지 보여요.</p>'+deep.questions.map(function(q){return '<h4>'+esc(q.topic)+'</h4><ol class="deep-q">'+q.items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>';}).join('')+'<h4>'+esc(weakWx)+' 기운이 약한 당신을 위한 질문</h4><ol class="deep-q">'+(deep.customQuestions[weakWx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>');
+ html+='<footer class="deep-foot">'+haerangSay('cheer','<p>여기까지예요. 연애하다 마음이 복잡할 때 다시 열어봐요.</p>')+'<p class="deep-muted">입력한 사주를 바탕으로 한 해석이에요. 출생시간을 모르면 그 자리는 빼고 읽어요. 인연의 결과를 확정하는 해석은 아니에요.</p></footer></div>';
  return html;
 }
 function loveFlow(concept,data,result){
@@ -5524,7 +5523,7 @@ function marriagePreviewHtml(concept,result,rows){
   wolhaSay('smile','<p>'+who+', 어서 오세요. 결혼 이야기 보러 오셨죠.</p><p>먼저 사주로 본 당신 모습부터 몇 가지 말씀드릴게요.</p>')+
   sajuHookHtml('marriage',result,'월하가 사주에서 먼저 본 것')+freeChapterHtml('marriage',result)+
   wolhaScene('intro','엉킨 붉은 실타래를 살펴보는 월하')+
-  wolhaSay('thinking','<p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><p class="wolha-basis">일지(배우자 자리) '+esc(zhiLabel)+' · 일간 '+esc(result.day.ganKr)+'('+esc(result.dayGanWx)+')</p>')+
+  wolhaSay('thinking','<p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><p class="wolha-basis">내 사주의 배우자 자리 기준</p>')+
   (first?wolhaSay('smile','<p>앞으로 10년 중 결혼운이 가장 먼저 좋아지는 해는 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년의 기운이 배우자 자리 '+esc(zhiLabel)+'에 닿는, <strong>'+esc(marriageYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div><p class="hint">앞으로 10년 중 특히 좋은 해는 세 번이에요.</p>'):'')+
   wolhaSay('surprised','<p>당신과 잘 맞는 배우자 유형은 <strong>「'+esc(SPOUSE_STAR[zhi]||'')+'」</strong>이에요. 구체적으로 어떤 사람인지는 이어서 말씀드릴게요.</p>')+
   lockedPeekHtml('<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드</p><h2>'+esc(SPOUSE_STAR[zhi]||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><h3>만나기 쉬운 자리</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p></section><section class="marriage-timeline"><ol>'+rows.map(function(r,i){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+esc(marriageYearLabel(r))+'</p></div></li>';}).join('')+'</ol></section>')+
@@ -5534,7 +5533,7 @@ function marriageStoryHtml(story,result,rows){
  var zhi=result.day.zhiKr,card=story.spouseCards[zhi]||{},dg=currentDaeunGroup(result),who=marriageCallName(result);
  var html='<section class="wolha-talk thread-talk">'+wolhaScene('thread-end','밤하늘로 뻗은 붉은 실 끝을 올려다보는 월하')+
   wolhaSay('smile','<p>그럼 시작할게요. 먼저 '+who+'과 잘 맞는 배우자부터요.</p>')+
-  '<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드 · 일지 '+esc(zhi+'('+result.day.zhi+')')+'</p><h2>'+esc(card.star||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(card.who||'')+'</p><h3>만나기 쉬운 자리</h3><p>'+esc(card.meet||'')+'</p><h3>오래가는 비결</h3><p>'+esc(card.keep||'')+'</p></section>'+
+  '<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드</p><h2>'+esc(card.star||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(card.who||'')+'</p><h3>만나기 쉬운 자리</h3><p>'+esc(card.meet||'')+'</p><h3>오래가는 비결</h3><p>'+esc(card.keep||'')+'</p></section>'+
   wolhaScene('timeline','열 개의 매듭 중 세 개가 빛나는 붉은 실')+
   wolhaSay('smile','<p>앞으로 10년 결혼운이에요. ★ 표시가 있는 세 해가 특히 좋아요.</p>');
  html+='<section class="marriage-timeline"><ol>'+rows.map(function(r){
@@ -5550,7 +5549,7 @@ function marriageStoryHtml(story,result,rows){
 }
 function marriageOffer(stage){
  var detail=stage==='detail';
- var benefits=detail?['한눈에 보는 결혼 사주 요약표, 일간별 결혼관, 배우자 자리 심층 분석','십신·오행·신강약으로 읽는 나의 결혼 성향과 보완 습관','10년 연도별 할 일, 가장 강한 해의 월별 흐름, 대운 속 결혼','신혼 1·5·10년차 미리보기, 잘 맞는 띠·일지 궁합 가이드','갈등 상황 6가지 대응법(나의 패턴, 해볼 말, 피해야 할 말)','결혼 준비 5단계 로드맵과 결혼 전 함께 나눌 질문 20개']:['배우자 별 카드와 앞으로 10년의 결혼 흐름, 가장 크게 빛나는 세 해','함께 살 때의 모습: 다툼, 돈, 양가 가족, 바로 쓸 대화, 체크리스트','18개 항목 결혼 심층 리포트: 배우자 자리, 궁합, 갈등 대응법, 결혼 준비 로드맵, 질문 20개'];
+ var benefits=detail?['한눈에 보는 결혼 사주 요약표, 나의 결혼관, 배우자 자리 심층 분석','타고난 기운으로 읽는 나의 결혼 성향과 보완 습관','10년 연도별 할 일, 가장 강한 해의 월별 흐름, 10년 단위로 보는 결혼','신혼 1·5·10년차 미리보기, 잘 맞는 띠·일지 궁합 가이드','갈등 상황 6가지 대응법(나의 패턴, 해볼 말, 피해야 할 말)','결혼 준비 5단계 로드맵과 결혼 전 함께 나눌 질문 20개']:['배우자 별 카드와 앞으로 10년의 결혼 흐름, 가장 크게 빛나는 세 해','함께 살 때의 모습: 다툼, 돈, 양가 가족, 바로 쓸 대화, 체크리스트','18개 항목 결혼 심층 리포트: 배우자 자리, 궁합, 갈등 대응법, 결혼 준비 로드맵, 질문 20개'];
  return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하')+'</p><h2>'+(detail?'내 결혼 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'결혼 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 결혼 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 /* 결혼 사주 계산 보조: 월별 흐름, 궁합 짝, 십신 묶음 */
@@ -5581,9 +5580,9 @@ function marriageLifeHtml(story,result,rows){
  var mt=marriageMatches(result),pair=mt.liuhe[0];
  return '<section class="wolha-talk thread-talk">'+
   (best&&good.length?wolhaSay('surprised','<p>가장 좋은 <strong class="wolha-year">'+best.year+'년</strong> 중에서도 특히 좋은 달이에요.</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>'):'')+
-  (pair?wolhaSay('wink','<p>궁합도 하나 알려드릴게요. 상대의 일지가 <strong>'+esc(zhiTag(pair))+'</strong>라면 말하지 않아도 통하는 게 많을 거예요.</p>'):'')+
+  (pair?wolhaSay('wink','<p>궁합도 하나 알려드릴게요. 상대 태어난 날 글자가 <strong>'+esc(zhiTag(pair))+'</strong>라면 말하지 않아도 통하는 게 많을 거예요.</p>'):'')+
   wolhaScene('detail','찻잔 두 개를 붉은 실로 잇는 월하')+
-  wolhaSay('smile','<p>이제 결혼한 뒤의 생활 이야기를 해볼게요.</p><p class="wolha-basis">일간 '+esc(result.day.ganKr)+'('+esc(wx)+') · 간이 신강·신약 분류 기준</p>')+
+  wolhaSay('smile','<p>이제 결혼한 뒤의 생활 이야기를 해볼게요.</p><p class="wolha-basis">내 사주 기준</p>')+
   '<h3 class="wolha-topic">다툼이 생겼을 때</h3>'+wolhaScene('detail-conflict','팽팽한 실을 느슨하게 풀어주는 월하')+wolhaSay('worried','<p>'+esc(d.conflict||'')+'</p>')+
   '<h3 class="wolha-topic">돈을 함께 관리할 때</h3>'+wolhaScene('detail-money','붉은 실로 묶인 동전 꾸러미')+wolhaSay('smile','<p>'+esc(d.money||'')+'</p>')+
   '<h3 class="wolha-topic">양가 가족과의 거리</h3>'+wolhaScene('detail-family','두 한옥 사이를 잇는 붉은 실')+wolhaSay('thinking','<p>'+esc(d.family||'')+'</p>')+
@@ -5609,39 +5608,39 @@ function marriageDeepHtml(deep,result,rows){
  var p=function(t){return '<p>'+esc(t||'')+'</p>';};
  var stars=function(s){var k=s>=5?5:s>=4?4:s>=3?3:s>=1?2:1;return '<span class="deep-stars" aria-label="'+k+'점">'+'★★★★★'.slice(0,k)+'<i>'+'★★★★★'.slice(k)+'</i></span>';};
  var html='<div class="deep-report">'+
-  '<header class="deep-head">'+wolhaSay('serious','<p>여기부터는 자세한 리포트예요. 필요한 항목부터 읽어보세요.</p>')+'<p class="deep-kicker">결혼 심층 리포트</p><h2>'+who+'의 결혼 사주</h2><p class="deep-sub">18개 항목 · 일간·일지·오행·십신·신강약·대운·세운·월운 기준</p>'+
-  '<ol class="deep-toc">'+['한눈에 보는 결혼 사주','나의 결혼관','배우자 자리 심층 분석','배우자 자리를 둘러싼 기운','십신으로 보는 관계 성향','기둥별 십신의 결혼 의미','오행 균형과 결혼 생활','신살로 보는 관계','나의 힘과 관계의 주도권','결혼 생활 미리보기','10년 결혼 흐름 상세','가장 강한 해의 월별 흐름','대운 속 결혼','궁합 가이드','갈등 상황별 대응법','배우자에게 건네는 사용설명서','결혼 준비 로드맵','결혼 전 함께 나눌 질문'].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol></header>';
+  '<header class="deep-head">'+wolhaSay('serious','<p>여기부터는 자세한 리포트예요. 필요한 항목부터 읽어보세요.</p>')+'<p class="deep-kicker">결혼 심층 리포트</p><h2>'+who+'의 결혼 사주</h2><p class="deep-sub">18개 항목 · 내 사주와 앞으로의 흐름 기준</p>'+
+  '<ol class="deep-toc">'+['한눈에 보는 결혼 사주','나의 결혼관','배우자 자리 심층 분석','배우자 자리를 둘러싼 기운','내 결혼의 다섯 가지 힘','태어난 해·달·시간으로 보는 결혼','오행 균형과 결혼 생활','타고난 관계 기질','나의 힘과 관계의 주도권','결혼 생활 미리보기','10년 결혼 흐름 상세','가장 강한 해의 월별 흐름','10년 단위로 보는 결혼','궁합 가이드','갈등 상황별 대응법','배우자에게 건네는 사용설명서','결혼 준비 로드맵','결혼 전 함께 나눌 질문'].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol></header>';
  html+=sec('한눈에 보는 결혼 사주','<dl class="deep-summary">'+
-  '<div><dt>일간 (나)</dt><dd>'+esc(result.day.ganKr+'('+result.day.gan+') · '+wx)+'</dd></div>'+
-  '<div><dt>배우자 자리 (일지)</dt><dd>'+esc(zhi+'('+result.day.zhi+') · '+(SPOUSE_STAR[zhi]||''))+'</dd></div>'+
-  '<div><dt>나의 힘</dt><dd>'+(strong?'신강 · 주도하는 힘이 강함':'신약 · 어우러지는 힘이 큼')+'</dd></div>'+
+  '<div><dt>나</dt><dd>'+esc(result.day.ganKr+'('+result.day.gan+') · '+wx)+'</dd></div>'+
+  '<div><dt>배우자 자리</dt><dd>'+esc(zhi+'('+result.day.zhi+') · '+(SPOUSE_STAR[zhi]||''))+'</dd></div>'+
+  '<div><dt>나의 힘</dt><dd>'+(strong?'주도하는 힘이 강함':'어우러지는 힘이 큼')+'</dd></div>'+
   '<div><dt>강한 기운 / 약한 기운</dt><dd>'+esc(domWx+' / '+weakWx)+'</dd></div>'+
-  (cur?'<div><dt>지금의 대운</dt><dd>'+esc(cur.startYear+'~'+cur.endYear+' · '+cur.ganKr+cur.zhiKr+' ('+cur.ss+')')+'</dd></div>':'')+
+  (cur?'<div><dt>지금의 10년</dt><dd>'+esc(cur.startYear+'~'+cur.endYear)+'</dd></div>':'')+
   '<div><dt>결혼 흐름이 강한 해</dt><dd>'+tops.slice().sort(function(a,b){return a.year-b.year;}).map(function(r){return r.year+'년';}).join(' · ')+'</dd></div>'+
-  (mt.liuhe[0]?'<div><dt>가장 잘 맞는 상대 일지</dt><dd>'+esc(zhiTag(mt.liuhe[0]))+'</dd></div>':'')+'</dl>'+
-  (function(){var bm=best?marriageMonths(result,best.year).filter(function(x){return x.top;}).sort(function(x,y){return x.month-y.month;}):[];var hard=rows.filter(function(r){return MARRIAGE_REL_SCORE[r.rel]<0;})[0];return '<h4>핵심 다섯 줄</h4>'+tips([best?'가장 좋은 시기: '+best.year+'년'+(bm.length?' '+bm.map(function(x){return x.month+'월';}).join('·'):'')+', '+marriageYearLabel(best)+'예요.':'',mt.liuhe[0]?'가장 잘 맞는 상대: 일지가 '+zhiTag(mt.liuhe[0])+'인 사람과 말하지 않아도 통하는 게 많아요.':'',sv.grow?'관계의 열쇠: '+sv.grow:'',ew.tips&&ew.tips[0]?'먼저 바꿀 습관: '+ew.tips[0]:'',hard?'조심할 해: '+hard.year+'년은 '+marriageYearLabel(hard)+'라, 중요한 결정은 대화를 충분히 나눈 뒤에 내리세요.':'큰 갈등의 해가 두드러지지 않아요. 흐름을 믿고 차근차근 준비하세요.'].filter(Boolean));})()+'<p class="deep-muted">이 리포트의 모든 해석은 위 요약의 값에서 출발해요. 읽다가 궁금한 부분이 생기면 이 표로 돌아와 근거를 확인해보세요.</p>');
- html+=sec('나의 결혼관 · 일간 '+result.day.ganKr+'('+result.day.gan+')',p(sv.view)+'<h4>사랑을 표현하는 방식</h4>'+p(sv.love)+'<div class="deep-two">'+box('good','배우자로서의 강점',p(sv.strength))+box('warn','조심할 점',p(sv.weak))+'</div>'+box('','성장 포인트',p(sv.grow)));
+  (mt.liuhe[0]?'<div><dt>가장 잘 맞는 상대(태어난 날 기준)</dt><dd>'+esc(zhiTag(mt.liuhe[0]))+'</dd></div>':'')+'</dl>'+
+  (function(){var bm=best?marriageMonths(result,best.year).filter(function(x){return x.top;}).sort(function(x,y){return x.month-y.month;}):[];var hard=rows.filter(function(r){return MARRIAGE_REL_SCORE[r.rel]<0;})[0];return '<h4>핵심 다섯 줄</h4>'+tips([best?'가장 좋은 시기: '+best.year+'년'+(bm.length?' '+bm.map(function(x){return x.month+'월';}).join('·'):'')+', '+marriageYearLabel(best)+'예요.':'',mt.liuhe[0]?'가장 잘 맞는 상대: 태어난 날 글자가 '+zhiTag(mt.liuhe[0])+'인 사람과 말하지 않아도 통하는 게 많아요.':'',sv.grow?'관계의 열쇠: '+sv.grow:'',ew.tips&&ew.tips[0]?'먼저 바꿀 습관: '+ew.tips[0]:'',hard?'조심할 해: '+hard.year+'년은 '+marriageYearLabel(hard)+'라, 중요한 결정은 대화를 충분히 나눈 뒤에 내리세요.':'큰 갈등의 해가 두드러지지 않아요. 흐름을 믿고 차근차근 준비하세요.'].filter(Boolean));})()+'<p class="deep-muted">이 리포트의 모든 해석은 위 요약의 값에서 출발해요. 읽다가 궁금한 부분이 생기면 이 표로 돌아와 근거를 확인해보세요.</p>');
+ html+=sec('나의 결혼관',p(sv.view)+'<h4>사랑을 표현하는 방식</h4>'+p(sv.love)+'<div class="deep-two">'+box('good','배우자로서의 강점',p(sv.strength))+box('warn','조심할 점',p(sv.weak))+'</div>'+box('','성장 포인트',p(sv.grow)));
  html+=sec('배우자 자리 심층 분석',(SPOUSE_ART[zhi]?'<div class="deep-card-art">'+spouseArtHtml(zhi)+'</div>':'')+p(sd.nature)+
   '<h4>함께 사는 모습</h4>'+p(sd.daily)+'<h4>이런 사람에게 끌려요</h4>'+p(sd.pull)+'<h4>부딪히기 쉬운 지점</h4>'+p(sd.friction)+
   '<h4>연애할 때</h4>'+p(ps.dating)+'<h4>결혼 초기</h4>'+p(ps.early)+'<h4>오래 함께한 뒤</h4>'+p(ps.later)+
   box('good','사랑을 느끼는 순간',p(ps.loveLang))+box('warn','서운해지는 순간',p(ps.hurt))+box('','마음이 풀리는 방법',p(ps.heal))+
   '<div class="deep-two">'+box('good','잘 맞는 상대',p(sd.fit))+box('warn','주의할 상대',p(sd.caution))+'</div>');
- html+=sec('배우자 자리를 둘러싼 기운',palace.length?palace.map(function(x){return box('',x.pos+' '+(ZHI_KR[x.other]||x.other)+' ↔ 일주 '+zhi+' · '+x.label,p(deep.palaceRel[x.rel])+'<p class="deep-muted">'+esc(deep.palacePosition[x.pos])+'</p>');}).join(''):p(deep.palaceNone));
- html+=sec('십신으로 보는 관계 성향','<p class="deep-muted">연·월·시 천간 십신: '+esc([result.yearSS,result.monthSS,result.timeSS].filter(Boolean).join(' · '))+'</p>'+['jaeseong','gwanseong','siksang','inseong','bigyeop'].map(function(k){var t=deep.tenGodPresence[k],has=!!gods[k];return box(has?'good':'',t.title+(has?' · 있음':' · 드러나지 않음'),p(has?t.has:t.none)+tips((deep.tenGodTips[k]||{})[has?'has':'none']));}).join(''));
- html+=sec('기둥별 십신의 결혼 의미',[['연주',result.yearSS],['월주',result.monthSS],['시주',result.timeSS]].filter(function(x){return deep.pillarTenGod[x[1]];}).map(function(x){return box('',x[0]+' · '+x[1],p(deep.pillarTenGod[x[1]])+'<p class="deep-muted">'+esc(deep.palacePosition[x[0]]||'')+'</p>');}).join('')||'<p class="deep-muted">출생시간을 몰라 확인할 수 있는 기둥이 적어요.</p>');
+ html+=sec('배우자 자리를 둘러싼 기운',palace.length?palace.map(function(x){return box('',({연주:'태어난 해',월주:'태어난 달',시주:'태어난 시간'})[x.pos]+' 자리와의 사이',p(deep.palaceRel[x.rel])+'<p class="deep-muted">'+esc(deep.palacePosition[x.pos])+'</p>');}).join(''):p(deep.palaceNone));
+ html+=sec('내 결혼의 다섯 가지 힘',['jaeseong','gwanseong','siksang','inseong','bigyeop'].map(function(k){var t=deep.tenGodPresence[k],has=!!gods[k];return box(has?'good':'',t.title,p(has?t.has:t.none)+tips((deep.tenGodTips[k]||{})[has?'has':'none']));}).join(''));
+ html+=sec('태어난 해·달·시간으로 보는 결혼',[['연주',result.yearSS],['월주',result.monthSS],['시주',result.timeSS]].filter(function(x){return deep.pillarTenGod[x[1]];}).map(function(x){return box('',({연주:'태어난 해',월주:'태어난 달',시주:'태어난 시간'})[x[0]],p(deep.pillarTenGod[x[1]])+'<p class="deep-muted">'+esc(deep.palacePosition[x[0]]||'')+'</p>');}).join('')||'<p class="deep-muted">출생시간을 몰라 확인할 수 있는 기둥이 적어요.</p>');
  html+=sec('오행 균형과 결혼 생활','<h4>가장 강한 기운 · '+esc(domWx)+'</h4>'+p(es.text)+p((deep.elementPattern.strong||{})[domWx])+tips(es.tips)+(weakWx!==domWx?'<h4>가장 약한 기운 · '+esc(weakWx)+'</h4>'+p(ew.text)+p((deep.elementPattern.weak||{})[weakWx])+tips(ew.tips):'')+'<h4>다섯 기운 하나하나</h4>'+['목','화','토','금','수'].map(function(k){var c=Number(result.wxCount[k])||0,t=deep.elementCount[k]||{};return box(c>=3?'good':c===0?'warn':'',k+' '+c+'개',p(c===0?t.none:c>=3?t.many:t.few));}).join(''));
- html+=sec('신살로 보는 관계',['dohwa','yeokma','hwagae'].map(function(k){var t=deep.shinsalText[k],has=(result.shinsal||[]).indexOf(k)>=0;return box(has?'good':'',t.name+(has?' · 있음':' · 없음'),p(has?t.has:t.none));}).join(''));
+ html+=sec('타고난 관계 기질',['dohwa','yeokma','hwagae'].map(function(k){var t=deep.shinsalText[k],has=(result.shinsal||[]).indexOf(k)>=0;return box(has?'good':'',has?t.name:({dohwa:'시간이 쌓일수록 깊어지는 인연',yeokma:'뿌리내리는 생활',hwagae:'함께할 때 편안한 사람'})[k],p(has?t.has:t.none));}).join(''));
  html+=sec('나의 힘과 관계의 주도권 · '+st.title,p(st.text)+tips(st.tips));
- html+=sec('결혼 생활 미리보기','<p class="deep-muted">일간 '+esc(wx)+' 기운의 흐름으로 본 결혼 생활의 시기별 모습이에요.</p>'+(deep.marriedLife[wx]||[]).map(function(x){return box('',x.when,p(x.text));}).join(''));
- html+=sec('10년 결혼 흐름 상세','<ol class="deep-years">'+rows.map(function(r){var todo=deep.yearTodo[r.rel]||deep.yearTodo.none;return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'★ ':'')+esc(marriageYearLabel(r))+'</p>'+p(deep.yearAction[r.rel]||deep.yearAction.none)+p(deep.yearTenGodLong[r.tg])+'<div class="deep-two">'+box('','아직 상대가 없다면',p(deep.yearSingle[r.rel]||deep.yearSingle.none))+box('','만나는 사람이 있다면',p(deep.yearDating[r.rel]||deep.yearDating.none))+'</div>'+(function(){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],g=du&&SS_GROUP[du.ss];return g&&deep.yearDaeun[g]?'<p class="deep-muted">'+esc(r.year+'년은 '+du.ganKr+du.zhiKr+' 대운('+du.ss+') 안에 있어요. '+deep.yearDaeun[g])+'</p>':'';})()+'<p class="deep-label">이 해에 해볼 일</p>'+tips(todo)+'</li>';}).join('')+'</ol>');
+ html+=sec('결혼 생활 미리보기','<p class="deep-muted">'+esc(wx)+' 기운의 흐름으로 본 결혼 생활의 시기별 모습이에요.</p>'+(deep.marriedLife[wx]||[]).map(function(x){return box('',x.when,p(x.text));}).join(''));
+ html+=sec('10년 결혼 흐름 상세','<ol class="deep-years">'+rows.map(function(r){var todo=deep.yearTodo[r.rel]||deep.yearTodo.none;return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'★ ':'')+esc(marriageYearLabel(r))+'</p>'+p(deep.yearAction[r.rel]||deep.yearAction.none)+p(deep.yearTenGodLong[r.tg])+'<div class="deep-two">'+box('','아직 상대가 없다면',p(deep.yearSingle[r.rel]||deep.yearSingle.none))+box('','만나는 사람이 있다면',p(deep.yearDating[r.rel]||deep.yearDating.none))+'</div>'+(function(){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],g=du&&SS_GROUP[du.ss];return g&&deep.yearDaeun[g]?'<p class="deep-muted">'+esc(deep.yearDaeun[g])+'</p>':'';})()+'<p class="deep-label">이 해에 해볼 일</p>'+tips(todo)+'</li>';}).join('')+'</ol>');
  if(best){var monthYears=tops.slice(0,2);html+=sec('가장 강한 해의 월별 흐름',monthYears.map(function(ty,yi){var months=marriageMonths(result,ty.year);return '<h4>'+ty.year+'년'+(yi===0?' · 가장 강한 해':' · 두 번째로 강한 해')+'</h4><p class="deep-muted">★ 표시는 그해에서 가장 좋은 세 달이에요.</p><ol class="deep-months">'+months.map(function(m){return '<li class="'+(m.top?'is-top':'')+'"><b>'+m.month+'월</b><span>'+esc(m.ganKr+m.zhiKr)+'</span><p>'+(m.top?'★ ':'')+esc(deep.monthByRelation[m.rel]||deep.monthByRelation.none)+'</p><p class="deep-muted">'+esc(deep.monthAdvice[m.rel]||deep.monthAdvice.none)+' '+esc(deep.monthTenGod[m.tg]||'')+'</p></li>';}).join('')+'</ol>';}).join(''));}
- html+=sec('대운 속 결혼',periods.length?periods.map(function(d,i){var g=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear+' '+d.ganKr+d.zhiKr+' ('+d.ss+')',p(deep.daeunDeep[g])+p(deep.daeunAdvice[g]));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
- html+=sec('궁합 가이드',['liuhe','sanhe','chong','yuanjin'].filter(function(k){return mt[k].length;}).map(function(k){var good=k==='liuhe'||k==='sanhe';return box(good?'good':'warn',(good?'잘 맞는 상대 · ':'조율이 필요한 상대 · ')+mt[k].map(zhiTag).join(', '),p(deep.matchLong[k])+mt[k].map(function(z){var o=deep.spouseDeep[ZHI_KR[z]]||{};return '<p class="deep-partner"><span class="deep-label">상대의 일지가 '+esc(ZHI_KR[z]+'('+z+')')+'라면</span>'+esc(o.daily||'')+'</p><p class="deep-muted">끌림: '+esc(o.pull||'')+'</p><p class="deep-muted">부딪히는 지점: '+esc(o.friction||'')+'</p><p class="deep-muted">이 사람과 잘 지내려면: '+esc(o.fit||'')+'</p>';}).join(''));}).join('')+'<p class="deep-muted">'+esc(deep.matchNote)+'</p>');
+ html+=sec('10년 단위로 보는 결혼',periods.length?periods.map(function(d,i){var g=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear,p(deep.daeunDeep[g])+p(deep.daeunAdvice[g]));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
+ html+=sec('궁합 가이드',['liuhe','sanhe','chong','yuanjin'].filter(function(k){return mt[k].length;}).map(function(k){var good=k==='liuhe'||k==='sanhe';return box(good?'good':'warn',(good?'잘 맞는 상대 · ':'조율이 필요한 상대 · ')+mt[k].map(zhiTag).join(', '),p(deep.matchLong[k])+mt[k].map(function(z){var o=deep.spouseDeep[ZHI_KR[z]]||{};return '<p class="deep-partner"><span class="deep-label">상대 태어난 날 글자가 '+esc(ZHI_KR[z]+'('+z+')')+'라면</span>'+esc(o.daily||'')+'</p><p class="deep-muted">끌림: '+esc(o.pull||'')+'</p><p class="deep-muted">부딪히는 지점: '+esc(o.friction||'')+'</p><p class="deep-muted">이 사람과 잘 지내려면: '+esc(o.fit||'')+'</p>';}).join(''));}).join('')+'<p class="deep-muted">'+esc(deep.matchNote)+'</p>');
  html+=sec('갈등 상황별 대응법',p(deep.conflictWhy[wx])+(deep.conflictGuide[wx]||[]).map(function(c){return box('',c.scene,'<p><span class="deep-label">나의 패턴</span>'+esc(c.pattern)+'</p><p class="deep-say"><span class="deep-label">이렇게 말해보세요</span>'+esc(c.say)+'</p><p class="deep-avoid"><span class="deep-label">피해야 할 말</span>'+esc(deep.conflictAvoid[c.scene]||'')+'</p>');}).join(''));
- html+=sec('배우자에게 건네는 사용설명서','<p class="deep-muted">캡처해서 배우자나 연인에게 보여줘도 좋아요.</p>'+box('good','내가 줄 수 있는 사랑 · 일간 '+result.day.ganKr,tips(deep.whatIGive[result.day.ganKr]))+box('','나를 사랑하는 법 · 일지 '+zhi,tips(deep.howToLoveMe[zhi])));
- html+=sec('결혼 준비 로드맵','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b>'+p(r.text)+'<p class="deep-note">'+(strong?'신강인 당신에게: ':'신약인 당신에게: ')+esc(strong?r.strong:r.weak)+'</p><p class="deep-label">이 단계의 점검</p>'+tips(deep.roadmapChecks[i])+'</li>';}).join('')+'</ol>');
+ html+=sec('배우자에게 건네는 사용설명서','<p class="deep-muted">캡처해서 배우자나 연인에게 보여줘도 좋아요.</p>'+box('good','내가 줄 수 있는 사랑',tips(deep.whatIGive[result.day.ganKr]))+box('','나를 사랑하는 법',tips(deep.howToLoveMe[zhi])));
+ html+=sec('결혼 준비 로드맵','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b>'+p(r.text)+'<p class="deep-note">'+(strong?'내 기운이 센 당신에게: ':'주변 기운이 큰 당신에게: ')+esc(strong?r.strong:r.weak)+'</p><p class="deep-label">이 단계의 점검</p>'+tips(deep.roadmapChecks[i])+'</li>';}).join('')+'</ol>');
  html+=sec('결혼 전 함께 나눌 질문','<p class="deep-muted">둘이 함께 소리 내어 읽어보세요. 정답보다 서로의 답이 어떻게 다른지가 중요해요.</p>'+deep.questions.map(function(q){return '<h4>'+esc(q.topic)+'</h4><ol class="deep-q">'+q.items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>';}).join('')+'<h4>'+esc(weakWx)+' 기운이 약한 당신을 위한 질문</h4><ol class="deep-q">'+(deep.customQuestions[weakWx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>');
- html+='<footer class="deep-foot">'+wolhaSay('cheer','<p>여기까지예요. 결혼을 앞두고 마음이 흔들릴 때 다시 읽어보세요.</p>')+'<p class="deep-muted">일간·일지·오행 분포·천간 십신·간이 신강약·대운·세운·월운을 바탕으로 한 해석이에요. 출생시간을 모르면 시주는 제외해요.</p></footer></div>';
+ html+='<footer class="deep-foot">'+wolhaSay('cheer','<p>여기까지예요. 결혼을 앞두고 마음이 흔들릴 때 다시 읽어보세요.</p>')+'<p class="deep-muted">입력한 사주를 바탕으로 한 해석이에요. 출생시간을 모르면 그 자리는 빼고 읽어요.</p></footer></div>';
  return html;
 }
 function marriageFlow(concept,data,result){
@@ -5665,7 +5664,7 @@ var HOOK_WEALTH={
  strength:{strong:'돈 문제는 결국 내가 결정해야 마음이 놓여요.',weak:'큰돈 쓸 땐 누군가에게 꼭 한 번 물어보고 싶어져요.'}
 };
 var WEALTH_INCOME_NAME={salary:'월급형',business:'사업·기회형',skill:'재능형',build:'기반형'};
-var WEALTH_INCOME_TAG={salary:'정재 있음',business:'편재 있음',skill:'식상 강함',build:'재성 숨어 있음'};
+var WEALTH_INCOME_TAG={salary:'꾸준한 수입형',business:'기회 수입형',skill:'재능 수입형',build:'차곡차곡 쌓는 형'};
 /* 일간 기준 다섯 기운의 개수: 비겁(같은 기운)·식상(내가 낳는)·재성(내가 다스리는)·관성(나를 다스리는)·인성(나를 낳는) */
 function wealthGroups(result){var W=['목','화','토','금','수'],d=W.indexOf(result.dayGanWx),c=result.wxCount||{},at=function(k){return d<0?0:Number(c[W[(d+k)%5]])||0;};return {bigyeop:Math.max(0,at(0)-1),siksang:at(1),jaeseong:at(2),gwanseong:at(3),inseong:at(4)};}
 function wealthProfile(result){
@@ -5715,7 +5714,7 @@ function wealthCardArt(stem){var k=LOVE_CARD_ART[stem];return k?'<img class="spo
 /* 재물은 "장부" 형식: 칸 이름 → 실제로 묻는 질문 → 장면 → 풀이 → 근거 */
 function ledgerRow(no,tab,kind,q,fig,body,basis){return '<article class="ledger-row ledger-'+kind+'"><header class="ledger-head"><span class="ledger-no">'+no+'</span><span class="ledger-tab">'+esc(tab)+'</span></header><p class="ledger-q">'+esc(q)+'</p>'+fig+'<div class="ledger-body">'+body+'</div>'+(basis?'<p class="ledger-basis">'+esc(basis)+'</p>':'')+'</article>';}
 function wealthScaleHtml(pf,verdictText){
- return '<section class="gumbi-scale"><p class="gumbi-scale-kicker">금비의 저울</p><div class="scale-bars"><div class="scale-bar is-in"><span>들어오는 힘</span><b>'+pf.inPow+'</b><i style="width:'+pf.inPow+'%"></i></div><div class="scale-bar is-out"><span>새는 힘</span><b>'+pf.leakPow+'</b><i style="width:'+pf.leakPow+'%"></i></div></div><p class="scale-verdict">저울이 <strong>'+esc(WEALTH_VERDICT_SHORT[pf.verdict])+'</strong></p>'+(verdictText?'<p class="scale-text">'+esc(verdictText)+'</p>':'')+'<p class="scale-basis">재성 '+pf.g.jaeseong+' · 식상 '+pf.g.siksang+' · 비겁 '+pf.g.bigyeop+' · 관성 '+pf.g.gwanseong+' · '+(pf.strong?'신강':'신약')+'</p></section>';
+ return '<section class="gumbi-scale"><p class="gumbi-scale-kicker">금비의 저울</p><div class="scale-bars"><div class="scale-bar is-in"><span>들어오는 힘</span><b>'+pf.inPow+'</b><i style="width:'+pf.inPow+'%"></i></div><div class="scale-bar is-out"><span>새는 힘</span><b>'+pf.leakPow+'</b><i style="width:'+pf.leakPow+'%"></i></div></div><p class="scale-verdict">저울이 <strong>'+esc(WEALTH_VERDICT_SHORT[pf.verdict])+'</strong></p>'+(verdictText?'<p class="scale-text">'+esc(verdictText)+'</p>':'')+'<p class="scale-basis">내 사주의 돈·재능·사람·책임 기운으로 계산했어요.</p></section>';
 }
 function wealthYearsHtml(rows,labelOf){return '<section class="marriage-timeline wealth-years"><ol>'+rows.map(function(r,i){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+labelOf(r)+'</p></div></li>';}).join('')+'</ol></section>';}
 function wealthPreviewHtml(concept,result,rows){
@@ -5729,12 +5728,12 @@ function wealthPreviewHtml(concept,result,rows){
   wealthScaleHtml(pf,'')+
   '<figure class="love-free-card wealth-free-card">'+wealthCardArt(stem)+'<figcaption>내 재물 장부 카드 · <strong>'+esc(WEALTH_TITLE[stem]||'')+'</strong></figcaption></figure>'+
   gumbiSay('wink','<p>봐요, 맞죠? 이제 장부 펼쳐볼게요.</p>')+
-  (first?ledgerRow(1,'10년 흐름','flow','그래서 나 언제 돈 들어와?','','<p>앞으로 10년 중 돈 흐름이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년이라 <strong>'+esc(wealthYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','일간 '+stem+'('+result.day.gan+') × 그해 천간 · 내 자리(일지) '+result.day.zhiKr):'')+
+  (first?ledgerRow(1,'10년 흐름','flow','그래서 나 언제 돈 들어와?','','<p>앞으로 10년 중 돈 흐름이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년이라 <strong>'+esc(wealthYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','해마다 달라지는 기운'):'')+
   lockedPeekHtml('<section class="ledger-peek"><p class="ledger-q">내 장부</p><ul><li><b>수입</b><span>어떻게 버는 타입인지</span></li><li><b>지출</b><span>새는 구멍과 막는 법</span></li><li><b>저축</b><span>모으는 힘과 재물 창고</span></li><li><b>투자</b><span>맞는 성향과 원칙</span></li><li><b>빌려주기·동업</b><span>사람과 얽힌 돈</span></li></ul></section>'+wealthYearsHtml(rows,function(r){return esc(wealthYearLabel(r));}))+
  '</section>';
 }
 function wealthOffer(stage){
- var benefits=['재물 장부 카드와 장부 11칸: 수입, 지출, 충동구매, 저축, 가계부, 투자, 빌려주기, 동업, 부업, 큰돈, 10년 흐름','돈이 들어오는 세 해와 그해 좋은 달, 금비의 영수증(이번 달 할 일)','18개 항목 재물 심층 리포트: 저울, 십신, 재물 창고, 대운, 상황별 대응법, 나에게 맞는 돈 관리 방식'];
+ var benefits=['재물 장부 카드와 장부 11칸: 수입, 지출, 충동구매, 저축, 가계부, 투자, 빌려주기, 동업, 부업, 큰돈, 10년 흐름','돈이 들어오는 세 해와 그해 좋은 달, 금비의 영수증(이번 달 할 일)','18개 항목 재물 심층 리포트: 저울, 재물 창고, 10년 흐름, 상황별 대응법, 나에게 맞는 돈 관리 방식'];
  return '<section class="reader-offer marriage-offer wealth-offer" data-gate="'+stage+'">'+gumbiScene('leak','장부의 한 칸을 검지로 짚으며 잠깐 하고 말하는 금비','square')+'<p class="reader-kicker">재물 사주 · 금비</p><h2>새는 구멍,<br>장부에서 같이 찾아요</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">재물 사주 전체 보기 · 7,900원</button><p class="reader-price-note">1회 결제 · 장부 풀이와 18개 항목 재물 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></p></section>';
 }
 function wealthStoryHtml(story,result,rows){
@@ -5745,20 +5744,20 @@ function wealthStoryHtml(story,result,rows){
  var P=function(t){return '<p>'+esc(t||'')+'</p>';},tip=function(t){return t?'<p class="ledger-tip">'+esc(t)+'</p>':'';};
  var html='<section class="wolha-talk gumbi-talk">'+gumbiScene('ledger-open','두꺼운 장부를 펼쳐 보여주는 금비','tall')+
   gumbiSay('smile','<p>'+who+' 장부, 다 정리했어요. 칸마다 하나씩 짚어볼게요.</p>')+
-  '<section class="spouse-card wealth-card">'+wealthCardArt(stem)+'<p class="reader-kicker">재물 장부 카드 · 일간 '+esc(stem+'('+result.day.gan+')')+'</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 돈 성향일까</h3>'+P(card.who)+'<h3>돈이 붙는 곳</h3>'+P(card.earn)+'<h3>오래 지키는 법</h3>'+P(card.keep)+'</section>'+
+  '<section class="spouse-card wealth-card">'+wealthCardArt(stem)+'<p class="reader-kicker">재물 장부 카드</p><h2>'+esc(card.title||'')+'</h2><h3>나는 어떤 돈 성향일까</h3>'+P(card.who)+'<h3>돈이 붙는 곳</h3>'+P(card.earn)+'<h3>오래 지키는 법</h3>'+P(card.keep)+'</section>'+
   wealthScaleHtml(pf,'')+
-  ledgerRow(1,'수입','in','나는 어떻게 돈을 버는 타입이야?',wealthHero(result,'payday','월급 알림을 보고 웃는 장면'),'<p class="ledger-title">'+esc(inc.title)+'</p>'+P(inc.text)+tip(inc.tip),WEALTH_INCOME_TAG[pf.income]+' · 재성 '+pf.g.jaeseong+' · 식상 '+pf.g.siksang)+
-  ledgerRow(2,'지출','out','내 돈은 대체 어디로 새는 거야?',wealthVar('spend',wx,'돈 쓰는 장면'),P(story.leak[wx])+P(story.leakBigyeop[pf.big]),'일간 오행 '+wx+' · 비겁 '+pf.g.bigyeop)+
+  ledgerRow(1,'수입','in','나는 어떻게 돈을 버는 타입이야?',wealthHero(result,'payday','월급 알림을 보고 웃는 장면'),'<p class="ledger-title">'+esc(inc.title)+'</p>'+P(inc.text)+tip(inc.tip),WEALTH_INCOME_TAG[pf.income])+
+  ledgerRow(2,'지출','out','내 돈은 대체 어디로 새는 거야?',wealthVar('spend',wx,'돈 쓰는 장면'),P(story.leak[wx])+P(story.leakBigyeop[pf.big]),wx+' 기운'+'')+
   ledgerRow(3,'충동구매','out','왜 자꾸 지르고 후회하지?',wealthHero(result,'impulse','결제 버튼 앞에서 망설이는 장면'),P(story.impulse[dom]),'가장 강한 기운 '+dom)+
-  ledgerRow(4,'저축','save','나 돈 모을 수 있는 사람이야?',wealthHero(result,'saving','저금통에 동전을 넣는 손'),P(story.save[wx])+P(story.storage[pf.storage])+wealthVar('save',wx,'돈 모으는 장면'),'일간 오행 '+wx+' · 재물 창고(진·술·축·미) '+pf.store+'개')+
-  ledgerRow(5,'가계부','save','가계부, 나한테 맞는 방법이 따로 있어?',wealthHero(result,'ledger','가계부에 적으며 뿌듯해하는 장면'),P(story.ledgerHabit[pf.strong?'strong':'weak']),'간이 신강·신약 분류 '+(pf.strong?'신강':'신약'))+
-  ledgerRow(6,'투자','grow','나한테 맞는 투자 성향은?',wealthHero(result,'invest','그래프를 보며 고민하는 장면'),'<p class="ledger-title">'+esc(inv.title)+'</p>'+P(inv.text)+tip(inv.rule)+wealthVar('grow',wx,'돈 불리는 장면'),(pf.pj?'편재 있음':'편재 드러나지 않음')+' · '+(pf.strong?'신강':'신약'))+
-  ledgerRow(7,'빌려주기','people','친구가 돈 빌려달라는데 어떡하지?',wealthHero(result,'lend','돈 부탁을 받고 난감해하는 장면'),P(story.lend[pf.big]),'비겁(나와 같은 기운) '+pf.g.bigyeop)+
-  ledgerRow(8,'동업','people','동업 제안 받았는데 해도 될까?',wealthHero(result,'partner','동업 계획을 듣는 장면'),P(story.partner[pf.big]),'비겁 '+pf.g.bigyeop)+
-  ledgerRow(9,'부업','in','부업, 나도 해볼까?',wealthHero(result,'side','퇴근 후 부업에 집중하는 장면'),P(story.side[pf.g.siksang>=1?'has':'none']),'식상(재능과 표현의 기운) '+pf.g.siksang)+
-  ledgerRow(10,'큰돈','out','집이나 차처럼 큰돈 쓸 때 어떻게 해?',wealthHero(result,'big-spend','계약서에 도장을 찍으려다 멈춘 손'),P(story.bigSpend[pf.strong?'strong':'weak']),'간이 신강·신약 분류 '+(pf.strong?'신강':'신약'))+
+  ledgerRow(4,'저축','save','나 돈 모을 수 있는 사람이야?',wealthHero(result,'saving','저금통에 동전을 넣는 손'),P(story.save[wx])+P(story.storage[pf.storage])+wealthVar('save',wx,'돈 모으는 장면'),wx+' 기운 · 재물 창고 '+pf.store+'개')+
+  ledgerRow(5,'가계부','save','가계부, 나한테 맞는 방법이 따로 있어?',wealthHero(result,'ledger','가계부에 적으며 뿌듯해하는 장면'),P(story.ledgerHabit[pf.strong?'strong':'weak']),(pf.strong?'내 기운이 센 편':'주변 기운이 큰 편'))+
+  ledgerRow(6,'투자','grow','나한테 맞는 투자 성향은?',wealthHero(result,'invest','그래프를 보며 고민하는 장면'),'<p class="ledger-title">'+esc(inv.title)+'</p>'+P(inv.text)+tip(inv.rule)+wealthVar('grow',wx,'돈 불리는 장면'),(pf.pj?'기회로 들어오는 돈 있음':'꾸준히 쌓는 편'))+
+  ledgerRow(7,'빌려주기','people','친구가 돈 빌려달라는데 어떡하지?',wealthHero(result,'lend','돈 부탁을 받고 난감해하는 장면'),P(story.lend[pf.big]),'나와 같은 기운 '+pf.g.bigyeop+'개')+
+  ledgerRow(8,'동업','people','동업 제안 받았는데 해도 될까?',wealthHero(result,'partner','동업 계획을 듣는 장면'),P(story.partner[pf.big]),'나와 같은 기운 '+pf.g.bigyeop+'개')+
+  ledgerRow(9,'부업','in','부업, 나도 해볼까?',wealthHero(result,'side','퇴근 후 부업에 집중하는 장면'),P(story.side[pf.g.siksang>=1?'has':'none']),'재능과 표현의 기운 '+pf.g.siksang+'개')+
+  ledgerRow(10,'큰돈','out','집이나 차처럼 큰돈 쓸 때 어떻게 해?',wealthHero(result,'big-spend','계약서에 도장을 찍으려다 멈춘 손'),P(story.bigSpend[pf.strong?'strong':'weak']),(pf.strong?'내 기운이 센 편':'주변 기운이 큰 편'))+
   gumbiScene('timeline','연표 위에 동전 세 개를 올려놓는 금비','tall')+
-  ledgerRow(11,'10년 흐름','flow','그래서 나 언제 돈 들어와?',wealthHero(result,'windfall','두툼한 봉투를 받고 놀라 웃는 장면'),'<p>앞으로 10년 돈 흐름이에요. ● 표시가 있는 세 해가 특히 좋아요.</p>'+wealthYearsHtml(rows,function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return (r.top?'● ':'')+esc(r.top?wealthYearLabel(r):rel.label);})+tops.map(function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return '<div class="love-year"><p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(wealthYearLabel(r))+'</p>'+P(story.yearByTenGod[r.tg])+P(rel.text)+'</div>';}).join('')+(best&&good.length?'<p>'+best.year+'년 중에서도 특히 좋은 달이에요.</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>':''),'일간 × 그해 천간 십신 · 일지 × 그해 지지 · 대운');
+  ledgerRow(11,'10년 흐름','flow','그래서 나 언제 돈 들어와?',wealthHero(result,'windfall','두툼한 봉투를 받고 놀라 웃는 장면'),'<p>앞으로 10년 돈 흐름이에요. ● 표시가 있는 세 해가 특히 좋아요.</p>'+wealthYearsHtml(rows,function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return (r.top?'● ':'')+esc(r.top?wealthYearLabel(r):rel.label);})+tops.map(function(r){var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;return '<div class="love-year"><p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(wealthYearLabel(r))+'</p>'+P(story.yearByTenGod[r.tg])+P(rel.text)+'</div>';}).join('')+(best&&good.length?'<p>'+best.year+'년 중에서도 특히 좋은 달이에요.</p><p class="wolha-months">'+good.map(function(m){return '<span>'+m.month+'월</span>';}).join('')+'</p>':''),'해마다 달라지는 기운');
  html+=gumbiSay('serious','<p>마지막으로 앞으로 10년 큰 흐름 하나만요.</p>'+(dg&&story.daeunText[dg]?'<p>'+esc(story.daeunText[dg])+'</p>':''))+
   gumbiScene('receipt','영수증을 내밀며 엄지를 세우는 금비','square')+
   '<section class="gumbi-receipt"><p class="receipt-kicker">금비의 영수증</p><h3>이번 달, 이것만 해봐요</h3><ul>'+story.receipt.concat([story.receiptByWeakWx[weak],story.receiptByStrength[pf.strong?'strong':'weak']]).filter(Boolean).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="receipt-foot">다음 달에 다시 저울에 달아봐요.</p></section>'+
@@ -5780,38 +5779,38 @@ function wealthDeepHtml(deep,result,rows){
  var stars=function(s){var k=s>=4?5:s>=3?4:s>=1?3:s>=0?2:1;return '<span class="deep-stars" aria-label="'+k+'점">'+'★★★★★'.slice(0,k)+'<i>'+'★★★★★'.slice(k)+'</i></span>';};
  var tm=deep.tenGodMoney,sm=deep.siksangMoney,bm=deep.bigyeopMoney,gi=deep.gwanInMoney,sys=deep.system.split[pf.income]||{};
  var html='<div class="deep-report gumbi-deep">'+
-  '<header class="deep-head">'+gumbiScene('detail','선반에서 두꺼운 장부를 꺼내며 돌아보는 금비','tall')+gumbiSay('serious','<p>여기부터는 자세한 리포트예요. 궁금한 항목부터 읽어봐요.</p>')+'<p class="deep-kicker">재물 심층 리포트</p><h2>'+who+'의 재물 사주</h2><p class="deep-sub">18개 항목 · 일간·오행·십신·재물 창고·신강약·대운·세운·월운 기준</p>'+
-  '<ol class="deep-toc">'+['한눈에 보는 재물 사주','나의 돈 성향','저울로 보는 들어오는 힘과 새는 힘','재성으로 보는 돈 그릇','식상으로 보는 버는 재능','비겁으로 보는 나가는 돈','관성·인성으로 보는 관리와 안정','기둥별 십신의 돈 의미','오행 균형과 돈','다섯 기운 하나하나','재물 창고','나의 힘과 돈 그릇','10년 재물 흐름 상세','돈이 들어오는 해의 월별 흐름','대운 속 재물','돈 상황별 대응법','나에게 맞는 돈 관리 방식','재물 로드맵과 스스로에게 던질 질문'].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol></header>';
+  '<header class="deep-head">'+gumbiScene('detail','선반에서 두꺼운 장부를 꺼내며 돌아보는 금비','tall')+gumbiSay('serious','<p>여기부터는 자세한 리포트예요. 궁금한 항목부터 읽어봐요.</p>')+'<p class="deep-kicker">재물 심층 리포트</p><h2>'+who+'의 재물 사주</h2><p class="deep-sub">18개 항목 · 내 사주와 앞으로의 흐름 기준</p>'+
+  '<ol class="deep-toc">'+['한눈에 보는 재물 사주','나의 돈 성향','저울로 보는 들어오는 힘과 새는 힘','내 돈 그릇','돈을 버는 재능','사람 때문에 나가는 돈','돈을 지키는 힘','태어난 날·해·달·시간으로 보는 돈','오행 균형과 돈','다섯 기운 하나하나','재물 창고','나의 힘과 돈 그릇','10년 재물 흐름 상세','돈이 들어오는 해의 월별 흐름','10년 단위로 보는 재물','돈 상황별 대응법','나에게 맞는 돈 관리 방식','재물 로드맵과 스스로에게 던질 질문'].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol></header>';
  var hard=rows.filter(function(r){return r.tg==='bigyeop'||WEALTH_REL_SCORE[r.rel]<0;}).sort(function(a,b){return a.score-b.score||a.year-b.year;})[0];
  var bmonths=best?wealthMonths(result,best.year).filter(function(x){return x.top;}).sort(function(x,y){return x.month-y.month;}):[];
  html+=sec('한눈에 보는 재물 사주','<dl class="deep-summary">'+
-  '<div><dt>일간 (나)</dt><dd>'+esc(stem+'('+result.day.gan+') · '+wx+' · '+(WEALTH_TITLE[stem]||''))+'</dd></div>'+
+  '<div><dt>나</dt><dd>'+esc(stem+'('+result.day.gan+') · '+wx+' · '+(WEALTH_TITLE[stem]||''))+'</dd></div>'+
   '<div><dt>금비의 저울</dt><dd>'+esc('들어오는 힘 '+pf.inPow+' · 새는 힘 '+pf.leakPow+' · '+WEALTH_VERDICT_SHORT[pf.verdict])+'</dd></div>'+
   '<div><dt>버는 방식</dt><dd>'+esc(WEALTH_INCOME_NAME[pf.income]+' · '+WEALTH_INCOME_TAG[pf.income])+'</dd></div>'+
-  '<div><dt>나의 힘</dt><dd>'+(strong?'신강 · 큰돈을 감당하는 그릇':'신약 · 지키는 힘이 먼저인 그릇')+'</dd></div>'+
+  '<div><dt>나의 힘</dt><dd>'+(strong?'큰돈을 감당하는 그릇':'지키는 힘이 먼저인 그릇')+'</dd></div>'+
   '<div><dt>강한 기운 / 약한 기운</dt><dd>'+esc(domWx+' / '+weakWx)+'</dd></div>'+
   '<div><dt>재물 창고</dt><dd>'+esc('진·술·축·미 '+pf.store+'개')+'</dd></div>'+
-  (cur?'<div><dt>지금의 대운</dt><dd>'+esc(cur.startYear+'~'+cur.endYear+' · '+cur.ganKr+cur.zhiKr+' ('+cur.ss+')')+'</dd></div>':'')+
+  (cur?'<div><dt>지금의 10년</dt><dd>'+esc(cur.startYear+'~'+cur.endYear)+'</dd></div>':'')+
   '<div><dt>돈이 들어오는 해</dt><dd>'+tops.slice().sort(function(a,b){return a.year-b.year;}).map(function(r){return r.year+'년';}).join(' · ')+'</dd></div></dl>'+
   '<h4>핵심 다섯 줄</h4>'+tips([best?'가장 좋은 시기: '+best.year+'년'+(bmonths.length?' '+bmonths.map(function(x){return x.month+'월';}).join('·'):'')+', '+wealthYearLabel(best)+'예요.':'',sv.earn?'돈이 붙는 곳: '+sv.earn.split('. ')[0]+'.':'',sv.trap?'조심할 함정: '+sv.trap:'',ew.tips&&ew.tips[0]?'먼저 바꿀 습관: '+ew.tips[0]:'',hard?'조심할 해: '+hard.year+'년이에요. '+(hard.tg==='bigyeop'?'주변 사람과 얽힌 지출이 생기기 쉬워요.':'돈의 흐름이 흔들리기 쉬워요.')+' 미리 비상금을 넉넉히 두세요.':'크게 흔들리는 해가 두드러지지 않아요. 계획대로 꾸준히 쌓으면 돼요.'].filter(Boolean))+'<p class="deep-muted">이 리포트의 모든 해석은 위 요약의 값에서 출발해요. 읽다가 궁금하면 이 표로 돌아와 근거를 확인해 보세요.</p>');
- html+=sec('나의 돈 성향 · 일간 '+stem+'('+result.day.gan+')',p(sv.view)+'<h4>돈이 들어오는 방식</h4>'+p(sv.earn)+'<h4>돈을 쓰는 방식</h4>'+p(sv.spend)+'<div class="deep-two">'+box('good','돈 관리의 강점',p(sv.strength))+box('warn','조심할 점',p(sv.weak))+'</div>'+box('','돈 그릇을 키우는 법',p(sv.grow))+box('','이번 달 해볼 것',p(sv.tip))+box('warn','빠지기 쉬운 돈 함정',p(sv.trap))+box('','이런 장면, 익숙하죠',p((deep.stemExtra[stem]||{}).habit))+'<div class="deep-two">'+box('good','돈이 되기 쉬운 일',p((deep.stemExtra[stem]||{}).job))+box('','돈 관리가 잘 맞는 사람',p((deep.stemExtra[stem]||{}).mate))+'</div>');
- html+=sec('저울로 보는 들어오는 힘과 새는 힘',wealthScaleHtml(pf,deep.scaleText.verdict[pf.verdict])+'<div class="deep-two">'+box('good','들어오는 힘 '+pf.inPow,p(deep.scaleText.in[pf.inLevel]))+box('warn','새는 힘 '+pf.leakPow,p(deep.scaleText.leak[pf.leakLevel]))+'</div><h4>저울을 기울이는 방법</h4>'+p(deep.scaleMove[pf.verdict])+tips(deep.scaleText.tips[pf.verdict])+'<p class="deep-muted">들어오는 힘은 재성·식상의 개수와 신강약, 새는 힘은 비겁의 개수와 재성·관성의 균형으로 계산한 참고 점수예요.</p>');
- html+=sec('재성으로 보는 돈 그릇','<p class="deep-muted">재성(내가 다스리는 기운) '+pf.g.jaeseong+'개 · 연·월·시 천간 십신: '+esc([result.yearSS,result.monthSS,result.timeSS].filter(Boolean).join(' · '))+'</p>'+box(pf.jj?'good':'',tm.jeongjae.title+(pf.jj?' · 있음':' · 드러나지 않음'),p(pf.jj?tm.jeongjae.has:tm.jeongjae.none))+box(pf.pj?'good':'',tm.pyeonjae.title+(pf.pj?' · 있음':' · 드러나지 않음'),p(pf.pj?tm.pyeonjae.has:tm.pyeonjae.none))+(pf.g.jaeseong>=3?box('warn','재성이 많은 사주',p(tm.many)):'')+box('','재성 '+pf.g.jaeseong+'개 · 돈을 지키는 습관',p(deep.jaeKeep[pf.g.jaeseong>=3?'many':pf.g.jaeseong>=1?'some':'none']))+tips(tm.tips[pf.jj||pf.pj?'has':'none']));
- html+=sec('식상으로 보는 버는 재능','<p class="deep-muted">식상(내가 낳는 기운) '+pf.g.siksang+'개</p>'+p(pf.g.siksang>=1?sm.has:sm.none)+(pf.g.siksang>=3?box('warn','식상이 아주 강한 사주',p(sm.many)):'')+box('','버는 재능이 돈으로 바뀌는 길 · 식상 '+pf.g.siksang+' · 재성 '+pf.g.jaeseong,p(deep.linkSikJae[pf.g.siksang>=1&&pf.g.jaeseong>=1?'both':pf.g.siksang>=1?'talent':pf.g.jaeseong>=1?'money':'neither']))+tips(sm.tips[pf.g.siksang>=1?'has':'none']));
- html+=sec('비겁으로 보는 나가는 돈','<p class="deep-muted">비겁(나와 같은 기운, 일간 제외) '+pf.g.bigyeop+'개</p>'+p(bm[pf.big])+(function(bp){return box('','친구 사이의 돈',p(bp.friend))+box('','가족과의 돈',p(bp.family))+box('','일터에서의 돈',p(bp.work));})(deep.bigyeopPeople[pf.big]||{})+tips(bm.tips[pf.big]));
- html+=sec('관성·인성으로 보는 관리와 안정','<div class="deep-two">'+box(pf.g.gwanseong?'good':'','관성 '+pf.g.gwanseong+'개 · 자리와 책임',p(pf.g.gwanseong?gi.gwan.has:gi.gwan.none))+box(pf.g.inseong?'good':'','인성 '+pf.g.inseong+'개 · 배움과 도움',p(pf.g.inseong?gi.in.has:gi.in.none))+'</div>'+p(deep.gwanInCombo[pf.g.gwanseong&&pf.g.inseong?'both':pf.g.gwanseong?'gwan':pf.g.inseong?'in':'none']));
- html+=sec('기둥별 십신의 돈 의미',box('good','일주 · 일지 '+zhi+'('+result.day.zhi+')',p(deep.dayZhiMoney[zhi]))+[['연주',result.yearSS],['월주',result.monthSS],['시주',result.timeSS]].filter(function(x){return deep.pillarTenGod[x[1]];}).map(function(x){return box('',x[0]+' · '+x[1],p(deep.pillarTenGod[x[1]])+'<p class="deep-muted">'+esc(deep.pillarPos[x[0]]||'')+'</p>');}).join('')||'<p class="deep-muted">출생시간을 몰라 확인할 수 있는 기둥이 적어요.</p>');
+ html+=sec('나의 돈 성향',p(sv.view)+'<h4>돈이 들어오는 방식</h4>'+p(sv.earn)+'<h4>돈을 쓰는 방식</h4>'+p(sv.spend)+'<div class="deep-two">'+box('good','돈 관리의 강점',p(sv.strength))+box('warn','조심할 점',p(sv.weak))+'</div>'+box('','돈 그릇을 키우는 법',p(sv.grow))+box('','이번 달 해볼 것',p(sv.tip))+box('warn','빠지기 쉬운 돈 함정',p(sv.trap))+box('','이런 장면, 익숙하죠',p((deep.stemExtra[stem]||{}).habit))+'<div class="deep-two">'+box('good','돈이 되기 쉬운 일',p((deep.stemExtra[stem]||{}).job))+box('','돈 관리가 잘 맞는 사람',p((deep.stemExtra[stem]||{}).mate))+'</div>');
+ html+=sec('저울로 보는 들어오는 힘과 새는 힘',wealthScaleHtml(pf,deep.scaleText.verdict[pf.verdict])+'<div class="deep-two">'+box('good','들어오는 힘 '+pf.inPow,p(deep.scaleText.in[pf.inLevel]))+box('warn','새는 힘 '+pf.leakPow,p(deep.scaleText.leak[pf.leakLevel]))+'</div><h4>저울을 기울이는 방법</h4>'+p(deep.scaleMove[pf.verdict])+tips(deep.scaleText.tips[pf.verdict])+'<p class="deep-muted">내 사주의 돈·재능·사람·책임 기운으로 계산한 참고 점수예요.</p>');
+ html+=sec('내 돈 그릇',box(pf.jj?'good':'',tm.jeongjae.title,p(pf.jj?tm.jeongjae.has:tm.jeongjae.none))+box(pf.pj?'good':'',tm.pyeonjae.title,p(pf.pj?tm.pyeonjae.has:tm.pyeonjae.none))+(pf.g.jaeseong>=3?box('warn','돈의 기운이 많은 사주',p(tm.many)):'')+box('','돈을 지키는 습관',p(deep.jaeKeep[pf.g.jaeseong>=3?'many':pf.g.jaeseong>=1?'some':'none']))+tips(tm.tips[pf.jj||pf.pj?'has':'none']));
+ html+=sec('돈을 버는 재능',p(pf.g.siksang>=1?sm.has:sm.none)+(pf.g.siksang>=3?box('warn','재능의 기운이 아주 강한 사주',p(sm.many)):'')+box('','버는 재능이 돈으로 바뀌는 길',p(deep.linkSikJae[pf.g.siksang>=1&&pf.g.jaeseong>=1?'both':pf.g.siksang>=1?'talent':pf.g.jaeseong>=1?'money':'neither']))+tips(sm.tips[pf.g.siksang>=1?'has':'none']));
+ html+=sec('사람 때문에 나가는 돈',p(bm[pf.big])+(function(bp){return box('','친구 사이의 돈',p(bp.friend))+box('','가족과의 돈',p(bp.family))+box('','일터에서의 돈',p(bp.work));})(deep.bigyeopPeople[pf.big]||{})+tips(bm.tips[pf.big]));
+ html+=sec('돈을 지키는 힘','<div class="deep-two">'+box(pf.g.gwanseong?'good':'','자리와 책임',p(pf.g.gwanseong?gi.gwan.has:gi.gwan.none))+box(pf.g.inseong?'good':'','배움과 도움',p(pf.g.inseong?gi.in.has:gi.in.none))+'</div>'+p(deep.gwanInCombo[pf.g.gwanseong&&pf.g.inseong?'both':pf.g.gwanseong?'gwan':pf.g.inseong?'in':'none']));
+ html+=sec('태어난 날·해·달·시간으로 보는 돈',box('good','태어난 날',p(deep.dayZhiMoney[zhi]))+[['연주',result.yearSS],['월주',result.monthSS],['시주',result.timeSS]].filter(function(x){return deep.pillarTenGod[x[1]];}).map(function(x){return box('',({연주:'태어난 해',월주:'태어난 달',시주:'태어난 시간'})[x[0]],p(deep.pillarTenGod[x[1]])+'<p class="deep-muted">'+esc(deep.pillarPos[x[0]]||'')+'</p>');}).join('')||'<p class="deep-muted">출생시간을 몰라 확인할 수 있는 기둥이 적어요.</p>');
  html+=sec('오행 균형과 돈','<h4>가장 강한 기운 · '+esc(domWx)+'</h4>'+p(es.text)+tips(es.tips)+box('good','강한 기운을 돈으로 쓰는 법',p(deep.elementWork[domWx]))+(weakWx!==domWx?'<h4>가장 약한 기운 · '+esc(weakWx)+'</h4>'+p(ew.text)+tips(ew.tips)+box('','약한 기운을 채우는 지출',p(deep.elementFill[weakWx])):''));
  html+=sec('다섯 기운 하나하나',['목','화','토','금','수'].map(function(k){var c=Number(result.wxCount[k])||0,t=deep.elementCount[k]||{};return box(c>=3?'good':c===0?'warn':'',k+' '+c+'개',p(c===0?t.none:c>=3?t.many:t.few));}).join(''));
  html+=sec('재물 창고 · 진·술·축·미 '+pf.store+'개',p(deep.storageDeep[pf.storage])+tips(deep.storageDeep.tips[pf.storage])+(function(open){return '<h4>창고가 움직이는 해</h4>'+p(open.length?deep.storageOpen.has:deep.storageOpen.none)+(open.length?'<p class="wolha-months">'+open.map(function(r){return '<span>'+r.year+'년 '+esc(r.zhiKr)+'</span>';}).join('')+'</p>':'');})(rows.filter(function(r){return '진술축미'.indexOf(r.zhiKr)>=0;})));
- html+=sec('나의 힘과 돈 그릇 · '+st.title,p(st.text)+tips(st.tips)+'<h4>돈 관리 단계별로 보면</h4>'+deep.stageType.map(function(w){return box('',w.name,p(strong?w.strong:w.weak));}).join('')+'<h4>'+(strong?'신강':'신약')+'인 당신의 1년 계획</h4>'+tips(deep.strengthPlan[strong?'strong':'weak']));
- html+=sec('10년 재물 흐름 상세','<p class="deep-muted">해마다 그해 천간이 나에게 어떤 십신인지, 그해 지지가 내 자리 '+esc(zhi)+'에 어떻게 닿는지, 그해가 속한 대운을 함께 읽었어요.</p><ol class="deep-years">'+rows.map(function(r){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],dgk=du&&SS_GROUP[du.ss];return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'● ':'')+esc(wealthYearLabel(r))+'</p>'+p(deep.yearTgLong[r.tg])+p(deep.yearRelNote[r.rel]||deep.yearRelNote.none)+(dgk&&deep.yearDaeun[dgk]?'<p class="deep-muted">'+esc(r.year+'년은 '+du.ganKr+du.zhiKr+' 대운('+du.ss+') 안에 있어요. '+deep.yearDaeun[dgk])+'</p>':'')+'<div class="deep-two">'+box('','직장인이라면',p(deep.yearWorker[r.tg]))+box('','자영업·프리랜서라면',p(deep.yearFree[r.tg]))+'</div><p class="deep-label">이 해에 해볼 일</p>'+tips(deep.yearTodo[r.tg])+'</li>';}).join('')+'</ol>');
+ html+=sec('나의 힘과 돈 그릇 · '+st.title,p(st.text)+tips(st.tips)+'<h4>돈 관리 단계별로 보면</h4>'+deep.stageType.map(function(w){return box('',w.name,p(strong?w.strong:w.weak));}).join('')+'<h4>'+(strong?'내 기운이 센':'주변 기운이 큰')+' 당신의 1년 계획</h4>'+tips(deep.strengthPlan[strong?'strong':'weak']));
+ html+=sec('10년 재물 흐름 상세','<p class="deep-muted">해마다 그해 기운이 나와 내 자리에 어떻게 닿는지 읽었어요.</p><ol class="deep-years">'+rows.map(function(r){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],dgk=du&&SS_GROUP[du.ss];return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'● ':'')+esc(wealthYearLabel(r))+'</p>'+p(deep.yearTgLong[r.tg])+p(deep.yearRelNote[r.rel]||deep.yearRelNote.none)+(dgk&&deep.yearDaeun[dgk]?'<p class="deep-muted">'+esc(deep.yearDaeun[dgk])+'</p>':'')+'<div class="deep-two">'+box('','직장인이라면',p(deep.yearWorker[r.tg]))+box('','자영업·프리랜서라면',p(deep.yearFree[r.tg]))+'</div><p class="deep-label">이 해에 해볼 일</p>'+tips(deep.yearTodo[r.tg])+'</li>';}).join('')+'</ol>');
  if(best)html+=sec('돈이 들어오는 해의 월별 흐름',tops.slice(0,3).map(function(ty,yi){var months=wealthMonths(result,ty.year);return '<h4>'+ty.year+'년'+(yi===0?' · 가장 좋은 해':yi===1?' · 두 번째로 좋은 해':' · 세 번째로 좋은 해')+'</h4><p class="deep-muted">● 표시는 그해에서 가장 좋은 세 달이에요.</p><ol class="deep-months">'+months.map(function(m){return '<li class="'+(m.top?'is-top':'')+'"><b>'+m.month+'월</b><span>'+esc(m.ganKr+m.zhiKr)+'</span><p>'+(m.top?'● ':'')+esc(deep.monthByTg[m.tg]||'')+'</p><p class="deep-muted">'+esc(deep.monthAdvice[m.rel]||deep.monthAdvice.none)+'</p></li>';}).join('')+'</ol>';}).join(''));
- html+=sec('대운 속 재물',periods.length?periods.map(function(d,i){var dgk=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear+' '+d.ganKr+d.zhiKr+' ('+d.ss+')',p(deep.daeunDeep[dgk])+p(deep.daeunAdvice[dgk]));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
- html+=sec('돈 상황별 대응법','<p class="deep-muted">일간 '+esc(wx)+' 기운이 돈 앞에서 자주 보이는 반응과, 대신 해볼 행동이에요.</p>'+(deep.scenes[wx]||[]).map(function(c){return box('',c.scene,'<p><span class="deep-label">나의 패턴</span>'+esc(c.pattern)+'</p><p class="deep-say"><span class="deep-label">이렇게 해보세요</span>'+esc(c.do)+'</p><p class="deep-avoid"><span class="deep-label">피해야 할 것</span>'+esc(deep.sceneAvoid[c.scene]||'')+'</p>');}).join('')+(function(sx){return '<h4>돈 스트레스가 쌓였다는 신호</h4>'+p(sx.text)+'<div class="deep-two">'+box('warn','이런 신호가 보이면',tips(sx.signs))+box('good','이렇게 풀어보세요',tips(sx.relief))+'</div>';})(deep.stressByWx[wx]||{}));
- html+=sec('나에게 맞는 돈 관리 방식',p(sys.text)+box('good','통장 나누기 · '+WEALTH_INCOME_TAG[pf.income],tips(sys.ratio))+box('',strong?'규칙 정하기 · 신강':'규칙 정하기 · 신약',p(deep.system.budget[strong?'strong':'weak']))+box('','모으는 방법 · 일간 '+wx,p(deep.system.saveMethod[wx]))+(function(ia){return box('good',ia.title||'',tips(ia.items));})(deep.investAccount[pf.invest]||{})+box('','1년에 한 번, 고정비 점검',tips(deep.fixedCostChecks)));
- html+=sec('재물 로드맵과 스스로에게 던질 질문','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b>'+p(r.text)+'<p class="deep-note">'+(strong?'신강인 당신에게: ':'신약인 당신에게: ')+esc(strong?r.strong:r.weak)+'</p><p class="deep-label">이 단계의 점검</p>'+tips(deep.roadmapChecks[i])+'</li>';}).join('')+'</ol><p class="deep-muted">답을 노트에 적어보세요. 석 달 뒤에 다시 답해보면 내 돈 습관이 어떻게 바뀌었는지 보여요.</p>'+deep.questions.map(function(q){return '<h4>'+esc(q.topic)+'</h4><ol class="deep-q">'+q.items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>';}).join('')+'<h4>'+esc(weakWx)+' 기운이 약한 당신을 위한 질문</h4><ol class="deep-q">'+(deep.customQuestions[weakWx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>');
- html+='<footer class="deep-foot">'+gumbiSay('cheer','<p>여기까지예요. 돈 때문에 고민될 때 다시 열어봐요.</p>')+'<p class="deep-muted">일간·오행 분포·천간 십신·재물 창고·간이 신강약·대운·세운·월운을 바탕으로 한 해석이에요. 출생시간을 모르면 시주는 제외해요. 특정 금융 상품을 추천하지 않으며, 수입이나 투자 결과를 확정하는 해석은 아니에요.</p></footer></div>';
+ html+=sec('10년 단위로 보는 재물',periods.length?periods.map(function(d,i){var dgk=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear,p(deep.daeunDeep[dgk])+p(deep.daeunAdvice[dgk]));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
+ html+=sec('돈 상황별 대응법','<p class="deep-muted">'+esc(wx)+' 기운이 돈 앞에서 자주 보이는 반응과, 대신 해볼 행동이에요.</p>'+(deep.scenes[wx]||[]).map(function(c){return box('',c.scene,'<p><span class="deep-label">나의 패턴</span>'+esc(c.pattern)+'</p><p class="deep-say"><span class="deep-label">이렇게 해보세요</span>'+esc(c.do)+'</p><p class="deep-avoid"><span class="deep-label">피해야 할 것</span>'+esc(deep.sceneAvoid[c.scene]||'')+'</p>');}).join('')+(function(sx){return '<h4>돈 스트레스가 쌓였다는 신호</h4>'+p(sx.text)+'<div class="deep-two">'+box('warn','이런 신호가 보이면',tips(sx.signs))+box('good','이렇게 풀어보세요',tips(sx.relief))+'</div>';})(deep.stressByWx[wx]||{}));
+ html+=sec('나에게 맞는 돈 관리 방식',p(sys.text)+box('good','통장 나누기 · '+WEALTH_INCOME_TAG[pf.income],tips(sys.ratio))+box('','규칙 정하기',p(deep.system.budget[strong?'strong':'weak']))+box('','모으는 방법',p(deep.system.saveMethod[wx]))+(function(ia){return box('good',ia.title||'',tips(ia.items));})(deep.investAccount[pf.invest]||{})+box('','1년에 한 번, 고정비 점검',tips(deep.fixedCostChecks)));
+ html+=sec('재물 로드맵과 스스로에게 던질 질문','<ol class="deep-road">'+deep.roadmap.map(function(r,i){return '<li><b>'+(i+1)+'단계 · '+esc(r.stage)+'</b>'+p(r.text)+'<p class="deep-note">'+(strong?'내 기운이 센 당신에게: ':'주변 기운이 큰 당신에게: ')+esc(strong?r.strong:r.weak)+'</p><p class="deep-label">이 단계의 점검</p>'+tips(deep.roadmapChecks[i])+'</li>';}).join('')+'</ol><p class="deep-muted">답을 노트에 적어보세요. 석 달 뒤에 다시 답해보면 내 돈 습관이 어떻게 바뀌었는지 보여요.</p>'+deep.questions.map(function(q){return '<h4>'+esc(q.topic)+'</h4><ol class="deep-q">'+q.items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>';}).join('')+'<h4>'+esc(weakWx)+' 기운이 약한 당신을 위한 질문</h4><ol class="deep-q">'+(deep.customQuestions[weakWx]||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>');
+ html+='<footer class="deep-foot">'+gumbiSay('cheer','<p>여기까지예요. 돈 때문에 고민될 때 다시 열어봐요.</p>')+'<p class="deep-muted">입력한 사주를 바탕으로 한 해석이에요. 출생시간을 모르면 그 자리는 빼고 읽어요. 특정 금융 상품을 추천하지 않으며, 수입이나 투자 결과를 확정하는 해석은 아니에요.</p></footer></div>';
  return html;
 }
 function wealthFlow(concept,data,result){
