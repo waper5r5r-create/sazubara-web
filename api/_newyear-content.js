@@ -8,7 +8,7 @@ const concept = {
   category: '신년운세',
   cover_img_url: '/assets/daon/cover-thumb.webp',
   active: true,
-  price_krw: 7900
+  price_krw: 4900
 };
 
 const GAN = '甲乙丙丁戊己庚辛壬癸';

@@ -9,6 +9,11 @@ const { STAGE_PRICE, STAGES, stageKey, rowsAt, reportAccess } = require('../_rep
 const { signQuote, verifyQuote, newOrderId } = require('../_payment-quote');
 const { linkedDeviceIds, deviceFilter } = require('../_account');
 
+// 신년운세만 값이 다르다. 나머지 콘텐츠는 모두 같은 값이다.
+function checkoutPrice(conceptId, stage) {
+  return conceptId === newyear.concept.id ? newyear.concept.price_krw : STAGE_PRICE[stage];
+}
+
 async function handleGet(req, res) {
   const { device_id: deviceId } = getQuery(req);
   if (!deviceId) return res.status(400).json({ ok: false, error: 'MISSING_DEVICE_ID' });
@@ -29,8 +34,8 @@ async function prepareCheckout(body,res){
   const access=await reportAccess(deviceId,conceptId);
   if(stage==='detail'&&!access.story) return res.status(409).json({ok:false,error:'STORY_REQUIRED',message:'이야기를 먼저 열어주세요.'});
   if(access[stage]) return res.status(409).json({ok:false,error:'ALREADY_OWNED',message:'이미 보유한 콘텐츠예요.'});
-  const fields={orderId:newOrderId(),deviceId,conceptId,stage,amount:STAGE_PRICE[stage]};
-  res.status(200).json({ok:true,orderId:fields.orderId,amount:STAGE_PRICE[stage],quote:signQuote(fields)});
+  const fields={orderId:newOrderId(),deviceId,conceptId,stage,amount:checkoutPrice(conceptId,stage)};
+  res.status(200).json({ok:true,orderId:fields.orderId,amount:fields.amount,quote:signQuote(fields)});
 }
 
 async function handlePost(req, res) {
@@ -43,7 +48,7 @@ async function handlePost(req, res) {
   // The old full-report checkout can finish during the rollout. New UI always sends stage.
   const legacy = stage == null && amount === 4900;
   if (!legacy && !STAGES.includes(stage)) return res.status(400).json({ ok: false, error: 'INVALID_STAGE' });
-  const price = legacy ? 4900 : STAGE_PRICE[stage];
+  const price = legacy ? 4900 : checkoutPrice(conceptId, stage);
   if(!legacy&&!verifyQuote(quote,{orderId,deviceId,conceptId,stage,amount:price})) return res.status(400).json({ok:false,error:'INVALID_CHECKOUT',message:'상품 화면에서 결제를 다시 시작해주세요.'});
   if (amount !== price) return res.status(400).json({ ok: false, error: 'AMOUNT_MISMATCH', message: '결제 금액이 올바르지 않아요. 상품 화면에서 다시 시작해주세요.' });
   const concepts = STATIC_CONCEPTS[conceptId] ? [STATIC_CONCEPTS[conceptId]] : await rowsAt('/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,active');

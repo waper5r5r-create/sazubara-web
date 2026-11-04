@@ -76,7 +76,7 @@ test('a signed old detail-stage quote can no longer be approved',async()=>{
   const r=await call(reportUnlock,'POST','/api/reports/unlock',{...fields,paymentKey:'test',quote:signQuote(fields)});assert.equal(r.error,'INVALID_STAGE');assert.equal(confirms,0);
 });
 test('catalogue prices and every category plus today/couple match 990',async()=>{
-  reset();const catalogue=await call(listReports,'GET','/api/reports/list');assert.equal(catalogue.rows[0].price_krw,7900);assert.equal(catalogue.rows[0].detail_price_krw,undefined);
+  reset();const catalogue=await call(listReports,'GET','/api/reports/list');assert.equal(catalogue.rows[0].price_krw,4900);assert.ok(catalogue.rows.slice(1).every(x=>x.price_krw===7900));assert.equal(catalogue.rows[0].detail_price_krw,undefined);
   const keys=['연애','직장','재물','건강','인간관계'].map(cat=>'feature-saju-deep:'+cat).concat(['feature-today-premium','compat-test-pair']);
   for(const [i,unlockKey] of keys.entries()) {
     const bad=await call(unlock,'POST','/api/unlock',{paymentKey:'test',orderId:'bad-'+i,amount:2900,deviceId:'test-device',unlockKey});assert.equal(bad.error,'AMOUNT_MISMATCH');
@@ -118,4 +118,15 @@ test('logging in links devices: purchases follow the account, the saju carries o
  assert.equal((await link('phone-a','someone-else-guessing-the-key-123')).error,'DEVICE_MISMATCH');
  assert.equal(tables.account_devices.length,2);
  const stranger=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=phone-c');assert.equal(stranger.access.story,false);
+});
+
+test('new year costs 4,900 at checkout, other content stays 7,900, and the old amount is refused',async()=>{
+ reset();const ny=require('../api/_newyear-content').concept,ian=require('../api/_ian-content').concept;
+ const start=(conceptId,deviceId='test-device')=>call(reportUnlock,'POST','/api/reports/unlock',{action:'prepare',deviceId,conceptId,stage:'story'});
+ const checkout=await start(ny.id);assert.equal(checkout.ok,true);assert.equal(checkout.amount,4900);
+ assert.equal((await start(ian.id)).amount,7900);
+ const old=await call(reportUnlock,'POST','/api/reports/unlock',{paymentKey:'mock',orderId:checkout.orderId,amount:7900,quote:signQuote({orderId:checkout.orderId,deviceId:'test-device',conceptId:ny.id,stage:'story',amount:7900}),deviceId:'test-device',conceptId:ny.id,stage:'story'});
+ assert.equal(old.ok,false);assert.equal(confirms,0);
+ const paid=await call(reportUnlock,'POST','/api/reports/unlock',{paymentKey:'mock',orderId:checkout.orderId,amount:4900,quote:checkout.quote,deviceId:'test-device',conceptId:ny.id,stage:'story'});
+ assert.equal(paid.ok,true);assert.equal(confirms,1);
 });

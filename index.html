@@ -4640,7 +4640,7 @@ function openPendingReport(){
   setTimeout(function(){openReportViewer(pr.concept,pr.stage);},400);
 }
 /* 2027 신년운세: 다온이 전하는 편지 12통. 문장은 서버(api/_newyear-content.js)가 내 일간·일지로 조합하고, 2~12월은 결제 후에만 내려온다. */
-var NEWYEAR_CONCEPT={id:'20270101-7a3e-4c1d-9b52-6d0e8f4a1c27',title:'2027 신년운세',tagline:'2027년이 보낸 편지 12통',category:'신년운세',cover_img_url:'/assets/daon/cover.webp',active:true,price_krw:7900};
+var NEWYEAR_CONCEPT={id:'20270101-7a3e-4c1d-9b52-6d0e8f4a1c27',title:'2027 신년운세',tagline:'2027년이 보낸 편지 12통',category:'신년운세',cover_img_url:'/assets/daon/cover.webp',active:true,price_krw:4900};
 var NY_AREAS=[['love','연애'],['money','돈'],['work','일'],['health','건강']];
 function isNewYear(concept){return !!concept&&String(concept.id)===NEWYEAR_CONCEPT.id;}
 var IAN_CONCEPT={id:'20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',title:'이안의 비밀',tagline:'누가 나에게 빠지고, 나는 언제 무너질까',category:'연애',cover_img_url:'/assets/ian/bottle.webp',active:true,price_krw:7900};

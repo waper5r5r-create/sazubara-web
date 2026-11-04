@@ -53,5 +53,5 @@ test('list shows the new year fortune first', async () => {
   const {body} = await call(list, {}, []);
   assert.equal(body.rows[0].id, newyear.concept.id);
   assert.equal(body.rows.filter(r => r.id === newyear.concept.id).length, 1);
-  assert.equal(body.rows[0].price_krw, 7900);
+  assert.equal(body.rows[0].price_krw, 4900);
 });
