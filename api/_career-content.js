@@ -145,4 +145,5 @@ const story = {cards, environment, envByWx, burnout, relation, yearByRelation, y
 // 12,900원: 리포트 형식의 직업 심층 리포트
 const detail = require('./_career-deep');
 
+detail.relLabel = Object.fromEntries(Object.entries(story.yearByRelation).map(([k, v]) => [k, v.label]));
 module.exports = {concept, story, detail};

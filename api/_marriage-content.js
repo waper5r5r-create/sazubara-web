@@ -92,4 +92,5 @@ const story = {spouseCards, yearByRelation, yearByTenGod, daeunText, detailByWx,
 // 12,900원: 리포트 형식의 결혼 심층 리포트
 const detail = require('./_marriage-deep');
 
+detail.relLabel = Object.fromEntries(Object.entries(story.yearByRelation).map(([k, v]) => [k, v.label]));
 module.exports = {concept, story, detail};

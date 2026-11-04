@@ -160,4 +160,5 @@ const story = {cards, attract, dohwa, contact, pace, express, conflict, makeup, 
 // 12,900원: 리포트 형식의 연애 심층 리포트
 const detail = require('./_love-deep');
 
+detail.relLabel = Object.fromEntries(Object.entries(story.yearByRelation).map(([k, v]) => [k, v.label]));
 module.exports = {concept, story, detail};
