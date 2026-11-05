@@ -1,6 +1,7 @@
 // 2027 신년운세 "2027년이 보낸 편지". 풀이자 다온.
 // 2027년 세운 丁未와 달별 월건을 내 일간·일지에 대조해 서버에서 문장을 조합한다.
 // 무료(한 해 총평·1월)와 유료(2~12월)를 나눠, 결제 전에는 유료 문장이 응답에 실리지 않는다.
+const more = require('./_newyear-more');
 const concept = {
   id: '20270101-7a3e-4c1d-9b52-6d0e8f4a1c27',
   title: '2027 신년운세',
@@ -75,14 +76,14 @@ const YEAR_TEXT = {
   jeongin:{title:'든든한 도움이 들어오는 해',keyword:'도움',body:['2027년에는 나를 믿어 주고 도와주는 사람이 곁에 있어요. 공부, 자격, 문서 일에 특히 좋은 흐름이에요.','받기만 하면 나태해지기 쉬우니, 도움받은 만큼 움직여 보세요. 마음이 편안해지는 한 해가 될 거예요.']}
 };
 const YEAR_ZHI = {
-  same:'올해 기운이 내 사주 바탕와 같아요. 익숙한 일이 반복되는 듯해도 그만큼 뿌리가 깊어져요.',
-  liuhe:'올해 기운이 내 사주 바탕와 잘 맞물려요. 사람 사이의 인연이 부드럽게 이어지는 해예요.',
-  sanhe:'올해 기운이 내 사주 바탕와 힘을 합쳐요. 함께하는 일에서 시너지가 나기 쉬워요.',
-  chong:'올해 기운이 내 사주 바탕와 부딪혀요. 이사, 이직 같은 변화가 생기기 쉬운데, 미리 준비하면 오히려 좋은 전환점이 돼요.',
-  xing:'올해 기운이 내 사주 바탕를 살짝 긁어요. 작은 마찰이 생겨도 크게 받아들이지 않는 게 좋아요.',
-  hai:'올해 기운이 내 사주 바탕와 어긋나요. 가까운 사이의 말 한마디를 조금 더 챙겨 주세요.',
-  yuanjin:'올해 기운이 내 사주 바탕와 미묘하게 엇갈려요. 서운한 일은 쌓아 두지 말고 그때그때 풀어 주세요.',
-  none:'올해 기운은 내 사주 바탕와 크게 부딪히지 않아요. 내가 노력한 만큼 결과가 나오는 편안한 흐름이에요.'
+  same:'올해 기운이 내 사주 바탕과 같아요. 익숙한 일이 반복되는 듯해도 그만큼 뿌리가 깊어져요.',
+  liuhe:'올해 기운이 내 사주 바탕과 잘 맞물려요. 사람 사이의 인연이 부드럽게 이어지는 해예요.',
+  sanhe:'올해 기운이 내 사주 바탕과 힘을 합쳐요. 함께하는 일에서 시너지가 나기 쉬워요.',
+  chong:'올해 기운이 내 사주 바탕과 부딪혀요. 이사, 이직 같은 변화가 생기기 쉬운데, 미리 준비하면 오히려 좋은 전환점이 돼요.',
+  xing:'올해 기운이 내 사주 바탕을 살짝 긁어요. 작은 마찰이 생겨도 크게 받아들이지 않는 게 좋아요.',
+  hai:'올해 기운이 내 사주 바탕과 어긋나요. 가까운 사이의 말 한마디를 조금 더 챙겨 주세요.',
+  yuanjin:'올해 기운이 내 사주 바탕과 미묘하게 엇갈려요. 서운한 일은 쌓아 두지 말고 그때그때 풀어 주세요.',
+  none:'올해 기운은 내 사주 바탕과 크게 부딪히지 않아요. 내가 노력한 만큼 결과가 나오는 편안한 흐름이에요.'
 };
 
 const OPENING = [
@@ -100,13 +101,13 @@ const OPENING = [
   '올해의 마지막 편지예요. 고마운 사람을 떠올리며 내년을 준비해 보세요.'
 ];
 const MONTH_ZHI = {
-  same:'이달은 내 사주 바탕와 같은 기운이 들어와서 내 고집과 습관이 강해지기 쉬워요.',
-  liuhe:'이달은 내 사주 바탕와 잘 맞물리는 기운이 들어와 사람 사이가 부드러워져요.',
-  sanhe:'이달은 내 사주 바탕와 손잡는 기운이 들어와 함께하는 일에 힘이 붙어요.',
-  chong:'이달은 내 사주 바탕와 부딪히는 기운이 들어와요. 계획이 바뀌거나 이동할 일이 생길 수 있으니 일정에 여유를 두세요.',
-  xing:'이달은 내 사주 바탕를 건드리는 기운이 들어와요. 사소한 일로 예민해지기 쉬우니 서류와 약속을 꼼꼼히 챙기세요.',
-  hai:'이달은 내 사주 바탕와 어긋나는 기운이 들어와요. 가까운 사람과 오해가 생기면 빨리 푸는 게 좋아요.',
-  yuanjin:'이달은 내 사주 바탕와 미묘하게 엇갈리는 기운이 들어와요. 괜한 서운함이 생겨도 하루 지나고 다시 생각해 보세요.',
+  same:'이달은 내 사주 바탕과 같은 기운이 들어와서 내 고집과 습관이 강해지기 쉬워요.',
+  liuhe:'이달은 내 사주 바탕과 잘 맞물리는 기운이 들어와 사람 사이가 부드러워져요.',
+  sanhe:'이달은 내 사주 바탕과 손잡는 기운이 들어와 함께하는 일에 힘이 붙어요.',
+  chong:'이달은 내 사주 바탕과 부딪히는 기운이 들어와요. 계획이 바뀌거나 이동할 일이 생길 수 있으니 일정에 여유를 두세요.',
+  xing:'이달은 내 사주 바탕을 건드리는 기운이 들어와요. 사소한 일로 예민해지기 쉬우니 서류와 약속을 꼼꼼히 챙기세요.',
+  hai:'이달은 내 사주 바탕과 어긋나는 기운이 들어와요. 가까운 사람과 오해가 생기면 빨리 푸는 게 좋아요.',
+  yuanjin:'이달은 내 사주 바탕과 미묘하게 엇갈리는 기운이 들어와요. 괜한 서운함이 생겨도 하루 지나고 다시 생각해 보세요.',
   none:''
 };
 const WEAK_LINE = {
@@ -213,10 +214,15 @@ function letter(day, dayZhi, weak, index) {
     pillar: GAN_KR[gan] + ZHI_KR[zhi],
     ss: SS_NAME[ss],
     title: area.title[v],
-    opening: OPENING[index],
-    note: [MONTH_ZHI[rel], helped ? WEAK_LINE[weak] : ''].filter(Boolean),
-    love: area.love[v], money: area.money[v], work: area.work[v], health: area.health[v],
+    opening: OPENING[index] + ' ' + more.OPENING_MORE[index],
+    note: [more.REPEAT_LINE[index] || more.PERSONA[day][ss], MONTH_ZHI[rel], helped ? WEAK_LINE[weak] : ''].filter(Boolean),
+    love: area.love[v] + ' ' + more.MORE[ss].love[v],
+    money: area.money[v] + ' ' + more.MORE[ss].money[v],
+    work: area.work[v] + ' ' + more.MORE[ss].work[v],
+    health: area.health[v] + ' ' + more.MORE[ss].health[v],
     tip: area.tip[v],
+    good: more.FIT[ss].good[v],
+    avoid: more.FIT[ss].avoid[v],
     mood: score >= 3 ? 'cheer' : score >= 1 ? 'smile' : score === 0 ? 'shy' : 'worry',
     score
   };
@@ -232,13 +238,24 @@ function compose(input) {
   const yearSs = shishen(gan, YEAR.gan), yearRel = zhiRelation(zhi, YEAR.zhi), year = YEAR_TEXT[yearSs];
   return {
     free: {
-      year: {ss: SS_NAME[yearSs], title: year.title, keyword: year.keyword, body: year.body.concat(YEAR_ZHI[yearRel]), dayGan: GAN_KR[gan] + ganWx(gan)},
+      year: {ss: SS_NAME[yearSs], title: year.title, keyword: year.keyword, body: ['2027년은 정미년이에요. 따뜻한 불의 기운과 마른 흙의 기운이 한 해를 이끌어요. 이 기운이 ' + more.STEM_IMAGE[gan] + '처럼 태어난 당신에게는 ' + more.KEYWORD_WITH[yearSs] + ' 다가와요.', more.YEAR_PERSON[gan]].concat(year.body, YEAR_ZHI[yearRel]), dayGan: GAN_KR[gan] + ganWx(gan)},
       best: ranked.slice(0, 3).map(l => l.month).sort((a, b) => a - b),
       watch: ranked[ranked.length - 1].month,
       letter: letters[0],
       teasers: letters.slice(1).map(l => ({month: l.month, seal: l.seal, title: l.title}))
     },
-    paid: {letters: letters.slice(1)}
+    paid: {
+      letters: letters.slice(1),
+      yearAreas: more.YEAR_AREA[yearSs],
+      ending: {
+        best: ranked.slice(0, 3).sort((a, b) => a.month - b.month).map(l => ({month: l.month, title: l.title, why: l.month > 10 && ranked.slice(0, 3).some(o => o.month === l.month - 10) ? (l.month - 10) + '월과 같은 기운이 다시 들어와 좋은 흐름을 이어 가는 달이에요.' : more.BEST_WHY[shishen(gan, MONTHS[l.month - 1][0])]})),
+        watch: (l => {
+          const ss = shishen(gan, MONTHS[l.month - 1][0]), rel = zhiRelation(zhi, MONTHS[l.month - 1][1]);
+          return {month: l.month, title: l.title, why: more.WATCH_WHY_REL[rel] || more.WATCH_WHY_SS[ss] || more.WATCH_WHY_DEFAULT};
+        })(ranked[ranked.length - 1]),
+        remember: more.REMEMBER[yearSs]
+      }
+    }
   };
 }
 

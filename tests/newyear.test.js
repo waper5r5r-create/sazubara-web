@@ -55,3 +55,24 @@ test('list shows the new year fortune first', async () => {
   assert.equal(body.rows.filter(r => r.id === newyear.concept.id).length, 1);
   assert.equal(body.rows[0].price_krw, 4900);
 });
+
+test('every saju reads about 9,000 characters with complete, unbroken text', () => {
+ const words = o => typeof o === 'string' ? (/^(m\d\d|jan|spring|summer|autumn|winter|cheer|smile|shy|worry)$/.test(o) ? '' : o) : o && typeof o === 'object' ? Object.values(o).map(words).join(' ') : '';
+ for (const gan of GANS) for (const zhi of ZHIS) for (const weak of ['', '목', '화', '토', '금', '수']) {
+  const c = newyear.compose({gan, zhi, weak}), all = words(c.free) + ' ' + words(c.paid);
+  assert.ok(all.length >= 8500, gan + zhi + ' ' + all.length);
+  assert.doesNotMatch(all, /undefined|null|NaN|바탕와|바탕를/, gan + zhi);
+  assert.equal(c.paid.ending.best.length, 3);
+  assert.ok(c.paid.ending.watch.why && c.paid.ending.remember);
+  for (const k of ['love','money','work','health']) assert.ok(c.paid.yearAreas[k], gan + zhi + k);
+  const firsts = [c.free.letter, ...c.paid.letters].map(l => l.note[0]);
+  assert.equal(new Set(firsts).size, 12, gan + zhi);
+ }
+});
+test('free response hides the yearly areas and the summary', async () => {
+ const c = newyear.compose({gan: '甲', zhi: '子'});
+ const {body} = await call(list, {conceptId: newyear.concept.id, device_id: 'd1', gan: '甲', zhi: '子'}, []);
+ const text = JSON.stringify(body);
+ for (const k of ['love','money','work','health']) assert.ok(!text.includes(c.paid.yearAreas[k]));
+ assert.ok(!text.includes(c.paid.ending.remember));
+});
