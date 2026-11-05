@@ -55,7 +55,7 @@ Security가 켜져 있어서 이 service_role 키를 가진 서버 코드(`api/*
 3. 끝입니다. 이제 `main` 브랜치에 새 커밋을 push할 때마다 Vercel이 자동으로 재배포합니다.
    (제가 코드를 수정해서 보내드리면, 그 파일을 같은 저장소에 커밋 → push만 하면 몇십 초 안에
    실제 사이트에 반영됩니다. 사이트 주소도 그대로 유지돼요.)
-4. Vercel이 기본으로 주는 `sazubara-web.vercel.app` 같은 주소 대신 실제 구매한 도메인을 쓰려면
+4. Vercel이 기본으로 주는 `www.byeolcheop.com` 같은 주소 대신 실제 구매한 도메인을 쓰려면
    Vercel 프로젝트 > Settings > Domains 에서 도메인을 연결하면 됩니다 (네임서버 또는 CNAME 설정 1회).
 
 ## 2. 결제(크레딧 충전) 연동 켜기 — 사업자등록 없이 지금 바로 테스트 가능
