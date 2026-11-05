@@ -18,5 +18,18 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "sazubara-web.vercel.app"
+        }
+      ],
+      "destination": "https://www.byeolcheop.com/$1",
+      "permanent": false
+    }
   ]
 }
