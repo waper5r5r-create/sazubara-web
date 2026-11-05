@@ -2983,21 +2983,13 @@ function renderInviteSheet(){
             '<button type="button" class="share-btn" id="btn-do-share">'+uiIcon('share')+' 카카오톡 등으로 공유하기</button>'+
           '</div>'+
         '</div>'+
-
-        '<div><p class="section-title" style="font-size:.95rem;">프로모션 코드</p>'+
-          '<div class="invite-box">'+
-            '<p class="section-desc">받으신 코드가 있다면 입력해보세요.</p>'+
-            '<div class="invite-link-row"><input type="text" id="promo-code-input" placeholder="코드 입력" style="text-transform:uppercase;"></div>'+
-            '<button type="button" class="share-btn" id="promo-code-btn">코드 사용하기</button>'+
-          '</div>'+
-        '</div>'+
       '</div>'+
     '</div>';
 
   $('#invite-backdrop').addEventListener('click', function(e){ if (e.target.id==='invite-backdrop') closeInviteSheet(); });
   $('#invite-close').addEventListener('click', closeInviteSheet);
   $('#btn-do-share').addEventListener('click', doShare);
-  $('#promo-code-btn').addEventListener('click', redeemPromoCode);
+  /* 프로모션 코드 입력칸은 실제 결제 시작(2026-11-06)과 함께 숨겼다. 코드를 다시 쓰면 위 칸과 이 연결을 되살린다. */
 }
 
 /* 프로모션 코드 입력(지인/테스터 배포용). 서버(/api/promo/redeem)가 코드 유효성 ·
