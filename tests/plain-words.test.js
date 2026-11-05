@@ -17,3 +17,15 @@ test('content copy has correct particles, no term brackets, and no medical claim
  const page=fs.readFileSync(path.join(root,'index.html'),'utf8');
  assert.doesNotMatch(page,/간 기능 저하|혈압과 심박|오행의 결/);
 });
+
+test('payment review: footer shows business details and the price list matches real prices',()=>{
+ const fs=require('node:fs'),path=require('node:path'),root=path.join(__dirname,'..');
+ const page=fs.readFileSync(path.join(root,'index.html'),'utf8'),legal=fs.readFileSync(path.join(root,'legal.html'),'utf8');
+ const foot=page.slice(page.indexOf('<footer class="site-legal"'),page.indexOf('</footer>'));
+ for(const v of ['이음랩(IEUM LAB)','정계준','195-50-01151','301호','010-5440-0335','ieumlab22@gmail.com','legal.html#refund','legal.html#price'])assert.ok(foot.includes(v),v);
+ const fmt=n=>n.toLocaleString('en-US')+'원';
+ const ny=require('../api/_newyear-content.js').concept.price_krw,ian=require('../api/_ian-content.js').concept.price_krw,{STAGE_PRICE}=require('../api/_report-access.js');
+ assert.match(legal,new RegExp('2027 신년운세</th><td>'+fmt(ny)));
+ assert.match(legal,new RegExp('이안의 비밀</th><td>'+fmt(ian)));
+ assert.match(legal,new RegExp('결혼 사주</th><td>각 '+fmt(STAGE_PRICE.story)));
+});
