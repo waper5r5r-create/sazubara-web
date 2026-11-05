@@ -1330,7 +1330,14 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 body{letter-spacing:-.01em}
 main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:700;font-size:1.5rem;line-height:1.4;letter-spacing:-.03em}
 .ny-summary-row{margin:0 0 12px;line-height:1.6}.ny-summary-row b{display:block;margin-bottom:2px}.ny-fit{margin:12px 0 0}.ny-fit+.ny-tip,.ny-letter .ny-fit:last-of-type{margin-bottom:12px}
-.report-list-title{margin:6px 0 12px}
+.report-list-title{margin:0 0 12px}.report-group{margin-top:26px}
+.report-greeting{margin:18px 2px 0;font-family:var(--font-serif-heading);font-weight:700;font-size:1.0625rem;line-height:1.5;word-break:keep-all}
+#view-reports .report-grid.is-small{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#view-reports .report-grid.is-small .report-card{display:flex;flex-direction:column;min-width:0;min-height:0;grid-template-columns:none}
+#view-reports .report-grid.is-small .report-cover{width:100%;min-height:0;aspect-ratio:1/1;height:auto;flex:none}
+#view-reports .report-grid.is-small .report-text{width:100%;min-width:0;padding:12px 12px 14px}
+#view-reports .report-grid.is-small .nm{font-size:.9375rem}
+#view-reports .report-grid.is-small .tagline{font-size:.75rem;line-height:1.5}
 .section-title,.album-heading,.home-contents h2,.report-list-title,.personal-traits h2{font-family:var(--font-serif-heading);font-weight:700;letter-spacing:-.02em}
 .section-title,.album-heading,.home-contents h2,.report-list-title{font-size:1.1875rem;line-height:1.45}
 .eyebrow,.editorial-tag{font-size:.75rem;font-weight:700;letter-spacing:.12em}
@@ -4526,25 +4533,31 @@ function wireReportGridClicks(grid, list){
     });
   });
 }
+/* 콘텐츠 탭: 산 것은 맨 위로 모으고, 나머지는 성격별로 묶는다. */
+function reportSectionsFrom(list){
+  var owned=[],year=[],story=[],topic=[];
+  list.forEach(function(c){(reportStageOwned(c,'story')?owned:isNewYear(c)?year:isIan(c)?story:topic).push(c);});
+  return [{title:'내가 산 콘텐츠',rows:owned},{title:'2027년 준비',rows:year},{title:'이야기로 읽는 사주',rows:story},{title:'주제별로 보기',rows:topic,small:true}].filter(function(g){return g.rows.length;});
+}
 function renderReportGrid(list){
-  var grid = $('#report-grid');
-  if (!grid) return;
-  grid.innerHTML = list.length ? list.map(reportCardHtml).join('') : '<p class="section-desc">콘텐츠를 준비하고 있어요.</p>';
-  wireReportGridClicks(grid, list);
+  var root = $('#report-sections');
+  if (!root) return;
+  root.innerHTML = list.length ? reportSectionsFrom(list).map(function(g){return '<section class="report-group"><h2 class="report-list-title">'+esc(g.title)+'</h2><div class="report-grid'+(g.small?' is-small':'')+'">'+g.rows.map(reportCardHtml).join('')+'</div></section>';}).join('') : '<p class="section-desc">콘텐츠를 준비하고 있어요.</p>';
+  $all('.report-grid',root).forEach(function(grid){wireReportGridClicks(grid,list);});
 }
 function renderReportsTabView(){
   var view = $('#view-reports');
   if (!view) return;
   view.innerHTML =
         homeBannerHtml()+
-        '<h2 class="report-list-title">전체 콘텐츠</h2>'+
-    '<div class="report-grid" id="report-grid"><p class="section-desc">불러오는 중...</p></div>';
+        '<p class="report-greeting">'+(STATE.mySaju&&STATE.mySaju.name?esc(STATE.mySaju.name)+'님, ':'')+'2027년에 가장 좋은 달은 언제일까요?</p>'+
+    '<div id="report-sections"><p class="section-desc">불러오는 중...</p></div>';
   wireHomeBanners(view);
   loadReportList().then(function(list){
     renderReportGrid(list);
   }).catch(function(){
-    var grid = $('#report-grid');
-    if(grid){grid.innerHTML='<div class="card" style="grid-column:1/-1"><p class="section-desc">콘텐츠를 불러오지 못했어요.</p><button type="button" class="btn-secondary" id="retry-reports">다시 불러오기</button></div>';$('#retry-reports').addEventListener('click',renderReportsTabView);}
+    var grid = $('#report-sections');
+    if(grid){grid.innerHTML='<div class="card"><p class="section-desc">콘텐츠를 불러오지 못했어요.</p><button type="button" class="btn-secondary" id="retry-reports">다시 불러오기</button></div>';$('#retry-reports').addEventListener('click',renderReportsTabView);}
   });
 }
 var REPORT_STAGE_PRICE={story:7900};

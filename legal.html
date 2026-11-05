@@ -148,7 +148,7 @@
 </ul>
 <h3>환불 신청 방법</h3>
 <p>아래 연락처로 결제일, 결제 금액, 콘텐츠 이름을 알려주세요. 확인 후 3영업일 안에 결제 수단으로 환불해 드려요. 카드 결제는 카드사 사정에 따라 취소가 반영되기까지 며칠 더 걸릴 수 있어요.</p>
-<table><tr><th>환불 문의</th><td data-biz="email"></td></tr></table>
+<table><tr><th>환불 문의 전화</th><td data-biz="phone"></td></tr><tr><th>환불 문의 이메일</th><td data-biz="email"></td></tr></table>
 </section>
 
 <section id="business">
@@ -159,6 +159,7 @@
 <tr><th>사업자등록번호</th><td data-biz="bizNo"></td></tr>
 <tr><th>통신판매업 신고번호</th><td data-biz="mailOrderNo"></td></tr>
 <tr><th>주소</th><td data-biz="address"></td></tr>
+<tr><th>전화번호</th><td data-biz="phone"></td></tr>
 <tr><th>고객 문의</th><td data-biz="email"></td></tr>
 </table>
 </section>
@@ -167,12 +168,13 @@
 // 사업자 정보: 값이 비어 있으면 "등록 준비 중"으로 보여준다. 정보가 정해지면 여기만 채우면 된다.
 var BUSINESS = {
   name: '',
-  ceo: '',
+  ceo: '정계준',
   bizNo: '',
   mailOrderNo: '',
-  address: '',
+  address: '시흥시 신흥마을 2길 10, 301호',
+  phone: '010-5440-0335',
   email: '',
-  privacyOfficer: '',
+  privacyOfficer: '정계준',
   effectiveDate: '2026년 10월 24일'
 };
 document.querySelectorAll('[data-biz]').forEach(function(el){
