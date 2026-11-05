@@ -7,3 +7,13 @@ for(const name of ['love','wealth','career','marriage'])test(name+' content uses
  const bad=strings({story:m.story,detail:m.detail}).map(t=>t.replace(/\((식상|재성|관성|인성|비겁|정재|편재)\)/g,'')).filter(t=>TERMS.test(t));
  assert.deepEqual(bad,[]);
 });
+
+test('content copy has correct particles, no term brackets, and no medical claims',()=>{
+ const fs=require('node:fs'),path=require('node:path'),root=path.join(__dirname,'..');
+ const files=fs.readdirSync(path.join(root,'api')).filter(f=>/^_(career|love|marriage|wealth)-/.test(f)).map(f=>fs.readFileSync(path.join(root,'api',f),'utf8')).join('\n');
+ assert.doesNotMatch(files,/(병화|정화|무토|기토|임수|계수)은 /);
+ assert.doesNotMatch(files,/\((재성|식상|관성|인성|비겁)\)/);
+ assert.doesNotMatch(files,/그해엔 배우자 자리에 큰 움직임이 없어요/);
+ const page=fs.readFileSync(path.join(root,'index.html'),'utf8');
+ assert.doesNotMatch(page,/간 기능 저하|혈압과 심박|오행의 결/);
+});
