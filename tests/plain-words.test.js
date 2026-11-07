@@ -50,3 +50,10 @@ test('free previews: when the nearest best year is far, the sooner good year is 
   assert.match(html,/hasBatchim\(dz\.charAt\(0\)\)\?'과':'와'/);
   assert.ok(!html.includes("<h3>만나기 쉬운 자리</h3><p>'+esc(SPOUSE_FREE[zhi]"));
 });
+
+test('paid reports: month lines rotate instead of repeating, and wealth income titles carry no term brackets',()=>{
+  const m=require('../api/_marriage-deep-extra.js').monthTenGod;
+  for(const k of Object.keys(m)){assert.ok(Array.isArray(m[k])&&m[k].length>=3,k);assert.equal(new Set(m[k]).size,m[k].length);}
+  const src=require('node:fs').readFileSync(require('node:path').join(__dirname,'..','api','_wealth-deep.js'),'utf8');
+  assert.ok(!/\((정재|편재)\)/.test(src));
+});
