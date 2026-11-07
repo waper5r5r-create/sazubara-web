@@ -39,3 +39,14 @@ test('today: a steady (정재) day does not get the push-hard time blocks, and t
   assert.ok(!/추진력|밀어붙/.test(calm));
   for(const w of ['경도 보정','진태양시','동경 135'])assert.ok(!html.includes(w),w);
 });
+
+test('free previews: when the nearest best year is far, the sooner good year is named; no 술(戌)와 or repeated spouse lines',()=>{
+  const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const src=html.slice(html.indexOf('function soonerYearHtml('),html.indexOf('function loveSoonerHtml('));
+  const ctx={esc:s=>s,josaIeyo:w=>{const c=w.charCodeAt(w.length-1)-0xAC00;return c%28?'이에요':'예요';}};vm.createContext(ctx);vm.runInContext(src,ctx);
+  const rows=[{year:2027,score:1},{year:2028,score:2,label:'사랑받는 해'},{year:2034,score:4,top:1,label:'설레는 인연이 오는 해'}];
+  assert.match(ctx.soonerYearHtml(rows,rows[2],r=>r.label,'끝.'),/그 전에도 <strong class="wolha-year">2028년<\/strong>은 사랑받는 해예요\. 끝\./);
+  assert.equal(ctx.soonerYearHtml(rows,{year:2028},r=>r.label,'끝.'),'');
+  assert.match(html,/hasBatchim\(dz\.charAt\(0\)\)\?'과':'와'/);
+  assert.ok(!html.includes("<h3>만나기 쉬운 자리</h3><p>'+esc(SPOUSE_FREE[zhi]"));
+});

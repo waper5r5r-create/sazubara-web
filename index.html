@@ -1967,21 +1967,21 @@ function dominantRelKey(rows){
 
 /* 궁합: 일지 관계 / 일간 오행 관계 해석과 가중치 */
 var ZHI_REL_TEXT = {
-  "sanhe": "서로의 역할을 연결하고 협력하는 모습을 살펴보는 관계예요. 함께 할 때 발휘되는 강점을 알아보세요.",
-  "liuhe": "편안함과 신뢰를 쌓는 방식에 주목하는 관계예요. 작은 배려와 약속을 어떻게 주고받는지 살펴보세요.",
-  "same": "반응이나 생활 방식의 공통점을 살펴보는 관계예요. 닮은 점과 실제로 다른 점을 함께 확인해보세요.",
-  "none": "크게 부딪히거나 맞물리는 곳이 없는 관계예요. 서로를 알아가는 경험과 소통 방식에 주목해보세요.",
-  "hai": "작은 기대 차이나 오해가 생기는 지점을 살펴보는 관계예요. 추측보다 확인하는 대화가 도움이 돼요.",
-  "yuanjin": "표현을 다르게 받아들이는 지점을 살펴보는 관계예요. 각자의 의도와 감정을 따로 확인해보세요.",
-  "xing": "기준과 방식의 차이를 조율하는 데 주목하는 관계예요. 함께 정할 규칙과 각자 선택할 부분을 구분해보세요.",
-  "chong": "서로 다른 반응과 변화의 가능성이 두드러지는 관계예요. 다른 관점을 이해하고 결정 속도를 맞춰보세요."
+  "sanhe": "같이 있으면 일이 술술 풀리는 사이예요. 여행 계획이든 이사든, 둘이 함께 하면 손발이 척척 맞아요.",
+  "liuhe": "말 안 해도 편한 사이예요. 같이 있으면 긴장이 풀리고, 작은 약속을 지켜 줄 때 마음이 더 깊어져요.",
+  "same": "생활 리듬이 닮은 사이예요. 좋아하는 것도 비슷하지만, 둘 다 고집을 부리면 누구도 먼저 숙이지 않아요.",
+  "none": "크게 부딪히는 곳도, 딱 맞물리는 곳도 없는 사이예요. 그만큼 둘이 어떻게 지내느냐에 따라 얼마든지 가까워져요.",
+  "hai": "작은 서운함이 쌓이기 쉬운 사이예요. '말 안 해도 알겠지' 대신 '이래서 서운했어'라고 그때그때 말해 주세요.",
+  "yuanjin": "같은 말도 다르게 들리는 사이예요. 농담이 상처가 되기 쉬우니, 오해다 싶으면 바로 '무슨 뜻이었어?' 하고 물어보세요.",
+  "xing": "일 처리 방식이 달라 부딪히기 쉬운 사이예요. 돈, 집안일처럼 자주 겹치는 일은 미리 규칙을 정해 두면 편해요.",
+  "chong": "끌리기도 하고 부딪히기도 하는, 서로를 크게 흔드는 사이예요. 다툰 뒤에는 결론보다 마음부터 풀고 이야기해 보세요."
 };
 var GAN_REL_TEXT = {
-  "sheng": "내가 상대를 돕거나 아이디어를 보태는 흐름으로 읽어요. 도움의 범위와 상대가 원하는 방식을 함께 확인해보세요.",
-  "shengBack": "상대의 도움을 받거나 그 의견을 참고하는 흐름으로 읽어요. 내 생각도 함께 전하며 균형을 맞춰보세요.",
-  "same": "비슷한 관점에서 출발하는 흐름으로 읽어요. 공통점뿐 아니라 서로 다른 생각도 편하게 나눠보세요.",
-  "ke": "내 기준이나 방향이 상대에게 영향을 주는 흐름으로 읽어요. 제안과 요구를 구분하고 상대의 선택을 존중해주세요.",
-  "keBack": "상대의 기준이나 의견이 나에게 영향을 주는 흐름으로 읽어요. 참고할 부분과 내가 결정할 부분을 나누어보세요."
+  "sheng": "내가 상대를 챙겨 주고 싶어지는 사이예요. 다만 도움이 잔소리로 들리지 않게, 원할 때만 손을 내밀어 주세요.",
+  "shengBack": "상대가 나를 챙겨 주는 사이예요. 받는 게 편해질수록 고맙다는 말을 자주 해 주세요.",
+  "same": "생각하는 방식이 비슷해서 대화가 잘 통하는 사이예요. 그래도 다른 의견이 나오면 반갑게 들어 주세요.",
+  "ke": "내가 이끌고 상대가 따라오는 사이예요. 결정을 혼자 내리지 말고 상대 의견을 한 번 더 물어보세요.",
+  "keBack": "상대가 이끌고 내가 맞춰 가는 사이예요. 싫은 건 싫다고 말해야 오래 편해요."
 };
 var ZHI_SCORE = {sanhe:22,liuhe:18,same:8,none:0,hai:-6,yuanjin:-8,xing:-10,chong:-12};
 var GAN_SCORE = {sheng:15,shengBack:10,same:5,ke:-5,keBack:-8};
@@ -5197,7 +5197,7 @@ function careerPreviewHtml(concept,result,rows){
   '<figure class="love-free-card career-free-card">'+careerCardArt(stem)+'<figcaption>당신 일의 지도 · <strong>'+esc(CAREER_TITLE[stem]||'')+'</strong></figcaption></figure>'+
   seorimSay('explain','<p>여기서부터 풀이를 시작할게요. 당신 일하는 스타일을 한 단어로 하면 <strong>「'+esc(CAREER_TITLE[stem]||'')+'」</strong>이에요.</p>')+
   '<ol class="route">'+routeStop(1,'출발점','지금 서 있는 곳','intro','빈 두루마리에 붓으로 첫 선을 그으려는 서림','<p>'+esc(CAREER_FREE[stem]||'')+'</p>','타고난 성향 · 일터 자리')+
-  (first?routeStop(2,'가장 가까운 이정표','길이 열리는 첫 번째 해','listen','작업상 너머로 이야기를 듣는 서림','<p><strong class="wolha-year">'+first.year+'년</strong>, '+esc(first.ganKr+first.zhiKr)+'년의 기운이 일터 자리 '+esc(mz)+'에 닿는 <strong>'+esc(careerYearLabel(first))+'</strong>예요. 앞으로 10년 중 특히 좋은 해는 세 번이에요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','해마다 달라지는 기운'):'')+'</ol>'+
+  (first?routeStop(2,'가장 가까운 이정표','길이 열리는 첫 번째 해','listen','작업상 너머로 이야기를 듣는 서림','<p><strong class="wolha-year">'+first.year+'년</strong>, '+esc(first.ganKr+first.zhiKr)+'년의 기운이 일터 자리 '+esc(mz)+'에 닿아요. <strong>'+esc(careerYearLabel(first))+'</strong>'+josaIeyo(careerYearLabel(first))+'. 앞으로 10년 중 특히 좋은 해는 세 번이에요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','해마다 달라지는 기운'):'')+'</ol>'+
   lockedPeekHtml('<section class="spouse-card career-card">'+careerCardArt(stem)+'<p class="reader-kicker">일의 지도 카드</p><h2>'+esc(CAREER_TITLE[stem]||'')+'</h2><h3>나는 어떤 일꾼일까</h3><p>'+esc(CAREER_FREE[stem]||'')+'</p></section>'+careerTimelineHtml(rows,function(r){return esc(careerYearLabel(r));}))+
  '</section>';
 }
@@ -5337,6 +5337,14 @@ function loveTimelineHtml(rows,labelOf){return '<section class="marriage-timelin
 function loveLetter(q,scene,alt,answerHtml,basis){
  return '<article class="love-letter"><div class="love-q"><span class="love-q-tag">Q.</span><p>'+esc(q)+'</p></div>'+haerangScene(scene,alt)+'<div class="love-a"><p class="love-a-to">해랑의 답장</p>'+answerHtml+(basis?'<p class="love-basis">'+esc(basis)+'</p>':'')+'<p class="love-sign">달빛 꽃집에서, 해랑</p></div></article>';
 }
+/* 가장 가까운 '세 해'가 3년 넘게 멀면, 그 전에 오는 괜찮은 해도 함께 알려 준다(아래 연표와 말이 어긋나지 않게). */
+function soonerYearHtml(rows,first,labelOf,tail){
+ var near=rows.filter(function(r){return !r.top&&r.year<first.year&&r.score>=2;})[0];
+ if(!near||first.year-rows[0].year<3)return '';
+ var label=labelOf(near);
+ return '<p>그 전에도 <strong class="wolha-year">'+near.year+'년</strong>은 '+esc(label)+josaIeyo(label)+'. '+tail+'</p>';
+}
+function loveSoonerHtml(rows,first){return soonerYearHtml(rows,first,loveYearLabel,'마음을 열어 두면 인연은 충분히 와요.');}
 function lovePreviewHtml(concept,result,rows){
  var stem=result.day.ganKr,who=marriageCallName(result),dz=result.day.zhiKr+'('+result.day.zhi+')';
  var first=rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;})[0];
@@ -5346,7 +5354,7 @@ function lovePreviewHtml(concept,result,rows){
   sajuHookHtml('love',result,'해랑이 사주에서 먼저 본 것')+freeChapterHtml('love',result)+
   '<figure class="love-free-card">'+loveCardArt(stem)+'<figcaption>당신 마음의 꽃 · <strong>'+esc(LOVE_TITLE[stem]||'')+'</strong></figcaption></figure>'+
   haerangSay('wink','<p>맞죠? 이제 연애하면서 자주 하는 고민들에 하나씩 답해볼게요.</p>')+
-  (first?loveLetter('나 언제쯤 연애할 수 있을까?','listen','찻잔을 들고 이야기를 듣는 해랑','<p>앞으로 10년 중 연애운이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년 기운이 연인 자리 '+esc(dz)+'와 잘 맞아서, <strong>'+esc(loveYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','연인 자리 · 타고난 성향'):'')+
+  (first?loveLetter('나 언제쯤 연애할 수 있을까?','listen','찻잔을 들고 이야기를 듣는 해랑','<p>앞으로 10년 중 연애운이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년 기운이 연인 자리 '+esc(dz)+(hasBatchim(dz.charAt(0))?'과':'와')+' 잘 맞아서, <strong>'+esc(loveYearLabel(first))+'</strong>예요.</p>'+loveSoonerHtml(rows,first)+'<div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','연인 자리 · 타고난 성향'):'')+
   lockedPeekHtml('<section class="spouse-card love-card">'+loveCardArt(stem)+'<p class="reader-kicker">마음의 꽃 카드</p><h2>'+esc(LOVE_TITLE[stem]||'')+'</h2><h3>나는 어떤 연인일까</h3><p>'+esc(LOVE_FREE[stem]||'')+'</p></section>'+loveTimelineHtml(rows,function(r){return esc(loveYearLabel(r));}))+
  '</section>';
 }
@@ -5543,9 +5551,9 @@ function marriagePreviewHtml(concept,result,rows){
   sajuHookHtml('marriage',result,'월하가 사주에서 먼저 본 것')+freeChapterHtml('marriage',result)+
   wolhaScene('intro','엉킨 붉은 실타래를 살펴보는 월하')+
   wolhaSay('thinking','<p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><p class="wolha-basis">내 사주의 배우자 자리 기준</p>')+
-  (first?wolhaSay('smile','<p>앞으로 10년 중 결혼운이 가장 먼저 좋아지는 해는 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년의 기운이 배우자 자리 '+esc(zhiLabel)+'에 닿는, <strong>'+esc(marriageYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div><p class="hint">앞으로 10년 중 특히 좋은 해는 세 번이에요.</p>'):'')+
+  (first?wolhaSay('smile','<p>앞으로 10년 중 결혼운이 가장 먼저 좋아지는 해는 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년의 기운이 배우자 자리 '+esc(zhiLabel)+'에 닿아요. <strong>'+esc(marriageYearLabel(first))+'</strong>'+josaIeyo(marriageYearLabel(first))+'.</p>'+soonerYearHtml(rows,first,marriageYearLabel,'그해에도 좋은 인연을 만날 수 있어요.')+'<div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div><p class="hint">앞으로 10년 중 특히 좋은 해는 세 번이에요.</p>'):'')+
   wolhaSay('surprised','<p>당신과 잘 맞는 배우자 유형은 <strong>「'+esc(SPOUSE_STAR[zhi]||'')+'」</strong>이에요. 구체적으로 어떤 사람인지는 이어서 말씀드릴게요.</p>')+
-  lockedPeekHtml('<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드</p><h2>'+esc(SPOUSE_STAR[zhi]||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><h3>만나기 쉬운 자리</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p></section><section class="marriage-timeline"><ol>'+rows.map(function(r,i){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+esc(marriageYearLabel(r))+'</p></div></li>';}).join('')+'</ol></section>')+
+  lockedPeekHtml('<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드</p><h2>'+esc(SPOUSE_STAR[zhi]||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><h3>만나기 쉬운 자리</h3><p>어디서, 어떤 계기로 만나기 쉬운지 알려 드려요.</p></section><section class="marriage-timeline"><ol>'+rows.map(function(r,i){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+esc(marriageYearLabel(r))+'</p></div></li>';}).join('')+'</ol></section>')+
  '</section>';
 }
 function marriageStoryHtml(story,result,rows){
@@ -5748,7 +5756,7 @@ function wealthPreviewHtml(concept,result,rows){
   wealthScaleHtml(pf,'')+
   '<figure class="love-free-card wealth-free-card">'+wealthCardArt(stem)+'<figcaption>내 재물 장부 카드 · <strong>'+esc(WEALTH_TITLE[stem]||'')+'</strong></figcaption></figure>'+
   gumbiSay('wink','<p>봐요, 맞죠? 이제 장부 펼쳐볼게요.</p>')+
-  (first?ledgerRow(1,'10년 흐름','flow','그래서 나 언제 돈 들어와?','','<p>앞으로 10년 중 돈 흐름이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년이라 <strong>'+esc(wealthYearLabel(first))+'</strong>예요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','해마다 달라지는 기운'):'')+
+  (first?ledgerRow(1,'10년 흐름','flow','그래서 나 언제 돈 들어와?','','<p>앞으로 10년 중 돈 흐름이 특히 좋은 해가 세 번 있어요. 제일 가까운 건 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년이라 <strong>'+esc(wealthYearLabel(first))+'</strong>예요.</p>'+soonerYearHtml(rows,first,wealthYearLabel,'그때부터 차근차근 모아 두면 좋은 해에 힘이 돼요.')+'<div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','해마다 달라지는 기운'):'')+
   lockedPeekHtml('<section class="ledger-peek"><p class="ledger-q">내 장부</p><ul><li><b>수입</b><span>어떻게 버는 타입인지</span></li><li><b>지출</b><span>새는 구멍과 막는 법</span></li><li><b>저축</b><span>모으는 힘과 재물 창고</span></li><li><b>투자</b><span>맞는 성향과 원칙</span></li><li><b>빌려주기·동업</b><span>사람과 얽힌 돈</span></li></ul></section>'+wealthYearsHtml(rows,function(r){return esc(wealthYearLabel(r));}))+
  '</section>';
 }
@@ -6487,7 +6495,10 @@ function renderCompatDetailSection(resA, resB, compat, detailKey, container){
   if (!isUnlocked(detailKey)){
     body.innerHTML =
       '<p class="section-title" style="font-size:.98rem;">상세 리포트</p>'+
-      lockedCardHtml(COMPAT_DETAIL_PRICE, '관계를 이어가는 방법 · 대화 스타일 · 조율할 점 · 월별 흐름', '두 사람의 궁합을 더 깊이 들여다보는 상세 리포트를 확인하세요.', '결제하고 열어보기');
+      lockedCardHtml(COMPAT_DETAIL_PRICE, '관계를 이어가는 방법 · 대화 스타일 · 조율할 점 · 월별 흐름', '두 사람의 궁합을 더 깊이 들여다보는 상세 리포트를 확인하세요.', '결제하고 열어보기')+
+      (container?'':'<p class="invite-gift">상대에게 링크를 보내 직접 입력하게 하면, 두 사람 모두 무료로 볼 수 있어요.</p><button type="button" class="btn-secondary" data-compat-free-invite>링크 보내고 무료로 보기</button>');
+    var freeBtn=$('[data-compat-free-invite]',body);
+    if(freeBtn)freeBtn.addEventListener('click',function(){doShareCompatInvite(STATE.mySaju||resA);});
     $('.unlock-btn', body).addEventListener('click', function(){
       PAY_RETURN={type:'compat',a:resA,b:resB,compat:compat};
       tryUnlock(detailKey, COMPAT_DETAIL_PRICE, '궁합 상세 리포트', function(){
