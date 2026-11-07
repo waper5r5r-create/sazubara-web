@@ -75,7 +75,7 @@ test('first screen and result reveal use stars only; content characters stay ins
   const hero=html.slice(html.indexOf('function starHeroHtml('),html.indexOf('/* 결과 화면 맨 위: 원국표'));
   const reveal=html.slice(html.indexOf('function sajuRevealHtml('),html.indexOf('/* 생년월일·태어난 시간 입력'));
   for(const part of [hero,reveal])assert.ok(!/faces|daon|\/ian\//.test(part));
-  assert.match(html,/showSajuReveal\(result, function\(\)\{\s*renderSajuResult\(result\);/);
+  assert.ok(html.includes('(BF_SKIP_REVEAL?function(r,cb){BF_SKIP_REVEAL=false;cb();}:showSajuReveal)(result, function(){'));
   assert.match(reveal,/prefers-reduced-motion/);assert.match(reveal,/addEventListener\('click',finish\)/);
 });
 
@@ -90,4 +90,16 @@ test('birth input: 8 digits or separated numbers become a real date, and every t
   ctx.BIRTH_BANDS.forEach((b,i)=>assert.equal(ctx.birthBandIndex(b.t),i,b.range));
   assert.equal(ctx.birthBandIndex('23:10'),11);assert.equal(ctx.birthBandIndex('23:40'),12);assert.equal(ctx.birthBandIndex('00:10'),0);assert.equal(ctx.birthBandIndex('07:29'),3);assert.equal(ctx.birthBandIndex('07:30'),4);
   assert.match(html,/enhanceBirthDate\(\$\('#f-date'\)/);assert.match(html,/enhanceBirthDate\(\$\('#c-date-'\+suf\)/);
+});
+
+test('birth flow: page-by-page input opens from the first screen, 다시 입력 and topic links, fills the hidden form and skips the cover',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const flow=html.slice(html.indexOf('function openBirthFlow('),html.indexOf('function closeBirthFlow('));
+  assert.match(html,/data-open-birth>생년월일 넣고 시작하기<\/button>/);
+  assert.match(html,/openBirthFlow\(STATE\.lastForm\);/);assert.match(html,/openBirthFlow\(null,\{note:concept\.title\}\)/);
+  for(const id of ['#f-name','#f-date','#f-time','#f-unknown-time','#f-city','#f-leap'])assert.ok(flow.includes("$('"+id+"')"),id);
+  assert.match(flow,/BF_SKIP_REVEAL=true/);assert.match(flow,/requestSubmit/);
+  assert.match(flow,/autocomplete="off"/);assert.ok(!/autocomplete="bday"/.test(flow));
+  for(const k of ['첫째 장','둘째 장','셋째 장','넷째 장','별자리 완성','윤달이에요','태어난 곳','시간을 몰라요'])assert.ok(flow.includes(k),k);
+  assert.ok(!/faces|daon|\/ian\//.test(flow));
 });
