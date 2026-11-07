@@ -3984,7 +3984,7 @@ function skyHtml(result,list){
   '</div>'+
   '<p class="sky-legend">가까이, 밝게 빛날수록 잘 맞는 사이예요. 하늘을 끌어서 둘러보세요.</p>'+
   '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구 초대하기</button>'+
-  (list.length?'<details class="sky-list"><summary>별 목록 '+list.length+'</summary><ul>'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((type?type.title+' · ':'')+skyWord(e))+'</span></button></li>';}).join('')+'</ul></details>':'')+
+  (list.length?'<details class="sky-list"><summary>별 목록 '+list.length+'</summary><ul>'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></button></li>';}).join('')+'</ul></details>':'')+
  '</section>';
 }
 function skyFirst(text){text=String(text||'');var i=text.indexOf('. ');return i>0?text.slice(0,i+1):text;}

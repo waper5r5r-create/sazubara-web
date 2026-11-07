@@ -59,3 +59,9 @@ test('opening an invite link with a saved saju registers right away, and 별첩 
   assert.match(html,/INVITE_MYROOM_AT = Date\.now\(\);/);
   assert.match(html,/if \(name==='compat'\)\{refreshCompatPersonA\(\);setupAlbumEntry\(\);if\(INVITE_MYROOM_CACHE!==null&&Date\.now\(\)-INVITE_MYROOM_AT>15000\)/);
 });
+
+test('the invited person sees the inviter in 별첩, marked as the friend who invited them',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  assert.match(html,/action=received&device_id=/);assert.match(html,/fromInviter:true/);
+  assert.match(html,/e\.fromInviter\?'나를 초대한 친구 · ':''/);
+});
