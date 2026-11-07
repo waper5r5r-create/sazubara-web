@@ -69,13 +69,25 @@ test('paid 10-year lists: a year with the same relation as an earlier one points
   assert.equal((html.match(/rows\.map\(function\(r,ri\)\{var rp=sameRelBefore\(rows,ri\)/g)||[]).length,3);
 });
 
-test('first-screen and result reveal: eight hero stars, six friends with real faces, saju reveal used on submit with a calm fallback',()=>{
-  const fs=require('node:fs'),path=require('node:path');const root=path.join(__dirname,'..');const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+test('first screen and result reveal use stars only; content characters stay inside the contents',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
   const stars=html.match(/var HERO_STARS=(\[[^;]*\]);/);assert.ok(stars);assert.equal(JSON.parse(stars[1]).length,8);
-  const imgs=[...html.slice(html.indexOf('var STAR_FRIENDS='),html.indexOf('function starHeroHtml(')).matchAll(/img:'([^']+)'/g)].map(m=>m[1]);
-  assert.equal(imgs.length,6);for(const p of imgs)assert.ok(fs.existsSync(path.join(root,p)),p);
+  const hero=html.slice(html.indexOf('function starHeroHtml('),html.indexOf('/* 결과 화면 맨 위: 원국표'));
+  const reveal=html.slice(html.indexOf('function sajuRevealHtml('),html.indexOf('/* 생년월일·태어난 시간 입력'));
+  for(const part of [hero,reveal])assert.ok(!/faces|daon|\/ian\//.test(part));
   assert.match(html,/showSajuReveal\(result, function\(\)\{\s*renderSajuResult\(result\);/);
-  const fn=html.slice(html.indexOf('function showSajuReveal('),html.indexOf('/* ---- 공유 / 초대 ---- */'));
-  assert.match(fn,/prefers-reduced-motion/);assert.match(fn,/showReveal\(/);assert.match(fn,/addEventListener\('click',finish\)/);
-  assert.match(html,/'여덟':'여섯'/);
+  assert.match(reveal,/prefers-reduced-motion/);assert.match(reveal,/addEventListener\('click',finish\)/);
+});
+
+test('birth input: 8 digits or separated numbers become a real date, and every time band maps back to itself',()=>{
+  const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const src=html.slice(html.indexOf('var BIRTH_BANDS='),html.indexOf('var BIRTH_UIS='));const ctx={};vm.createContext(ctx);vm.runInContext(src,ctx);
+  const iso=(t,l)=>ctx.birthDateIso(ctx.parseBirthDigits(t),l);
+  assert.equal(iso('19940512'),'1994-05-12');assert.equal(iso('1994. 5. 12'),'1994-05-12');assert.equal(iso('1994-05-12'),'1994-05-12');
+  assert.equal(iso('19940231'),'');assert.equal(iso('1994051'),'');assert.equal(iso('19941301'),'');
+  assert.equal(iso('19940230',true),'1994-02-30','lunar months can have a 30th');
+  assert.equal(ctx.BIRTH_BANDS.length,13);
+  ctx.BIRTH_BANDS.forEach((b,i)=>assert.equal(ctx.birthBandIndex(b.t),i,b.range));
+  assert.equal(ctx.birthBandIndex('23:10'),11);assert.equal(ctx.birthBandIndex('23:40'),12);assert.equal(ctx.birthBandIndex('00:10'),0);assert.equal(ctx.birthBandIndex('07:29'),3);assert.equal(ctx.birthBandIndex('07:30'),4);
+  assert.match(html,/enhanceBirthDate\(\$\('#f-date'\)/);assert.match(html,/enhanceBirthDate\(\$\('#c-date-'\+suf\)/);
 });

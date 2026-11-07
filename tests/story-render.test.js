@@ -343,3 +343,14 @@ test('persona phrases: 을·정·임 do not get the behaviour text written for t
  }
  assert.equal(Object.keys(seen).length,10);
 });
+
+test('every birth time band lands in its own 시진, with and without the local-time fix, and 밤 자시 keeps the same day',()=>{
+ const want=['자','축','인','묘','진','사','오','미','신','유','술','해','자'];
+ const bands=[...html.slice(html.indexOf('var BIRTH_BANDS='),html.indexOf('var BIRTH_ANIMAL=')).matchAll(/t:'(\d\d):(\d\d)'/g)].map(m=>[Number(m[1]),Number(m[2])]);
+ assert.equal(bands.length,13);
+ for(const city of ['서울','제주','포항','목포'])for(const fix of [true,false]){
+  const at=(h,mi)=>api.computeSaju({year:1994,month:5,day:12,hour:h,minute:mi,isLunar:false,isLeapMonth:false,unknownTime:false,gender:'f',name:'',city,useCorrection:fix});
+  bands.forEach(([h,mi],i)=>assert.equal(at(h,mi).time.zhiKr,want[i],city+' '+fix+' '+h+':'+mi));
+  assert.equal(at(23,45).day.ganKr+at(23,45).day.zhiKr,at(22,30).day.ganKr+at(22,30).day.zhiKr,'밤 자시 '+city+' '+fix);
+ }
+});

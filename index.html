@@ -1246,18 +1246,46 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .saju-hero.is-intro .editorial-tag,.saju-hero.is-intro h1,.saju-hero.is-intro .saju-hero-sub{animation:heroRise .7s ease-out both}
 .saju-hero.is-intro h1{animation-delay:.12s}.saju-hero.is-intro .saju-hero-sub{animation-delay:.24s}
 @keyframes heroRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.hero-peek{position:relative;height:44px;margin:12px 0 0}
-.hero-peek-line{position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transform:translateY(6px);transition:opacity .5s ease,transform .5s ease;pointer-events:none}
-.hero-peek-line.is-on{opacity:1;transform:none}
-.hero-peek-line img{flex:none;width:38px;height:38px;border-radius:50%;object-fit:cover;object-position:center 20%;background:var(--surface-2);border:2px solid var(--surface);box-shadow:0 2px 8px #0b10201f}
-.hero-peek-line span{padding:7px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--border);font-size:.8125rem;line-height:1.4;color:var(--fg);text-align:left;word-break:keep-all}
-.hero-peek-line b{margin-right:6px;color:var(--accent);font-size:.75rem}
 .saju-rv{flex-direction:column;gap:6px;cursor:pointer}
+.birth-native{position:absolute!important;width:1px!important;height:1px!important;min-height:0!important;padding:0!important;border:0!important;opacity:0;pointer-events:none;overflow:hidden;clip:rect(0 0 0 0)}
+.birth-native-wrap{display:none!important}
+.birth-date-text{width:100%;min-height:56px;padding:0 16px;border:1.5px solid var(--border);border-radius:14px;background:var(--surface);color:var(--fg);font-size:1.25rem;font-weight:700;letter-spacing:.06em;text-align:center;font-variant-numeric:tabular-nums;transition:border-color .2s,box-shadow .2s}
+.birth-date-text::placeholder{font-weight:500;letter-spacing:.02em;color:var(--fg-muted);opacity:.6}
+.birth-date-text:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 4px #c9a04e26}
+.birth-live{min-height:1.4em;margin:8px 0 0;font-size:.875rem;font-weight:600;text-align:center;color:var(--fg-muted)}
+.birth-live.is-ok{color:var(--accent);animation:heroRise .35s ease-out both}
+.birth-live.is-bad{color:#c0563b}
+.birth-time-label{margin:0 0 8px;font-weight:600;font-size:.875rem;color:#555a6d}
+.birth-bands{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.birth-band{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:56px;padding:9px 12px 9px 14px;border:1.5px solid var(--border);border-radius:14px;background:var(--surface);color:var(--fg);text-align:left;overflow:hidden;transition:transform .15s,border-color .2s,box-shadow .2s}
+.birth-band::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tone,#c9a04e)}
+.birth-band b{font-size:.875rem;line-height:1.3;font-weight:700;word-break:keep-all}
+.birth-band small{font-size:.75rem;color:var(--fg-muted)}
+.birth-band.tone-night{--tone:linear-gradient(#27306a,#4b4f9c)}.birth-band.tone-dawn{--tone:linear-gradient(#6a5aa8,#e7a6a1)}.birth-band.tone-morning{--tone:linear-gradient(#f3c98b,#f7dfa8)}.birth-band.tone-day{--tone:linear-gradient(#f0b64a,#f6d27c)}.birth-band.tone-evening{--tone:linear-gradient(#e58d5f,#b5577a)}
+.birth-band.is-unknown{grid-column:1/-1;align-items:center;text-align:center}.birth-band.is-unknown::before{display:none}
+.birth-band:active{transform:scale(.97)}
+.birth-band.is-on{border-color:var(--accent);background:linear-gradient(135deg,#fff8e8,var(--surface));box-shadow:0 0 0 3px #c9a04e2e}
+.birth-band.is-on::after{content:'✦';position:absolute;right:10px;top:8px;color:var(--accent);font-size:.875rem}
+.birth-exact-toggle{display:block;margin:10px auto 0;padding:6px;border:0;background:none;color:var(--fg-muted);font-size:.8125rem;text-decoration:underline;text-underline-offset:3px}
+.birth-exact{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:8px}
+.birth-exact input{width:140px;min-height:48px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface);color:var(--fg);font-size:1.125rem;font-weight:700;text-align:center;letter-spacing:.08em}
+.birth-exact span{font-size:.75rem;color:var(--fg-muted)}
+.birth-step-head{margin:0 0 14px;text-align:center}
+.birth-step-head p{margin:0 0 4px;font-size:.75rem;font-weight:700;letter-spacing:.08em;color:var(--accent)}
+.birth-step-head h2{margin:0;font-family:'Noto Serif KR',serif;font-size:1.375rem;letter-spacing:-.03em;color:var(--fg)}
+.birth-sky{position:relative;height:92px;margin:0 0 18px;border-radius:18px;background:radial-gradient(ellipse at 50% 120%,#2c3a6b 0,#141c3b 55%,#0d1430 100%);overflow:hidden}
+.birth-sky-stars{position:absolute;left:0;right:0;top:6px;height:58px}
+.birth-sky-stars i{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#ffffff38;box-shadow:0 0 0 0 #f3c46b00;transition:background .4s,box-shadow .4s,transform .4s}
+.birth-sky-stars i.on{background:#fff2cc;box-shadow:0 0 10px 3px #f3c46bb3;transform:scale(1.25)}
+.birth-sky-stars i.dim{background:#ffffff24;outline:1px dashed #ffffff40;outline-offset:3px}
+.birth-sky-txt{position:absolute;left:0;right:0;bottom:10px;margin:0;text-align:center;font-size:.8125rem;font-weight:600;color:#f3e6c8}
+.saju-form-step.step-in{animation:stepIn .4s ease-out both}
+@keyframes stepIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.saju-form-step.step-in,.birth-live.is-ok{animation:none}.birth-sky-stars i{transition:none}}
 .srv-stage{position:relative;width:300px;height:300px;display:flex;align-items:center;justify-content:center}
 .srv-ring{position:absolute;inset:24px;border-radius:50%;border:1px dashed #e0ad5559;animation:revealSpin 18s linear infinite}
-.srv-face{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;object-fit:cover;object-position:center 20%;border:2px solid #e0ad55;box-shadow:0 0 0 4px #0d142099,0 0 18px #e0ad5555;opacity:0;transform:translate(var(--x),var(--y)) scale(.3);animation:srvFace .5s var(--d) cubic-bezier(.3,1.5,.5,1) forwards,srvFloat 2.4s calc(var(--d) + .5s) ease-in-out infinite}
-@keyframes srvFace{to{opacity:1;transform:translate(var(--x),var(--y)) scale(1)}}
-@keyframes srvFloat{0%,100%{opacity:1;transform:translate(var(--x),var(--y))}50%{opacity:1;transform:translate(var(--x),calc(var(--y) - 5px))}}
+.srv-star{position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(circle,#fff6d8 0,#f3c46b 24%,#f3c46b00 70%);opacity:0;transform:translate(var(--x),var(--y)) scale(.2);animation:srvStar .6s var(--d) ease-out forwards}
+@keyframes srvStar{60%{opacity:1;transform:translate(var(--x),var(--y)) scale(1.6)}100%{opacity:.85;transform:translate(var(--x),var(--y)) scale(1)}}
 .srv-pillars{position:relative;display:flex;gap:8px}
 .srv-col{display:flex;flex-direction:column;align-items:center;gap:6px}
 .srv-col em{font-style:normal;font-size:.6875rem;color:#ffffff73}
@@ -2758,16 +2786,16 @@ function showReveal(text, sub, cb){
   }, 950);
 }
 
-/* 사주 계산 직후 연출: 콘텐츠 친구 여섯 명이 둘러서고, 가운데에 내 여덟 글자가 년→월→일→시 순서로 떨어져 자리를 잡아요.
+/* 사주 계산 직후 연출: 별 여덟 개가 둘레에 켜지고, 가운데에 내 여덟 글자가 년→월→일→시 순서로 떨어져 자리를 잡아요.
    약 2초 뒤 결과를 열고, 화면을 누르면 바로 넘어가요. 움직임 줄이기 설정이면 기존의 짧은 연출을 써요. */
 function sajuRevealHtml(result){
  var cols=[['시',result.time],['일',result.day],['월',result.month],['년',result.year]].filter(function(c){return c[1];});
  if(!cols.length)return '';
  var order=cols.slice().reverse(),who=result.name?result.name+'님':'나';
  var pillars=cols.map(function(c){var k=order.indexOf(c);return '<div class="srv-col"><span class="srv-g" style="--d:'+(0.45+k*0.24).toFixed(2)+'s"><b>'+esc(c[1].gan)+'</b><small>'+esc(c[1].ganKr||'')+'</small></span><span class="srv-g" style="--d:'+(0.57+k*0.24).toFixed(2)+'s"><b>'+esc(c[1].zhi)+'</b><small>'+esc(c[1].zhiKr||'')+'</small></span><em>'+c[0]+'</em></div>';}).join('');
- var friends=STAR_FRIENDS.map(function(c,i){var a=(i*60-90)*Math.PI/180;return '<img class="srv-face" src="'+c.img+'" alt="" style="--x:'+(Math.cos(a)*124).toFixed(1)+'px;--y:'+(Math.sin(a)*124).toFixed(1)+'px;--d:'+(i*0.08).toFixed(2)+'s" decoding="async">';}).join('');
+ var friends=Array.apply(null,{length:8}).map(function(_,i){var a=(i*45-90)*Math.PI/180;return '<i class="srv-star" style="--x:'+(Math.cos(a)*124).toFixed(1)+'px;--y:'+(Math.sin(a)*124).toFixed(1)+'px;--d:'+(0.45+i*0.12).toFixed(2)+'s"></i>';}).join('');
  return '<div class="srv-stage"><div class="srv-ring"></div>'+friends+'<div class="srv-pillars">'+pillars+'</div></div>'+
-  '<p class="reveal-txt srv-txt">'+esc(who)+'의 '+(cols.length===4?'여덟':'여섯')+' 글자를 찾았어요</p><p class="reveal-sub srv-sub">별첩 친구들이 함께 풀어 볼게요</p>';
+  '<p class="reveal-txt srv-txt">'+esc(who)+'의 '+(cols.length===4?'여덟':'여섯')+' 글자를 찾았어요</p><p class="reveal-sub srv-sub">풀이를 펼치고 있어요</p>';
 }
 function showSajuReveal(result,cb){
  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2784,6 +2812,107 @@ function showSajuReveal(result,cb){
  }
  ov.addEventListener('click',finish);
  setTimeout(finish,2200);
+}
+
+/* 생년월일·태어난 시간 입력: 달력·시계 창 대신
+   - 생년월일은 숫자 8자리를 바로 쳐요(예: 19940512). 맞는 날짜가 되면 바로 "갑술년생 · 개띠"를 보여 줘요.
+   - 시간은 사주에서 나누는 시간대(2시간 단위)에서 골라요. 자시는 자정 앞뒤로 날짜가 달라져서 둘로 나눴어요.
+   원래 입력칸(#f-date, #f-time)은 숨겨 두고 값만 채워요. 그래서 값을 읽는 기존 코드는 그대로예요. */
+var BIRTH_BANDS=[
+ {t:'00:45',name:'자시',range:'자정~새벽 1:30',tone:'night'},
+ {t:'02:30',name:'축시',range:'새벽 1:30~3:30',tone:'night'},
+ {t:'04:30',name:'인시',range:'새벽 3:30~5:30',tone:'dawn'},
+ {t:'06:30',name:'묘시',range:'아침 5:30~7:30',tone:'dawn'},
+ {t:'08:30',name:'진시',range:'아침 7:30~9:30',tone:'morning'},
+ {t:'10:30',name:'사시',range:'오전 9:30~11:30',tone:'morning'},
+ {t:'12:30',name:'오시',range:'낮 11:30~1:30',tone:'day'},
+ {t:'14:30',name:'미시',range:'오후 1:30~3:30',tone:'day'},
+ {t:'16:30',name:'신시',range:'오후 3:30~5:30',tone:'day'},
+ {t:'18:30',name:'유시',range:'저녁 5:30~7:30',tone:'evening'},
+ {t:'20:30',name:'술시',range:'저녁 7:30~9:30',tone:'evening'},
+ {t:'22:30',name:'해시',range:'밤 9:30~11:30',tone:'night'},
+ {t:'23:45',name:'자시',range:'밤 11:30~자정',tone:'night'}
+];
+var BIRTH_ANIMAL={자:'쥐',축:'소',인:'호랑이',묘:'토끼',진:'용',사:'뱀',오:'말',미:'양',신:'원숭이',유:'닭',술:'개',해:'돼지'};
+function birthBandIndex(hm){
+ var p=String(hm||'').split(':');if(p.length<2)return -1;var m=Number(p[0])*60+Number(p[1]);if(isNaN(m))return -1;
+ if(m<90)return 0;if(m>=1410)return 12;return Math.floor((m-90)/120)+1;
+}
+function parseBirthDigits(raw){
+ var parts=String(raw||'').trim().split(/[^0-9]+/).filter(Boolean),y,mo,d;
+ if(parts.length>=3){y=parts[0];mo=parts[1];d=parts[2];}
+ else{var dg=parts.join('');if(dg.length<8)return null;y=dg.slice(0,4);mo=dg.slice(4,6);d=dg.slice(6,8);}
+ y=Number(y);mo=Number(mo);d=Number(d);if(String(y).length!==4)return null;
+ return {y:y,m:mo,d:d};
+}
+function birthDateIso(p,isLunar){
+ if(!p||p.m<1||p.m>12||p.d<1)return '';
+ if(isLunar){if(p.d>30)return '';}
+ else{var dt=new Date(p.y,p.m-1,p.d);if(dt.getFullYear()!==p.y||dt.getMonth()!==p.m-1||dt.getDate()!==p.d)return '';}
+ return p.y+'-'+String(p.m).padStart(2,'0')+'-'+String(p.d).padStart(2,'0');
+}
+var BIRTH_UIS=[];
+function refreshBirthInputs(){BIRTH_UIS.forEach(function(u){u.refresh();});}
+function enhanceBirthDate(native,calendarSeg,onChange){
+ if(!native||native._birthUi)return;
+ var field=native.closest('.field');
+ var text=document.createElement('input');text.type='text';text.id=native.id+'-text';text.className='birth-date-text';
+ text.setAttribute('inputmode','numeric');text.setAttribute('autocomplete','bday');text.placeholder='예: 19940512';text.maxLength=14;
+ var live=document.createElement('p');live.className='birth-live';live.setAttribute('aria-live','polite');
+ native.classList.add('birth-native');native.tabIndex=-1;native.setAttribute('aria-hidden','true');
+ native.parentNode.insertBefore(text,native.nextSibling);text.parentNode.insertBefore(live,text.nextSibling);
+ var label=field&&field.querySelector('label[for="'+native.id+'"]');if(label)label.htmlFor=text.id;
+ function isLunar(){var b=calendarSeg&&calendarSeg.querySelector('button.active');return !!(b&&b.dataset.val==='lunar');}
+ function show(iso,p){
+  if(iso){
+   var info='';try{var r=computeSaju({year:p.y,month:p.m,day:p.d,hour:12,minute:0,isLunar:isLunar(),isLeapMonth:false,unknownTime:true,gender:'f',name:'',city:'서울',useCorrection:false});if(r&&r.year)info=' · '+r.year.ganKr+r.year.zhiKr+'년생 '+(BIRTH_ANIMAL[r.year.zhiKr]||'')+'띠';}catch(e){}
+   live.className='birth-live is-ok';live.textContent=(isLunar()?'음력 ':'')+p.y+'년 '+p.m+'월 '+p.d+'일'+info;
+  }else if(p){live.className='birth-live is-bad';live.textContent='날짜를 다시 확인해 주세요.';}
+  else{live.className='birth-live';live.textContent='';}
+ }
+ function sync(){
+  var p=parseBirthDigits(text.value),iso=birthDateIso(p,isLunar());
+  if(iso&&((native.min&&iso<native.min)||(native.max&&iso>native.max)))iso='';
+  native.value=iso;show(iso,p);
+  if(p&&iso&&/^[0-9]{8}$/.test(text.value.trim()))text.value=p.y+'. '+String(p.m).padStart(2,'0')+'. '+String(p.d).padStart(2,'0');
+  if(onChange)onChange(!!iso);
+ }
+ text.addEventListener('input',sync);text.addEventListener('blur',sync);
+ if(calendarSeg)calendarSeg.addEventListener('click',function(){setTimeout(sync,0);});
+ native.focus=function(){text.focus();};
+ native.reportValidity=function(){if(!native.value){live.className='birth-live is-bad';live.textContent=text.value.trim()?'날짜를 다시 확인해 주세요.':'생년월일 8자리를 입력해 주세요.';text.focus();}return !!native.value;};
+ var ui={refresh:function(){if(native.value){var q=native.value.split('-');text.value=q[0]+'. '+q[1]+'. '+q[2];show(native.value,{y:Number(q[0]),m:Number(q[1]),d:Number(q[2])});}if(onChange)onChange(!!native.value);}};
+ native._birthUi=ui;BIRTH_UIS.push(ui);ui.refresh();
+}
+function enhanceBirthTime(time,unknown,onChange){
+ if(!time||time._birthUi)return;
+ var wrap=time.closest('.two-col')||time.closest('.field');
+ var box=document.createElement('div');box.className='birth-time';
+ box.innerHTML='<p class="birth-time-label">태어난 시간</p><div class="birth-bands" role="group" aria-label="태어난 시간대">'+BIRTH_BANDS.map(function(b,i){return '<button type="button" class="birth-band tone-'+b.tone+'" data-band="'+i+'"><b>'+b.range+'</b><small>'+b.name+'</small></button>';}).join('')+
+  '<button type="button" class="birth-band is-unknown" data-band="unknown"><b>시간을 몰라요</b><small>시간 없이도 볼 수 있어요</small></button></div>'+
+  '<button type="button" class="birth-exact-toggle">분까지 정확히 알아요</button><div class="birth-exact" hidden><input type="text" inputmode="numeric" maxlength="5" placeholder="예: 08 30" aria-label="태어난 시각"><span>24시간 기준으로 시·분을 넣어 주세요</span></div>';
+ wrap.parentNode.insertBefore(box,wrap);wrap.classList.add('birth-native-wrap');
+ var exactBox=box.querySelector('.birth-exact'),exact=exactBox.querySelector('input');
+ function mark(){
+  var idx=unknown&&unknown.checked?'unknown':(time.value?String(birthBandIndex(time.value)):'');
+  box.querySelectorAll('.birth-band').forEach(function(b){var on=b.dataset.band===idx;b.classList.toggle('is-on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+  if(onChange)onChange(idx);
+ }
+ box.querySelector('.birth-bands').addEventListener('click',function(e){
+  var b=e.target.closest('.birth-band');if(!b)return;
+  if(b.dataset.band==='unknown'){if(unknown)unknown.checked=true;time.value='';time.disabled=true;exact.value='';}
+  else{if(unknown)unknown.checked=false;time.disabled=false;time.value=BIRTH_BANDS[Number(b.dataset.band)].t;exact.value='';}
+  mark();
+ });
+ box.querySelector('.birth-exact-toggle').addEventListener('click',function(){exactBox.hidden=!exactBox.hidden;if(!exactBox.hidden)exact.focus();});
+ exact.addEventListener('input',function(){
+  var dg=exact.value.replace(/[^0-9]/g,'');if(dg.length<3)return;if(dg.length===3)dg='0'+dg;
+  var h=Number(dg.slice(0,2)),mi=Number(dg.slice(2,4));if(h>23||mi>59)return;
+  if(unknown)unknown.checked=false;time.disabled=false;time.value=String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0');mark();
+ });
+ time.focus=function(){var on=box.querySelector('.birth-band.is-on')||box.querySelector('.birth-band');if(on)on.focus({preventScroll:true});};
+ var ui={refresh:function(){var known=time.value&&!(unknown&&unknown.checked);if(known&&BIRTH_BANDS.every(function(b){return b.t!==time.value;})){exactBox.hidden=false;exact.value=time.value.replace(':',' ');}mark();}};
+ time._birthUi=ui;BIRTH_UIS.push(ui);ui.refresh();
 }
 
 /* ---- 공유 / 초대 ---- */
@@ -3337,36 +3466,12 @@ function myStarCardHtml(result){
 }
 /* 첫 화면 큰 그림: 별 카드 세 장을 부채꼴로 */
 /* 첫 화면: 광고로 온 사람이 바로 입력하도록 계산 방식 설명은 빼고, 별 카드는 한 줄로 */
-/* 첫 화면 연출: 그림 속 별 여덟 개가 차례로 켜지고, 아래에서 콘텐츠 친구들이 한 명씩 질문을 던져요. 입력은 처음부터 바로 할 수 있어요. */
+/* 첫 화면 연출: 그림 속 별 여덟 개가 차례로 켜져요. 입력은 처음부터 바로 할 수 있어요. */
 var HERO_STARS=[[10,10.8],[21.7,26.5],[33.9,12.5],[42.8,32.3],[57.4,28],[67.6,15.7],[80.2,29.7],[90.9,16]];
-var STAR_FRIENDS=[
- {name:'다온',img:'/assets/daon/f-smile.webp',q:'2027년, 나는 언제 가장 좋을까?'},
- {name:'해랑',img:'/assets/love/faces/haerang-smile.webp',q:'나는 언제, 어떤 사람과 이어질까?'},
- {name:'금비',img:'/assets/wealth/faces/gumbi-smile.webp',q:'내 돈은 어디서 들어오고 어디로 샐까?'},
- {name:'서림',img:'/assets/career/faces/seorim-smile.webp',q:'나에게 맞는 일은 따로 있을까?'},
- {name:'월하',img:'/assets/marriage/faces/wolha-smile.webp',q:'나는 언제쯤 결혼하게 될까?'},
- {name:'이안',img:'/assets/ian/f-laugh.webp',q:'나에게 빠지는 사람은 누구일까?'}
-];
 function starHeroHtml(){
  var stars=HERO_STARS.map(function(p,i){return '<i class="hero-star" style="left:'+p[0]+'%;top:'+p[1]+'%;--d:'+(0.35+i*0.13).toFixed(2)+'s;--t:'+(2.6+(i%3)*0.7).toFixed(1)+'s"></i>';}).join('');
- var peek='<div class="hero-peek" data-hero-peek>'+STAR_FRIENDS.map(function(c,i){return '<p class="hero-peek-line'+(i?'':' is-on')+'"><img '+(i?'data-src':'src')+'="'+c.img+'" alt="" decoding="async"><span><b>'+c.name+'</b>'+c.q+'</span></p>';}).join('')+'</div>';
- setTimeout(startHeroPeek,0);
  return '<div class="saju-hero has-art is-intro"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"><div class="hero-stars" aria-hidden="true">'+stars+'</div></div>'+
-  peek+'<p class="saju-hero-gift">✦ 풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
-}
-var HERO_PEEK_TIMER=null;
-function startHeroPeek(){
- if(HERO_PEEK_TIMER)return;
- var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- setTimeout(function(){document.querySelectorAll('[data-hero-peek] img[data-src]').forEach(function(im){im.src=im.getAttribute('data-src');im.removeAttribute('data-src');});},1600);
- if(reduce)return;
- var k=0;
- HERO_PEEK_TIMER=setInterval(function(){
-  var box=document.querySelector('[data-hero-peek]');
-  if(!box){clearInterval(HERO_PEEK_TIMER);HERO_PEEK_TIMER=null;return;}
-  if(document.hidden||!box.offsetParent)return;
-  var lines=box.children;lines[k].classList.remove('is-on');k=(k+1)%lines.length;lines[k].classList.add('is-on');
- },2800);
+  '<p class="saju-hero-gift">✦ 풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
 function sajuBoardHtml(result){
@@ -4167,6 +4272,9 @@ function refreshCompatPersonA(){
        $('#c-unknown-'+suf).addEventListener('change', function(e){
          $('#c-time-'+suf).disabled = e.target.checked;
    });
+       $('#c-time-'+suf).value='';
+       enhanceBirthDate($('#c-date-'+suf),$('#c-calendar-'+suf));
+       enhanceBirthTime($('#c-time-'+suf),$('#c-unknown-'+suf));
    });
 
      wireSeg($('#c-b-mode'), function(val){
@@ -7347,7 +7455,23 @@ function initSajuStoryForm(){
   $('#saju-step-back').addEventListener('click',function(){showSajuStep(Math.max(0,SAJU_FORM_STEP-1),true);});
   toggle.addEventListener('click',function(){SAJU_FORM_FULL=!SAJU_FORM_FULL;toggle.textContent=SAJU_FORM_FULL?'단계별로 입력하기':'한 화면으로 입력하기';showSajuStep(SAJU_FORM_STEP,false);});
   $('#f-name').addEventListener('input',function(){showSajuStep(SAJU_FORM_STEP,false);});
-  form.noValidate=true;showSajuStep(0,false);
+  form.noValidate=true;
+  var heads=['어떻게 불러 드릴까요?','언제 태어났나요?','몇 시쯤 태어났나요?'];
+  groups.forEach(function(g,i){var h=document.createElement('div');h.className='birth-step-head';h.innerHTML='<p>'+(i+1)+' / 3</p><h2>'+heads[i]+'</h2>';g.insertBefore(h,g.firstChild);});
+  var sky=document.createElement('div');sky.className='birth-sky';sky.setAttribute('aria-hidden','true');
+  sky.innerHTML='<div class="birth-sky-stars">'+HERO_STARS.map(function(p,i){return '<i style="left:'+(6+i*12.5)+'%;top:'+(18+(i%2?34:0)+(i%3)*6)+'%"></i>';}).join('')+'</div><p class="birth-sky-txt" data-birth-sky-txt>생일을 넣으면 별이 켜져요</p>';
+  form.insertBefore(sky,groups[0]);
+  enhanceBirthDate($('#f-date'),$('#f-calendar'),function(ok){BIRTH_STATE.date=ok;updateBirthSky();});
+  enhanceBirthTime($('#f-time'),$('#f-unknown-time'),function(idx){BIRTH_STATE.time=idx;updateBirthSky();});
+  showSajuStep(0,false);
+}
+var BIRTH_STATE={date:false,time:''};
+function updateBirthSky(){
+ var sky=$('.birth-sky');if(!sky)return;var stars=sky.querySelectorAll('.birth-sky-stars i');
+ var lit=BIRTH_STATE.date?6:0,unknown=BIRTH_STATE.time==='unknown',timeOn=BIRTH_STATE.date&&BIRTH_STATE.time!==''&&!unknown;
+ stars.forEach(function(st,i){var on=i<lit||(timeOn&&i>=6);st.classList.toggle('on',on);st.classList.toggle('dim',BIRTH_STATE.date&&unknown&&i>=6);st.style.transitionDelay=on?((i<6?i:i-6)*0.09)+'s':'0s';});
+ var txt=$('[data-birth-sky-txt]');if(!txt)return;
+ txt.textContent=!BIRTH_STATE.date?'생일을 넣으면 별이 켜져요':timeOn?'여덟 글자가 모두 모였어요':unknown?'여섯 글자로 풀어 볼게요':'여덟 글자 중 여섯 개가 켜졌어요';
 }
 function advanceSajuStep(){
   if(SAJU_FORM_STEP===1&&!$('#f-date').checkValidity()){$('#f-date').reportValidity();return;}
@@ -7359,7 +7483,8 @@ function showSajuStep(step,focus){
   var name=$('#f-name').value.trim(),hello=name?name+'님, ':'당신의 ';
   var lines=['풀이를 볼 분의 이름과 성별을 입력해주세요. 이름은 생략할 수 있어요.','양력·음력을 확인하고 생년월일을 입력해주세요.','출생시간과 태어난 지역을 입력해주세요. 시간을 모르면 ‘모름’을 선택하세요.'];
   if($('#saju-guide-line'))$('#saju-guide-line').textContent=lines[step];
-  $all('[data-form-step]',form).forEach(function(g){g.hidden=!SAJU_FORM_FULL&&Number(g.dataset.formStep)!==step;});
+  $all('[data-form-step]',form).forEach(function(g){var was=g.hidden;g.hidden=!SAJU_FORM_FULL&&Number(g.dataset.formStep)!==step;if(focus&&was&&!g.hidden){g.classList.remove('step-in');void g.offsetWidth;g.classList.add('step-in');}});
+  var skyEl=$('.birth-sky',form);if(skyEl)skyEl.hidden=!SAJU_FORM_FULL&&step===0;
   $all('[data-form-progress]',form).forEach(function(el){var i=Number(el.dataset.formProgress);el.classList.toggle('current',i===step);el.classList.toggle('done',i<step);if(i===step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});
   $('#saju-step-back').hidden=SAJU_FORM_FULL||step===0;
   $('#saju-step-next').hidden=SAJU_FORM_FULL||step===2;
@@ -7630,6 +7755,7 @@ function init(){
         $('#f-time').disabled = !!o.unknownTime;
         $('#f-city').value = o.city||'서울';
         $('#f-correction').checked = !!o.useCorrection;
+        refreshBirthInputs();
       }catch(e){}
     }
     /* 이 기능이 생기기 전부터 쓰던 사람도, 다시 방문하면 한 번은 서버에 자기 사주를 올려서
