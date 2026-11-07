@@ -112,3 +112,11 @@ test('no top-level name is declared twice with different values (ZHI_ANIMAL once
   assert.equal((src.match(/\bZHI_ANIMAL\s*=/g)||[]).length,1);
   assert.match(src,/'子':\{animal:'쥐', emoji:'🐭'/);
 });
+
+test('dark menu drawer uses light text, the star-page detail button stands out, no sound toggle',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  assert.match(html,/\.site-menu\{background:linear-gradient\(170deg,#15213a,#0e1629\);--fg:#f3ecdf;--fg-muted:#b3b9cf;/);
+  assert.match(html,/\.sky-page \.share-btn\{[^}]*background:linear-gradient\(110deg,#f0d38c,#d9a957\);color:#2a1f0c/);
+  assert.ok(!html.includes('id="btn-sound-toggle"'));assert.match(html,/function isSoundOn\(\)\{ return false; \}/);
+  for(const c of ["color:'#ff6f91'","color:'#b39ddb'"])assert.ok(!html.slice(html.indexOf('dohwa:{'),html.indexOf('dohwa:{')+600).includes(c),c);
+});
