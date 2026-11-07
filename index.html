@@ -1131,8 +1131,8 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .my-star-card .hint{margin:10px 0 0}
 .home-contents{margin:6px 0 24px}
 .home-contents h2{margin:0 0 4px}
-.home-content-row{display:flex;gap:12px;overflow-x:auto;padding:10px 2px 8px;scrollbar-width:none}
-.home-content-card{flex:none;width:150px;padding:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface);text-align:left;color:var(--fg)}
+.home-content-row{display:flex;gap:12px;overflow-x:auto;padding:10px 2px 8px;scrollbar-width:none;scroll-snap-type:x proximity}
+.home-content-card{flex:none;width:42%;max-width:170px;scroll-snap-align:start;padding:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface);text-align:left;color:var(--fg)}
 .home-content-card img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
 .home-content-card span{display:block;padding:10px 12px 12px}
 .home-content-card b{display:block;font-size:.9375rem}.home-content-card .home-content-peek{display:block;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-style:normal;font-size:.75rem;line-height:1.45;font-weight:600;color:var(--accent);word-break:keep-all}
