@@ -120,3 +120,18 @@ test('dark menu drawer uses light text, the star-page detail button stands out, 
   assert.ok(!html.includes('id="btn-sound-toggle"'));assert.match(html,/function isSoundOn\(\)\{ return false; \}/);
   for(const c of ["color:'#ff6f91'","color:'#b39ddb'"])assert.ok(!html.slice(html.indexOf('dohwa:{'),html.indexOf('dohwa:{')+600).includes(c),c);
 });
+
+test('no regex lookbehind anywhere in the page (older iPhone Safari fails to parse the whole script)',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  assert.ok(!/\(\?<[=!]/.test(html));
+});
+
+test('UX pass: back closes layers before leaving, compat tab is called 궁합, returning visitors get today first, empty 별첩 has a send button, skeleton loaders',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  assert.match(html,/var NAV_LAYERS=\['#report-sheet-root','#myroom-sheet-root','#brief-sheet-root','#site-menu-root','#persona-sheet-root'\];/);
+  assert.match(html,/initBackNav\(startTab\);/);assert.match(html,/if\(typeof BF!=='undefined'&&BF\)return;/);
+  assert.match(html,/<span class="ico" id="tab-ico-compat"><\/span><span>궁합<\/span>/);
+  assert.match(html,/SHOW_TODAY_PEEK=true;renderSajuResult\(STATE\.mySaju\);SHOW_TODAY_PEEK=false;/);
+  assert.match(html,/아직 내 하늘에 별이 없어요/);assert.ok(html.includes('sky-nostar-btn\\" data-album-invite>링크 보내기')||html.includes('sky-nostar-btn" data-album-invite>링크 보내기'));
+  assert.ok(!html.includes('<p class="hint">불러오는 중...</p>'));
+});

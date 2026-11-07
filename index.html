@@ -1248,6 +1248,20 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 @keyframes heroRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .saju-rv{flex-direction:column;gap:6px;cursor:pointer}
 .saju-hero-cta{display:block;width:100%;margin:4px 0 0;min-height:54px;font-size:1rem}
+.sky-nostar-note{position:absolute;left:50%;top:46%;z-index:3;transform:translate(-50%,-50%);width:min(84%,300px);display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 18px 16px;border:1px solid #e9c27a55;border-radius:18px;background:#0b1026d9;backdrop-filter:blur(6px);color:#f6eedf;text-align:center}
+.sky-nostar-note b{font-family:'Noto Serif KR',serif;font-size:1.0625rem;font-weight:600}
+.sky-nostar-note span{font-size:.8125rem;line-height:1.6;color:#c9cde0;word-break:keep-all}
+.sky-nostar-btn{margin-top:4px;min-height:44px;padding:0 22px;border:0;border-radius:22px;background:linear-gradient(110deg,#f0d38c,#d9a957);color:#2a1f0c;font-weight:700;font-size:.875rem}
+.today-peek{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;margin:0 0 18px;padding:16px 18px;border:1px solid #e9c27a66;border-radius:18px;background:linear-gradient(135deg,#17204a,#0e1530);color:#f6eedf;text-align:left;box-shadow:0 10px 24px #0b10202e;cursor:pointer}
+.today-peek-k{font-size:.75rem;letter-spacing:.08em;color:#e9c27a}
+.today-peek b{font-family:'Noto Serif KR',serif;font-size:1.125rem;font-weight:600}
+.today-peek-t{font-size:.875rem;line-height:1.6;color:#d6d9e6;word-break:keep-all}
+.today-peek-go{margin-top:4px;font-size:.8125rem;font-weight:700;color:#f6dca0}
+.skel{position:relative;overflow:hidden;background:#ece6d8;border-radius:16px}
+.skel::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,#fffaf088 50%,transparent 70%);animation:skel 1.3s infinite}
+@keyframes skel{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.skel-card{flex:none;width:42%;max-width:170px;height:240px}
+@media (prefers-reduced-motion: reduce){.skel::after{animation:none}}
 .bf-host .saju-form-step,.bf-host .saju-story-controls,.bf-host .saju-form-toggle,.bf-host>button[type="submit"],.bf-host .birth-sky{display:none!important}
 html.bf-open,html.bf-open body{overflow:hidden}
 #birth-flow{--bf-gold:#e9c27a;--bf-gold2:#f6dca0;--bf-cream:#f6eedf;--bf-muted:#a3aac4;--bf-line:#e9c27a55;position:fixed;inset:0;z-index:900;color:var(--bf-cream);font-family:'Noto Sans KR',sans-serif;letter-spacing:-.02em;opacity:0;transition:opacity .45s ease;overflow:hidden;overscroll-behavior:none}
@@ -1730,7 +1744,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
       <span class="ico" id="tab-ico-today"></span><span>오늘의 운세</span>
     </button>
     <button class="tab-btn" data-tab="compat" type="button">
-      <span class="ico" id="tab-ico-compat"></span><span>별첩</span>
+      <span class="ico" id="tab-ico-compat"></span><span>궁합</span>
     </button>
     <button class="tab-btn" data-tab="reports" type="button">
       <span class="ico" id="tab-ico-reports"></span><span>콘텐츠</span>
@@ -2654,7 +2668,7 @@ function dbSafeId(str){
 function autoParas(text, cls){
   if (!text) return '';
   cls = cls || 'section-desc';
-  var sentences = text.split(/(?<=[.!?])\s+(?=\S)/);
+  var sentences = text.replace(/([.!?])\s+(?=\S)/g, "$1\u0000").split("\u0000");
   var paras = [];
   for (var i=0;i<sentences.length;i+=2){
     paras.push(sentences.slice(i, i+2).join(' '));
@@ -3210,6 +3224,44 @@ function closeBirthFlow(fromPop){
 function bfAng(min){return ((min-720)/1440)*360;}
 function bfPt(a,r){var rad=(a-90)*Math.PI/180;return [Math.cos(rad)*r,Math.sin(rad)*r];}
 document.addEventListener('click',function(e){if(e.target.closest('[data-open-birth]')){e.preventDefault();openBirthFlow(STATE.lastForm||null);}});
+
+/* 휴대폰 "뒤로 가기": 열린 창(콘텐츠 화면, 메뉴, 운세 설명, 별첩 책, 풀이자 선택)이 있으면 그 창만 닫고,
+   없으면 직전에 보던 탭으로 돌아가요. 창이 열릴 때마다 주소 기록을 하나 쌓고, 닫기 버튼으로 닫으면 그 기록을 지워요.
+   생일 입력 화면은 따로 처리해요(openBirthFlow). */
+var NAV={stack:[],skip:0,ready:false};
+var NAV_LAYERS=['#report-sheet-root','#myroom-sheet-root','#brief-sheet-root','#site-menu-root','#persona-sheet-root'];
+function navCloseLayer(id){
+ var root=$(id);if(!root||!root.firstElementChild)return;
+ if(id==='#report-sheet-root'&&typeof closeReportSheet==='function'){closeReportSheet();return;}
+ if(id==='#site-menu-root'&&typeof closeSiteMenu==='function'){closeSiteMenu();return;}
+ var btn=[].slice.call(root.querySelectorAll('[data-sky-close],.sheet-close,#brief-close,[data-close],.menu-close')).filter(function(b){return b.offsetParent;})[0];
+ if(btn){btn.click();if(!root.firstElementChild)return;}
+ setTimeout(function(){if(root.firstElementChild)root.innerHTML='';},350);
+}
+/* 탭을 바꾸기 직전에 부르면, 지금 탭을 기록으로 남기고 새 기록에서 탭을 바꿔요(switchTab이 새 기록에 탭 이름을 적어요) */
+function navPushTab(){if(!NAV.ready)return;try{history.pushState(history.state,'');}catch(e){}}
+function initBackNav(startTab){
+ try{var hs0=history.state&&typeof history.state==='object'?history.state:{};hs0.tab=startTab;history.replaceState(hs0,'');}catch(e){}
+ NAV_LAYERS.forEach(function(id){
+  var root=$(id);if(!root)return;var open=!!root.firstElementChild;
+  new MutationObserver(function(){
+   var now=!!root.firstElementChild;if(now===open)return;open=now;
+   if(now){NAV.stack.push({id:id,popped:false});try{history.pushState({layer:id},'');}catch(e){}}
+   else{
+    for(var i=NAV.stack.length-1;i>=0;i--){if(NAV.stack[i].id===id){var en=NAV.stack.splice(i,1)[0];if(!en.popped){NAV.skip++;try{history.back();}catch(e){NAV.skip--;}}break;}}
+   }
+  }).observe(root,{childList:true});
+ });
+ window.addEventListener('popstate',function(e){
+  if(NAV.skip){NAV.skip--;return;}
+  if(typeof BF!=='undefined'&&BF)return;
+  var top=NAV.stack[NAV.stack.length-1];
+  if(top){top.popped=true;navCloseLayer(top.id);return;}
+  var st=e.state||{};var cur=$('.tab-btn.active');
+  if(st.tab&&(!cur||cur.dataset.tab!==st.tab)){switchTab(st.tab);window.scrollTo({top:0,behavior:'instant'});}
+ });
+ NAV.ready=true;
+}
 
 /* ---- 공유 / 초대 ---- */
 function shareUrl(){ return 'https://www.byeolcheop.com/?invite=' + encodeURIComponent(DEVICE.shareCode); }
@@ -3817,7 +3869,7 @@ function wireStarGift(scope,result){
 }
 /* 콘텐츠 줄: 목록 API에서 자동으로 */
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
-function homeContentsHtml(){return homeBannerHtml()+'<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents><p class="hint">불러오는 중...</p></div></section>';}
+function homeContentsHtml(){return homeBannerHtml()+'<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents role="status" aria-label="콘텐츠를 불러오는 중"><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div></div></section>';}
 /* 콘텐츠 카드 한 줄: 연도는 멀게 느껴져서, 그 콘텐츠가 답해 주는 질문을 내 이름으로 던진다 */
 var HOME_PREVIEW_Q={newyear:'의 2027년, 언제 가장 좋을까?',ian:'에게 빠지는 사람은 누구일까?',love:'은 언제, 어떤 사람과 이어질까?',wealth:'의 돈은 어디서 들어오고 어디로 샐까?',career:'에게 맞는 일은 따로 있을까?',marriage:'은 언제쯤 결혼하게 될까?'};
 function homePreviewLine(c,result){
@@ -3979,6 +4031,7 @@ function skyHtml(result,list){
    '<div class="sky-depth" data-sky-depth aria-hidden="true"></div><div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
    '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs>'+skyGlowDefs()+'<radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
    '<i class="sky-shoot" aria-hidden="true"></i>'+
+   (list.length||skyIsDemo()?'':'<div class="sky-nostar-note"><b>아직 내 하늘에 별이 없어요</b><span>링크를 보내면 친구가 생일을 넣는 순간 여기에 별이 떠요. 둘의 궁합도 바로 볼 수 있어요.</span><button type="button" class="sky-nostar-btn" data-album-invite>링크 보내기</button></div>')+
    '<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button>'+
    '<div class="sky-focus" data-sky-focus hidden><button type="button" class="sky-focus-close" data-sky-close aria-label="별자리로 돌아가기">✕</button>'+
     '<div class="sky-fcard"><div class="sky-fcard-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img data-sky-fimg alt="" decoding="async"></div></div></div>'+
@@ -4192,6 +4245,7 @@ function renderSajuResult(result){
   wrap.appendChild(evidence);
   wireStarGift(wrap,result);fillHomeContents(wrap,result);
   $all('[data-everyday-cat]',wrap).forEach(function(btn){btn.addEventListener('click',function(){var target=$all('#worry-chips .chip-btn').find(function(chip){return chip.dataset.cat===btn.dataset.everydayCat;});if(target){target.click();target.closest('.card').scrollIntoView({behavior:'smooth',block:'start'});}});});
+  if (SHOW_TODAY_PEEK){var peek=todayPeekHtml(result);if(peek){var pk=document.createElement('div');pk.innerHTML=peek;wrap.insertBefore(pk.firstChild,wrap.firstChild);var pb=$('[data-today-peek]',wrap);if(pb)pb.addEventListener('click',function(){var cur=$('.tab-btn.active');if(cur&&cur.dataset.tab!=='today')navPushTab();switchTab('today');window.scrollTo({top:0,behavior:'instant'});});}}
   wrap.hidden = false;
   $('#saju-form').hidden = true;
   $('#btn-edit-saju').addEventListener('click', function(){
@@ -4333,6 +4387,15 @@ function renderTimeBlockContent(my, body){
     '<p class="disclaimer">오늘의 기운을 세 시간대로 나누어 본 참고용 콘텐츠예요.</p>';
 }
 
+/* 다시 들어온 사람에게 사주 결과 맨 위에 오늘 운세 한 줄을 보여 주고, 누르면 오늘의 운세 탭으로 가요 */
+var SHOW_TODAY_PEEK=false;
+function todayPeekHtml(my){
+ try{
+  var today=todayGanZhi(),ft=FORTUNE_TEXT[dailyShishenKey(my.day.gan,my.dayGanWx,today.gan,today.wxGan)];if(!ft)return '';
+  var tot=String(ft.total||''),mm=tot.match(/^[^.!?]*[.!?]/),first=mm?mm[0]:tot;var now=new Date();
+  return '<button type="button" class="today-peek" data-today-peek><span class="today-peek-k">오늘 '+(now.getMonth()+1)+'월 '+now.getDate()+'일</span><b>'+esc(ft.label)+'</b><span class="today-peek-t">'+esc(first)+'</span><span class="today-peek-go">오늘의 운세 보기 ›</span></button>';
+ }catch(e){return '';}
+}
 function dayFortuneHtml(my){
   var today = todayGanZhi();
   var ssKey = dailyShishenKey(my.day.gan, my.dayGanWx, today.gan, today.wxGan);
@@ -5416,7 +5479,7 @@ function openReportViewer(concept,stage){
     (isPocha(concept)?'<div class="pocha-cover"><img src="'+esc(reportCoverSource(concept,STATE.mySaju))+'" alt="별지도 서점의 길잡이 서림"><div><p class="reader-kicker">일·진로</p><h1>'+esc(concept.title)+'</h1><p>'+esc(concept.tagline||'')+'</p></div></div>':
     '<div class="reader-cover"><img src="'+esc(reportCoverSource(concept,STATE.mySaju)||('/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+((STATE.mySaju.gender==='m'||STATE.mySaju.gender==='male')?'m':'f')+'-0.webp'))+'" alt="" decoding="async">'+
     '<div><p class="reader-kicker">'+esc(concept.category||'나의 사주')+' · 나의 사주 이야기</p><h1>'+esc(concept.title)+'</h1><p>'+esc(concept.tagline||'')+'</p></div></div>')+
-    '<div id="reader-steps"></div><div class="report-page-body" id="report-panel-list"><p class="section-desc" role="status">이야기를 불러오는 중...</p></div></div>';
+    '<div id="reader-steps"></div><div class="report-page-body" id="report-panel-list"><div role="status" aria-label="이야기를 불러오는 중"><div class="skel" style="height:220px;margin-bottom:12px"></div><div class="skel" style="height:18px;width:70%;margin-bottom:8px"></div><div class="skel" style="height:18px;width:90%"></div></div></div></div>';
   $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
   document.removeEventListener('keydown',readerKeydown);document.addEventListener('keydown',readerKeydown);
   loadReportReader(concept).then(function(data){
@@ -6715,7 +6778,7 @@ function renderMyRoomLocal(root){
     return;
   }
   if (INVITE_MYROOM_CACHE === null){
-    root.innerHTML = '<p class="eyebrow">나의 별첩</p><div class="myroom-empty"><span style="font-size:1.8rem;">⏳</span><span>불러오는 중...</span></div>';
+    root.innerHTML = '<p class="eyebrow">나의 별첩</p><div class="skel" role="status" aria-label="별첩을 불러오는 중" style="height:420px;margin-top:12px;background:#141c3b"></div>';
     fetchInviteMyRoom();
     return;
   }
@@ -7713,7 +7776,7 @@ function switchTab(name){
   if (name==='today') renderTodayView();
   document.body.classList.toggle('album-view',name==='compat');if (name==='compat'){refreshCompatPersonA();setupAlbumEntry();if(INVITE_MYROOM_CACHE!==null&&Date.now()-INVITE_MYROOM_AT>15000){INVITE_MYROOM_CACHE=null;renderMyRoom();}}
   if (name==='reports') renderReportsTabView();
-  try{ history.replaceState(null,'','#'+name); }catch(e){}
+  try{ var hs=history.state&&typeof history.state==='object'?history.state:{};var ns={};for(var hk in hs)ns[hk]=hs[hk];ns.tab=name;history.replaceState(ns,'','#'+name); }catch(e){}
 }
 
 /* ============================================================
@@ -8039,7 +8102,7 @@ function init(){
   var dateNow=new Date(),maxBirthday=dateNow.getFullYear()+'-'+String(dateNow.getMonth()+1).padStart(2,'0')+'-'+String(dateNow.getDate()).padStart(2,'0');
   $all('input[type="date"]').forEach(function(input){input.max=maxBirthday;});
   if (STATE.mySaju){
-    renderSajuResult(STATE.mySaju);
+    SHOW_TODAY_PEEK=true;renderSajuResult(STATE.mySaju);SHOW_TODAY_PEEK=false;
     if (STATE.lastForm){
       try{
         var o = STATE.lastForm;
@@ -8068,9 +8131,10 @@ function init(){
   var startTab = (location.hash||'').replace('#','');
   if (['saju','today','compat','reports'].indexOf(startTab)===-1) startTab=/[?&]compat(=|&|$)/.test(location.search)?'compat':(/[?&]today(=|&|$)/.test(location.search)?'today':'saju');
   switchTab(startTab);
+  initBackNav(startTab);
 
   $all('.tab-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){ switchTab(btn.dataset.tab);window.scrollTo({top:0,behavior:'instant'}); });
+    btn.addEventListener('click', function(){ var cur=$('.tab-btn.active');var from=cur&&cur.dataset.tab;if(from&&from!==btn.dataset.tab)navPushTab();switchTab(btn.dataset.tab);window.scrollTo({top:0,behavior:'instant'}); });
   });
 
   /* 이미 사주를 넣어 둔 사람이 초대 링크를 열면 다시 입력하지 않으니, 저장된 사주로 바로 등록해요 */
