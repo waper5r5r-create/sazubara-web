@@ -7528,7 +7528,7 @@ function init(){
   }
 
   var startTab = (location.hash||'').replace('#','');
-  if (['saju','today','compat','reports'].indexOf(startTab)===-1) startTab='saju';
+  if (['saju','today','compat','reports'].indexOf(startTab)===-1) startTab=/[?&]compat(=|&|$)/.test(location.search)?'compat':(/[?&]today(=|&|$)/.test(location.search)?'today':'saju');
   switchTab(startTab);
 
   $all('.tab-btn').forEach(function(btn){
