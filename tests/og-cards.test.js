@@ -18,8 +18,8 @@ test('each topic link picks its own card, even with utm values attached',()=>{
 test('the card swaps title, description and image and leaves the rest of the page alone',()=>{
   const {applyCard}=load();const out=applyCard(html,'love');
   assert.match(out,/<meta property="og:title" content="연애 사주 \| 별첩사주">/);
-  assert.match(out,/<meta property="og:image" content="https:\/\/www\.byeolcheop\.com\/og\/love\.jpg">/);
-  assert.match(out,/<meta name="twitter:image" content="https:\/\/www\.byeolcheop\.com\/og\/love\.jpg">/);
+  assert.match(out,/<meta property="og:image" content="https:\/\/www\.byeolcheop\.com\/og\/love\.jpg\?v=2">/);
+  assert.match(out,/<meta name="twitter:image" content="https:\/\/www\.byeolcheop\.com\/og\/love\.jpg\?v=2">/);
   assert.match(out,/<meta property="og:description" content="2027년 내 연애 흐름/);
   assert.match(out,/<title>연애 사주 \| 별첩사주<\/title>/);
   assert.equal(out.length-html.length<400,true);

@@ -31,3 +31,11 @@ test('payment review: footer shows business details and the price list matches r
  assert.match(legal,new RegExp('이안의 비밀</th><td>'+fmt(ian)));
  assert.match(legal,new RegExp('결혼 사주</th><td>각 '+fmt(STAGE_PRICE.story)));
 });
+
+test('today: a steady (정재) day does not get the push-hard time blocks, and the birth form avoids jargon',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  assert.match(html,/==='정재' \? TIME_BLOCK_JEONGJAE : TIME_BLOCK_TEXT\[relKey\]/);
+  const calm=html.slice(html.indexOf('var TIME_BLOCK_JEONGJAE'),html.indexOf('var TIME_BLOCK_TEXT'));
+  assert.ok(!/추진력|밀어붙/.test(calm));
+  for(const w of ['경도 보정','진태양시','동경 135'])assert.ok(!html.includes(w),w);
+});

@@ -34,7 +34,7 @@ function setMeta(html, attr, name, value) {
 export function applyCard(html, key) {
   const card = CARDS[key];
   if (!card) return html;
-  const image = SITE + '/og/' + key + '.jpg';
+  const image = SITE + '/og/' + key + '.jpg?v=2';
   html = setMeta(html, 'property', 'og:title', card.title);
   html = setMeta(html, 'property', 'og:description', card.desc);
   html = setMeta(html, 'property', 'og:image', image);

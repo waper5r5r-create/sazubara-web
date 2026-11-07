@@ -1543,10 +1543,10 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
         </div>
 
         <div class="field">
-          <label for="f-city">출생 지역 <span class="hint">(경도 보정용)</span></label>
+          <label for="f-city">태어난 지역</label>
           <select id="f-city"></select>
-          <label class="check-row"><input type="checkbox" id="f-correction" checked>지역 경도 보정 적용 (진태양시 근사)</label>
-          <p class="hint">한국 표준시(동경 135도)와 실제 출생지 경도 차이를 보정해 시주를 더 정확히 계산해요.</p>
+          <label class="check-row"><input type="checkbox" id="f-correction" checked>태어난 지역에 맞춰 시간 고치기</label>
+          <p class="hint">지역마다 해가 뜨는 시각이 조금씩 달라요. 태어난 시간을 지역에 맞게 고쳐서 더 정확히 계산해요.</p>
         </div>
 
         <button type="submit" class="btn-primary">내 사주 확인하기</button>
@@ -1907,6 +1907,12 @@ function closePeriodBrief(){ var r = $('#brief-sheet-root'); if (r) r.innerHTML=
 
 /* 기간별(주간/월간/연간) 요약 문구 — 기간 동안 가장 많이 나타난 관계를 기준으로 사용 */
 /* 오늘의 운세 — 시간대별(아침/오후/저녁) 세분화 콘텐츠 (유료) */
+/* 정재 날은 본문이 '차곡차곡 쌓는 날'이라, 밀어붙이는 편재 문구 대신 차분한 문구를 쓴다. */
+var TIME_BLOCK_JEONGJAE = {
+  morning:'아침에는 오늘 할 일을 차분히 정리하기 좋아요. 해야 할 일을 적어 두고 작은 것부터 하나씩 끝내 보세요. 미뤄 둔 정리나 확인 작업을 오전에 해 두면 하루가 가벼워져요.',
+  afternoon:'오후에는 하던 일을 꾸준히 이어 가는 게 잘 맞아요. 새로 벌이기보다 마무리에 힘을 쓰세요. 돈 관리, 서류 확인, 약속 챙기기처럼 꼼꼼함이 필요한 일에 특히 좋아요.',
+  evening:'저녁에는 오늘 해낸 일을 돌아보며 쉬어 가세요. 가계부를 정리하거나 내일 할 일을 미리 적어 두면 마음이 편해져요. 큰 결정은 내일로 미뤄도 괜찮아요.'
+};
 var TIME_BLOCK_TEXT = {
   bigyeop:{
     morning:'눈뜨자마자 몸이 가볍고 의욕이 먼저 차오르는 아침이에요. 오늘 꼭 끝내야 할 일 중 가장 어려운 것을 아침 시간에 배치하면 추진력을 가장 잘 활용할 수 있어요. 다만 의욕이 앞선 나머지 주변에 상의 없이 혼자 결정부터 내리기 쉬우니, 중요한 건은 "오전 중 공유만 하고 실행은 오후에" 정도로 속도를 한 번 늦춰보세요.',
@@ -3630,7 +3636,7 @@ function renderSajuResult(result){
   var dayInfo = WUXING_INFO[result.dayGanWx];
 
   var corrNote = result.correctionMin ?
-    ('<p class="hint">경도 보정 '+(result.correctionMin>0?'+':'')+result.correctionMin+'분 적용 · 보정 후 '+result.solar.toYmdHms()+' 기준</p>') : '';
+    ('<p class="hint">태어난 지역에 맞춰 '+Math.abs(result.correctionMin)+'분 '+(result.correctionMin>0?'더해':'빼')+'서 '+result.solar.toYmdHms()+' 기준으로 봤어요</p>') : '';
 
   var html =
     '<div class="card">'+
@@ -3822,7 +3828,7 @@ function renderTimeBlockSection(my, body){
 function renderTimeBlockContent(my, body){
   var today = todayGanZhi();
   var relKey = dailyFortuneRelation(my.dayGanWx, today.wxGan);
-  var tb = TIME_BLOCK_TEXT[relKey];
+  var tb = dailyShishenKey(my.day.gan, my.dayGanWx, today.gan, today.wxGan)==='정재' ? TIME_BLOCK_JEONGJAE : TIME_BLOCK_TEXT[relKey];
   body.innerHTML = '<p class="section-title" style="font-size:.98rem;">시간대별 운세</p>'+
     personaWrap('today',
       '<div class="detail-block"><p class="ttl">'+ICO_SUNRISE+' 아침</p>'+autoParas(tb.morning)+'</div>'+
