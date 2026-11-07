@@ -65,3 +65,13 @@ test('the invited person sees the inviter in 별첩, marked as the friend who in
   assert.match(html,/action=received&device_id=/);assert.match(html,/fromInviter:true/);
   assert.match(html,/e\.fromInviter\?'나를 초대한 친구 · ':''/);
 });
+
+test('invite links carry the code as ?invite= (messengers can drop #...), old #invite- links still work',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  assert.match(html,/function shareUrl\(\)\{ return 'https:\/\/www\.byeolcheop\.com\/\?invite=' \+ encodeURIComponent\(DEVICE\.shareCode\); \}/);
+  const src=html.slice(html.indexOf('function parseInviteHash(){'),html.indexOf('/* 리포트 관리자 화면 진입용'));
+  const vm=require('node:vm');const run=(search,hash)=>{const ctx={location:{search,hash},URLSearchParams};vm.createContext(ctx);vm.runInContext(src+';this.r=parseInviteHash();',ctx);return ctx.r;};
+  assert.equal(run('?invite=abc123',''),'abc123');assert.equal(run('?utm_source=x&invite=abc123',''),'abc123');
+  assert.equal(run('','#invite-old99'),'old99');assert.equal(run('?invite=<x>',''),null);assert.equal(run('',''),null);
+  assert.match(html,/_u\.searchParams\.delete\('invite'\)/);
+});

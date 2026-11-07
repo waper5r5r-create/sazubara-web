@@ -22,6 +22,7 @@ export function cardKey(params) {
   if (go && ['love', 'wealth', 'career', 'marriage'].indexOf(go) !== -1) return go;
   if (params.has('compat')) return 'compat';
   if (params.has('today')) return 'today';
+  if (params.has('invite')) return 'compat';
   return null;
 }
 

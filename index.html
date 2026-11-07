@@ -2695,7 +2695,11 @@ function genShareCode(){
   return Math.random().toString(36).slice(2,8) + Date.now().toString(36).slice(-3);
 }
 function todayDateStr(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+/* 초대 코드는 주소 뒤 ?invite=코드 로 받아요. 카카오톡·메신저가 # 뒷부분을 떼어 내는 일이 있어서 바꿨고,
+   예전에 보낸 #invite-코드 링크도 계속 읽어요. */
 function parseInviteHash(){
+  var q = null;try{ q = new URLSearchParams(location.search).get('invite'); }catch(e){}
+  if (q && /^[A-Za-z0-9_.~-]+$/.test(q)) return q;
   var m = (location.hash||'').match(/^#invite-([A-Za-z0-9_.~-]+)$/);
   return m ? m[1] : null;
 }
@@ -2775,7 +2779,7 @@ function initDevice(){
        한 번 읽었으면 바로 지워서 다음 로드부터는 깨끗한 상태로 시작한다. */
     try{
       var _u = new URL(location.href);
-      _u.hash = '';
+      _u.hash = '';_u.searchParams.delete('invite');
       history.replaceState({}, '', _u.pathname + (_u.search||''));
     }catch(e){}
   }
@@ -3210,7 +3214,7 @@ function bfPt(a,r){var rad=(a-90)*Math.PI/180;return [Math.cos(rad)*r,Math.sin(r
 document.addEventListener('click',function(e){if(e.target.closest('[data-open-birth]')){e.preventDefault();openBirthFlow(STATE.lastForm||null);}});
 
 /* ---- 공유 / 초대 ---- */
-function shareUrl(){ return location.origin + location.pathname + '#invite-' + DEVICE.shareCode; }
+function shareUrl(){ return 'https://www.byeolcheop.com/?invite=' + encodeURIComponent(DEVICE.shareCode); }
 var KAKAO_JS_KEY = 'bd6e016153561dea8de15e57b4f39b15';
 var _kakaoSdkPromise = null;
 function loadKakaoSdk(){
