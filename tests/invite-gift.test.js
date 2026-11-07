@@ -51,3 +51,11 @@ test('a friend card with the invite gift opens the compat detail without payment
   assert.equal(ctx.DEVICE.unlocked['compat-甲子-丙寅'],undefined);
   assert.ok(html.includes('두 사람 모두 궁합 상세(990원)를 무료로'));
 });
+
+test('opening an invite link with a saved saju registers right away, and 별첩 refetches so new friends appear',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  assert.match(html,/if \(invited && STATE\.mySaju && STATE\.lastForm\) attemptInviteRedeem\(STATE\.lastForm\);/);
+  assert.match(html,/if \(data\.registered\)\{ INVITE_MYROOM_CACHE = null;/);
+  assert.match(html,/INVITE_MYROOM_AT = Date\.now\(\);/);
+  assert.match(html,/if \(name==='compat'\)\{refreshCompatPersonA\(\);setupAlbumEntry\(\);if\(INVITE_MYROOM_CACHE!==null&&Date\.now\(\)-INVITE_MYROOM_AT>15000\)/);
+});

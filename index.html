@@ -3441,7 +3441,9 @@ function attemptInviteRedeem(opts){
     if (data && data.ok){
       DEVICE.pendingInviteCode = null;
       saveDevice();
+      if (data.registered){ INVITE_MYROOM_CACHE = null; if (typeof renderMyRoom==='function') renderMyRoom(); }
       if (data.registered && data.gifted){ pullPaidUnlocks(); showToast('초대해 준 친구와의 궁합 상세가 무료로 열렸어요.'); }
+      else if (data.registered) showToast('초대해 준 친구와 서로의 별첩에 카드가 생겼어요.');
     }
   }).catch(function(){ /* 다음 사주 입력/제출 때 다시 시도됨 */ });
 }
@@ -6697,7 +6699,7 @@ function renderMyRoom(){
     renderMyRoomLocal(root);
   }
 }
-var INVITE_MYROOM_CACHE = null; /* 초대해서 실제 등록한 사람 목록(서버 응답) 캐시. null=아직 안 불러옴 */
+var INVITE_MYROOM_CACHE = null, INVITE_MYROOM_AT = 0; /* 초대해서 실제 등록한 사람 목록(서버 응답) 캐시. null=아직 안 불러옴 */
 function renderMyRoomLocal(root){
   if (!STATE.mySaju){
     root.innerHTML =
@@ -6772,7 +6774,8 @@ function fetchInviteMyRoom(){
     });
     INVITE_MYROOM_CACHE = Object.keys(byOther).map(function(k){ return byOther[k]; })
       .sort(function(a,b){ return (b.at||0)-(a.at||0); });
-  }).catch(function(){ INVITE_MYROOM_CACHE = []; })
+    INVITE_MYROOM_AT = Date.now();
+  }).catch(function(){ INVITE_MYROOM_CACHE = []; INVITE_MYROOM_AT = Date.now(); })
   .then(function(){ renderMyRoom(); });
 }
 function renderMyRoomCloud(root){
@@ -7702,7 +7705,7 @@ function switchTab(name){
   var target=$('#view-'+name);if(!target)return;target.hidden=false;target.classList.remove('ui-enter');void target.offsetWidth;target.classList.add('ui-enter');
   $all('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===name);if(b.dataset.tab===name)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current'); });
   if (name==='today') renderTodayView();
-  document.body.classList.toggle('album-view',name==='compat');if (name==='compat'){refreshCompatPersonA();setupAlbumEntry();}
+  document.body.classList.toggle('album-view',name==='compat');if (name==='compat'){refreshCompatPersonA();setupAlbumEntry();if(INVITE_MYROOM_CACHE!==null&&Date.now()-INVITE_MYROOM_AT>15000){INVITE_MYROOM_CACHE=null;renderMyRoom();}}
   if (name==='reports') renderReportsTabView();
   try{ history.replaceState(null,'','#'+name); }catch(e){}
 }
@@ -8064,7 +8067,11 @@ function init(){
     btn.addEventListener('click', function(){ switchTab(btn.dataset.tab);window.scrollTo({top:0,behavior:'instant'}); });
   });
 
-  if (invited) showToast('친구 초대로 시작하셨네요! 사주를 등록하면 서로의 카드첩에 카드가 생겨요.');
+  /* 이미 사주를 넣어 둔 사람이 초대 링크를 열면 다시 입력하지 않으니, 저장된 사주로 바로 등록해요 */
+  if (invited && STATE.mySaju && STATE.lastForm) attemptInviteRedeem(STATE.lastForm);
+  else if (invited) showToast('친구 초대로 시작하셨네요! 사주를 등록하면 서로의 카드첩에 카드가 생겨요.');
+  /* 별첩을 다시 열거나 앱으로 돌아오면, 그사이 등록한 친구가 보이도록 목록을 새로 받아요 */
+  document.addEventListener('visibilitychange',function(){if(!document.hidden&&INVITE_MYROOM_CACHE!==null&&Date.now()-INVITE_MYROOM_AT>15000&&!$('#view-compat').hidden){INVITE_MYROOM_CACHE=null;renderMyRoom();}});
 
   initCapabilities().then(function(){
     subscribeMyRoomCloud();
