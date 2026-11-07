@@ -2575,7 +2575,7 @@ function resizeImageFileToBase64(file, maxDim){
 function saveDevice(){
   try{
     localStorage.setItem(DEVICE_KEY, JSON.stringify({
-      unlocked:DEVICE.unlocked, shareCode:DEVICE.shareCode, secret:DEVICE.secret, pendingInviteCode:DEVICE.pendingInviteCode, lastSource:DEVICE.lastSource||null, tracked:DEVICE.tracked||{}
+      unlocked:DEVICE.unlocked, shareCode:DEVICE.shareCode, secret:DEVICE.secret, pendingInviteCode:DEVICE.pendingInviteCode
     }));
   }catch(e){}
 }
@@ -2620,31 +2620,6 @@ function initDevice(){
   }
   saveDevice();
   return invited;
-}
-/* 방문 측정: 어디서 들어왔는지(utm_source, 없으면 이전 페이지 주소)와 주요 단계(방문·사주 입력·결제 시작·결제 완료)만 남긴다.
-   이름·생년월일 같은 개인정보는 보내지 않는다. 출처는 마지막으로 알려진 것을 기기에 기억해 결제까지 이어 붙인다. */
-function visitSourceNow(){
-  var q=new URLSearchParams(location.search),s=q.get('utm_source');
-  if(s)return {source:s.slice(0,40),campaign:(q.get('utm_campaign')||'').slice(0,60)};
-  var host='';try{host=document.referrer?new URL(document.referrer).hostname:'';}catch(e){}
-  if(!host||host===location.hostname)return null;
-  return {source:host.replace(/^(www|m)[.]/,'').slice(0,60),campaign:''};
-}
-function track(name){
-  try{
-    if(!DEVICE.shareCode)return;
-    var src=DEVICE.lastSource||{};
-    var body=JSON.stringify({device_id:DEVICE.shareCode,name:name,source:src.source||'direct',campaign:src.campaign||'',landing:src.landing||''});
-    if(navigator.sendBeacon&&navigator.sendBeacon('/api/track',new Blob([body],{type:'application/json'})))return;
-    fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:body,keepalive:true}).catch(function(){});
-  }catch(e){}
-}
-function trackOnce(name){DEVICE.tracked=DEVICE.tracked||{};if(DEVICE.tracked[name])return;DEVICE.tracked[name]=1;saveDevice();track(name);}
-function trackVisit(){
-  var now=visitSourceNow();
-  if(now){now.landing=(location.pathname+location.search).replace(/[?&]utm_[a-z]+=[^&]*/g,'').slice(0,80);DEVICE.lastSource=now;saveDevice();}
-  var seen=false;try{seen=sessionStorage.getItem('visit-tracked')==='1';sessionStorage.setItem('visit-tracked','1');}catch(e){}
-  if(!seen)track('visit');
 }
 function isUnlocked(key){ return !!DEVICE.unlocked[key]; }
 function setUnlocked(key){ DEVICE.unlocked[key] = true; saveDevice(); }
@@ -2905,7 +2880,6 @@ function startUnlock(unlockKey, priceKrw, label){
   loadTossSdk().then(function(ctx){
     var tp = ctx.TossPayments(ctx.clientKey);
     var orderId = tossOrderId();
-    track('pay_start');
     tp.requestPayment('카드', {
       amount: priceKrw,
       orderId: orderId,
@@ -2921,7 +2895,6 @@ function startUnlock(unlockKey, priceKrw, label){
 function handleTossPaymentCallback(){
   var params=new URLSearchParams(location.search);
   if(!params.get('paid'))return;
-  track('pay_done');
   var reportId=params.get('report'),stage=params.get('stage')||'story',returnTab=params.get('tab')||'saju';
   var clean=new URL(location.href);['paid','order','report','stage','tab'].forEach(function(k){clean.searchParams.delete(k);});
   history.replaceState({},'',clean.pathname+clean.search+clean.hash);
@@ -4639,7 +4612,6 @@ function startReportUnlock(concept,stage){
   var buttons=$all('.report-stage-buy');buttons.forEach(function(b){b.disabled=true;});
   Promise.all([loadTossSdk(),fetch('/api/reports/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'prepare',deviceId:DEVICE.shareCode,conceptId:concept.id,stage:stage})}).then(function(r){return r.json();}).then(function(data){if(!data.ok){var error=new Error(data.message||'결제 준비에 실패했어요.');error.code=data.error;throw error;}return data;})]).then(function(values){
     var ctx=values[0],checkout=values[1];
-    track('pay_start');
     return ctx.TossPayments(ctx.clientKey).requestPayment('카드',{
       amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+(isNewYear(concept)||isIan(concept)?'':' (이야기+심층 리포트)'),
       successUrl:location.origin+'/success.html?type=report&conceptId='+encodeURIComponent(concept.id)+'&stage='+stage+'&quote='+encodeURIComponent(checkout.quote),
@@ -7321,7 +7293,6 @@ function initSajuForm(){
       var result = computeSaju(opts);
       STATE.mySaju = result; STATE._mySajuOpts = opts; STATE.lastForm = opts;
       saveState();
-      trackOnce('saju_done');
       showReveal('사주를 풀이하는 중', '입력한 정보에서 나를 이해할 힌트를 찾고 있어요', function(){
         renderSajuResult(result);
         refreshCompatPersonA();
@@ -7497,7 +7468,6 @@ function init(){
   $('#btn-open-menu').addEventListener('click',openSiteMenu);
   initAuth().catch(function(){/* Other features remain available if the auth SDK cannot load. */});
   var invited = initDevice();
-  trackVisit();
   handleTossPaymentCallback();
   pullPaidUnlocks();
   pullReportUnlocks();
