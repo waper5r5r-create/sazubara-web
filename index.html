@@ -3241,12 +3241,15 @@ var WORRY_PREVIEW_LENS={
  금:{연애:'서로의 기준과 약속을 알아가며 신뢰를 만드는 관계',직장:'목표와 기준을 정리하고 완성도를 높이는 과정',재물:'나에게 필요한 지출과 유지할 기준을 구분하는 과정',건강:'생활의 우선순위를 정하고 부담을 덜어내는 과정',인간관계:'서로의 경계를 존중하며 관계를 조율하는 과정'},
  수:{연애:'서로를 충분히 이해하고 각자의 속도를 맞춰가는 관계',직장:'정보와 상황을 살피며 유연하게 방향을 찾는 과정',재물:'정보를 비교하고 흐름을 살피며 선택하는 과정',건강:'지금의 생활을 돌아보고 나에게 맞는 리듬을 찾는 과정',인간관계:'상대의 이야기를 듣고 서로를 이해해가는 과정'}
 };
+/* 990원 고민 상담 미리보기: 실제 풀이의 앞 두 문장을 그대로 보여 주고, 결제하면 이어지는 상황별 조언 목록을 보여 준다. */
 function worryPreviewHtml(my,cat){
- if(!WORRY_PREVIEW_LENS[my.dayGanWx]||!WORRY_PREVIEW_LENS[my.dayGanWx][cat])return '';
- var wx=my.dayGanWx,dominant=dominantWx(my.wxCount).wx;
- var questions={연애:'관계에서 내가 편안하게 느끼는 방식과 상대가 편안하게 느끼는 방식을 함께 살펴보세요.',직장:'일의 이름보다 내가 힘을 내는 과정과 부담을 느끼는 조건을 구분해보세요.',재물:'돈의 크기만 보기보다 무엇에 가치를 두고 선택하는지 돌아보세요.',건강:'건강은 사주로 판단할 수 없어요. 아래 내용은 생활 습관을 돌아보는 질문으로만 활용해주세요.',인간관계:'가깝고 먼 관계 모두에서 내가 지키고 싶은 기준과 조정할 수 있는 부분을 구분해보세요.'};
+ var tip=String(worryTip(my,cat)||'');if(!tip)return '';
+ var sentences=tip.match(/[^.!?]+[.!?]+["'”]?[ ]*/g)||[tip],head=sentences.slice(0,2).join('').trim(),rest=sentences.length>2;
  var icons={연애:'heart',직장:'briefcase',재물:'wallet',건강:'leaf',인간관계:'people'};
- return '<section class="worry-preview" aria-label="'+esc(cat)+' 무료 풀이"><p class="eyebrow">'+uiIcon(icons[cat])+' '+esc(cat)+' · 먼저 읽어보세요</p><h3>내 사주로 살펴보는 '+esc(cat)+'</h3><p><strong>'+esc(wx)+'</strong> 기운을 타고난 사주는 '+esc(WORRY_PREVIEW_LENS[wx][cat])+'에 주목해 읽어요. '+esc(EVERYDAY_TRAITS[wx][0])+'을 이 주제에서도 함께 살펴볼 수 있어요.</p><p>사주 전체로 보면 <strong>'+esc(dominant)+'</strong> 기운이 상대적으로 두드러져요. '+esc(EVERYDAY_TRAITS[dominant][1])+'이 어떻게 나타나는지 실제 경험에 비춰보세요. 한 가지 기운만으로 결과를 정하지는 않아요.</p><div class="preview-reflection"><span>'+uiIcon('compass')+'</span><p>'+esc(questions[cat])+'</p></div><p class="preview-scope">지금 내용은 타고난 기운에 따른 기본 풀이예요. 더 자세한 풀이에서는 '+esc(cat)+'의 성향, 선택할 때 참고할 점과 상황별 조언을 이어서 볼 수 있어요.</p></section>';
+ var situations=(SITUATION_TEXT[cat]||[]).map(function(x){return '<span class="chip-btn" aria-disabled="true">'+esc(x.label)+'</span>';}).join('');
+ return '<section class="worry-preview" aria-label="'+esc(cat)+' 무료 풀이"><p class="eyebrow">'+uiIcon(icons[cat])+' '+esc(cat)+' · 먼저 읽어보세요</p><h3>'+(my.name?esc(my.name)+'님의 ':'나의 ')+esc(cat)+', 이런 모습이죠?</h3><p>'+esc(head)+(rest?' …':'')+'</p>'+
+  (cat==='건강'?'<p class="hint">건강은 사주로 판단할 수 없어요. 생활 습관을 돌아보는 참고로만 봐 주세요.</p>':'')+
+  (situations?'<p class="preview-scope">이어서 이런 상황별 조언도 볼 수 있어요.</p><div class="chip-row">'+situations+'</div>':'')+'</section>';
 }
 
 /* ---- 내 별 카드: 내 일간의 동물 카드(카드첩의 첫 장). 첫 화면·사주풀이 결과·카드첩에서 같이 쓴다.
