@@ -1237,6 +1237,37 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .star-back img,.star-front img{width:100%;height:100%;object-fit:cover}
 .saju-hero-visual{position:relative;margin:18px -2px 14px;border-radius:18px;overflow:hidden;background:#0d1430;aspect-ratio:3/2;box-shadow:0 12px 28px #0b102033}
 .saju-hero-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 72%}
+.hero-stars{position:absolute;inset:0;pointer-events:none}
+.hero-star{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:radial-gradient(circle,#fff6d8 0,#f3c46b 22%,#f3c46b00 68%);opacity:0;mix-blend-mode:screen;animation:heroStarOn .9s var(--d) ease-out forwards,heroStarTwinkle var(--t) calc(var(--d) + .9s) ease-in-out infinite}
+@keyframes heroStarOn{0%{opacity:0;transform:scale(.2)}55%{opacity:1;transform:scale(1.7)}100%{opacity:.75;transform:scale(1)}}
+@keyframes heroStarTwinkle{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+.saju-hero.is-intro .saju-hero-visual>img{animation:heroWake 1.6s ease-out both}
+@keyframes heroWake{from{filter:brightness(.4) saturate(.7);transform:scale(1.05)}to{filter:none;transform:none}}
+.saju-hero.is-intro .editorial-tag,.saju-hero.is-intro h1,.saju-hero.is-intro .saju-hero-sub{animation:heroRise .7s ease-out both}
+.saju-hero.is-intro h1{animation-delay:.12s}.saju-hero.is-intro .saju-hero-sub{animation-delay:.24s}
+@keyframes heroRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.hero-peek{position:relative;height:44px;margin:12px 0 0}
+.hero-peek-line{position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transform:translateY(6px);transition:opacity .5s ease,transform .5s ease;pointer-events:none}
+.hero-peek-line.is-on{opacity:1;transform:none}
+.hero-peek-line img{flex:none;width:38px;height:38px;border-radius:50%;object-fit:cover;object-position:center 20%;background:var(--surface-2);border:2px solid var(--surface);box-shadow:0 2px 8px #0b10201f}
+.hero-peek-line span{padding:7px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--border);font-size:.8125rem;line-height:1.4;color:var(--fg);text-align:left;word-break:keep-all}
+.hero-peek-line b{margin-right:6px;color:var(--accent);font-size:.75rem}
+.saju-rv{flex-direction:column;gap:6px;cursor:pointer}
+.srv-stage{position:relative;width:300px;height:300px;display:flex;align-items:center;justify-content:center}
+.srv-ring{position:absolute;inset:24px;border-radius:50%;border:1px dashed #e0ad5559;animation:revealSpin 18s linear infinite}
+.srv-face{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;object-fit:cover;object-position:center 20%;border:2px solid #e0ad55;box-shadow:0 0 0 4px #0d142099,0 0 18px #e0ad5555;opacity:0;transform:translate(var(--x),var(--y)) scale(.3);animation:srvFace .5s var(--d) cubic-bezier(.3,1.5,.5,1) forwards,srvFloat 2.4s calc(var(--d) + .5s) ease-in-out infinite}
+@keyframes srvFace{to{opacity:1;transform:translate(var(--x),var(--y)) scale(1)}}
+@keyframes srvFloat{0%,100%{opacity:1;transform:translate(var(--x),var(--y))}50%{opacity:1;transform:translate(var(--x),calc(var(--y) - 5px))}}
+.srv-pillars{position:relative;display:flex;gap:8px}
+.srv-col{display:flex;flex-direction:column;align-items:center;gap:6px}
+.srv-col em{font-style:normal;font-size:.6875rem;color:#ffffff73}
+.srv-g{display:flex;flex-direction:column;align-items:center;justify-content:center;width:36px;height:44px;border-radius:9px;background:#f3e6c812;border:1px solid #e0ad5566;opacity:0;transform:translateY(-26px);animation:srvDrop .45s var(--d) cubic-bezier(.3,1.4,.5,1) forwards}
+.srv-g b{font-family:'Noto Serif KR',serif;font-size:1.25rem;line-height:1;color:#f3d48c;text-shadow:0 0 10px #e0ad5599}
+.srv-g small{margin-top:3px;font-size:.625rem;color:#ffffff8c}
+@keyframes srvDrop{to{opacity:1;transform:none}}
+.srv-txt{margin:4px 0 0;opacity:0;animation:heroRise .5s 1.25s ease-out forwards}
+.srv-sub{margin:0;opacity:0;animation:heroRise .5s 1.4s ease-out forwards}
+@media (prefers-reduced-motion: reduce){.hero-star{animation:none;opacity:.7}.saju-hero.is-intro .saju-hero-visual>img,.saju-hero.is-intro .editorial-tag,.saju-hero.is-intro h1,.saju-hero.is-intro .saju-hero-sub{animation:none}}
 .album-cover{position:relative;margin-bottom:14px;border-radius:16px;overflow:hidden;aspect-ratio:3/2;background:#0d1430}
 .album-cover img{width:100%;height:100%;object-fit:cover;object-position:center 35%}
 .album-cover span{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-family:'Noto Serif KR',serif;font-size:1.5rem;letter-spacing:.3em;color:#f1d896;text-shadow:0 2px 10px #0b1020}
@@ -2727,6 +2758,34 @@ function showReveal(text, sub, cb){
   }, 950);
 }
 
+/* 사주 계산 직후 연출: 콘텐츠 친구 여섯 명이 둘러서고, 가운데에 내 여덟 글자가 년→월→일→시 순서로 떨어져 자리를 잡아요.
+   약 2초 뒤 결과를 열고, 화면을 누르면 바로 넘어가요. 움직임 줄이기 설정이면 기존의 짧은 연출을 써요. */
+function sajuRevealHtml(result){
+ var cols=[['시',result.time],['일',result.day],['월',result.month],['년',result.year]].filter(function(c){return c[1];});
+ if(!cols.length)return '';
+ var order=cols.slice().reverse(),who=result.name?result.name+'님':'나';
+ var pillars=cols.map(function(c){var k=order.indexOf(c);return '<div class="srv-col"><span class="srv-g" style="--d:'+(0.45+k*0.24).toFixed(2)+'s"><b>'+esc(c[1].gan)+'</b><small>'+esc(c[1].ganKr||'')+'</small></span><span class="srv-g" style="--d:'+(0.57+k*0.24).toFixed(2)+'s"><b>'+esc(c[1].zhi)+'</b><small>'+esc(c[1].zhiKr||'')+'</small></span><em>'+c[0]+'</em></div>';}).join('');
+ var friends=STAR_FRIENDS.map(function(c,i){var a=(i*60-90)*Math.PI/180;return '<img class="srv-face" src="'+c.img+'" alt="" style="--x:'+(Math.cos(a)*124).toFixed(1)+'px;--y:'+(Math.sin(a)*124).toFixed(1)+'px;--d:'+(i*0.08).toFixed(2)+'s" decoding="async">';}).join('');
+ return '<div class="srv-stage"><div class="srv-ring"></div>'+friends+'<div class="srv-pillars">'+pillars+'</div></div>'+
+  '<p class="reveal-txt srv-txt">'+esc(who)+'의 '+(cols.length===4?'여덟':'여섯')+' 글자를 찾았어요</p><p class="reveal-sub srv-sub">별첩 친구들이 함께 풀어 볼게요</p>';
+}
+function showSajuReveal(result,cb){
+ var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ var inner=reduce?'':sajuRevealHtml(result);
+ if(!inner){showReveal('사주를 풀이하는 중','입력한 정보에서 나를 이해할 힌트를 찾고 있어요',cb);return;}
+ var ov=document.createElement('div');ov.className='reveal-overlay saju-rv';ov.setAttribute('role','status');
+ ov.innerHTML=inner;
+ document.body.appendChild(ov);
+ requestAnimationFrame(function(){ov.classList.add('show');});
+ var done=false;
+ function finish(){
+  if(done)return;done=true;soundReveal();
+  try{cb();}finally{ov.classList.add('hide');ov.classList.remove('show');setTimeout(function(){if(ov.parentNode)ov.parentNode.removeChild(ov);},420);}
+ }
+ ov.addEventListener('click',finish);
+ setTimeout(finish,2200);
+}
+
 /* ---- 공유 / 초대 ---- */
 function shareUrl(){ return location.origin + location.pathname + '#invite-' + DEVICE.shareCode; }
 var KAKAO_JS_KEY = 'bd6e016153561dea8de15e57b4f39b15';
@@ -3278,9 +3337,36 @@ function myStarCardHtml(result){
 }
 /* 첫 화면 큰 그림: 별 카드 세 장을 부채꼴로 */
 /* 첫 화면: 광고로 온 사람이 바로 입력하도록 계산 방식 설명은 빼고, 별 카드는 한 줄로 */
+/* 첫 화면 연출: 그림 속 별 여덟 개가 차례로 켜지고, 아래에서 콘텐츠 친구들이 한 명씩 질문을 던져요. 입력은 처음부터 바로 할 수 있어요. */
+var HERO_STARS=[[10,10.8],[21.7,26.5],[33.9,12.5],[42.8,32.3],[57.4,28],[67.6,15.7],[80.2,29.7],[90.9,16]];
+var STAR_FRIENDS=[
+ {name:'다온',img:'/assets/daon/f-smile.webp',q:'2027년, 나는 언제 가장 좋을까?'},
+ {name:'해랑',img:'/assets/love/faces/haerang-smile.webp',q:'나는 언제, 어떤 사람과 이어질까?'},
+ {name:'금비',img:'/assets/wealth/faces/gumbi-smile.webp',q:'내 돈은 어디서 들어오고 어디로 샐까?'},
+ {name:'서림',img:'/assets/career/faces/seorim-smile.webp',q:'나에게 맞는 일은 따로 있을까?'},
+ {name:'월하',img:'/assets/marriage/faces/wolha-smile.webp',q:'나는 언제쯤 결혼하게 될까?'},
+ {name:'이안',img:'/assets/ian/f-laugh.webp',q:'나에게 빠지는 사람은 누구일까?'}
+];
 function starHeroHtml(){
- return '<div class="saju-hero has-art"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"></div>'+
-  '<p class="saju-hero-gift">✦ 풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
+ var stars=HERO_STARS.map(function(p,i){return '<i class="hero-star" style="left:'+p[0]+'%;top:'+p[1]+'%;--d:'+(0.35+i*0.13).toFixed(2)+'s;--t:'+(2.6+(i%3)*0.7).toFixed(1)+'s"></i>';}).join('');
+ var peek='<div class="hero-peek" data-hero-peek>'+STAR_FRIENDS.map(function(c,i){return '<p class="hero-peek-line'+(i?'':' is-on')+'"><img '+(i?'data-src':'src')+'="'+c.img+'" alt="" decoding="async"><span><b>'+c.name+'</b>'+c.q+'</span></p>';}).join('')+'</div>';
+ setTimeout(startHeroPeek,0);
+ return '<div class="saju-hero has-art is-intro"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"><div class="hero-stars" aria-hidden="true">'+stars+'</div></div>'+
+  peek+'<p class="saju-hero-gift">✦ 풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
+}
+var HERO_PEEK_TIMER=null;
+function startHeroPeek(){
+ if(HERO_PEEK_TIMER)return;
+ var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ setTimeout(function(){document.querySelectorAll('[data-hero-peek] img[data-src]').forEach(function(im){im.src=im.getAttribute('data-src');im.removeAttribute('data-src');});},1600);
+ if(reduce)return;
+ var k=0;
+ HERO_PEEK_TIMER=setInterval(function(){
+  var box=document.querySelector('[data-hero-peek]');
+  if(!box){clearInterval(HERO_PEEK_TIMER);HERO_PEEK_TIMER=null;return;}
+  if(document.hidden||!box.offsetParent)return;
+  var lines=box.children;lines[k].classList.remove('is-on');k=(k+1)%lines.length;lines[k].classList.add('is-on');
+ },2800);
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
 function sajuBoardHtml(result){
@@ -7317,7 +7403,7 @@ function initSajuForm(){
       var result = computeSaju(opts);
       STATE.mySaju = result; STATE._mySajuOpts = opts; STATE.lastForm = opts;
       saveState();
-      showReveal('사주를 풀이하는 중', '입력한 정보에서 나를 이해할 힌트를 찾고 있어요', function(){
+      showSajuReveal(result, function(){
         renderSajuResult(result);
         refreshCompatPersonA();
         var rw = $('#saju-result'); if (rw) rw.classList.add('reveal-fadeup');

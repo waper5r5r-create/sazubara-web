@@ -68,3 +68,14 @@ test('paid 10-year lists: a year with the same relation as an earlier one points
   assert.match(ctx.yearSameHtml(rows[0]),/2027년과 흐름이 비슷해요/);
   assert.equal((html.match(/rows\.map\(function\(r,ri\)\{var rp=sameRelBefore\(rows,ri\)/g)||[]).length,3);
 });
+
+test('first-screen and result reveal: eight hero stars, six friends with real faces, saju reveal used on submit with a calm fallback',()=>{
+  const fs=require('node:fs'),path=require('node:path');const root=path.join(__dirname,'..');const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+  const stars=html.match(/var HERO_STARS=(\[[^;]*\]);/);assert.ok(stars);assert.equal(JSON.parse(stars[1]).length,8);
+  const imgs=[...html.slice(html.indexOf('var STAR_FRIENDS='),html.indexOf('function starHeroHtml(')).matchAll(/img:'([^']+)'/g)].map(m=>m[1]);
+  assert.equal(imgs.length,6);for(const p of imgs)assert.ok(fs.existsSync(path.join(root,p)),p);
+  assert.match(html,/showSajuReveal\(result, function\(\)\{\s*renderSajuResult\(result\);/);
+  const fn=html.slice(html.indexOf('function showSajuReveal('),html.indexOf('/* ---- 공유 / 초대 ---- */'));
+  assert.match(fn,/prefers-reduced-motion/);assert.match(fn,/showReveal\(/);assert.match(fn,/addEventListener\('click',finish\)/);
+  assert.match(html,/'여덟':'여섯'/);
+});
