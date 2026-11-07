@@ -11,8 +11,9 @@
 //   inviter가 saju_opts를 아직 올리지 않았으면 그 카드는 내려주지 않습니다.
 // POST /api/invite?action=redeem  body:{code, inviteeDeviceId, inviteeName, sajuOpts}
 //   친구가 초대 링크로 들어와서 "자기 사주를 직접 입력"했을 때 호출됩니다.
-//   - 이 기기(invitee)가 과거에 이미 어떤 초대로든 등록된 적이 있으면(=invitee_device_id unique 제약),
-//     다시 호출돼도 중복 등록되지 않습니다.
+//   - 같은 초대한 사람과 같은 친구 한 쌍은 한 번만 등록됩니다(inviter_device_id+invitee_device_id unique, 2026-11-07).
+//     같은 링크를 두 번 눌러도 이름이 두 번 뜨지 않고, 다른 사람의 초대로는 또 이어질 수 있어요.
+//     (예전에는 invitee_device_id 하나만 unique여서 한 사람이 평생 한 번만 초대받을 수 있었어요.)
 //   - 자기 자신의 초대코드로는 등록되지 않습니다(자기 초대 방지).
 //   - 처음 등록될 때 두 사람 모두에게 "서로의 궁합 상세 리포트"(990원)를 무료로 열어 줍니다.
 //     paid_unlocks에 amount 0, unlock_key 'invite-compat-<상대 device_id>'로 한 줄씩 넣습니다.
@@ -136,7 +137,7 @@ async function handleRedeem(req, res) {
     });
 
     if (insRes.status === 409) {
-      // 이 기기는 이미 예전에 (이 초대든 다른 초대든) 등록된 적이 있음 — 정상, 중복 등록만 막음.
+      // 이 두 사람은 이미 이어져 있음 — 정상, 같은 쌍이 두 번 생기는 것만 막음.
       res.status(200).json({ ok: true, registered: false, already: true });
       return;
     }
