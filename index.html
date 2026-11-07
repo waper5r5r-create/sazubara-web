@@ -3,10 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="무료 사주풀이, 오늘의 운세, 궁합보기를 한 곳에서. 내 사주를 별 카드로 모아보는 별첩사주.">
+<meta name="description" content="무료 사주풀이, 2027 신년운세, 오늘의 운세, 궁합을 한 곳에서. 생년월일만 넣으면 바로 볼 수 있어요.">
+<link rel="canonical" href="https://www.byeolcheop.com/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=7">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=6">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://www.byeolcheop.com/">
 <meta property="og:site_name" content="별첩사주">
 <meta property="og:title" content="별첩사주 — 사주풀이 · 오늘의 운세 · 궁합보기">
 <meta property="og:description" content="나의 성향부터 오늘의 흐름, 서로의 궁합까지. 별첩사주에서 만나보세요.">
@@ -17,7 +19,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="별첩사주 — 사주풀이 · 오늘의 운세 · 궁합보기">
 <meta name="twitter:image" content="https://www.byeolcheop.com/og-image-v4.jpg">
-<title>별첩사주 — 무료 사주풀이 · 오늘의 운세 · 궁합</title>
+<title>별첩사주 — 무료 사주풀이 · 2027 신년운세 · 궁합</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2573,7 +2575,7 @@ function resizeImageFileToBase64(file, maxDim){
 function saveDevice(){
   try{
     localStorage.setItem(DEVICE_KEY, JSON.stringify({
-      unlocked:DEVICE.unlocked, shareCode:DEVICE.shareCode, secret:DEVICE.secret, pendingInviteCode:DEVICE.pendingInviteCode
+      unlocked:DEVICE.unlocked, shareCode:DEVICE.shareCode, secret:DEVICE.secret, pendingInviteCode:DEVICE.pendingInviteCode, lastSource:DEVICE.lastSource||null, tracked:DEVICE.tracked||{}
     }));
   }catch(e){}
 }
@@ -2618,6 +2620,31 @@ function initDevice(){
   }
   saveDevice();
   return invited;
+}
+/* 방문 측정: 어디서 들어왔는지(utm_source, 없으면 이전 페이지 주소)와 주요 단계(방문·사주 입력·결제 시작·결제 완료)만 남긴다.
+   이름·생년월일 같은 개인정보는 보내지 않는다. 출처는 마지막으로 알려진 것을 기기에 기억해 결제까지 이어 붙인다. */
+function visitSourceNow(){
+  var q=new URLSearchParams(location.search),s=q.get('utm_source');
+  if(s)return {source:s.slice(0,40),campaign:(q.get('utm_campaign')||'').slice(0,60)};
+  var host='';try{host=document.referrer?new URL(document.referrer).hostname:'';}catch(e){}
+  if(!host||host===location.hostname)return null;
+  return {source:host.replace(/^(www|m)[.]/,'').slice(0,60),campaign:''};
+}
+function track(name){
+  try{
+    if(!DEVICE.shareCode)return;
+    var src=DEVICE.lastSource||{};
+    var body=JSON.stringify({device_id:DEVICE.shareCode,name:name,source:src.source||'direct',campaign:src.campaign||'',landing:src.landing||''});
+    if(navigator.sendBeacon&&navigator.sendBeacon('/api/track',new Blob([body],{type:'application/json'})))return;
+    fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:body,keepalive:true}).catch(function(){});
+  }catch(e){}
+}
+function trackOnce(name){DEVICE.tracked=DEVICE.tracked||{};if(DEVICE.tracked[name])return;DEVICE.tracked[name]=1;saveDevice();track(name);}
+function trackVisit(){
+  var now=visitSourceNow();
+  if(now){now.landing=(location.pathname+location.search).replace(/[?&]utm_[a-z]+=[^&]*/g,'').slice(0,80);DEVICE.lastSource=now;saveDevice();}
+  var seen=false;try{seen=sessionStorage.getItem('visit-tracked')==='1';sessionStorage.setItem('visit-tracked','1');}catch(e){}
+  if(!seen)track('visit');
 }
 function isUnlocked(key){ return !!DEVICE.unlocked[key]; }
 function setUnlocked(key){ DEVICE.unlocked[key] = true; saveDevice(); }
@@ -2878,6 +2905,7 @@ function startUnlock(unlockKey, priceKrw, label){
   loadTossSdk().then(function(ctx){
     var tp = ctx.TossPayments(ctx.clientKey);
     var orderId = tossOrderId();
+    track('pay_start');
     tp.requestPayment('카드', {
       amount: priceKrw,
       orderId: orderId,
@@ -2893,6 +2921,7 @@ function startUnlock(unlockKey, priceKrw, label){
 function handleTossPaymentCallback(){
   var params=new URLSearchParams(location.search);
   if(!params.get('paid'))return;
+  track('pay_done');
   var reportId=params.get('report'),stage=params.get('stage')||'story',returnTab=params.get('tab')||'saju';
   var clean=new URL(location.href);['paid','order','report','stage','tab'].forEach(function(k){clean.searchParams.delete(k);});
   history.replaceState({},'',clean.pathname+clean.search+clean.hash);
@@ -4610,6 +4639,7 @@ function startReportUnlock(concept,stage){
   var buttons=$all('.report-stage-buy');buttons.forEach(function(b){b.disabled=true;});
   Promise.all([loadTossSdk(),fetch('/api/reports/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'prepare',deviceId:DEVICE.shareCode,conceptId:concept.id,stage:stage})}).then(function(r){return r.json();}).then(function(data){if(!data.ok){var error=new Error(data.message||'결제 준비에 실패했어요.');error.code=data.error;throw error;}return data;})]).then(function(values){
     var ctx=values[0],checkout=values[1];
+    track('pay_start');
     return ctx.TossPayments(ctx.clientKey).requestPayment('카드',{
       amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+(isNewYear(concept)||isIan(concept)?'':' (이야기+심층 리포트)'),
       successUrl:location.origin+'/success.html?type=report&conceptId='+encodeURIComponent(concept.id)+'&stage='+stage+'&quote='+encodeURIComponent(checkout.quote),
@@ -7291,6 +7321,7 @@ function initSajuForm(){
       var result = computeSaju(opts);
       STATE.mySaju = result; STATE._mySajuOpts = opts; STATE.lastForm = opts;
       saveState();
+      trackOnce('saju_done');
       showReveal('사주를 풀이하는 중', '입력한 정보에서 나를 이해할 힌트를 찾고 있어요', function(){
         renderSajuResult(result);
         refreshCompatPersonA();
@@ -7466,6 +7497,7 @@ function init(){
   $('#btn-open-menu').addEventListener('click',openSiteMenu);
   initAuth().catch(function(){/* Other features remain available if the auth SDK cannot load. */});
   var invited = initDevice();
+  trackVisit();
   handleTossPaymentCallback();
   pullPaidUnlocks();
   pullReportUnlocks();
