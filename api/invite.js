@@ -14,7 +14,8 @@
 //   - 이 기기(invitee)가 과거에 이미 어떤 초대로든 등록된 적이 있으면(=invitee_device_id unique 제약),
 //     다시 호출돼도 중복 등록되지 않습니다.
 //   - 자기 자신의 초대코드로는 등록되지 않습니다(자기 초대 방지).
-//   - 크레딧 폐지 이후로는 보너스 지급 없이, 서로의 마이룸(카드첩)에 카드가 생기는 것만 합니다.
+//   - 처음 등록될 때 두 사람 모두에게 "서로의 궁합 상세 리포트"(990원)를 무료로 열어 줍니다.
+//     paid_unlocks에 amount 0, unlock_key 'invite-compat-<상대 device_id>'로 한 줄씩 넣습니다.
 
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('./_supabase');
 
@@ -145,10 +146,27 @@ async function handleRedeem(req, res) {
       return;
     }
 
-    res.status(200).json({ ok: true, registered: true });
+    const gifted = await grantInviteCompat(code, inviteeDeviceId);
+    res.status(200).json({ ok: true, registered: true, gifted: gifted });
   } catch (e) {
     res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
   }
+}
+
+// 초대 보상: 두 사람 모두 서로의 궁합 상세를 무료로 본다. 이미 있으면(409) 그대로 둔다.
+async function grantInviteCompat(inviterId, inviteeId) {
+  const rows = [
+    { device_id: inviterId, unlock_key: 'invite-compat-' + inviteeId, order_id: 'invite_' + inviterId + '_' + inviteeId, amount: 0 },
+    { device_id: inviteeId, unlock_key: 'invite-compat-' + inviterId, order_id: 'invite_' + inviteeId + '_' + inviterId, amount: 0 }
+  ];
+  let ok = true;
+  for (const row of rows) {
+    try {
+      const r = await sbFetch('/paid_unlocks', { method: 'POST', body: JSON.stringify(row) });
+      if (!r.ok && r.status !== 409) ok = false;
+    } catch (e) { ok = false; }
+  }
+  return ok;
 }
 
 module.exports = async (req, res) => {

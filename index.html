@@ -552,6 +552,7 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 .history-row .delta{flex:none; font-weight:700; font-variant-numeric:tabular-nums;}
 .history-row .delta.pos{color:var(--good);}
 .history-row .delta.neg{color:var(--bad);}
+.invite-gift{margin:-4px 0 4px;font-size:.75rem;color:var(--fg-muted)}
 .invite-box{display:flex; flex-direction:column; gap:10px; background:var(--surface-2); border-radius:14px; padding:14px;}
 .invite-link-row{display:flex; gap:8px; align-items:center;}
 .invite-link-row input{flex:1; min-width:0; border:1px solid var(--border-strong); border-radius:10px; background:var(--surface); color:var(--fg-muted); padding:9px 10px; font-size:.75rem;}
@@ -2823,15 +2824,15 @@ function doShare(){
    function doShareCompatInvite(resA){
         var url = shareUrl();
         var myName = (resA && resA.name) || (STATE.mySaju&&STATE.mySaju.name) || '';
-        var text = '내 생년월일만 넣으면 둘의 궁합이 바로 나와요.';
+        var text = '내 생년월일만 넣으면 둘의 궁합이 바로 나와요. 궁합 상세도 무료로 열려요.';
         kakaoShare(text, url, '궁합 보러 가기', (myName? myName+'님이 ':'')+'궁합을 보자고 해요').then(function(){
                maybeAwardShareBonus();
-               showToast('링크를 보냈어요. 상대가 입력하면 내 별자리에 별이 생겨요.');
+               showToast('링크를 보냈어요. 상대가 입력하면 궁합 상세가 무료로 열려요.');
         }).catch(function(){
                if (navigator.share){
                         navigator.share({ title:'별첩사주 궁합', text:text, url:url }).then(function(){
                                    maybeAwardShareBonus();
-                                   showToast('링크를 보냈어요. 상대가 입력하면 내 별자리에 별이 생겨요.');
+                                   showToast('링크를 보냈어요. 상대가 입력하면 궁합 상세가 무료로 열려요.');
                         }).catch(function(){});
                } else {
                         copyToClipboard(text+'\n'+url);
@@ -2953,6 +2954,7 @@ function attemptInviteRedeem(opts){
     if (data && data.ok){
       DEVICE.pendingInviteCode = null;
       saveDevice();
+      if (data.registered && data.gifted){ pullPaidUnlocks(); showToast('초대해 준 친구와의 궁합 상세가 무료로 열렸어요.'); }
     }
   }).catch(function(){ /* 다음 사주 입력/제출 때 다시 시도됨 */ });
 }
@@ -4049,7 +4051,7 @@ function refreshCompatPersonA(){
            '<div class="seg" id="c-b-mode"><button type="button" data-val="kakao" class="active">링크 보내서 받기</button><button type="button" data-val="manual">직접 입력</button></div>'+
          '</div>'+
          '<div id="c-b-kakao-pane">'+
-           '<p class="section-desc">상대의 생년월일을 몰라도 괜찮아요. 링크를 보내면 상대가 직접 입력하고, 둘의 궁합을 함께 볼 수 있어요.</p>'+
+           '<p class="section-desc">상대의 생년월일을 몰라도 괜찮아요. 링크를 보내면 상대가 직접 입력하고, 둘의 궁합을 함께 볼 수 있어요.</p><p class="invite-gift">친구가 처음 들어와 사주를 넣으면 두 사람 모두 궁합 상세(990원)를 무료로 볼 수 있어요.</p>'+
            '<button type="button" class="btn-primary" id="btn-compat-kakao-invite">궁합 링크 보내기</button>'+
          '</div>'+
          '<div id="c-b-manual-pane" hidden>'+
@@ -6465,6 +6467,7 @@ function skyCompatPair(entry){
 }
 function renderSkyPremium(entry,body){
  if(!body)return;var pair=skyCompatPair(entry);
+ if(pair&&entry._otherId&&typeof DEVICE!=='undefined'&&DEVICE.unlocked&&DEVICE.unlocked['invite-compat-'+entry._otherId])DEVICE.unlocked[pair.key]=true;
  if(!pair){body.innerHTML='<h4>두 사람의 궁합 상세 리포트</h4><p>관계를 이어가는 방법 · 대화 스타일 · 갈등 포인트 · 월별 흐름</p><p>'+(/^(demo-|design-sample-)/.test(String(entry.id))?'예시 카드에서는 결제할 수 없어요. 실제로 추가한 인연에서 상세 리포트를 열어보세요.':'상대의 사주 정보를 다시 확인하면 상세 풀이와 구매 내역을 연결할 수 있어요.')+'</p>';return;}
  renderCompatDetailSection(pair.a,pair.b,pair.compat,pair.key,body);
 }
