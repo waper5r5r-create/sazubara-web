@@ -103,3 +103,12 @@ test('birth flow: page-by-page input opens from the first screen, 다시 입력 
   for(const k of ['첫째 장','둘째 장','셋째 장','넷째 장','별자리 완성','윤달이에요','태어난 곳','시간을 몰라요'])assert.ok(flow.includes(k),k);
   assert.ok(!/faces|daon|\/ian\//.test(flow));
 });
+
+test('no top-level name is declared twice with different values (ZHI_ANIMAL once broke the weekly day sheet this way)',()=>{
+  const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const src=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
+  const seen={};
+  for(const m of src.matchAll(/^var ([A-Z][A-Z0-9_]+)\s*=\s*([^\n]*)/gm)){const v=m[2].replace(/\s+/g,'').replace(/;$/,'');if(seen[m[1]]!==undefined)assert.equal(v,seen[m[1]],m[1]+' declared twice with different values');seen[m[1]]=v;}
+  assert.equal((src.match(/\bZHI_ANIMAL\s*=/g)||[]).length,1);
+  assert.match(src,/'子':\{animal:'쥐', emoji:'🐭'/);
+});

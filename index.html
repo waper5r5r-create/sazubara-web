@@ -6073,7 +6073,7 @@ function marriageOffer(stage){
  return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하')+'</p><h2>'+(detail?'내 결혼 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'결혼 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 결혼 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 /* 결혼 사주 계산 보조: 월별 흐름, 궁합 짝, 십신 묶음 */
-var ZHI_ORDER='子丑寅卯辰巳午未申酉戌亥',ZHI_ANIMAL={子:'쥐',丑:'소',寅:'호랑이',卯:'토끼',辰:'용',巳:'뱀',午:'말',未:'양',申:'원숭이',酉:'닭',戌:'개',亥:'돼지'};
+var ZHI_ORDER='子丑寅卯辰巳午未申酉戌亥';
 function marriageMonths(result,year){
  var rows=[];
  for(var m=1;m<=12;m++){
