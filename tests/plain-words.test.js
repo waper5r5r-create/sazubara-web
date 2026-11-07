@@ -22,7 +22,7 @@ test('payment review: footer shows business details and the price list matches r
  const fs=require('node:fs'),path=require('node:path'),root=path.join(__dirname,'..');
  const page=fs.readFileSync(path.join(root,'index.html'),'utf8'),legal=fs.readFileSync(path.join(root,'legal.html'),'utf8');
  const foot=page.slice(page.indexOf('<footer class="site-legal"'),page.indexOf('</footer>'));
- for(const v of ['이음랩(IEUM LAB)','정계준','195-50-01151','010-5440-0335','ieumlab22@gmail.com','legal.html#refund','legal.html#price'])assert.ok(foot.includes(v),v);
+ for(const v of ['이음랩(IEUM LAB)','정계준','195-50-01151','010-5440-0335','ieumlab22@gmail.com','legal.html#refund','legal.html#price','mailto:ieumlab22@gmail.com?subject=','결제·환불 문의'])assert.ok(foot.includes(v),v);
  assert.ok(!foot.includes('301호'),'home address stays off the footer');
  assert.match(legal,/address: '[^']*301호'/);
  const fmt=n=>n.toLocaleString('en-US')+'원';
