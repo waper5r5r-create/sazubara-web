@@ -57,3 +57,14 @@ test('paid reports: month lines rotate instead of repeating, and wealth income t
   const src=require('node:fs').readFileSync(require('node:path').join(__dirname,'..','api','_wealth-deep.js'),'utf8');
   assert.ok(!/\((정재|편재)\)/.test(src));
 });
+
+test('paid 10-year lists: a year with the same relation as an earlier one points back instead of repeating the long blocks',()=>{
+  const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const src=html.slice(html.indexOf('function sameRelBefore('),html.indexOf('function pickLine('));
+  const ctx={};vm.createContext(ctx);vm.runInContext(src,ctx);
+  const rows=[{year:2027,rel:'none'},{year:2028,rel:'liuhe',top:1},{year:2029,rel:'none'},{year:2030,rel:'liuhe'}];
+  assert.equal(ctx.sameRelBefore(rows,0),null);assert.equal(ctx.sameRelBefore(rows,2).year,2027);
+  assert.equal(ctx.sameRelBefore(rows,3),null,'a best year is never the reference');assert.equal(ctx.sameRelBefore(rows,1),null);
+  assert.match(ctx.yearSameHtml(rows[0]),/2027년과 흐름이 비슷해요/);
+  assert.equal((html.match(/rows\.map\(function\(r,ri\)\{var rp=sameRelBefore\(rows,ri\)/g)||[]).length,3);
+});
