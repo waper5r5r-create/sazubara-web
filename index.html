@@ -3058,7 +3058,7 @@ function openBirthFlow(prefill,opt){
  BF={root:root};
  try{history.pushState({bf:1},'');}catch(e){}
  function onPop(){closeBirthFlow(true);}window.addEventListener('popstate',onPop);BF.onPop=onPop;
- requestAnimationFrame(function(){root.classList.add('show');});
+ requestAnimationFrame(function(){root.classList.add('show');});setTimeout(function(){root.classList.add('show');},80);
 
  /* 별자리 */
  function st(i){return root.querySelector('[data-s="'+i+'"]');}
@@ -3071,10 +3071,13 @@ function openBirthFlow(prefill,opt){
  function unlight(list){list.forEach(function(i){st(i).classList.remove('on','q');});sync();}
  function fly(from,list,done){
   if(reduce||!from.animate){list.forEach(function(i){light(i);});if(done)done();return;}
-  var r=from.getBoundingClientRect(),x0=r.left+r.width/2,y0=r.top+r.height/2;
-  list.forEach(function(i,k){var t=st(i).getBoundingClientRect(),x1=t.left+t.width/2,y1=t.top+t.height/2,sp=document.createElement('span');sp.className='bf-spark';sp.style.left=x0+'px';sp.style.top=y0+'px';root.appendChild(sp);
+  var r=from.getBoundingClientRect(),x0=r.left+r.width/2,y0=r.top+r.height/2,fin=false,sparks=[];
+  /* 애니메이션이 멈춰도(절전 모드, 앱 전환) 다음 장으로 넘어가도록 시간으로 한 번 더 마무리해요 */
+  function finishAll(){if(fin)return;fin=true;sparks.forEach(function(x){x.remove();});list.forEach(function(i){light(i);});if(done)done();}
+  setTimeout(finishAll,720+list.length*140+500);
+  list.forEach(function(i,k){var t=st(i).getBoundingClientRect(),x1=t.left+t.width/2,y1=t.top+t.height/2,sp=document.createElement('span');sp.className='bf-spark';sp.style.left=x0+'px';sp.style.top=y0+'px';root.appendChild(sp);sparks.push(sp);
    var an=sp.animate([{transform:'translate(0,0) scale(.6)',opacity:0},{transform:'translate('+((x1-x0)*0.35+(k?24:-24))+'px,'+((y1-y0)*0.55-40)+'px) scale(1.2)',opacity:1,offset:.45},{transform:'translate('+(x1-x0)+'px,'+(y1-y0)+'px) scale(.5)',opacity:.9}],{duration:720,delay:k*140,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
-   an.onfinish=function(){sp.remove();light(i);if(k===list.length-1&&done)done();};});
+   an.onfinish=function(){sp.remove();light(i);if(k===list.length-1)finishAll();};});
  }
  /* 하늘 색 */
  function tone(t){$all('.bf-sky i',root).forEach(function(l){if(!l.classList.contains('t-base'))l.classList.toggle('on',!!t&&l.classList.contains('t-'+t));});}
