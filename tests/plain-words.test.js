@@ -128,7 +128,7 @@ test('no regex lookbehind anywhere in the page (older iPhone Safari fails to par
 
 test('UX pass: back closes layers before leaving, compat tab is called 궁합, returning visitors get today first, empty 별첩 has a send button, skeleton loaders',()=>{
   const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
-  assert.match(html,/var NAV_LAYERS=\['#report-sheet-root','#myroom-sheet-root','#brief-sheet-root','#site-menu-root','#persona-sheet-root'\];/);
+  assert.match(html,/var NAV_LAYERS=\['#intro-sheet-root','#report-sheet-root','#myroom-sheet-root','#brief-sheet-root','#site-menu-root','#persona-sheet-root'\];/);
   assert.match(html,/initBackNav\(startTab\);/);assert.match(html,/if\(typeof BF!=='undefined'&&BF\)return;/);
   assert.match(html,/<span class="ico" id="tab-ico-compat"><\/span><span>궁합<\/span>/);
   assert.match(html,/SHOW_TODAY_PEEK=true;renderSajuResult\(STATE\.mySaju\);SHOW_TODAY_PEEK=false;/);
