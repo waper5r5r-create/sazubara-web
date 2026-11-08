@@ -1304,6 +1304,15 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .reader-cta small{font-size:.8125rem;color:#e9c27a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .reader-cta button{flex:none;min-height:44px;padding:0 14px;border:0;border-radius:12px;background:linear-gradient(135deg,#f6dca0,#d9a95a);color:#2a1f0c;font-weight:700;font-size:.875rem}
 .gate-hook{margin:0 0 8px!important;font-size:1rem!important;font-weight:700!important;color:#f6dca0!important;word-break:keep-all}
+/* 한글은 단어 중간에서 줄을 바꾸지 않기. 긴 영문·주소만 필요할 때 끊기 */
+body{word-break:keep-all;overflow-wrap:break-word}
+/* 푸터: 링크와 사업자 정보를 덩어리째 줄바꿈 */
+.site-legal{line-height:1.6!important}
+.sl-links{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin:0 auto;max-width:330px}
+.sl-links a{padding:2px 0;white-space:nowrap}
+.sl-biz{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 10px;margin:14px auto 0;max-width:320px}
+.sl-biz span{white-space:nowrap}
+.sl-note{margin:10px 0 0}
 .worry-peek{margin-top:12px;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0}
 .worry-peek p{margin:0;font-size:.9375rem;line-height:1.7;word-break:keep-all}
 .worry-preview .section-desc{font-size:.9375rem;line-height:1.75;color:var(--fg)}
@@ -1824,7 +1833,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
     <!-- ===================== 탭 4: 이야기(구 리포트, 건별결제) ===================== -->
     <section class="view" id="view-reports" hidden></section>
 
-    <footer class="site-legal"><a href="/legal.html#terms">이용약관</a> · <a href="/legal.html#privacy"><b>개인정보처리방침</b></a> · <a href="/legal.html#refund">환불 정책</a> · <a href="/legal.html#price">이용 요금</a> · <a href="/legal.html#business">사업자 정보</a> · <a href="mailto:ieumlab22@gmail.com?subject=%EA%B2%B0%EC%A0%9C%C2%B7%ED%99%98%EB%B6%88%20%EB%AC%B8%EC%9D%98">결제·환불 문의</a><br><span class="site-biz">이음랩(IEUM LAB) · 대표 정계준 · 사업자등록번호 195-50-01151<br>고객 문의 010-5440-0335 · ieumlab22@gmail.com</span><br><span>사주 풀이는 참고용 콘텐츠예요.</span></footer>
+    <footer class="site-legal"><nav class="sl-links" aria-label="약관과 정책"><a href="/legal.html#terms">이용약관</a><a href="/legal.html#privacy"><b>개인정보처리방침</b></a><a href="/legal.html#refund">환불 정책</a><a href="/legal.html#price">이용 요금</a><a href="/legal.html#business">사업자 정보</a><a href="mailto:ieumlab22@gmail.com?subject=%EA%B2%B0%EC%A0%9C%C2%B7%ED%99%98%EB%B6%88%20%EB%AC%B8%EC%9D%98">결제·환불 문의</a></nav><p class="sl-biz"><span>이음랩(IEUM LAB)</span><span>대표 정계준</span><span>사업자등록번호 195-50-01151</span><span>고객 문의 010-5440-0335</span><span>ieumlab22@gmail.com</span></p><p class="sl-note">사주 풀이는 참고용 콘텐츠예요.</p></footer>
   </main>
 
   <nav class="tabs-bar" aria-label="주요 메뉴">
