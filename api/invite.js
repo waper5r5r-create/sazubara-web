@@ -17,8 +17,23 @@
 //   - 자기 자신의 초대코드로는 등록되지 않습니다(자기 초대 방지).
 //   - 처음 등록될 때 두 사람 모두에게 "서로의 궁합 상세 리포트"(990원)를 무료로 열어 줍니다.
 //     paid_unlocks에 amount 0, unlock_key 'invite-compat-<상대 device_id>'로 한 줄씩 넣습니다.
+//
+// 로그인으로 같은 계정에 묶인 기기들(account_devices)은 별첩을 함께 씁니다(2026-11-08).
+//   - list/received는 묶인 기기 전체의 초대 기록을 모아, 같은 친구는 한 번만(가장 최근 것) 돌려줍니다.
+//   - 내 기기끼리의 초대(PC 링크를 내 휴대폰에서 연 경우)는 목록에서 빼고, redeem에서도 자기 초대로 막습니다.
 
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('./_supabase');
+const { linkedDeviceIds, deviceFilter } = require('./_account');
+
+// 같은 키를 가진 행은 첫 번째(가장 최근)만 남긴다.
+function latestBy(rows, key) {
+  const seen = new Set();
+  return rows.filter(function (row) {
+    if (seen.has(row[key])) return false;
+    seen.add(row[key]);
+    return true;
+  });
+}
 
 async function handleList(req, res) {
   if (req.method !== 'GET') {
@@ -32,10 +47,11 @@ async function handleList(req, res) {
     return;
   }
   try {
+    const mine = await linkedDeviceIds(deviceId);
     const r = await sbFetch(
-      '/invite_redemptions?inviter_device_id=eq.' +
-        encodeURIComponent(deviceId) +
-        '&select=invitee_device_id,invitee_name,invitee_saju,created_at&order=created_at.desc&limit=60',
+      '/invite_redemptions?inviter_device_id=' +
+        deviceFilter(mine) +
+        '&select=invitee_device_id,invitee_name,invitee_saju,created_at&order=created_at.desc&limit=120',
       { method: 'GET' }
     );
     if (!r.ok) {
@@ -43,7 +59,7 @@ async function handleList(req, res) {
       res.status(500).json({ ok: false, error: 'QUERY_FAILED', message: text });
       return;
     }
-    const rows = await r.json();
+    const rows = latestBy((await r.json()).filter(function (row) { return mine.indexOf(row.invitee_device_id) === -1; }), 'invitee_device_id').slice(0, 60);
     res.status(200).json({ ok: true, rows: rows });
   } catch (e) {
     res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
@@ -62,10 +78,11 @@ async function handleReceived(req, res) {
     return;
   }
   try {
+    const mine = await linkedDeviceIds(deviceId);
     const r = await sbFetch(
-      '/invite_redemptions?invitee_device_id=eq.' +
-        encodeURIComponent(deviceId) +
-        '&select=inviter_device_id,created_at&order=created_at.desc&limit=60',
+      '/invite_redemptions?invitee_device_id=' +
+        deviceFilter(mine) +
+        '&select=inviter_device_id,created_at&order=created_at.desc&limit=120',
       { method: 'GET' }
     );
     if (!r.ok) {
@@ -73,7 +90,7 @@ async function handleReceived(req, res) {
       res.status(500).json({ ok: false, error: 'QUERY_FAILED', message: text });
       return;
     }
-    const rows = await r.json();
+    const rows = latestBy((await r.json()).filter(function (row) { return mine.indexOf(row.inviter_device_id) === -1; }), 'inviter_device_id').slice(0, 60);
     if (!rows.length) {
       res.status(200).json({ ok: true, rows: [] });
       return;
@@ -115,7 +132,7 @@ async function handleRedeem(req, res) {
     res.status(400).json({ ok: false, error: 'MISSING_FIELDS' });
     return;
   }
-  if (code === inviteeDeviceId) {
+  if (code === inviteeDeviceId || (await linkedDeviceIds(inviteeDeviceId)).indexOf(code) !== -1) {
     res.status(400).json({ ok: false, error: 'SELF_INVITE' });
     return;
   }
