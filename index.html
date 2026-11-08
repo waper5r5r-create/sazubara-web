@@ -1313,6 +1313,35 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .sl-biz{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 10px;margin:14px auto 0;max-width:320px}
 .sl-biz span{white-space:nowrap}
 .sl-note{margin:10px 0 0}
+/* 우리 사이 리포트 */
+.cr-report{margin-top:6px}
+.cr-kicker{margin:0;font-size:.8125rem;font-weight:700;letter-spacing:.08em;color:var(--accent)}
+.cr-report h3{margin:4px 0 6px;font-family:'Noto Serif KR',serif;font-size:1.25rem;line-height:1.4}
+.cr-sec{padding:18px 0;border-top:1px solid var(--border)}
+.cr-sec:first-of-type{border-top:0}
+.cr-no{margin:0;font-size:.8125rem;font-weight:700;color:var(--accent);letter-spacing:.06em}
+.cr-sec h4{margin:2px 0 10px;font-size:1.0625rem;line-height:1.45}
+.cr-sec .section-desc{font-size:.9375rem;line-height:1.75;color:var(--fg)}
+.cr-score{display:flex;align-items:baseline;gap:4px;margin-bottom:12px}
+.cr-score b{font-family:'Noto Serif KR',serif;font-size:2.25rem;line-height:1;color:var(--accent)}
+.cr-score em{margin-left:8px;font-style:normal;font-size:.875rem;color:var(--fg-muted)}
+.cr-bars{display:grid;gap:8px;margin-bottom:12px}
+.cr-bar{display:grid;grid-template-columns:72px 1fr 28px;align-items:center;gap:8px;font-size:.875rem}
+.cr-bar i{height:8px;border-radius:99px;background:var(--surface-3,#ece6d8);overflow:hidden}
+.cr-bar s{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#e9c27a,#c4913f)}
+.cr-bar b{text-align:right;font-size:.8125rem}
+.cr-who{padding:12px 14px;margin-bottom:8px;border-radius:14px;background:var(--accent-soft)}
+.cr-who b{font-size:.875rem}.cr-who .section-desc{margin:4px 0 0}
+.cr-tips{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.cr-tips li{display:flex;gap:8px;font-size:.9375rem;line-height:1.6}
+.cr-tips svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--accent)}
+.cr-months{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px}
+.cr-months span{padding:8px 0;border-radius:10px;background:var(--surface-3,#ece6d8);text-align:center;font-size:.8125rem;color:var(--fg-muted)}
+.cr-months .is-good{background:var(--good);color:#fff}.cr-months .is-bad{background:var(--bad);color:#fff}
+.cr-year{padding:10px 0}.cr-year b{font-size:.9375rem}
+.cr-words{display:grid;gap:10px}
+.cr-words p{margin:0;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;font-size:.9375rem;line-height:1.75}
+.cr-words b{display:block;font-size:.8125rem;color:var(--accent);margin-bottom:2px}
 .worry-peek{margin-top:12px;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0}
 .worry-peek p{margin:0;font-size:.9375rem;line-height:1.7;word-break:keep-all}
 .worry-preview .section-desc{font-size:.9375rem;line-height:1.75;color:var(--fg)}
@@ -4175,8 +4204,8 @@ function skyPanelHtml(e,i,n){
  var type=cardTypeOf(e),name=esc(e.nameB||'상대방');
  return '<p class="sky-panel-kicker">'+name+'님의 별 · '+esc(type?type.title:'')+'</p><h3>'+skyWord(e)+'</h3>'+
   (ZHI_REL_TEXT[e.zhiRel]?'<p>'+esc(skyRelationCopy(e))+'</p><h4>두 사람의 관계</h4><p>'+esc(ZHI_REL_TEXT[e.zhiRel])+'</p>':'')+(GAN_REL_TEXT[e.ganRel]?'<p>'+esc(GAN_REL_TEXT[e.ganRel])+'</p>':'')+
-  '<div class="sky-panel-nav">'+(n>1?'<button type="button" data-sky-prev aria-label="이전 별">‹</button>':'')+(skyIsDemo()?'':'<button type="button" class="sky-panel-more" data-sky-more>궁합 자세히</button>')+(n>1?'<button type="button" data-sky-next aria-label="다음 별">›</button>':'')+'</div>'+
-  '<section class="sky-premium" data-sky-premium></section><button type="button" class="sky-panel-close" data-sky-back>별자리로 돌아가기</button>';
+  '<div class="sky-panel-nav">'+(n>1?'<button type="button" data-sky-prev aria-label="이전 별">‹</button>':'')+(skyIsDemo()?'':'<button type="button" class="sky-panel-more" data-sky-more>우리 사이 리포트</button>')+(n>1?'<button type="button" data-sky-next aria-label="다음 별">›</button>':'')+'</div>'+
+  '<button type="button" class="sky-panel-close" data-sky-back>별자리로 돌아가기</button>';
 }
 function wireSky(scope,list){
  var stage=$('[data-sky]',scope);if(!stage)return;
@@ -5016,8 +5045,6 @@ function openMyroomDetail(entry){
             '<p class="section-desc" style="margin-bottom:4px;"><b>나</b></p><div class="shinsal-badges">'+shinsalBadgeRowHtml(entry.shinsalA)+'</div>'+
             '<p class="section-desc" style="margin:8px 0 4px;"><b>'+esc(entry.nameB||'상대방')+'</b></p><div class="shinsal-badges">'+shinsalBadgeRowHtml(entry.shinsalB)+'</div>'+
           '</div>' : '')+
-        (ZHI_REL_MARRIAGE_TEXT[entry.zhiRel] ? '<div class="detail-block"><p class="ttl">'+uiIcon('people')+' 관계를 이어가는 방법</p>'+autoParas(ZHI_REL_MARRIAGE_TEXT[entry.zhiRel])+'</div>' : '')+
-        (GAN_REL_TALK_TEXT[entry.ganRel] ? '<div class="detail-block"><p class="ttl">💬 대화 스타일</p>'+autoParas(GAN_REL_TALK_TEXT[entry.ganRel])+'</div>' : '')+
         (dateTxt ? '<p class="hint">'+dateTxt+'</p>' : '')+
         '<section class="sky-premium" data-myroom-premium></section><div class="detail-block" id="myroom-delete-zone">'+myroomDeleteZoneHtml()+'</div>'+
       '</div>'+
@@ -7237,8 +7264,8 @@ function renderCompatDetailSection(resA, resB, compat, detailKey, container){
   if(!body)return;
   if (!isUnlocked(detailKey)){
     body.innerHTML =
-      '<p class="section-title" style="font-size:.98rem;">상세 리포트</p>'+
-      lockedCardHtml(COMPAT_DETAIL_PRICE, '관계를 이어가는 방법 · 대화 스타일 · 조율할 점 · 월별 흐름', '두 사람의 궁합을 더 깊이 들여다보는 상세 리포트를 확인하세요.', '결제하고 열어보기')+
+      compatLongReportHtml(resA, resB, compat, true)+
+      lockedCardHtml(COMPAT_DETAIL_PRICE, '나머지 풀이 이어서 보기', '서로 채워 주는 기운, 부딪힐 때 푸는 법, 앞으로 12달 흐름, 올해와 내년의 우리, 서로에게 힘이 되는 말까지 두 사람의 사주 전체로 풀어 드려요.', '990원으로 끝까지 보기')+
       (container?'':'<p class="invite-gift">상대에게 링크를 보내 직접 입력하게 하면, 두 사람 모두 무료로 볼 수 있어요.</p><button type="button" class="btn-secondary" data-compat-free-invite>링크 보내고 무료로 보기</button>');
     var freeBtn=$('[data-compat-free-invite]',body);
     if(freeBtn)freeBtn.addEventListener('click',function(){doShareCompatInvite(STATE.mySaju||resA);});
@@ -7253,7 +7280,83 @@ function renderCompatDetailSection(resA, resB, compat, detailKey, container){
   body.innerHTML = compatDetailHtml(resA, resB, compat);
 }
 
-function compatDetailHtml(resA, resB, compat){
+/* ---- 우리 사이 리포트: 두 사람의 사주 전체로 계산한 11개 장 (앞 2개 장은 무료) ---- */
+var CR_GIFT={목:'새로 시작하는 힘',화:'밝게 표현하는 힘',토:'흔들리지 않는 중심',금:'정리하고 결정하는 힘',수:'깊이 생각하고 기다리는 힘'};
+var CR_FIGHT={
+ sanhe:['일이 잘 풀릴수록 서로 공을 챙겨 주세요.','하나를 끝내면 다음에 같이 할 일을 바로 정해 두세요.'],
+ liuhe:['편하다고 약속을 가볍게 넘기지 마세요.','고마운 건 그날 바로 말해 주세요.'],
+ same:['둘 다 고집이 나오면 10분 쉬었다가 다시 이야기해요.','이번엔 누가 양보할지 번갈아 정해 두세요.'],
+ none:['서운한 건 쌓아 두지 말고 그 주 안에 말해요.','같이 하는 일을 하나 정해 두면 금방 가까워져요.'],
+ hai:['"이래서 서운했어"를 그때그때 말해요.','지난 일은 다시 꺼내지 말고 지금 일만 이야기해요.'],
+ yuanjin:['농담이 걸리면 "무슨 뜻이었어?" 하고 바로 물어봐요.','중요한 이야기는 문자보다 얼굴 보고 해요.'],
+ xing:['돈, 집안일, 약속처럼 자주 겹치는 일은 규칙부터 정해요.','누가 맞는지보다 어떻게 나눌지를 이야기해요.'],
+ chong:['다툰 날은 결론을 미루고 마음부터 풀어요.','큰 결정은 하루 자고 다시 이야기해요.']
+};
+var CR_WORDS={
+ sheng:['"도와줄까, 아니면 들어만 줄까?"','"네가 정하면 나는 따라갈게."'],
+ shengBack:['"늘 챙겨 줘서 고마워."','"이번엔 내가 해 볼게."'],
+ same:['"너라면 어떻게 할 것 같아?"','"이번엔 우리 다르게 해 보자."'],
+ ke:['"네 생각은 어때? 먼저 듣고 싶어."','"이건 네 방식대로 해 보자."'],
+ keBack:['"나는 이렇게 생각해."','"이건 내가 정해 볼게."']
+};
+var CR_REVERSE={sheng:'shengBack',shengBack:'sheng',same:'same',ke:'keBack',keBack:'ke'};
+var CR_YEAR={sanhe:'일이 잘 맞물려 풀리는 해',liuhe:'도움과 인연이 들어오는 해',same:'내 색이 진해지는 해',none:'무난하게 흘러가는 해',hai:'작은 서운함이 생기기 쉬운 해',yuanjin:'마음이 예민해지기 쉬운 해',xing:'일이 겹쳐 부딪히기 쉬운 해',chong:'변화가 크게 오는 해'};
+var CR_YEAR_GOOD={sanhe:1,liuhe:1,same:1,none:1};
+function crJo(w,a,b){if(w==='나'&&a==='이')return '내가';return w+(hasBatchim(String(w).slice(-1))?a:b);}
+function crName(r,fallback){return r&&r.name?r.name+'님':fallback;}
+function crSec(n,title,body){return '<section class="cr-sec"><p class="cr-no">'+(n<10?'0':'')+n+'</p><h4>'+title+'</h4>'+body+'</section>';}
+function crP(t){return '<p class="section-desc">'+esc(t)+'</p>';}
+function compatLongReportHtml(a,b,compat,previewOnly){
+ var A=crName(a,'나'),B=crName(b,'상대'),cc=computeCompat(a,b),sc=cc.scores,zr=cc.zhiRel,gr=cc.ganRel,secs=[];
+ var short=ZHI_REL_SHORT[zr]||{},bars=[['성격',sc.personality],['친밀감',sc.love],['가치관',sc.values],['금전 감각',sc.money]];
+ var top=bars.slice().sort(function(x,y){return y[1]-x[1];})[0],low=bars.slice().sort(function(x,y){return x[1]-y[1];})[0];
+ secs.push(crSec(1,'한눈에 보는 우리',
+  '<div class="cr-score"><b>'+sc.total+'</b><span>점</span><em>'+esc(short.phrase||'')+'</em></div>'+
+  '<div class="cr-bars">'+bars.map(function(x){return '<div class="cr-bar"><span>'+x[0]+'</span><i><s style="width:'+x[1]+'%"></s></i><b>'+x[1]+'</b></div>';}).join('')+'</div>'+
+  crP(crJo(top[0],'이','가')+' 가장 잘 맞고, '+crJo(low[0],'은','는')+' 서로 맞춰 가야 하는 부분이에요.')));
+ var hasA=a.day&&a.day.ganKr&&HOOK_SELF.stem[a.day.ganKr],hasB=b.day&&b.day.ganKr&&HOOK_SELF.stem[b.day.ganKr];
+ secs.push(crSec(2,'두 사람은 이런 사람',
+  (hasA?'<div class="cr-who"><b>'+esc(A)+'</b>'+crP(HOOK_SELF.stem[a.day.ganKr])+'</div>':'')+
+  (hasB?'<div class="cr-who"><b>'+esc(B)+'</b>'+crP(HOOK_SELF.stem[b.day.ganKr])+'</div>':'')+
+  crP(GAN_REL_TEXT[gr]||'')));
+ if(previewOnly)return '<div class="cr-report is-preview"><p class="cr-kicker">우리 사이 리포트</p><h3>'+esc(crJo(A,'과','와'))+' '+esc(B)+'</h3>'+secs.join('')+'</div>';
+ // 3. 서로 채워 주는 기운
+ if(a.wxCount&&b.wxCount){
+  var aw=weakestWx(a.wxCount).wx,bw=weakestWx(b.wxCount).wx,ad=dominantWx(a.wxCount).wx,bd=dominantWx(b.wxCount).wx,lines=[];
+  lines.push((b.wxCount[aw]||0)>=2?B+'에게는 '+A+'에게 적은 '+aw+'('+CR_GIFT[aw]+')이 넉넉해요. 곁에 있으면 그 힘이 채워져요.':aw+'('+CR_GIFT[aw]+')은 둘 다 적은 편이에요. 이 힘이 필요한 일은 함께 의식해서 챙겨요.');
+  if(bw!==aw)lines.push((a.wxCount[bw]||0)>=2?A+'에게는 '+B+'에게 적은 '+bw+'('+CR_GIFT[bw]+')이 넉넉해요. '+B+'에게 기대도 되는 사람이 돼 줄 수 있어요.':bw+'('+CR_GIFT[bw]+')은 '+B+'에게 적고 '+A+'도 많지 않아요. 서로 다그치지 말고 천천히 가요.');
+  lines.push(ad===bd?'둘 다 '+ad+' 기운이 많아 잘 통하지만, 같은 쪽으로 치우치기 쉬워요. 한 사람은 브레이크 역할을 맡아 주세요.':crJo(A,'은','는')+' '+ad+', '+crJo(B,'은','는')+' '+bd+' 기운이 많아요. 서로 다른 강점을 가진 조합이라 역할을 나누면 좋아요.');
+  secs.push(crSec(3,'서로 채워 주는 기운',lines.map(crP).join('')));
+ }
+ secs.push(crSec(secs.length+1,'두 사람의 관계',crP(ZHI_REL_TEXT[zr]||'')+autoParas(ZHI_REL_MARRIAGE_TEXT[zr]||'')));
+ secs.push(crSec(secs.length+1,'대화할 때',autoParas(GAN_REL_TALK_TEXT[gr]||'')));
+ var lv=CONFLICT_LEVEL[zr];
+ secs.push(crSec(secs.length+1,'부딪힐 때 · 갈등 '+esc(lv||''),autoParas(CONFLICT_TEXT[lv]||'')+'<ul class="cr-tips">'+(CR_FIGHT[zr]||[]).map(function(t){return '<li>'+uiIcon('check')+'<span>'+esc(t)+'</span></li>';}).join('')+'</ul>'));
+ if(DATE_GUIDE_TEXT[zr])secs.push(crSec(secs.length+1,'같이 하면 좋은 것',autoParas(DATE_GUIDE_TEXT[zr])));
+ // 앞으로 12달
+ var now=new Date(),months=[];
+ for(var k=0;k<12;k++){var d=new Date(now.getFullYear(),now.getMonth()+k,15),g=todayGanZhi(d);months.push({y:d.getFullYear(),m:d.getMonth()+1,score:(GOODNESS[dailyFortuneRelation(a.dayGanWx,g.wxGan)]+GOODNESS[dailyFortuneRelation(b.dayGanWx,g.wxGan)])/2});}
+ var good=months.slice().sort(function(x,y){return y.score-x.score;}).slice(0,3).sort(function(x,y){return (x.y*12+x.m)-(y.y*12+y.m);}),bad=months.filter(function(x){return x.score<0;}).sort(function(x,y){return x.score-y.score;}).slice(0,2).sort(function(x,y){return (x.y*12+x.m)-(y.y*12+y.m);});
+ var ml=function(x){return x.m+'월';};
+ secs.push(crSec(secs.length+1,'앞으로 12달',
+  '<div class="cr-months">'+months.map(function(x){var c=x.score>0.5?'is-good':x.score<-0.5?'is-bad':'';return '<span class="'+c+'">'+x.m+'월</span>';}).join('')+'</div>'+
+  crP('함께하기 좋은 달은 '+good.map(ml).join(', ')+'이에요. 여행, 중요한 대화, 새로 시작하는 일은 이때로 잡아 보세요.')+
+  (bad.length?crP(bad.map(ml).join(', ')+'은 둘 다 지치기 쉬운 달이에요. 큰 결정은 피하고 서로 쉬는 시간을 지켜 주세요.'):crP('특별히 조심할 달은 없어요. 평소처럼 지내면 돼요.'))));
+ // 올해와 내년
+ var yz=function(y){return '子丑寅卯辰巳午未申酉戌亥'.charAt(((y-4)%12+12)%12);},yrs=[now.getFullYear(),now.getFullYear()+1];
+ secs.push(crSec(secs.length+1,'올해와 내년의 우리',yrs.map(function(y){
+  var ra=zhiRelation(a.day.zhi,yz(y)),rb=zhiRelation(b.day.zhi,yz(y)),ga=!!CR_YEAR_GOOD[ra],gb=!!CR_YEAR_GOOD[rb];
+  var tail=ga&&gb?'둘 다 순한 해라 함께 일을 벌이기 좋아요.':ga?crJo(B,'이','가')+' 흔들리기 쉬운 해예요. '+crJo(A,'이','가')+' 받쳐 주세요.':gb?crJo(A,'이','가')+' 흔들리기 쉬운 해예요. '+B+'에게 기대도 괜찮아요.':'둘 다 마음이 바쁜 해예요. 서로에게 바라는 걸 줄이고 쉬는 시간을 같이 가져요.';
+  return '<div class="cr-year"><b>'+y+'년</b>'+crP(A+': '+CR_YEAR[ra]+' · '+B+': '+CR_YEAR[rb])+crP(tail)+'</div>';}).join('')));
+ // 서로에게 힘이 되는 말
+ var wa=CR_WORDS[gr]||[],wb=CR_WORDS[CR_REVERSE[gr]]||[];
+ secs.push(crSec(secs.length+1,'서로에게 힘이 되는 말','<div class="cr-words"><p><b>'+esc(A)+' → '+esc(B)+'</b>'+wa.map(esc).join('<br>')+'</p><p><b>'+esc(B)+' → '+esc(A)+'</b>'+wb.map(esc).join('<br>')+'</p></div>'));
+ // 오늘의 우리
+ try{var ti=coupleTodayInfo(a.dayGanWx,b.dayGanWx,a.day.gan,b.day.gan);if(ti&&ti.tier)secs.push(crSec(secs.length+1,'오늘의 우리 · '+esc(ti.tier.label),autoParas(ti.tier.text)));}catch(e){}
+ return '<div class="cr-report"><p class="cr-kicker">우리 사이 리포트</p><h3>'+esc(crJo(A,'과','와'))+' '+esc(B)+'</h3>'+secs.join('')+'<p class="disclaimer">두 사람의 사주 여덟 글자로 계산한 참고용 리포트예요.</p></div>';
+}
+function compatDetailHtml(resA, resB, compat){ return compatLongReportHtml(resA, resB, compat, false); }
+function compatDetailHtmlOld(resA, resB, compat){
   var level = CONFLICT_LEVEL[compat.zhiRel];
   var monthly = coupleMonthlyData(resA, resB);
   var cellsHtml = monthly.map(function(r){
