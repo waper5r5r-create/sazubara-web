@@ -1252,6 +1252,37 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .sky-nostar-note b{font-family:'Noto Serif KR',serif;font-size:1.0625rem;font-weight:600}
 .sky-nostar-note span{font-size:.8125rem;line-height:1.6;color:#c9cde0;word-break:keep-all}
 .sky-nostar-btn{margin-top:4px;min-height:44px;padding:0 22px;border:0;border-radius:22px;background:linear-gradient(110deg,#f0d38c,#d9a957);color:#2a1f0c;font-weight:700;font-size:.875rem}
+/* 1. 여덟 글자 판 */
+.pillar-hero{margin:4px 0 18px;padding:20px 16px 16px;border-radius:20px;background:radial-gradient(120% 90% at 50% 0,#202a5c 0,#121a40 55%,#0c1230 100%);color:#f6eedf;box-shadow:0 12px 28px #0b102033}
+.ph-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ph-col{display:flex;flex-direction:column;align-items:center;gap:6px}
+.ph-col em{font-style:normal;font-size:.8125rem;color:#aab1c8}
+.ph-g{position:relative;width:100%;max-width:64px;aspect-ratio:4/5;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #e9c27a40;border-radius:14px;background:#ffffff0a}
+.ph-g b{font-family:'Noto Serif KR',serif;font-size:1.75rem;font-weight:600;line-height:1;color:#f6dca0}
+.ph-g small{margin-top:5px;font-size:.8125rem;color:#c9cde0}
+.ph-g i{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%}
+.ph-g.is-me{border:1.5px solid #e9c27a;background:#e9c27a1f;box-shadow:0 0 0 3px #e9c27a1f}
+.ph-col.is-empty .ph-g{border-style:dashed;background:none}.ph-col.is-empty b{color:#ffffff4d}
+.ph-note{margin:14px 0 0;font-size:.875rem;line-height:1.6;color:#d6d9e6;text-align:center;word-break:keep-all}.ph-note b{color:#f6dca0}
+.ph-sub{margin-top:4px;font-size:.8125rem;color:#aab1c8}
+/* 2. 궁합 탭: 크림 바탕 위에 밤하늘 카드 */
+body.compat-view #myroom-card-wrap{padding:0 12px;border:0;background:none;box-shadow:none}
+body.compat-view .sky-head{padding:0 2px 12px}
+body.compat-view .sky-stage{border-radius:20px;overflow:hidden;box-shadow:0 12px 28px #0b102033}
+body.compat-view .sky-legend{margin:12px 2px 0}
+body.compat-view .sky-list{margin-top:10px}
+/* 5. 운세 설명 창 */
+.za-hj{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:6px;border-radius:6px;background:var(--accent-soft);color:var(--accent);font-family:'Noto Serif KR',serif;font-size:.8125rem;vertical-align:-4px}
+.detail-block .ttl svg{width:16px;height:16px;vertical-align:-3px;stroke:currentColor;stroke-width:2}
+/* 3. 겹친 상자 줄이기: 카드 안의 베이지 상자를 금색 줄 하나로 */
+.portrait-tip{padding:2px 0 2px 14px!important;border-radius:0!important;background:none!important;border-left:2px solid var(--accent)}
+/* 4. 작은 글자 13px 이상 */
+.eyebrow,.editorial-tag,.quick-heading,.portrait-tip b,.hint,.home-content-peek,.home-content-card small,.ny-banner em,.zhirel-chip,.wx-balance-chip,.gauge-labels span,.disclaimer,.lucky-chip .k,.sky-legend,.report-format,.report-text .tagline,.period-week-row .dt,.today-peek-k,.pillar .label,.pillar .hangul,.ss-row .pos,.wx-donut-center .lb,.daeun-chip .age,.daeun-chip .ss,.shinsal-badge .hj{font-size:.8125rem!important}
+.app-header .sub{font-size:.75rem!important}
+/* 6. 버튼 세 종류: 주요(금색) · 보조(테두리) · 글자 링크 */
+.btn-primary{min-height:52px;border-radius:14px;font-weight:700;font-size:.9375rem}
+.share-btn{min-height:48px;border-radius:14px;font-weight:600;background:transparent;border:1px solid var(--border-strong);color:var(--fg)}
+.sky-nostar-btn,.sky-page .share-btn{border-radius:14px}
 .today-peek{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;margin:0 0 18px;padding:16px 18px;border:1px solid #e9c27a66;border-radius:18px;background:linear-gradient(135deg,#17204a,#0e1530);color:#f6eedf;text-align:left;box-shadow:0 10px 24px #0b10202e;cursor:pointer}
 .today-peek-k{font-size:.75rem;letter-spacing:.08em;color:#e9c27a}
 .today-peek b{font-family:'Noto Serif KR',serif;font-size:1.125rem;font-weight:600}
@@ -2064,9 +2095,9 @@ function openPeriodBrief(relKey, label, zhi, ssKey){
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(label?esc(label)+' · ':'')+titleLabel+'</p>'+
           '<button type="button" class="sheet-close" id="brief-close">✕</button></div>'+
-        (za ? '<p class="section-desc" style="color:var(--fg-muted); margin-top:-4px;">'+za.emoji+' '+za.animal+'의 날 · '+za.flavor+'</p>' : '')+
-        '<div class="detail-block"><p class="ttl" style="color:var(--good);">✅ 좋은 점</p><p class="section-desc">'+b.good+'</p></div>'+
-        '<div class="detail-block"><p class="ttl" style="color:var(--bad);">⚠ 조심할 점</p><p class="section-desc">'+b.caution+'</p></div>'+
+        (za ? '<p class="section-desc" style="color:var(--fg-muted); margin-top:-4px;"><span class="za-hj">'+esc(zhi)+'</span>'+za.animal+'의 날 · '+za.flavor+'</p>' : '')+
+        '<div class="detail-block"><p class="ttl" style="color:var(--good);">'+uiIcon('check')+' 좋은 점</p><p class="section-desc">'+b.good+'</p></div>'+
+        '<div class="detail-block"><p class="ttl" style="color:var(--bad);">'+uiIcon('alert')+' 조심할 점</p><p class="section-desc">'+b.caution+'</p></div>'+
         '<div class="detail-block"><p class="ttl">'+ICO_COIN+' 재물</p><p class="section-desc">'+b.money+'</p></div>'+
         '<div class="detail-block"><p class="ttl">'+ICO_HEART2+' 애정</p><p class="section-desc">'+b.love+'</p></div>'+
       '</div>'+
@@ -3600,7 +3631,7 @@ var REVEAL_SPARK_SVG = personaIconSvg('#f3ece0',
 function personaWrap(sectionType, innerHtml){ return innerHtml; }
 
 /* 하단 탭바 아이콘 (currentColor 선, 22x22) */
-var UI_ICON_PATHS={leaf:'M20 3C9 2 3 7 5 14c2 7 13 6 15-11ZM5 20 16 8',people:'M10 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM20 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM2 21v-3a5 5 0 0 1 10 0v3M12 21v-3a5 5 0 0 1 10 0v3',heart:'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z',briefcase:'M8 6V3h8v3M3 7h18v14H3ZM3 12c5 3 13 3 18 0M10 13h4',wallet:'M20 7H5a2 2 0 0 1 0-4h13v4M3 5v15h18V7M21 12h-6v5h6M17 14.5h.01',check:'m5 12 4 4 10-10',lock:'M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5ZM12 14v3',chat:'M4 4h16v12H9l-5 4ZM8 8h8M8 12h5',share:'M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7',palette:'M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-3.7 2 2 0 0 1 1-3.8h2a4 4 0 0 0 4-4A8 8 0 0 0 12 3ZM7 9h.01M11 6h.01M16 8h.01M6 14h.01',compass:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM16 8l-3 5-5 3 3-5 5-3Z',spark:'m12 3 2.7 6.3L21 12l-6.3 2.7L12 21l-2.7-6.3L3 12l6.3-2.7L12 3Z',arrow:'m9 5 7 7-7 7',moon:'M19 15a8 8 0 1 1-10-10 8 8 0 0 0 10 10Z'};
+var UI_ICON_PATHS={leaf:'M20 3C9 2 3 7 5 14c2 7 13 6 15-11ZM5 20 16 8',people:'M10 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM20 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM2 21v-3a5 5 0 0 1 10 0v3M12 21v-3a5 5 0 0 1 10 0v3',heart:'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z',briefcase:'M8 6V3h8v3M3 7h18v14H3ZM3 12c5 3 13 3 18 0M10 13h4',wallet:'M20 7H5a2 2 0 0 1 0-4h13v4M3 5v15h18V7M21 12h-6v5h6M17 14.5h.01',check:'m5 12 4 4 10-10',alert:'M12 3 2 20h20ZM12 9.5v4.5M12 17h.01',lock:'M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5ZM12 14v3',chat:'M4 4h16v12H9l-5 4ZM8 8h8M8 12h5',share:'M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7',palette:'M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-3.7 2 2 0 0 1 1-3.8h2a4 4 0 0 0 4-4A8 8 0 0 0 12 3ZM7 9h.01M11 6h.01M16 8h.01M6 14h.01',compass:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM16 8l-3 5-5 3 3-5 5-3Z',spark:'m12 3 2.7 6.3L21 12l-6.3 2.7L12 21l-2.7-6.3L3 12l6.3-2.7L12 3Z',arrow:'m9 5 7 7-7 7',moon:'M19 15a8 8 0 1 1-10-10 8 8 0 0 0 10 10Z'};
 function uiIcon(name){return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="'+(UI_ICON_PATHS[name]||UI_ICON_PATHS.spark)+'" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';}
 WORRY_ICON={연애:uiIcon('heart'),직장:uiIcon('briefcase'),재물:uiIcon('wallet'),건강:uiIcon('leaf'),인간관계:uiIcon('people')};
 var TAB_ICON_SAJU = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="4"/><path d="m12 7 1.4 3.6L17 12l-3.6 1.4L12 17l-1.4-3.6L7 12l3.6-1.4ZM8 5h.01M16 19h.01"/></g></svg>';
@@ -3774,7 +3805,7 @@ function everydayTraitsHtml(result){
  return '<section class="personal-traits"><h2>사주로 살펴본 내 특징 세 가지</h2><ol>'+rows.map(function(r,i){return '<li><span class="trait-symbol">'+uiIcon(r[2])+'</span><div><small>0'+(i+1)+' · '+r[0]+'</small><p>'+esc(r[1])+'</p></div></li>';}).join('')+'</ol><p class="hint">일간과 오행 분포를 참고한 해석이에요. 실제 경험과 함께 읽어보세요.</p></section>';
 }
 function everydaySajuHtml(result){
- return '<section class="everyday-saju"><p class="editorial-tag">나의 사주팔자</p><div class="saju-result-head"><h1>'+(result.name?esc(result.name)+'님의 사주':'나의 사주')+'</h1><button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button></div>'+sajuQuickSummaryHtml(result)+starGiftHtml(result)+sajuHookHtml('self',result,(result.name?result.name+'님은':'나는')+' 이런 사람이에요')+'<details class="technical-details"><summary>내 사주 원국 보기</summary>'+sajuBoardHtml(result)+'</details>'+homeContentsHtml()+'</section>';
+ return '<section class="everyday-saju"><p class="editorial-tag">나의 사주팔자</p><div class="saju-result-head"><h1>'+(result.name?esc(result.name)+'님의 사주':'나의 사주')+'</h1><button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button></div>'+pillarHeroHtml(result)+sajuQuickSummaryHtml(result)+starGiftHtml(result)+sajuHookHtml('self',result,(result.name?result.name+'님은':'나는')+' 이런 사람이에요')+homeContentsHtml()+'</section>';
 }
 var WORRY_PREVIEW_LENS={
  목:{연애:'서로의 가능성을 알아가고 함께 경험을 넓히는 관계',직장:'새로운 역할을 배우고 시도하며 방향을 만드는 과정',재물:'새로운 기회를 발견하고 자원을 활용하는 과정',건강:'활동과 회복 사이에 지속 가능한 리듬을 만드는 과정',인간관계:'새로운 만남과 기존 관계를 함께 넓혀가는 과정'},
@@ -3828,6 +3859,16 @@ function starHeroHtml(){
   '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">✦ 풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
+/* 결과 맨 위: 내 여덟 글자를 남색 판에 크게. 일간(태어난 날의 위 글자)이 "나"를 나타내서 금색으로 둘러요 */
+function pillarHeroHtml(result){
+ var cols=[['시',result.time],['일',result.day],['월',result.month],['년',result.year]];
+ var g=function(ch,kr,wx,me){var info=WUXING_INFO[wx];return '<span class="ph-g'+(me?' is-me':'')+'"><b>'+esc(ch)+'</b><small>'+esc(kr||'')+'</small><i style="background:var('+(info?info.var:'--fg-muted')+')"></i></span>';};
+ var colsHtml=cols.map(function(c){var p=c[1];if(!p)return '<div class="ph-col is-empty"><span class="ph-g"><b>?</b></span><span class="ph-g"><b>?</b></span><em>'+c[0]+'</em></div>';return '<div class="ph-col">'+g(p.gan,p.ganKr,p.wxGan,c[0]==='일')+g(p.zhi,p.zhiKr,p.wxZhi,false)+'<em>'+c[0]+'</em></div>';}).join('');
+ var d=result.day,wx=result.dayGanWx,info=WUXING_INFO[wx];
+ return '<section class="pillar-hero" aria-label="나의 사주 여덟 글자"><div class="ph-cols">'+colsHtml+'</div>'+
+  '<p class="ph-note">금색 테두리 <b>'+esc(d.gan)+'('+esc(d.ganKr)+')</b>가 나를 나타내는 글자예요.'+(info?'<br>'+esc(info.hanja)+'('+esc(wx)+')의 기운을 타고났어요.':'')+'</p>'+
+  (result.unknownTime?'<p class="ph-note ph-sub">태어난 시간을 몰라 시주는 비워 두고 풀었어요.</p>':'')+'</section>';
+}
 function sajuBoardHtml(result){
  var cols=[['시주',result.time],['일주',result.day,true],['월주',result.month],['연주',result.year]];
  return '<div class="saju-board">'+cols.map(function(c){var p=c[1];return pillarHtml(c[0],p&&p.gan&&p.wxGan&&WUXING_INFO[p.wxGan]?p:null,c[2]);}).join('')+'</div>'+(result.unknownTime?'<p class="hint">출생시간을 몰라 시주는 비워두고 계산했어요.</p>':'');
@@ -7777,7 +7818,7 @@ function switchTab(name){
   var target=$('#view-'+name);if(!target)return;target.hidden=false;target.classList.remove('ui-enter');void target.offsetWidth;target.classList.add('ui-enter');
   $all('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===name);if(b.dataset.tab===name)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current'); });
   if (name==='today') renderTodayView();
-  document.body.classList.toggle('album-view',name==='compat');if (name==='compat'){refreshCompatPersonA();setupAlbumEntry();if(INVITE_MYROOM_CACHE!==null&&Date.now()-INVITE_MYROOM_AT>15000){INVITE_MYROOM_CACHE=null;renderMyRoom();}}
+  document.body.classList.toggle('album-view',false);document.body.classList.toggle('compat-view',name==='compat');if (name==='compat'){refreshCompatPersonA();setupAlbumEntry();if(INVITE_MYROOM_CACHE!==null&&Date.now()-INVITE_MYROOM_AT>15000){INVITE_MYROOM_CACHE=null;renderMyRoom();}}
   if (name==='reports') renderReportsTabView();
   try{ var hs=history.state&&typeof history.state==='object'?history.state:{};var ns={};for(var hk in hs)ns[hk]=hs[hk];ns.tab=name;history.replaceState(ns,'','#'+name); }catch(e){}
 }

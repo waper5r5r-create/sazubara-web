@@ -101,7 +101,7 @@ test('summary has three distinct traits grounded in the chart',()=>{
 test('all five topics have a personalised free reading before checkout',()=>{
  for(const cat of ['연애','직장','재물','건강','인간관계']){const a=api.worryPreviewHtml(result,cat),b=api.worryPreviewHtml({...result,day:{...result.day,ganKr:'병'},dayGanWx:'화'},cat);assert.ok(a.includes(cat+' 무료 풀이'));assert.ok(a.replace(/<[^>]*>/g,'').length>120);assert.ok(a.includes('상황별 조언'));assert.notEqual(a,b);assert.ok(!a.includes('unlock-btn'));}
  assert.equal(api.worryPreviewHtml(result,'invalid'),'');assert.ok(api.worryPreviewHtml(result,'건강').includes('건강은 사주로 판단할 수 없어요'));
- const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('saju-board'));assert.ok(main.includes('data-home-contents'));assert.ok(main.includes('data-star-make'));assert.ok(main.includes('btn-edit-saju'));assert.ok(main.indexOf('data-star-make')<main.indexOf('saju-board'));
+ const main=api.everydaySajuHtml(result);assert.ok(!main.includes('좋아할수록 조심스러울까'));assert.ok(main.includes('pillar-hero'));assert.ok(main.includes('data-home-contents'));assert.ok(main.includes('data-star-make'));assert.ok(main.includes('btn-edit-saju'));assert.ok(main.indexOf('pillar-hero')<main.indexOf('data-star-make'));
 });
 
 test('compatibility guidance includes all relationships without assuming romance',()=>{
