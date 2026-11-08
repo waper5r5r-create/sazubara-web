@@ -1261,6 +1261,12 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .ny-banner small{font-size:.8125rem!important}
 .disclaimer{font-size:.75rem!important;opacity:1!important}
 .site-legal,.site-legal a,.site-legal span{font-size:.75rem!important}
+.worry-peek{margin-top:12px;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0}
+.worry-peek p{margin:0;font-size:.9375rem;line-height:1.7;word-break:keep-all}
+.worry-preview .section-desc{font-size:.9375rem;line-height:1.75;color:var(--fg)}
+.worry-preview .preview-scope{font-size:.8125rem!important}
+.worry-peek-k{font-size:.8125rem;font-weight:700;color:var(--accent);margin-bottom:4px!important}
+.worry-peek-more{margin-top:6px!important;font-size:.8125rem;color:var(--fg-muted)}
 .pillar-hero{margin:4px 0 18px;padding:20px 16px 16px;border-radius:20px;background:radial-gradient(120% 90% at 50% 0,#202a5c 0,#121a40 55%,#0c1230 100%);color:#f6eedf;box-shadow:0 12px 28px #0b102033}
 .ph-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .ph-col{display:flex;flex-direction:column;align-items:center;gap:6px}
@@ -3822,15 +3828,23 @@ var WORRY_PREVIEW_LENS={
  금:{연애:'서로의 기준과 약속을 알아가며 신뢰를 만드는 관계',직장:'목표와 기준을 정리하고 완성도를 높이는 과정',재물:'나에게 필요한 지출과 유지할 기준을 구분하는 과정',건강:'생활의 우선순위를 정하고 부담을 덜어내는 과정',인간관계:'서로의 경계를 존중하며 관계를 조율하는 과정'},
  수:{연애:'서로를 충분히 이해하고 각자의 속도를 맞춰가는 관계',직장:'정보와 상황을 살피며 유연하게 방향을 찾는 과정',재물:'정보를 비교하고 흐름을 살피며 선택하는 과정',건강:'지금의 생활을 돌아보고 나에게 맞는 리듬을 찾는 과정',인간관계:'상대의 이야기를 듣고 서로를 이해해가는 과정'}
 };
-/* 990원 고민 상담 미리보기: 실제 풀이의 앞 두 문장을 그대로 보여 주고, 결제하면 이어지는 상황별 조언 목록을 보여 준다. */
+/* 990원 고민 상담 미리보기: 타고난 기운으로 본 풀이는 끝까지 무료로 보여 주고,
+   상황 칩을 누르면 그 상황 조언의 첫 문장을 먼저 보여 준다. 나머지(기운의 세기 풀이, 상황별 조언 전체)는 결제 후. */
+function firstSentence(t){var m=String(t||'').match(/^[^.!?]*[.!?]+["'”]?/);return m?m[0].trim():String(t||'');}
 function worryPreviewHtml(my,cat){
  var tip=String(worryTip(my,cat)||'');if(!tip)return '';
- var sentences=tip.match(/[^.!?]+[.!?]+["'”]?[ ]*/g)||[tip],head=sentences.slice(0,2).join('').trim(),rest=sentences.length>2;
  var icons={연애:'heart',직장:'briefcase',재물:'wallet',건강:'leaf',인간관계:'people'};
- var situations=(SITUATION_TEXT[cat]||[]).map(function(x){return '<span class="chip-btn" aria-disabled="true">'+esc(x.label)+'</span>';}).join('');
- return '<section class="worry-preview" aria-label="'+esc(cat)+' 무료 풀이"><p class="eyebrow">'+uiIcon(icons[cat])+' '+esc(cat)+' · 먼저 읽어보세요</p><h3>'+(my.name?esc(my.name)+'님의 ':'나의 ')+esc(cat)+', 이런 모습이죠?</h3><p>'+esc(head)+(rest?' …':'')+'</p>'+
+ var situations=(SITUATION_TEXT[cat]||[]).map(function(x){return '<button type="button" class="chip-btn" data-peek-sid="'+esc(x.id)+'">'+esc(x.label)+'</button>';}).join('');
+ return '<section class="worry-preview" aria-label="'+esc(cat)+' 무료 풀이"><p class="eyebrow">'+uiIcon(icons[cat])+' '+esc(cat)+' · 무료로 먼저 읽어보세요</p><h3>'+(my.name?esc(my.name)+'님의 ':'나의 ')+esc(cat)+', 이런 모습이죠?</h3>'+autoParas(tip)+
   (cat==='건강'?'<p class="hint">건강은 사주로 판단할 수 없어요. 생활 습관을 돌아보는 참고로만 봐 주세요.</p>':'')+
-  (situations?'<p class="preview-scope">이어서 이런 상황별 조언도 볼 수 있어요.</p><div class="chip-row">'+situations+'</div>':'')+'</section>';
+  (situations?'<p class="preview-scope">지금 내 상황을 골라 보세요. 상황별 조언 첫 줄은 무료예요.</p><div class="chip-row" data-peek-chips>'+situations+'</div><div class="worry-peek" data-peek-out hidden></div>':'')+'</section>';
+}
+function wireWorryPeek(body,cat){
+ $all('[data-peek-sid]',body).forEach(function(btn){btn.addEventListener('click',function(){
+  $all('[data-peek-sid]',body).forEach(function(b){b.classList.toggle('active',b===btn);});
+  var x=(SITUATION_TEXT[cat]||[]).filter(function(t){return t.id===btn.dataset.peekSid;})[0],out=$('[data-peek-out]',body);if(!x||!out)return;
+  out.hidden=false;out.innerHTML='<p class="worry-peek-k">'+esc(x.label)+'</p><p>'+esc(firstSentence(x.text))+'</p><p class="worry-peek-more">이어지는 조언은 아래에서 990원으로 열 수 있어요.</p>';
+ });});
 }
 
 /* ---- 내 별 카드: 내 일간의 동물 카드(카드첩의 첫 장). 첫 화면·사주풀이 결과·카드첩에서 같이 쓴다.
@@ -4078,7 +4092,7 @@ function skyHtml(result,list){
  var empty=list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">빈자리</text></g>';}).join(''):'';
  var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
-  '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':list.length?'친구 '+list.length+'명이 내 별자리에 있어요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
+  '<div class="sky-head"><p class="eyebrow">궁합</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':list.length?'친구 '+list.length+'명이 내 별자리에 있어요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
   '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
    '<div class="sky-depth" data-sky-depth aria-hidden="true"></div><div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
    '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs>'+skyGlowDefs()+'<radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
@@ -4090,7 +4104,7 @@ function skyHtml(result,list){
     '<div class="sky-panel" data-sky-panel aria-live="polite"></div></div>'+
   '</div>'+
   '<p class="sky-legend">가까이, 밝게 빛날수록 잘 맞는 사이예요. 하늘을 끌어서 둘러보세요.</p>'+
-  '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구 초대하기</button>'+
+  (list.length||skyIsDemo()?'<button type="button" class="btn-primary album-invite-btn" data-album-invite>'+(list.length?'친구 더 초대하기':'친구 초대하기')+'</button>':'')+
   (list.length?'<details class="sky-list"><summary>별 목록 '+list.length+'</summary><ul>'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></button></li>';}).join('')+'</ul></details>':'')+
  '</section>';
 }
@@ -4324,7 +4338,8 @@ function showWorryCategory(my, cat){
   var body = $('#worry-content');
   var unlockKey = 'feature-saju-deep:'+cat;
   if (!isWorryUnlocked(cat)){
-    body.innerHTML = worryPreviewHtml(my,cat)+lockedCardHtml(FEATURE_SAJU_DEEP_PRICE, cat+' 이야기 더 알아보기', cat+'의 기본 성향과 타고난 기운별 풀이, 선택할 때 참고할 점, 상황별 조언을 볼 수 있어요. 선택한 주제만 열리며 다른 주제는 별도 구매예요.', '990원으로 '+cat+' 풀이 이어보기');
+    body.innerHTML = worryPreviewHtml(my,cat)+lockedCardHtml(FEATURE_SAJU_DEEP_PRICE, cat+' 이야기 더 알아보기', '내 기운의 세기로 본 '+cat+' 풀이와 상황별 조언 '+((SITUATION_TEXT[cat]||[]).length||5)+'가지를 끝까지 볼 수 있어요. 고른 주제만 열리고, 다른 주제는 따로 결제해요.', '990원으로 '+cat+' 풀이 이어보기');
+    wireWorryPeek(body,cat);
     $('.unlock-btn', body).addEventListener('click', function(){
       PAY_RETURN={type:'worry',cat:cat};
       tryUnlock(unlockKey, FEATURE_SAJU_DEEP_PRICE, cat+' 카테고리 풀이', function(){
@@ -6825,13 +6840,13 @@ var INVITE_MYROOM_CACHE = null, INVITE_MYROOM_AT = 0; /* 초대해서 실제 등
 function renderMyRoomLocal(root){
   if (!STATE.mySaju){
     root.innerHTML =
-      '<div class="sky-head"><p class="eyebrow">나의 별첩</p><h2 class="album-heading">나의 별자리</h2></div>'+
+      '<div class="sky-head"><p class="eyebrow">궁합</p><h2 class="album-heading">나의 별자리</h2></div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
       '<span>내 사주를 먼저 입력하면 나의 별자리가 만들어져요.</span></div>';
     return;
   }
   if (INVITE_MYROOM_CACHE === null){
-    root.innerHTML = '<p class="eyebrow">나의 별첩</p><div class="skel" role="status" aria-label="별첩을 불러오는 중" style="height:420px;margin-top:12px;background:#141c3b"></div>';
+    root.innerHTML = '<p class="eyebrow">궁합</p><div class="skel" role="status" aria-label="별첩을 불러오는 중" style="height:420px;margin-top:12px;background:#141c3b"></div>';
     fetchInviteMyRoom();
     return;
   }
@@ -7817,7 +7832,7 @@ function initVisualFeedback(){
 function setupAlbumEntry(){
  var view=$('#view-compat'),form=$('#compat-form'),album=$('#myroom-card-wrap');if(!view||!form||!album)return;
  view.insertBefore(album,view.firstChild);
- if(!$('#album-add')){var b=document.createElement('button');b.id='album-add';b.type='button';b.className='share-btn';b.textContent='＋ 새 인연 추가';album.insertAdjacentElement('afterend',b);b.addEventListener('click',function(){form.hidden=!form.hidden;b.setAttribute('aria-expanded',String(!form.hidden));if(!form.hidden)form.scrollIntoView({behavior:'smooth',block:'start'});});}
+ if(!$('#album-add')){var b=document.createElement('button');b.id='album-add';b.type='button';b.className='share-btn';b.textContent='생일 직접 넣고 궁합 보기';album.insertAdjacentElement('afterend',b);b.addEventListener('click',function(){form.hidden=!form.hidden;if(!form.hidden){var direct=$all('button',form).filter(function(x){return x.textContent.trim()==='직접 입력';})[0];if(direct&&!direct.classList.contains('active'))direct.click();}b.setAttribute('aria-expanded',String(!form.hidden));if(!form.hidden)form.scrollIntoView({behavior:'smooth',block:'start'});});}
  form.hidden=true;
 }
 document.addEventListener('click',function(e){var t=e.target.closest('.hook-toggle');if(t){var on=t.getAttribute('aria-expanded')!=='true';t.setAttribute('aria-expanded',String(on));t.closest('.saju-hook').classList.toggle('show-all',on);t.textContent=on?'핵심 특징만 보기':'나머지 특징 펼치기';}if(e.target.closest('[data-album-invite]')){var form=$('#compat-form');if(form)form.hidden=false;}});
