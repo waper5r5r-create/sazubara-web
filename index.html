@@ -1253,6 +1253,14 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .sky-nostar-note span{font-size:.8125rem;line-height:1.6;color:#c9cde0;word-break:keep-all}
 .sky-nostar-btn{margin-top:4px;min-height:44px;padding:0 22px;border:0;border-radius:22px;background:linear-gradient(110deg,#f0d38c,#d9a957);color:#2a1f0c;font-weight:700;font-size:.875rem}
 /* 1. 여덟 글자 판 */
+/* 입력 화면: 진행 글자(년·월·일·시)가 거의 안 보이던 것, 시간 원을 누르면 생기던 네모 테두리 */
+.bf-lb{font-size:.75rem!important;color:#ffffff73!important}.bf-lb.on{color:var(--bf-gold)!important}
+.bf-dial:focus:not(:focus-visible){outline:none}
+/* 작은 글자 키우기 */
+.saju-hook li span{font-size:.8125rem!important}
+.ny-banner small{font-size:.8125rem!important}
+.disclaimer{font-size:.75rem!important;opacity:1!important}
+.site-legal,.site-legal a,.site-legal span{font-size:.75rem!important}
 .pillar-hero{margin:4px 0 18px;padding:20px 16px 16px;border-radius:20px;background:radial-gradient(120% 90% at 50% 0,#202a5c 0,#121a40 55%,#0c1230 100%);color:#f6eedf;box-shadow:0 12px 28px #0b102033}
 .ph-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .ph-col{display:flex;flex-direction:column;align-items:center;gap:6px}
@@ -3866,7 +3874,7 @@ function pillarHeroHtml(result){
  var colsHtml=cols.map(function(c){var p=c[1];if(!p)return '<div class="ph-col is-empty"><span class="ph-g"><b>?</b></span><span class="ph-g"><b>?</b></span><em>'+c[0]+'</em></div>';return '<div class="ph-col">'+g(p.gan,p.ganKr,p.wxGan,c[0]==='일')+g(p.zhi,p.zhiKr,p.wxZhi,false)+'<em>'+c[0]+'</em></div>';}).join('');
  var d=result.day,wx=result.dayGanWx,info=WUXING_INFO[wx];
  return '<section class="pillar-hero" aria-label="나의 사주 여덟 글자"><div class="ph-cols">'+colsHtml+'</div>'+
-  '<p class="ph-note">금색 테두리 <b>'+esc(d.gan)+'('+esc(d.ganKr)+')</b>가 나를 나타내는 글자예요.'+(info?'<br>'+esc(info.hanja)+'('+esc(wx)+')의 기운을 타고났어요.':'')+'</p>'+
+  '<p class="ph-note">금색 테두리 <b>'+esc(d.gan)+'('+esc(d.ganKr)+')</b>'+(hasBatchim(d.ganKr)?'이':'가')+' 나를 나타내는 글자예요.'+(info?'<br>'+esc(info.hanja)+'('+esc(wx)+')의 기운을 타고났어요.':'')+'</p>'+
   (result.unknownTime?'<p class="ph-note ph-sub">태어난 시간을 몰라 시주는 비워 두고 풀었어요.</p>':'')+'</section>';
 }
 function sajuBoardHtml(result){
@@ -3913,7 +3921,7 @@ function wireStarGift(scope,result){
 }
 /* 콘텐츠 줄: 목록 API에서 자동으로 */
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
-function homeContentsHtml(){return homeBannerHtml()+'<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents role="status" aria-label="콘텐츠를 불러오는 중"><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div></div></section>';}
+function homeContentsHtml(){return '<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents role="status" aria-label="콘텐츠를 불러오는 중"><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div></div></section>';}
 /* 콘텐츠 카드 한 줄: 연도는 멀게 느껴져서, 그 콘텐츠가 답해 주는 질문을 내 이름으로 던진다 */
 var HOME_PREVIEW_Q={newyear:'의 2027년, 언제 가장 좋을까?',ian:'에게 빠지는 사람은 누구일까?',love:'은 언제, 어떤 사람과 이어질까?',wealth:'의 돈은 어디서 들어오고 어디로 샐까?',career:'에게 맞는 일은 따로 있을까?',marriage:'은 언제쯤 결혼하게 될까?'};
 function homePreviewLine(c,result){
@@ -4534,8 +4542,8 @@ function premiumPeriodUnlockedHtml(my, period){
 function premiumPeriodHtml(my, period){
   var unlockKey = premiumPeriodKey(period);
   if (!isUnlocked(unlockKey)){
-    var title = '이번 달 월주 심층분석';
-    var desc = '이번 달의 실제 월주를 내 사주와 대조해 재물·애정·건강·관계운을 깊이 있게 풀어드려요. 오늘의 케미 상세도 함께 열려요.';
+    var title = '이번 달 더 자세히 보기';
+    var desc = '이번 달의 돈·연애·건강·사람 운을 내 사주에 맞춰 더 자세히 풀어 드려요. 궁합 탭의 오늘의 케미 자세히 보기도 함께 열려요.';
     return '<div class="locked-card-wrap" id="premium-'+period+'-slot">'+lockedCardHtml(FEATURE_TODAY_PREMIUM_PRICE, title, desc, '결제하고 열어보기')+'</div>';
   }
   return premiumPeriodUnlockedHtml(my, period);
@@ -4600,11 +4608,12 @@ function monthFortuneHtml(my){
         '<span class="pw-chev">›</span></div>';
     }).join('');
   }
-  return premiumPeriodHtml(my, 'month')+
+  var monthOwned=isUnlocked(premiumPeriodKey('month')),monthPrem=premiumPeriodHtml(my, 'month');
+  return (monthOwned?monthPrem:'')+
     '<div class="card">'+
       '<p class="eyebrow">이번 달 운세</p>'+
       personaWrap('today', autoParas(PERIOD_TEXT[dom.key].month))+
-    '</div>'+
+    '</div>'+(monthOwned?'':monthPrem)+
     '<div class="card"><p class="section-title" style="font-size:.95rem;">남은 달의 추천일 <span class="hint">(눌러서 자세히 보기)</span></p>'+
       '<div class="period-week-list">'+listHtml(best)+'</div></div>'+
     '<div class="card"><p class="section-title" style="font-size:.95rem;">'+ICO_CLOUD+' 남은 달에 주의할 날 <span class="hint">(눌러서 자세히 보기)</span></p>'+
@@ -6971,7 +6980,7 @@ function scoreLabel(key){
 
 /* 신살 키 배열 -> 배지 한 줄 HTML (궁합 화면, 마이룸 상세 모두에서 재사용) */
 function shinsalBadgeRowHtml(keys){
-  if (!keys || !keys.length) return '<span class="section-desc" style="color:var(--fg-faint);">해당 없음</span>';
+  if (!keys || !keys.length) return '<span class="section-desc" style="color:var(--fg-faint);">없음</span>';
   return keys.map(function(k){
     var s = SHINSAL_TEXT[k];
     return '<span class="shinsal-badge" style="--sal-color:'+s.color+'; --sal-soft:'+s.soft+';">'+s.icon+' '+s.label+'</span>';
