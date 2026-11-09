@@ -23,8 +23,8 @@ test('payment review: footer shows business details and the price list matches r
  const page=fs.readFileSync(path.join(root,'index.html'),'utf8'),legal=fs.readFileSync(path.join(root,'legal.html'),'utf8');
  const foot=page.slice(page.indexOf('<footer class="site-legal"'),page.indexOf('</footer>'));
  for(const v of ['이음랩(IEUM LAB)','정계준','195-50-01151','010-5440-0335','ieumlab22@gmail.com','legal.html#refund','legal.html#price','mailto:ieumlab22@gmail.com?subject=','결제·환불 문의'])assert.ok(foot.includes(v),v);
- assert.ok(!foot.includes('301호'),'home address stays off the footer');
- assert.match(legal,/address: '[^']*301호'/);
+ assert.ok(foot.includes('주소 경기도 시흥시 신흥마을2길 10, 301호(신천동, 우성빌라)'),'PG review needs the business address in the footer');
+ assert.match(legal,/address: '[^']*301호[^']*'/);
  const fmt=n=>n.toLocaleString('en-US')+'원';
  const ny=require('../api/_newyear-content.js').concept.price_krw,ian=require('../api/_ian-content.js').concept.price_krw,{STAGE_PRICE}=require('../api/_report-access.js');
  assert.match(legal,new RegExp('2027 신년운세</th><td>'+fmt(ny)));

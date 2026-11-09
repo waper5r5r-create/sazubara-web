@@ -1343,6 +1343,13 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .cr-words p{margin:0;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;font-size:.9375rem;line-height:1.75}
 .cr-words b{display:block;font-size:.8125rem;color:var(--accent);margin-bottom:2px}
 .cost-term{display:block;margin-top:6px;font-size:.8125rem;line-height:1.6;color:var(--fg-muted)}
+.save-nudge{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:70;width:calc(100% - 24px);max-width:480px;padding:18px 18px 12px;border:1px solid #e9c27a66;border-radius:20px;background:#141b38;color:#f6eedf;box-shadow:0 16px 36px #0008;transform:translate(-50%,130%);transition:transform .35s ease;box-sizing:border-box}
+.save-nudge.on{transform:translate(-50%,0)}
+.save-nudge b{display:block;font-size:1rem;margin-bottom:6px}
+.save-nudge p{margin:0 0 12px;font-size:.875rem;line-height:1.65;color:#d6d9e6}
+.save-nudge-btns{display:grid;gap:8px}
+.save-nudge .share-btn{color:#f6eedf;border-color:#ffffff33}
+.save-nudge-later{min-height:40px;border:0;background:none;color:#aab1c8;font-size:.875rem}
 .worry-peek{margin-top:12px;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0}
 .worry-peek p{margin:0;font-size:.9375rem;line-height:1.7;word-break:keep-all}
 .worry-preview .section-desc{font-size:.9375rem;line-height:1.75;color:var(--fg)}
@@ -1863,7 +1870,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
     <!-- ===================== 탭 4: 이야기(구 리포트, 건별결제) ===================== -->
     <section class="view" id="view-reports" hidden></section>
 
-    <footer class="site-legal"><nav class="sl-links" aria-label="약관과 정책"><a href="/legal.html#terms">이용약관</a><a href="/legal.html#privacy"><b>개인정보처리방침</b></a><a href="/legal.html#refund">환불 정책</a><a href="/legal.html#price">이용 요금</a><a href="/legal.html#business">사업자 정보</a><a href="mailto:ieumlab22@gmail.com?subject=%EA%B2%B0%EC%A0%9C%C2%B7%ED%99%98%EB%B6%88%20%EB%AC%B8%EC%9D%98">결제·환불 문의</a></nav><p class="sl-biz"><span>이음랩(IEUM LAB)</span><span>대표 정계준</span><span>사업자등록번호 195-50-01151</span><span>고객 문의 010-5440-0335</span><span>ieumlab22@gmail.com</span></p><p class="sl-note">사주 풀이는 참고용 콘텐츠예요.</p></footer>
+    <footer class="site-legal"><nav class="sl-links" aria-label="약관과 정책"><a href="/legal.html#terms">이용약관</a><a href="/legal.html#privacy"><b>개인정보처리방침</b></a><a href="/legal.html#refund">환불 정책</a><a href="/legal.html#price">이용 요금</a><a href="/legal.html#business">사업자 정보</a><a href="mailto:ieumlab22@gmail.com?subject=%EA%B2%B0%EC%A0%9C%C2%B7%ED%99%98%EB%B6%88%20%EB%AC%B8%EC%9D%98">결제·환불 문의</a></nav><p class="sl-biz"><span>이음랩(IEUM LAB)</span><span>대표 정계준</span><span>사업자등록번호 195-50-01151</span><span>주소 경기도 시흥시 신흥마을2길 10, 301호(신천동, 우성빌라)</span><span>고객 문의 010-5440-0335</span><span>ieumlab22@gmail.com</span></p><p class="sl-note">사주 풀이는 참고용 콘텐츠예요.</p></footer>
   </main>
 
   <nav class="tabs-bar" aria-label="주요 메뉴">
@@ -3573,10 +3580,11 @@ function handleTossPaymentCallback(){
   var clean=new URL(location.href);['paid','order','report','stage','tab'].forEach(function(k){clean.searchParams.delete(k);});
   history.replaceState({},'',clean.pathname+clean.search+clean.hash);
   Promise.all([pullPaidUnlocks(),pullReportUnlocks()]).then(function(){
+    if(reportId)maybeSaveNudge('paid');
     if(reportId===NEWYEAR_CONCEPT.id){openNewYearViewer(NEWYEAR_CONCEPT);return;}
     if(reportId===IAN_CONCEPT.id){openIanViewer(IAN_CONCEPT,true);return;}
     if(reportId){switchTab('reports');return loadReportList(true).then(function(list){var c=list.filter(function(x){return String(x.id)===reportId;})[0];if(c)openReportViewer(c,stage);});}
-    switchTab(returnTab);if(STATE.mySaju)renderSajuResult(STATE.mySaju);showToast('구매한 풀이가 열렸어요.');restorePayReturn();
+    switchTab(returnTab);if(STATE.mySaju)renderSajuResult(STATE.mySaju);showToast('구매한 풀이가 열렸어요.');restorePayReturn();maybeSaveNudge('paid');
   }).catch(function(){showToast('구매 내역을 불러오지 못했어요. 잠시 후 다시 열어주세요.');});
 }
 /* 990원 결제 전에 보던 화면으로 돌려보낸다. 궁합은 결과가 메모리에만 있어서 함께 저장해 둔다. */
@@ -8330,6 +8338,28 @@ async function loadAuthProviders(){
   if(!response.ok)throw new Error('AUTH_SETTINGS_FAILED');
   AUTH.providers=(await response.json()).external||{};AUTH.settingsLoaded=true;
 }
+/* 인스타·카톡 같은 앱 안 브라우저는 저장 공간이 따로라, 로그인하지 않으면 다른 곳에서 산 콘텐츠가 안 보인다 */
+function inAppBrowserName(){var ua=navigator.userAgent||'';if(/KAKAOTALK/i.test(ua))return '카카오톡';if(/Instagram/i.test(ua))return '인스타그램';if(/FBAN|FBAV/i.test(ua))return '페이스북';if(/Line\//i.test(ua))return '라인';if(/NAVER\(inapp/i.test(ua))return '네이버';if(/Threads|Barcelona/i.test(ua))return '스레드';return '';}
+function openLoginPanel(){openSiteMenu();setTimeout(function(){var p=$('#menu-auth');if(p&&p.hidden){var b=$('#menu-account');if(b)b.click();}},80);}
+function showSaveNudge(kind){
+ if(AUTH.user||$('.save-nudge'))return;
+ var app=inAppBrowserName(),el=document.createElement('div');el.className='save-nudge';el.setAttribute('role','dialog');el.setAttribute('aria-label','구매 내역 지키기');
+ el.innerHTML='<b>'+(kind==='paid'?'구매한 콘텐츠, 다른 곳에서도 보려면':'구매한 콘텐츠를 지키려면')+'</b><p>'+(app?'지금은 '+app+' 안에서 열린 화면이에요. ':'')+'로그인하지 않으면 다른 앱이나 브라우저로 들어왔을 때 구매 내역이 안 보여요. 카카오로 로그인해 두면 어디서든 다시 볼 수 있어요.</p>'+
+  '<div class="save-nudge-btns"><button type="button" class="btn-primary" data-nudge-login>카카오로 로그인</button>'+(app==='카카오톡'?'<button type="button" class="share-btn" data-nudge-open>다른 브라우저로 열기</button>':'')+'<button type="button" class="save-nudge-later" data-nudge-later>나중에</button></div>';
+ document.body.appendChild(el);requestAnimationFrame(function(){el.classList.add('on');});
+ var close=function(){el.remove();try{sessionStorage.setItem('save-nudge-off','1');}catch(e){}};
+ $('[data-nudge-login]',el).addEventListener('click',function(){close();openLoginPanel();});
+ $('[data-nudge-later]',el).addEventListener('click',close);
+ var ob=$('[data-nudge-open]',el);if(ob)ob.addEventListener('click',function(){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href);});
+}
+function maybeSaveNudge(kind){
+ setTimeout(function(){
+  if(AUTH.user)return;
+  if(kind!=='paid'){var off=false;try{off=sessionStorage.getItem('save-nudge-off')==='1';}catch(e){}if(off||!inAppBrowserName())return;
+   var owned=Object.keys((DEVICE&&DEVICE.unlocked)||{}).length;if(!owned)return;}
+  showSaveNudge(kind);
+ },kind==='paid'?2200:3500);
+}
 function renderAuthPanel(){
   var panel=$('#menu-auth');if(!panel)return;
   if(AUTH.user){
@@ -8423,6 +8453,7 @@ function init(){
   switchTab(startTab);
   initBackNav(startTab);
   setTimeout(openContentFromUrl,300);
+  maybeSaveNudge('inapp');
 
   $all('.tab-btn').forEach(function(btn){
     btn.addEventListener('click', function(){ var cur=$('.tab-btn.active');var from=cur&&cur.dataset.tab;if(from&&from!==btn.dataset.tab)navPushTab();switchTab(btn.dataset.tab);window.scrollTo({top:0,behavior:'instant'}); });
