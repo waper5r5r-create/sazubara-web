@@ -1342,6 +1342,7 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .cr-words{display:grid;gap:10px}
 .cr-words p{margin:0;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;font-size:.9375rem;line-height:1.75}
 .cr-words b{display:block;font-size:.8125rem;color:var(--accent);margin-bottom:2px}
+.cost-term{display:block;margin-top:6px;font-size:.8125rem;line-height:1.6;color:var(--fg-muted)}
 .worry-peek{margin-top:12px;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0}
 .worry-peek p{margin:0;font-size:.9375rem;line-height:1.7;word-break:keep-all}
 .worry-preview .section-desc{font-size:.9375rem;line-height:1.75;color:var(--fg)}
@@ -2990,7 +2991,8 @@ function lockedCardHtml(priceKrw, title, desc, btnLabel){
     '<p class="section-title" style="font-size:.95rem;">'+title+'</p>'+
     '<p class="section-desc">'+desc+'</p>'+
     '<button type="button" class="unlock-btn" data-price="'+priceKrw+'">'+esc(btnLabel)+'</button>'+
-    '<span class="cost-badge">'+krwFmt(priceKrw)+'원 · 1회 결제, 기간 제한 없이 이용</span>'+
+    '<span class="cost-badge">'+krwFmt(priceKrw)+'원 · 1회 결제</span>'+
+    '<span class="cost-term">제공 기간: 결제 즉시 제공 (오류 시 1영업일 이내)<br>이용 기간: 결제일로부터 1년간 다시 보기</span>'+
     '<span class="cost-note">결제 후 바로 열리는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></span>'+
   '</div>';
 }
@@ -4602,7 +4604,7 @@ function dayFortuneHtml(my){
    머물지만, 이 카드는 "지금 이 순간의 진짜 월주·세운"을 직접 계산해서 내 일간과의 십성 관계를 따진
    뒤 FORTUNE_TEXT(오늘의 운세와 동일한 엔진)로 영역별(재물·애정·건강·관계) 풀이를 깊이 있게 보여준다. */
 /* 월간 프리미엄은 예전엔 달이 바뀔 때마다 다시 결제해야 했지만, 지금은 "오늘운세 프리미엄"
-   1회 결제로 평생 다 열린다(오늘의 케미 상세도 같은 번들). */
+   1회 결제로 1년간 다 열린다(오늘의 케미 상세도 같은 번들). */
 var FEATURE_TODAY_PREMIUM_PRICE = 990;
 function premiumPeriodKey(period){ return 'feature-today-premium'; }
 function premiumPeriodUnlockedHtml(my, period){
@@ -5094,7 +5096,7 @@ function renderChemiDetailSlot(entry, chemi){
       '<button type="button" class="chemi-detail-btn" id="btn-chemi-detail">'+
         '오늘의 케미 자세히 보기 <span class="pr">'+krwFmt(FEATURE_TODAY_PREMIUM_PRICE)+'원</span>'+
       '</button>'+
-      '<p class="hint" style="margin-top:4px;">오늘운세 프리미엄을 한 번 결제하면 평생 매일 볼 수 있어요.</p>';
+      '<p class="hint" style="margin-top:4px;">오늘운세 프리미엄을 한 번 결제하면 결제일로부터 1년간 매일 볼 수 있어요.</p>';
     $('#btn-chemi-detail', slot).addEventListener('click', function(){
       tryUnlock(key, FEATURE_TODAY_PREMIUM_PRICE, '오늘운세 프리미엄', function(){
         slot.innerHTML = chemiDetailHtml(chemi);
@@ -5325,7 +5327,7 @@ function stageOfferHtml(concept,stage){
  if(isPocha(concept))return careerOffer(stage);
  var detail=stage==='detail',money=storyCategory(concept)==='wealth';
  var features=detail?(money?['일간·오행·재성(나를 상징하는 글자와 재물운 기운)으로 살펴보는 수입과 소비 성향','충동구매·수입 감소·지인과의 돈 거래 등 8가지 상황별 대응','결정 전 체크리스트, 주의할 점, 일주일 실천 계획']:['일간·오행·십신(나와 상대를 설명하는 사주 기호)으로 살펴보는 연애와 관계의 패턴','연락·고백·갈등·거리 두기 등 8가지 상황별 대응','바로 써볼 대화 예시, 주의할 점, 일주일 실천 계획']):(money?['돈을 쓰거나 새로운 기회를 고를 때의 습관','만족한 소비와 후회한 소비가 갈리는 기준','돈을 남기기 위해 점검할 나의 선택 방식']:['끌리는 사람의 특징과 마음을 표현하는 방식','편안한 관계의 속도와 서운함이 생기는 지점','반복되는 연애 고민에서 확인할 나의 기준']);
- return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'내 사주를 더 읽어보면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내가 돈을 쓰고 기회를 고르는 모습을 돌아보며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내가 끌리고 마음을 표현하는 모습을 돌아보며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기':money?'재물 사주 전체 보기':'연애 사주 전체 보기')+' · '+(detail?'12,900':'7,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 세부 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
+ return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'내 사주를 더 읽어보면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내가 돈을 쓰고 기회를 고르는 모습을 돌아보며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내가 끌리고 마음을 표현하는 모습을 돌아보며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기':money?'재물 사주 전체 보기':'연애 사주 전체 보기')+' · '+(detail?'12,900':'7,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 세부 리포트를 한 번에 열기<br>결제 즉시 제공 · 결제일로부터 1년간 다시 보기<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 function startReportUnlock(concept,stage){
   if(['story','detail'].indexOf(stage)===-1)return;
@@ -5490,7 +5492,7 @@ function newYearPageHtml(result,data){
  if(!owned){
   html+='<section class="ny-offer" id="ny-offer"><img src="/assets/daon/bundle.webp" alt="리본으로 묶은 편지 11통" loading="lazy" decoding="async"><h2>나머지 편지 11통도 받아 볼래요?</h2><p>한 해의 연애·돈·일·건강과 2월부터 12월까지의 달별 풀이, 마지막 한 해 정리까지 드려요.</p>'+
    '<ul class="ny-teasers">'+free.teasers.map(function(t){return '<li><img src="/assets/daon/'+esc(t.seal)+'.webp" alt="" loading="lazy" decoding="async"><span>'+t.month+'월</span><b>'+esc(t.title)+'</b></li>';}).join('')+'</ul>'+
-   '<button type="button" class="btn-primary report-stage-buy" data-ny-buy>'+krwFmt(NEWYEAR_CONCEPT.price_krw)+'원에 11통 모두 받기</button><p class="ny-price-note">1회 결제, 기간 제한 없이 다시 볼 수 있어요.</p></section>';
+   '<button type="button" class="btn-primary report-stage-buy" data-ny-buy>'+krwFmt(NEWYEAR_CONCEPT.price_krw)+'원에 11통 모두 받기</button><p class="ny-price-note">1회 결제 · 결제 즉시 제공 · 결제일로부터 1년간 다시 보기</p></section>';
  }else{
   var nyEnding=paid.ending;if(nyEnding)html+='<section class="ny-year ny-summary"><p class="ny-kicker">한 해 정리</p><h2>올해 달력에 적어 둘 것</h2>'+nyEnding.best.map(function(x){return '<p class="ny-summary-row"><b>'+x.month+'월 · '+esc(x.title)+'</b>'+esc(x.why)+'</p>';}).join('')+'<p class="ny-summary-row is-watch"><b>'+nyEnding.watch.month+'월 · 조심할 달</b>'+esc(nyEnding.watch.why)+'</p><p class="ny-tip"><b>올해 기억할 한 가지</b>'+esc(nyEnding.remember)+'</p></section>';
   html+='<section class="ny-end"><img src="/assets/daon/bye.webp" alt="손 흔들어 배웅하는 다온" loading="lazy" decoding="async"><h2>좋은 한 해 보내요</h2><p>'+(name?name+', ':'')+'편지 12통을 모두 전해 드렸어요. 생각날 때 언제든 다시 꺼내 읽어 주세요.</p></section>';
@@ -5567,7 +5569,7 @@ function ianPageHtml(result,data){
 function ianOfferHtml(result,data){
  return '<section class="ian-offer"><img class="ian-offer-art" src="/assets/ian/c14.webp" alt="붉은 병과 푸른 병을 내미는 이안" loading="lazy" decoding="async"><h2>'+(result.name?esc(result.name)+' 님':'당신')+' 사주의 비밀은<br>아직 다섯 개 남았어요</h2><p>여기부터는 남들이 모르는 쪽이에요.<br>반복되는 모습과 잡아야 할 사람까지 짚어 줄게요.<br>마지막엔 내 사주 요약 카드도 드려요.</p>'+
   '<ul class="ian-teasers">'+data.teasers.map(function(t){return '<li><b>'+esc(t.title)+'</b><span>'+esc(t.note)+'</span></li>';}).join('')+'</ul>'+
-  '<button type="button" class="btn-primary report-stage-buy" data-ian-buy>'+krwFmt(IAN_CONCEPT.price_krw)+'원에 끝까지 보기</button><p class="ian-note">1회 결제, 기간 제한 없이 다시 볼 수 있어요.<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></p></section>';
+  '<button type="button" class="btn-primary report-stage-buy" data-ian-buy>'+krwFmt(IAN_CONCEPT.price_krw)+'원에 끝까지 보기</button><p class="ian-note">1회 결제 · 결제 즉시 제공 · 결제일로부터 1년간 다시 보기<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></p></section>';
 }
 function ianCardBlock(){var data=REPORT_READER.data,found=null;((data&&data.paid&&data.paid.sections)||[]).forEach(function(s){s.forEach(function(b){if(b.t==='card')found=b;});});return found;}
 /* 요약 카드 저장 이미지 (1080×1350). 그림은 노출 없는 c13만 쓴다. */
@@ -5969,7 +5971,7 @@ function careerPreviewHtml(concept,result,rows){
 function careerOffer(stage){
  var detail=stage==='detail';
  var benefits=detail?['한눈에 보는 직업 사주 요약표, 나의 일하는 방식, 일터에서의 나','타고난 기운으로 읽는 적성과 맞는 분야, 추천 직무','10년 커리어 흐름의 해마다 할 일, 가장 강한 해의 월별 흐름, 10년 단위로 보는 커리어','이직·퇴사 판단 기준, 일터 관계 6장면 대응법, 연봉 협상 가이드','번아웃 신호와 회복법, 커리어 로드맵 5단계, 스스로에게 던질 질문 24개']:['일의 지도 카드와 현실 장면 10개로 보는 나의 일하는 방식','앞으로 10년의 커리어 흐름과 길이 크게 열리는 세 해, 서림의 처방전','18개 항목 직업 심층 리포트: 적성과 추천 직무, 이직 판단, 연봉 협상, 번아웃, 커리어 로드맵'];
- return '<section class="reader-offer marriage-offer career-offer" data-gate="'+stage+'">'+seorimScene(detail?'detail':'lock',detail?'기록책을 펼쳐두고 맞은편 자리를 권하는 서림':'두루마리를 입가에 대고 윙크하는 서림',!detail)+'<p class="reader-kicker">'+(detail?'직업 심층 리포트':'직업 사주 · 서림')+'</p><h2>'+(detail?'내 직업 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'직업 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 직업 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
+ return '<section class="reader-offer marriage-offer career-offer" data-gate="'+stage+'">'+seorimScene(detail?'detail':'lock',detail?'기록책을 펼쳐두고 맞은편 자리를 권하는 서림':'두루마리를 입가에 대고 윙크하는 서림',!detail)+'<p class="reader-kicker">'+(detail?'직업 심층 리포트':'직업 사주 · 서림')+'</p><h2>'+(detail?'내 직업 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'직업 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 직업 심층 리포트를 한 번에 열기<br>결제 즉시 제공 · 결제일로부터 1년간 다시 보기<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 function careerStoryHtml(story,result,rows){
  var stem=result.day.ganKr,card=story.cards[stem]||{},wx=result.dayGanWx,wk=PERSONA_KEY[result.day.ganKr]||result.dayGanWx,strong=result.strength==='strong',who=marriageCallName(result);
@@ -6130,7 +6132,7 @@ function lovePreviewHtml(concept,result,rows){
 function loveOffer(stage){
  var detail=stage==='detail';
  var benefits=detail?['한눈에 보는 연애 사주 요약표, 나의 연애 방식, 연인 자리 심층 분석','타고난 기운으로 읽는 연애 성향과 보완 습관','10년 인연 흐름의 해마다 할 일, 꽃 피는 세 해의 월별 흐름, 10년 단위로 보는 연애','잘 맞는 띠·일지 궁합 가이드, 연애 상황 6가지 대응법(해볼 말, 피할 말)','연인에게 건네는 나 사용설명서, 이별과 회복, 연애 로드맵과 질문 24개']:['마음의 꽃 카드와 연애 장면 10개로 보는 나의 연애 방식','앞으로 10년의 인연 흐름과 꽃 피는 세 해, 해랑의 처방전','18개 항목 연애 심층 리포트: 연인 자리, 궁합, 상황별 대응법, 나 사용설명서, 이별과 회복'];
- return '<section class="reader-offer marriage-offer love-offer" data-gate="'+stage+'">'+haerangScene(detail?'detail':'lock',detail?'꽃 도감을 펼쳐두고 맞은편 자리를 권하는 해랑':'꽃다발을 등 뒤로 숨기며 웃는 해랑',!detail)+'<p class="reader-kicker">'+(detail?'연애 심층 리포트':'연애 사주 · 해랑')+'</p><h2>'+(detail?'내 연애 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'연애 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 연애 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
+ return '<section class="reader-offer marriage-offer love-offer" data-gate="'+stage+'">'+haerangScene(detail?'detail':'lock',detail?'꽃 도감을 펼쳐두고 맞은편 자리를 권하는 해랑':'꽃다발을 등 뒤로 숨기며 웃는 해랑',!detail)+'<p class="reader-kicker">'+(detail?'연애 심층 리포트':'연애 사주 · 해랑')+'</p><h2>'+(detail?'내 연애 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'연애 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 연애 심층 리포트를 한 번에 열기<br>결제 즉시 제공 · 결제일로부터 1년간 다시 보기<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 function loveStoryHtml(story,result,rows){
  var stem=result.day.ganKr,card=story.cards[stem]||{},wx=result.dayGanWx,wk=PERSONA_KEY[result.day.ganKr]||result.dayGanWx,strong=result.strength==='strong',who=marriageCallName(result);
@@ -6346,7 +6348,7 @@ function marriageStoryHtml(story,result,rows){
 function marriageOffer(stage){
  var detail=stage==='detail';
  var benefits=detail?['한눈에 보는 결혼 사주 요약표, 나의 결혼관, 배우자 자리 심층 분석','타고난 기운으로 읽는 나의 결혼 성향과 보완 습관','10년 연도별 할 일, 가장 강한 해의 월별 흐름, 10년 단위로 보는 결혼','신혼 1·5·10년차 미리보기, 잘 맞는 띠·일지 궁합 가이드','갈등 상황 6가지 대응법(나의 패턴, 해볼 말, 피해야 할 말)','결혼 준비 5단계 로드맵과 결혼 전 함께 나눌 질문 20개']:['배우자 별 카드와 앞으로 10년의 결혼 흐름, 가장 크게 빛나는 세 해','함께 살 때의 모습: 다툼, 돈, 양가 가족, 바로 쓸 대화, 체크리스트','18개 항목 결혼 심층 리포트: 배우자 자리, 궁합, 갈등 대응법, 결혼 준비 로드맵, 질문 20개'];
- return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하')+'</p><h2>'+(detail?'내 결혼 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'결혼 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 결혼 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
+ return '<section class="reader-offer marriage-offer" data-gate="'+stage+'">'+wolhaScene(detail?'detail':'lock',detail?'찻잔 두 개를 붉은 실로 잇는 월하':'은가위를 들고 윙크하는 월하')+'<p class="reader-kicker">'+(detail?'결혼 심층 리포트':'결혼 사주 · 월하')+'</p><h2>'+(detail?'내 결혼 사주,<br>18개 항목으로 깊게 읽기':'나머지 풀이는<br>여기서 이어져요')+'</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기 · 12,900원':'결혼 사주 전체 보기 · 7,900원')+'</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 18개 항목 결혼 심층 리포트를 한 번에 열기<br>결제 즉시 제공 · 결제일로부터 1년간 다시 보기<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
 /* 결혼 사주 계산 보조: 월별 흐름, 궁합 짝, 십신 묶음 */
 var ZHI_ORDER='子丑寅卯辰巳午未申酉戌亥';
@@ -6531,7 +6533,7 @@ function wealthPreviewHtml(concept,result,rows){
 }
 function wealthOffer(stage){
  var benefits=['재물 장부 카드와 장부 11칸: 수입, 지출, 충동구매, 저축, 가계부, 투자, 빌려주기, 동업, 부업, 큰돈, 10년 흐름','돈이 들어오는 세 해와 그해 좋은 달, 금비의 영수증(이번 달 할 일)','18개 항목 재물 심층 리포트: 저울, 재물 창고, 10년 흐름, 상황별 대응법, 나에게 맞는 돈 관리 방식'];
- return '<section class="reader-offer marriage-offer wealth-offer" data-gate="'+stage+'">'+gumbiScene('leak','장부의 한 칸을 검지로 짚으며 잠깐 하고 말하는 금비','square')+'<p class="reader-kicker">재물 사주 · 금비</p><h2>새는 구멍,<br>장부에서 같이 찾아요</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">재물 사주 전체 보기 · 7,900원</button><p class="reader-price-note">1회 결제 · 장부 풀이와 18개 항목 재물 심층 리포트를 한 번에 소장<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></p></section>';
+ return '<section class="reader-offer marriage-offer wealth-offer" data-gate="'+stage+'">'+gumbiScene('leak','장부의 한 칸을 검지로 짚으며 잠깐 하고 말하는 금비','square')+'<p class="reader-kicker">재물 사주 · 금비</p><h2>새는 구멍,<br>장부에서 같이 찾아요</h2><ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">재물 사주 전체 보기 · 7,900원</button><p class="reader-price-note">1회 결제 · 장부 풀이와 18개 항목 재물 심층 리포트를 한 번에 열기<br>결제 즉시 제공 · 결제일로부터 1년간 다시 보기<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></p></section>';
 }
 function wealthStoryHtml(story,result,rows){
  var stem=result.day.ganKr,card=story.cards[stem]||{},wx=result.dayGanWx,wk=PERSONA_KEY[result.day.ganKr]||result.dayGanWx,pf=wealthProfile(result),who=marriageCallName(result);

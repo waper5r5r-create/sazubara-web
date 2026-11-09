@@ -134,7 +134,7 @@ test('career report: 서림 free view hides paid copy, owned stages render serve
  const free=api.storyFlowHtml(m.concept,{access:{story:false,detail:false},rows:[],detailRows:[]},r);
  const card=m.story.cards[r.day.ganKr];
  assert.ok(free.includes(card.title));assert.ok(!free.includes(card.who.slice(0,15)));assert.ok(!free.includes(card.shine.slice(0,15)));assert.ok(free.includes(m.story.burnout[r.dayGanWx].slice(0,15)));
- assert.ok(free.includes('locked-peek'));assert.ok(free.includes('직업 사주 전체 보기 · 7,900원'));assert.ok(free.includes('한 번에 소장'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('서림'));
+ assert.ok(free.includes('locked-peek'));assert.ok(free.includes('직업 사주 전체 보기 · 7,900원'));assert.ok(free.includes('한 번에 열기'));assert.ok(free.includes('결제일로부터 1년간 다시 보기'));assert.ok(!free.includes('data-gate="detail"'));assert.ok(!free.includes('undefined'));assert.ok(free.includes('서림'));
  const story=api.storyFlowHtml(m.concept,{access:{story:true,detail:false},rows:[m.story],detailRows:[]},r);
  assert.ok(free.includes('saju-hook'));assert.ok((free.match(/<li(?: class="hook-extra")?><p>/g)||[]).length>=4);assert.equal((story.match(/class="route-stop"/g)||[]).length,10);assert.ok(!story.includes('love-letter'));
  assert.ok(story.includes(card.who.slice(0,20)));assert.ok(story.includes('서림의 처방전'));assert.ok(!story.includes('data-gate'));assert.ok(!story.includes('data-gate="story"'));assert.equal((story.match(/<li class="is-top">/g)||[]).length,3);assert.ok(!story.includes('undefined'));assert.ok(!story.includes('deep-report'));

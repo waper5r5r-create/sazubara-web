@@ -135,3 +135,13 @@ test('UX pass: back closes layers before leaving, compat tab is called 궁합, r
   assert.match(html,/아직 내 하늘에 별이 없어요/);assert.ok(html.includes('sky-nostar-btn\\" data-album-invite>링크 보내기')||html.includes('sky-nostar-btn" data-album-invite>링크 보내기'));
   assert.ok(!html.includes('<p class="hint">불러오는 중...</p>'));
 });
+
+test('every paid offer states when it is delivered and how long it can be used (TossPay review)',()=>{
+ const page=require('node:fs').readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
+ const legal=require('node:fs').readFileSync(require('node:path').join(__dirname,'../legal.html'),'utf8');
+ assert.ok(!page.includes('기간 제한 없이'));assert.ok(!page.includes('평생 매일'));
+ assert.ok(page.includes('제공 기간: 결제 즉시 제공'));assert.ok(page.includes('이용 기간: 결제일로부터 1년간 다시 보기'));
+ assert.equal((page.match(/한 번에 열기<br>결제 즉시 제공 · 결제일로부터 1년간 다시 보기/g)||[]).length,5);
+ assert.ok(page.includes('ny-price-note">1회 결제 · 결제 즉시 제공 · 결제일로부터 1년간'));assert.ok(page.includes('ian-note">1회 결제 · 결제 즉시 제공 · 결제일로부터 1년간'));
+ assert.ok(legal.includes('이용(열람) 기간: 결제일로부터 1년'));assert.ok(legal.includes('결제일로부터 1년간 다시 볼 수 있어요(제공 기간: 결제 즉시, 이용 기간: 1년)'));
+});
