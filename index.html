@@ -1343,6 +1343,13 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .cr-words p{margin:0;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;font-size:.9375rem;line-height:1.75}
 .cr-words b{display:block;font-size:.8125rem;color:var(--accent);margin-bottom:2px}
 .cost-term{display:block;margin-top:6px;font-size:.8125rem;line-height:1.6;color:var(--fg-muted)}
+.pay-gate{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:#0000;transition:background .25s}
+.pay-gate.on{background:#0009}
+.pay-gate-box{width:calc(100% - 24px);max-width:480px;margin-bottom:calc(12px + env(safe-area-inset-bottom,0px));padding:20px 18px 14px;border:1px solid #e9c27a66;border-radius:20px;background:#141b38;color:#f6eedf;box-shadow:0 16px 36px #0008;box-sizing:border-box;transform:translateY(130%);transition:transform .3s ease}
+.pay-gate.on .pay-gate-box{transform:none}
+.pay-gate-box b{display:block;font-size:1.0625rem;margin-bottom:6px}
+.pay-gate-box p{margin:0 0 14px;font-size:.875rem;line-height:1.65;color:#d6d9e6}
+.pay-gate-box .pay-gate-note{margin:10px 0 0;font-size:.8125rem;color:#aab1c8}
 .save-nudge{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:70;width:calc(100% - 24px);max-width:480px;padding:18px 18px 12px;border:1px solid #e9c27a66;border-radius:20px;background:#141b38;color:#f6eedf;box-shadow:0 16px 36px #0008;transform:translate(-50%,130%);transition:transform .35s ease;box-sizing:border-box}
 .save-nudge.on{transform:translate(-50%,0)}
 .save-nudge b{display:block;font-size:1rem;margin-bottom:6px}
@@ -3557,6 +3564,7 @@ function loadTossSdk(){
    실제 지급 금액은 클라이언트가 보낸 값이 아니라 /api/unlock이 서버에서 직접 검증한다. */
 var PAY_RETURN=null;
 function startUnlock(unlockKey, priceKrw, label){
+  if(payLoginGate(function(){startUnlock(unlockKey,priceKrw,label);}))return;
   try{if(PAY_RETURN)localStorage.setItem('pay-return',JSON.stringify(PAY_RETURN));else localStorage.removeItem('pay-return');}catch(e){}
   loadTossSdk().then(function(ctx){
     var tp = ctx.TossPayments(ctx.clientKey);
@@ -5340,6 +5348,7 @@ function stageOfferHtml(concept,stage){
 function startReportUnlock(concept,stage){
   if(['story','detail'].indexOf(stage)===-1)return;
   if(stage==='detail'&&!REPORT_READER.data.access.story){showToast('콘텐츠를 먼저 열어주세요.');return;}
+  if(payLoginGate(function(){startReportUnlock(concept,stage);}))return;
   var buttons=$all('.report-stage-buy');buttons.forEach(function(b){b.disabled=true;});
   Promise.all([loadTossSdk(),fetch('/api/reports/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'prepare',deviceId:DEVICE.shareCode,conceptId:concept.id,stage:stage})}).then(function(r){return r.json();}).then(function(data){if(!data.ok){var error=new Error(data.message||'결제 준비에 실패했어요.');error.code=data.error;throw error;}return data;})]).then(function(values){
     var ctx=values[0],checkout=values[1];
@@ -8351,6 +8360,21 @@ function showSaveNudge(kind){
  $('[data-nudge-login]',el).addEventListener('click',function(){close();openLoginPanel();});
  $('[data-nudge-later]',el).addEventListener('click',close);
  var ob=$('[data-nudge-open]',el);if(ob)ob.addEventListener('click',function(){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href);});
+}
+/* 결제 직전: 로그인 안 했으면 먼저 권한다. "로그인 없이 결제"를 고르면 이번 방문에는 다시 묻지 않는다. */
+function payLoginGate(go){
+ if(AUTH.user)return false;
+ var skip=false;try{skip=sessionStorage.getItem('pay-gate-skip')==='1';}catch(e){}
+ if(skip||$('.pay-gate'))return false;
+ var el=document.createElement('div');el.className='pay-gate';el.setAttribute('role','dialog');el.setAttribute('aria-label','로그인하고 결제하기');
+ el.innerHTML='<div class="pay-gate-box"><b>로그인하고 결제할까요?</b><p>로그인해 두면 인스타, 카톡, 다른 브라우저 어디서 들어와도 산 콘텐츠를 볼 수 있어요.</p>'+
+  '<div class="save-nudge-btns"><button type="button" class="btn-primary" data-gate-login>카카오로 로그인하기</button><button type="button" class="save-nudge-later" data-gate-skip>로그인 없이 결제</button></div>'+
+  '<p class="pay-gate-note">다른 곳에서 이미 샀다면, 산 곳과 여기서 같은 카카오 계정으로 로그인하면 열려요.</p></div>';
+ document.body.appendChild(el);requestAnimationFrame(function(){el.classList.add('on');});
+ el.addEventListener('click',function(e){if(e.target===el)el.remove();});
+ $('[data-gate-login]',el).addEventListener('click',function(){el.remove();showToast('로그인한 뒤 다시 결제 버튼을 눌러 주세요.');openLoginPanel();});
+ $('[data-gate-skip]',el).addEventListener('click',function(){el.remove();try{sessionStorage.setItem('pay-gate-skip','1');}catch(e){}go();});
+ return true;
 }
 function maybeSaveNudge(kind){
  setTimeout(function(){
