@@ -8394,10 +8394,11 @@ function tosspayTestOn(){try{if(/[?&]tptest=1/.test(location.search))sessionStor
 function choosePayMethod(go){
  payConfig().then(function(cfg){
   var mode=cfg&&cfg.tosspay;
-  if(!(mode==='live'||(mode==='test'&&tosspayTestOn()))){go('card');return;}
+  /* 고르는 창은 번거로워서 기본은 바로 카드 결제창(카카오페이 등 간편결제도 이 창 안에서 고른다). 토스페이 직연동은 ?tptest=1 에서만 */
+  if(!(mode&&tosspayTestOn())){go('card');return;}
   if($('.pay-gate'))return;
   var el=document.createElement('div');el.className='pay-gate';el.setAttribute('role','dialog');el.setAttribute('aria-label','결제 수단 고르기');
-  el.innerHTML='<div class="pay-gate-box"><b>어떻게 결제할까요?</b>'+(mode==='test'?'<p>테스트 결제예요. 실제로 돈이 나가지 않아요.</p>':'')+
+  el.innerHTML='<div class="pay-gate-box"><b>어떻게 결제할까요?</b>'+(mode==='test'?'<p>테스트 결제예요. 실제로 돈이 나가지 않아요.</p>':'<p>확인용 화면이에요.</p>')+
    '<div class="save-nudge-btns"><button type="button" class="btn-primary pay-tosspay" data-pay="tosspay">토스페이로 결제</button><button type="button" class="share-btn" data-pay="card">카드로 결제</button></div></div>';
   document.body.appendChild(el);requestAnimationFrame(function(){el.classList.add('on');});
   el.addEventListener('click',function(e){if(e.target===el){el.remove();return;}var b=e.target.closest('[data-pay]');if(!b)return;el.remove();go(b.getAttribute('data-pay'));});
