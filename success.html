@@ -40,6 +40,9 @@
     var quote=params.get('quote');
     var returnTab=params.get('tab');
     var unlockKey = params.get('unlockKey');
+    // 토스페이(pv=tp)는 paymentKey 대신 orderNo와 인증 결과(status)를 붙여서 돌려보낸다.
+    var viaTossPay = params.get('pv') === 'tp';
+    if (viaTossPay){ orderId = params.get('orderNo'); paymentKey = 'tosspay'; amount = '0'; }
 
     function showError(text){
       document.getElementById('msg').textContent = text;
@@ -60,6 +63,10 @@
       return readShareCode(localStorage.getItem(DEVICE_KEY)) || readShareCode(localStorage.getItem(LEGACY_CREDIT_KEY));
     }
 
+    if (viaTossPay && params.get('status') && ['PAY_APPROVED','PAY_COMPLETE'].indexOf(params.get('status')) === -1){
+      showError('결제가 완료되지 않았어요.');
+      return;
+    }
     if (!paymentKey || !orderId || !amount){
       showError('결제 정보가 올바르지 않습니다.');
       return;
@@ -77,7 +84,9 @@
       return;
     }
     var endpoint = isReport ? '/api/reports/unlock' : '/api/unlock';
-    var body = isReport
+    var body = viaTossPay
+      ? (isReport ? { provider: 'tosspay', orderId: orderId, deviceId: deviceId, conceptId: conceptId, stage: stage || 'story' } : { provider: 'tosspay', orderId: orderId, deviceId: deviceId, unlockKey: unlockKey })
+      : isReport
       ? { paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId, conceptId: conceptId, stage: stage || undefined, quote: quote || undefined }
       : { paymentKey: paymentKey, orderId: orderId, amount: parseInt(amount, 10), deviceId: deviceId, unlockKey: unlockKey };
 

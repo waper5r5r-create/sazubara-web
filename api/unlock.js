@@ -12,6 +12,27 @@
 
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('./_supabase');
 const { linkedDeviceIds, deviceFilter } = require('./_account');
+const { newOrderId } = require('./_payment-quote');
+const { createTossPay, finishTossPay, siteOrigin } = require('./_tosspay');
+
+// 토스페이 결제창 만들기. 금액은 서버가 unlockKey로 정한다.
+async function tosspayCreate(req, body, res) {
+  const { deviceId, unlockKey, label, tab } = body || {};
+  const price = priceForUnlockKey(unlockKey);
+  if (typeof deviceId !== 'string' || !deviceId || !price) {
+    res.status(400).json({ ok: false, error: 'MISSING_FIELDS' });
+    return;
+  }
+  const origin = siteOrigin(req), orderNo = newOrderId();
+  const made = await createTossPay({
+    orderNo, amount: price,
+    productDesc: '별첩사주 — ' + (typeof label === 'string' && label ? label : '콘텐츠'),
+    retUrl: origin + '/success.html?pv=tp&type=unlock&unlockKey=' + encodeURIComponent(unlockKey) + '&tab=' + encodeURIComponent(typeof tab === 'string' ? tab.slice(0, 20) : 'saju'),
+    retCancelUrl: origin + '/fail.html?message=' + encodeURIComponent('결제를 취소했어요.')
+  });
+  if (!made.ok) { res.status(502).json(made); return; }
+  res.status(200).json({ ok: true, orderId: orderNo, amount: price, checkoutPage: made.checkoutPage });
+}
 
 const PAID_UNLOCK_PRICE_BY_KEY = {
   'feature-saju-deep': 4900,
@@ -50,13 +71,17 @@ async function handleGet(req, res) {
 }
 
 async function handlePost(req, res) {
+  const body = await readJsonBody(req);
+  if (body && body.action === 'tosspay-create') return tosspayCreate(req, body, res);
+  // 토스페이로 결제한 건: 금액은 서버 가격표로 정하고, 승인은 토스페이 서버에서 직접 확인한다.
+  const viaTossPay = !!(body && body.provider === 'tosspay');
+  if (viaTossPay) { body.amount = priceForUnlockKey(body.unlockKey); body.paymentKey = 'tosspay'; }
   const secretKey = process.env.TOSS_SECRET_KEY;
-  if (!secretKey) {
+  if (!secretKey && !viaTossPay) {
     res.status(500).json({ ok: false, error: 'NO_SECRET_KEY', message: 'TOSS_SECRET_KEY 환경변수가 설정되지 않았습니다.' });
     return;
   }
 
-  const body = await readJsonBody(req);
   const { paymentKey, orderId, amount, deviceId, unlockKey } = body || {};
   if (!paymentKey || !orderId || !amount || !deviceId || !unlockKey) {
     res.status(400).json({ ok: false, error: 'MISSING_FIELDS' });
@@ -83,6 +108,15 @@ async function handlePost(req, res) {
       res.status(matches(rows[0]) ? 200 : 409).json(matches(rows[0]) ? {ok:true,unlockKey,orderId} : {ok:false,error:'ORDER_CONFLICT'});
       return;
     }
+    let data;
+    if (viaTossPay) {
+      const finished = await finishTossPay(orderId, price);
+      if (!finished.ok) {
+        res.status(400).json({ ok: false, error: finished.error, message: finished.message });
+        return;
+      }
+      data = finished.data;
+    } else {
     const basicAuth = Buffer.from(secretKey + ':').toString('base64');
     const tossRes = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
       method: 'POST',
@@ -93,11 +127,12 @@ async function handlePost(req, res) {
       },
       body: JSON.stringify({ paymentKey, orderId, amount })
     });
-    const data = await tossRes.json();
+    data = await tossRes.json();
 
     if (!tossRes.ok) {
       res.status(tossRes.status).json({ ok: false, error: data.code || 'CONFIRM_FAILED', message: data.message || '결제 승인에 실패했습니다.' });
       return;
+    }
     }
 
     if (data.totalAmount !== price || data.orderId !== orderId || data.status !== 'DONE' || data.currency !== 'KRW') {

@@ -1349,6 +1349,7 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .pay-gate.on .pay-gate-box{transform:none}
 .pay-gate-box b{display:block;font-size:1.0625rem;margin-bottom:6px}
 .pay-gate-box p{margin:0 0 14px;font-size:.875rem;line-height:1.65;color:#d6d9e6}
+.pay-gate-box .share-btn{color:#f6eedf;border-color:#ffffff33}
 .pay-gate-box .pay-gate-note{margin:10px 0 0;font-size:.8125rem;color:#aab1c8}
 .save-nudge{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:70;width:calc(100% - 24px);max-width:480px;padding:18px 18px 12px;border:1px solid #e9c27a66;border-radius:20px;background:#141b38;color:#f6eedf;box-shadow:0 16px 36px #0008;transform:translate(-50%,130%);transition:transform .35s ease;box-sizing:border-box}
 .save-nudge.on{transform:translate(-50%,0)}
@@ -3563,9 +3564,16 @@ function loadTossSdk(){
 /* 기본사주 심층·오늘운세 프리미엄·궁합 상세 — 전부 이 경로 하나로 결제한다.
    실제 지급 금액은 클라이언트가 보낸 값이 아니라 /api/unlock이 서버에서 직접 검증한다. */
 var PAY_RETURN=null;
-function startUnlock(unlockKey, priceKrw, label){
+function startUnlock(unlockKey, priceKrw, label, method){
   if(payLoginGate(function(){startUnlock(unlockKey,priceKrw,label);}))return;
+  if(!method){choosePayMethod(function(m){startUnlock(unlockKey,priceKrw,label,m);});return;}
   try{if(PAY_RETURN)localStorage.setItem('pay-return',JSON.stringify(PAY_RETURN));else localStorage.removeItem('pay-return');}catch(e){}
+  if(method==='tosspay'){
+    fetch('/api/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'tosspay-create',deviceId:DEVICE.shareCode,unlockKey:unlockKey,label:label,tab:location.hash.replace('#','')||'saju'})})
+      .then(function(r){return r.json();}).then(function(d){if(!d.ok||!d.checkoutPage)throw new Error(d.message||'');location.href=d.checkoutPage;})
+      .catch(function(e){showToast((e&&e.message)||'토스페이 결제창을 열지 못했어요. 카드 결제를 이용해 주세요.');});
+    return;
+  }
   loadTossSdk().then(function(ctx){
     var tp = ctx.TossPayments(ctx.clientKey);
     var orderId = tossOrderId();
@@ -5345,13 +5353,16 @@ function stageOfferHtml(concept,stage){
  var features=detail?(money?['일간·오행·재성(나를 상징하는 글자와 재물운 기운)으로 살펴보는 수입과 소비 성향','충동구매·수입 감소·지인과의 돈 거래 등 8가지 상황별 대응','결정 전 체크리스트, 주의할 점, 일주일 실천 계획']:['일간·오행·십신(나와 상대를 설명하는 사주 기호)으로 살펴보는 연애와 관계의 패턴','연락·고백·갈등·거리 두기 등 8가지 상황별 대응','바로 써볼 대화 예시, 주의할 점, 일주일 실천 계획']):(money?['돈을 쓰거나 새로운 기회를 고를 때의 습관','만족한 소비와 후회한 소비가 갈리는 기준','돈을 남기기 위해 점검할 나의 선택 방식']:['끌리는 사람의 특징과 마음을 표현하는 방식','편안한 관계의 속도와 서운함이 생기는 지점','반복되는 연애 고민에서 확인할 나의 기준']);
  return '<section class="story-gate reader-offer" data-gate="'+stage+'"><span class="story-lock" aria-hidden="true">'+uiIcon('lock')+'</span><p class="reader-kicker">'+(detail?'이유를 알고, 다음 행동까지':'내 사주를 더 읽어보면')+'</p><h2>'+(detail?'내 상황에 맞춰,<br>어떻게 행동하면 좋을까요?':money?'나는 왜 돈 앞에서<br>이런 선택을 할까요?':'내 마음은 어떤 관계에서<br>자연스럽게 움직일까요?')+'</h2><p>'+(detail?'사주의 해석 근거부터 상황별 행동 지침까지.<br><strong>20개 주제</strong>로 읽고 필요한 내용을 다시 찾아볼 수 있어요.':money?'내가 돈을 쓰고 기회를 고르는 모습을 돌아보며<br><strong>기회와 소비를 대하는 습관</strong>을 살펴보세요.':'내가 끌리고 마음을 표현하는 모습을 돌아보며<br><strong>끌림·표현·관계의 속도</strong>를 살펴보세요.')+'</p><ul class="offer-benefits">'+features.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul><p class="offer-outcome">'+(detail?money?'활용하기: 결제나 새로운 제안 앞에서 내 기준을 정하고, 확인할 조건과 멈춰야 할 신호를 정리해보세요.':'활용하기: 혼자 추측하기 쉬운 상황에서 내 마음을 정리하고, 상대에게 어떤 말로 요청할지 준비해보세요.':money?'읽고 나면: 최근 지출과 선택을 돌아보며 나에게 반복되는 이유를 찾아볼 수 있어요.':'읽고 나면: 내가 편안한 관계와 힘들어지는 순간을 구분하는 데 참고할 수 있어요.')+'</p><button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">'+(detail?'심층 리포트 보기':money?'재물 사주 전체 보기':'연애 사주 전체 보기')+' · '+(detail?'12,900':'7,900')+'원</button><p class="reader-price-note">'+(detail?'선택 구매 · 콘텐츠와 별도 결제 · 1회 결제':'1회 결제 · 이야기와 세부 리포트를 한 번에 열기<br>결제 즉시 제공 · 결제일로부터 1년간 다시 보기<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a>')+'</p></section>';
 }
-function startReportUnlock(concept,stage){
+function startReportUnlock(concept,stage,method){
   if(['story','detail'].indexOf(stage)===-1)return;
   if(stage==='detail'&&!REPORT_READER.data.access.story){showToast('콘텐츠를 먼저 열어주세요.');return;}
   if(payLoginGate(function(){startReportUnlock(concept,stage);}))return;
+  if(!method){choosePayMethod(function(m){startReportUnlock(concept,stage,m);});return;}
+  var viaTossPay=method==='tosspay';
   var buttons=$all('.report-stage-buy');buttons.forEach(function(b){b.disabled=true;});
-  Promise.all([loadTossSdk(),fetch('/api/reports/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'prepare',deviceId:DEVICE.shareCode,conceptId:concept.id,stage:stage})}).then(function(r){return r.json();}).then(function(data){if(!data.ok){var error=new Error(data.message||'결제 준비에 실패했어요.');error.code=data.error;throw error;}return data;})]).then(function(values){
+  Promise.all([viaTossPay?null:loadTossSdk(),fetch('/api/reports/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:viaTossPay?'tosspay-create':'prepare',deviceId:DEVICE.shareCode,conceptId:concept.id,stage:stage})}).then(function(r){return r.json();}).then(function(data){if(!data.ok){var error=new Error(data.message||'결제 준비에 실패했어요.');error.code=data.error;throw error;}return data;})]).then(function(values){
     var ctx=values[0],checkout=values[1];
+    if(viaTossPay){location.href=checkout.checkoutPage;return;}
     return ctx.TossPayments(ctx.clientKey).requestPayment('카드',{
       amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+(isNewYear(concept)||isIan(concept)?'':' (이야기+심층 리포트)'),
       successUrl:location.origin+'/success.html?type=report&conceptId='+encodeURIComponent(concept.id)+'&stage='+stage+'&quote='+encodeURIComponent(checkout.quote),
@@ -8375,6 +8386,22 @@ function payLoginGate(go){
  $('[data-gate-login]',el).addEventListener('click',function(){el.remove();showToast('로그인한 뒤 다시 결제 버튼을 눌러 주세요.');openLoginPanel();});
  $('[data-gate-skip]',el).addEventListener('click',function(){el.remove();try{sessionStorage.setItem('pay-gate-skip','1');}catch(e){}go();});
  return true;
+}
+/* 결제 수단 고르기: 토스페이가 켜져 있으면 "토스페이 / 카드" 중에 고른다. 꺼져 있으면 바로 카드 결제. */
+var _payCfg=null;
+function payConfig(){if(!_payCfg)_payCfg=fetch('/api/config').then(function(r){return r.json();}).catch(function(){_payCfg=null;return {};});return _payCfg;}
+function tosspayTestOn(){try{if(/[?&]tptest=1/.test(location.search))sessionStorage.setItem('tptest','1');return sessionStorage.getItem('tptest')==='1';}catch(e){return false;}}
+function choosePayMethod(go){
+ payConfig().then(function(cfg){
+  var mode=cfg&&cfg.tosspay;
+  if(!(mode==='live'||(mode==='test'&&tosspayTestOn()))){go('card');return;}
+  if($('.pay-gate'))return;
+  var el=document.createElement('div');el.className='pay-gate';el.setAttribute('role','dialog');el.setAttribute('aria-label','결제 수단 고르기');
+  el.innerHTML='<div class="pay-gate-box"><b>어떻게 결제할까요?</b>'+(mode==='test'?'<p>테스트 결제예요. 실제로 돈이 나가지 않아요.</p>':'')+
+   '<div class="save-nudge-btns"><button type="button" class="btn-primary pay-tosspay" data-pay="tosspay">토스페이로 결제</button><button type="button" class="share-btn" data-pay="card">카드로 결제</button></div></div>';
+  document.body.appendChild(el);requestAnimationFrame(function(){el.classList.add('on');});
+  el.addEventListener('click',function(e){if(e.target===el){el.remove();return;}var b=e.target.closest('[data-pay]');if(!b)return;el.remove();go(b.getAttribute('data-pay'));});
+ });
 }
 function maybeSaveNudge(kind){
  setTimeout(function(){
