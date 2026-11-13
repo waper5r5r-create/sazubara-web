@@ -1,0 +1,99 @@
+/* 사이트 전체 기준. 새 화면을 만들 때는 아래 값만 써요.
+   색: 종이(--ds-paper) 위에 카드(--ds-card), 글자는 진한·보통·옅은 세 단계, 강조는 금색 하나.
+   글자: 12 라벨 · 13 설명 · 15 본문 · 17 카드 제목 · 20 구역 제목 · 24 화면 제목.
+   간격: 4 · 8 · 12 · 16 · 20 · 24 · 32. 화면 좌우 20, 카드 안쪽 20, 카드 사이 16.
+   모서리: 카드 20 · 버튼과 안쪽 상자 14 · 알약 999.
+   아이콘: 선 굵기 1.7의 선 아이콘, 20px(본문 옆) 또는 24px(탭·버튼). */
+:root{
+ --ds-paper:#f6f0e4;--ds-card:#fffaf0;--ds-inset:#f6eedc;--ds-line:#e8dec8;
+ --ds-ink:#1d2240;--ds-ink-2:#5d6075;--ds-ink-3:#77798a;
+ --ds-gold:#d9a957;--ds-gold-soft:#f0d38c;--ds-gold-ink:#84621f;--ds-night:#141b3c;
+ --ds-fs-label:.75rem;--ds-fs-cap:.8125rem;--ds-fs-body:.9375rem;--ds-fs-h3:1.0625rem;--ds-fs-h2:1.25rem;--ds-fs-h1:1.5rem;
+ --ds-gutter:20px;--ds-pad:20px;--ds-gap:16px;
+ --ds-r-card:20px;--ds-r-ctl:14px;--ds-r-pill:999px;
+ --ds-shadow:0 6px 20px rgba(29,34,64,.06);
+ --fg:var(--ds-ink);--fg-muted:var(--ds-ink-2);--fg-faint:var(--ds-ink-3);
+}
+/* --- 틀: 헤더 · 본문 · 탭바 --- */
+.app-header{padding:10px var(--ds-gutter);min-height:56px;box-shadow:none;border-bottom:1px solid var(--ds-line)}
+.app-header .sub{display:none}
+.app-header .mark{font-size:1.1875rem}
+.brand-ic{width:28px;height:28px}.brand-mark{gap:8px}
+.header-actions .header-icon-btn{width:40px;height:40px;border:0!important;background:transparent!important;color:var(--ds-ink)!important;border-radius:var(--ds-r-ctl)}
+.content{padding:16px var(--ds-gutter) 100px}
+.view{gap:var(--ds-gap)}
+.tabs-bar{padding:6px 12px calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ds-line);box-shadow:none}
+.tab-btn{min-height:52px;padding:6px 2px;gap:2px;color:var(--ds-ink-3);font-size:var(--ds-fs-label)!important}
+.tab-btn.active{color:var(--ds-ink)}
+.tab-btn>span:last-child{margin-top:4px}
+/* --- 카드: 모서리 · 테두리 · 그림자 · 안쪽 여백을 하나로 --- */
+.card,.tab-intro,.star-gift,.saju-hook,.next-steps,.saju-quick-summary,.technical-details,.report-card,.home-content-card{
+ border-radius:var(--ds-r-card);background:var(--ds-card);border:1px solid var(--ds-line);box-shadow:var(--ds-shadow)}
+.card,.tab-intro,.star-gift,.saju-hook,.next-steps,.saju-quick-summary{padding:var(--ds-pad)}
+.card{gap:var(--ds-gap)}
+.pillar-hero,.today-peek{border-radius:var(--ds-r-card)}
+.technical-details>.card,.technical-details>section.card{border-radius:0;box-shadow:none;border-width:1px 0 0}
+/* --- 글자 단계 --- */
+.eyebrow,.editorial-tag,.quick-heading,.saju-hook-kicker,.next-steps-k,.report-format{font-size:var(--ds-fs-label)!important;font-weight:700;letter-spacing:.06em;color:var(--ds-gold-ink)}
+.section-desc,.fortune-tile .body,.portrait-text,.saju-hook li p,.detail-block .section-desc{font-size:var(--ds-fs-body);line-height:1.7;color:var(--ds-ink-2);word-break:keep-all}
+.hint,.disclaimer,.star-gift-sub,.today-date,.saju-hook-foot{font-size:var(--ds-fs-cap)!important;line-height:1.6;color:var(--ds-ink-3)}
+.section-title,.card>.section-title{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h3);line-height:1.4;color:var(--ds-ink)}
+.tab-intro h1,.saju-result-head h1{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h1);line-height:1.35;letter-spacing:-.03em;color:var(--ds-ink)}
+.home-contents>h2,.report-list-title,.next-steps h2,.star-gift h2,.album-heading{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h2);line-height:1.4;letter-spacing:-.03em;color:var(--ds-ink)}
+/* --- 버튼 · 선택 탭 --- */
+.btn-primary{min-height:52px;border-radius:var(--ds-r-ctl);font-size:var(--ds-fs-body);box-shadow:0 6px 16px rgba(217,169,87,.28)}
+.btn-secondary,.share-btn{min-height:48px;border-radius:var(--ds-r-ctl);border:1px solid var(--ds-line);background:var(--ds-card);color:var(--ds-ink);font-size:var(--ds-fs-body);font-weight:600}
+.seg{border-radius:var(--ds-r-ctl);background:var(--ds-inset);border-color:var(--ds-line)}
+.seg button{min-height:44px;font-size:var(--ds-fs-body);color:var(--ds-ink-2)}
+.seg button.active{background:var(--ds-ink);color:#fff6e0;box-shadow:none}
+.chip-btn{min-height:40px;border-radius:var(--ds-r-pill)}
+/* --- 사주풀이 탭 --- */
+.everyday-saju{padding:0}
+.saju-hero-visual{margin-left:0;margin-right:0;border-radius:var(--ds-r-ctl);box-shadow:none}
+.today-peek{margin-bottom:var(--ds-gap);padding:var(--ds-pad)}
+.saju-result-head{margin:0 0 12px}
+.saju-quick-summary,.star-gift,.saju-hook,.next-steps{margin:var(--ds-gap) 0 0}
+.saju-hook{color:var(--ds-ink)}
+.home-contents{margin-top:32px}
+.home-content-row{gap:12px;padding:12px 0 4px;margin-right:calc(-1 * var(--ds-gutter));padding-right:var(--ds-gutter)}
+.home-content-card{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;border-radius:var(--ds-r-ctl);box-shadow:none}
+.home-content-card img{flex:none}
+.home-content-card span{flex:1}
+/* --- 오늘의 운세: 카드 속 카드를 없애고 글 폭을 넓게 --- */
+.today-ganzhi-panel{padding:16px;border:0;border-radius:var(--ds-r-ctl);background:var(--ds-night)}
+.today-ganzhi .today-theme{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h3);color:#f6ecd6}
+.fortune-grid{gap:0}
+.fortune-tile{padding:16px 0;border:0;border-top:1px solid var(--ds-line);border-radius:0;background:none;gap:6px}
+.fortune-tile:first-child{border-top:0;padding-top:0}
+.fortune-tile:last-child{padding-bottom:0}
+.fortune-tile .ttl,.detail-block .ttl{margin:0;font-size:var(--ds-fs-body);font-weight:700;color:var(--ds-ink)}
+.lucky-chip{border-radius:var(--ds-r-ctl);background:var(--ds-inset);border:0;padding:16px 8px}
+/* --- 콘텐츠 탭 --- */
+.ny-banner{border-radius:var(--ds-r-card)}
+.report-greeting{margin:8px 0 0;font-size:var(--ds-fs-body);color:var(--ds-ink-2)}
+.report-card .nm{font-size:var(--ds-fs-h3);line-height:1.4}
+.report-card .tagline{font-size:var(--ds-fs-cap);line-height:1.5;color:var(--ds-ink-2)}
+.report-discover{font-size:var(--ds-fs-cap);font-weight:700;color:var(--ds-ink)}
+/* --- 푸터: 약관 · 사업자 정보 --- */
+.site-legal{margin-top:32px;padding:20px 0 0;border-top:1px solid var(--ds-line);text-align:left;color:var(--ds-ink-3)}
+.sl-links{justify-content:flex-start;gap:4px 16px;max-width:none;margin:0}
+.sl-links a{padding:6px 0;color:var(--ds-ink-2)}
+.sl-biz{justify-content:flex-start;gap:2px 12px;max-width:none;margin:12px 0 0}
+.sl-note{margin:12px 0 0}
+/* --- 홈 첫 화면 --- */
+.saju-hero{padding:24px var(--ds-pad) var(--ds-pad)}
+.saju-hero h1{font-size:1.625rem;margin:8px 0}
+.saju-hero-visual{margin:20px 0 16px}
+.saju-hero-gift{margin:12px 0 0;color:var(--ds-ink-3)}
+/* --- 콘텐츠 읽기 화면(밤 배경) --- */
+.report-page .report-page-topbar{gap:4px;padding-left:var(--ds-gutter);padding-right:var(--ds-gutter)}
+.report-page .report-page-back:focus-visible{outline-offset:-4px}
+.report-page .reader-price-note,.report-page .ny-price-note,.report-page .ian-note,.cost-term,.cost-note{
+ text-align:left;font-size:var(--ds-fs-cap);line-height:1.6;word-break:keep-all;text-wrap:pretty}
+.report-page .reader-offer,.report-page .pocha-offer,.report-page .story-gate{border-radius:var(--ds-r-card)}
+.app-header .header-actions .header-icon-btn{border:0!important;background:transparent!important;color:var(--ds-ink)!important}
+/* --- 궁합 탭: 제목과 밤하늘을 다른 화면과 같은 좌우 선에 맞춤 --- */
+body.compat-view #myroom-card-wrap,#myroom-card-wrap{padding:0;border:0;background:none;box-shadow:none}
+#myroom-card-wrap .sky-head{padding:0}
+#myroom-card-wrap .sky-stage{margin-left:0;margin-right:0;border-radius:var(--ds-r-card)}
+#myroom-card-wrap .sky-legend{padding:0}
