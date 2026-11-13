@@ -1783,7 +1783,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=1">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=2">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
 <script defer src="/_vercel/insights/script.js"></script>
@@ -2210,7 +2210,7 @@ function openPeriodBrief(relKey, label, zhi, ssKey){
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(label?esc(label)+' · ':'')+titleLabel+'</p>'+
-          '<button type="button" class="sheet-close" id="brief-close">✕</button></div>'+
+          '<button type="button" class="sheet-close" id="brief-close">'+uiIcon('close')+'</button></div>'+
         (za ? '<p class="section-desc" style="color:var(--fg-muted); margin-top:-4px;"><span class="za-hj">'+esc(zhi)+'</span>'+za.animal+'의 날 · '+za.flavor+'</p>' : '')+
         '<div class="detail-block"><p class="ttl" style="color:var(--good);">'+uiIcon('check')+' 좋은 점</p><p class="section-desc">'+b.good+'</p></div>'+
         '<div class="detail-block"><p class="ttl" style="color:var(--bad);">'+uiIcon('alert')+' 조심할 점</p><p class="section-desc">'+b.caution+'</p></div>'+
@@ -3204,7 +3204,7 @@ function openBirthFlow(prefill,opt){
     '<input class="bf-line" data-bf="name" type="text" maxlength="12" placeholder="이름 또는 별명" autocomplete="off" enterkeyhint="next" aria-label="이름">'+
     '<div class="bf-actions"><button class="bf-btn" type="button" data-bf-next="name">다음</button><button class="bf-ghost" type="button" data-bf-next="noname">이름 없이 볼게요</button></div></section>'+
    '<section class="bf-page" data-page="1"><p class="bf-kicker">둘째 장</p><h2 class="bf-q" data-bf="hello">성별을 알려 주세요</h2><p class="bf-sub">10년마다 바뀌는 큰 흐름을 계산할 때 써요.</p>'+
-    '<div class="bf-pick" data-bf="gender"><button type="button" data-val="f"><span>☽</span>여성</button><button type="button" data-val="m"><span>☉</span>남성</button></div></section>'+
+    '<div class="bf-pick" data-bf="gender"><button type="button" data-val="f"><span>'+uiIcon('moon')+'</span>여성</button><button type="button" data-val="m"><span>'+uiIcon('sun')+'</span>남성</button></div></section>'+
    '<section class="bf-page" data-page="2"><p class="bf-kicker">셋째 장</p><h2 class="bf-q">언제 태어났나요?</h2>'+
     '<div class="bf-cal" data-bf="cal"><button type="button" class="on" data-val="solar">양력</button><button type="button" data-val="lunar">음력</button></div>'+
     '<div class="bf-ymd"><label><input class="y" data-bf="yy" inputmode="numeric" maxlength="4" placeholder="1994" autocomplete="off" aria-label="태어난 해">년</label><span class="dot">.</span><label><input class="m" data-bf="mm" inputmode="numeric" maxlength="2" placeholder="05" autocomplete="off" aria-label="태어난 달">월</label><span class="dot">.</span><label><input class="d" data-bf="dd" inputmode="numeric" maxlength="2" placeholder="12" autocomplete="off" aria-label="태어난 날">일</label></div>'+
@@ -3687,7 +3687,7 @@ function renderInviteSheet(){
     '<div class="sheet-backdrop" id="invite-backdrop">'+
       '<div class="sheet" id="invite-sheet">'+
         '<div class="sheet-handle"></div>'+
-        '<div class="sheet-head"><h2 class="section-title">친구 초대 · 코드</h2><button type="button" class="sheet-close" id="invite-close">✕</button></div>'+
+        '<div class="sheet-head"><h2 class="section-title">친구 초대 · 코드</h2><button type="button" class="sheet-close" id="invite-close">'+uiIcon('close')+'</button></div>'+
 
         '<div><p class="section-title" style="font-size:.95rem;">함께 궁합 알아보기</p>'+
           '<div class="invite-box">'+
@@ -3761,7 +3761,7 @@ var REVEAL_SPARK_SVG = personaIconSvg('#f3ece0',
 function personaWrap(sectionType, innerHtml){ return innerHtml; }
 
 /* 하단 탭바 아이콘 (currentColor 선, 22x22) */
-var UI_ICON_PATHS={leaf:'M20 3C9 2 3 7 5 14c2 7 13 6 15-11ZM5 20 16 8',people:'M10 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM20 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM2 21v-3a5 5 0 0 1 10 0v3M12 21v-3a5 5 0 0 1 10 0v3',heart:'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z',briefcase:'M8 6V3h8v3M3 7h18v14H3ZM3 12c5 3 13 3 18 0M10 13h4',wallet:'M20 7H5a2 2 0 0 1 0-4h13v4M3 5v15h18V7M21 12h-6v5h6M17 14.5h.01',check:'m5 12 4 4 10-10',alert:'M12 3 2 20h20ZM12 9.5v4.5M12 17h.01',lock:'M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5ZM12 14v3',chat:'M4 4h16v12H9l-5 4ZM8 8h8M8 12h5',share:'M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7',palette:'M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-3.7 2 2 0 0 1 1-3.8h2a4 4 0 0 0 4-4A8 8 0 0 0 12 3ZM7 9h.01M11 6h.01M16 8h.01M6 14h.01',compass:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM16 8l-3 5-5 3 3-5 5-3Z',spark:'m12 3 2.7 6.3L21 12l-6.3 2.7L12 21l-2.7-6.3L3 12l6.3-2.7L12 3Z',arrow:'m9 5 7 7-7 7',moon:'M19 15a8 8 0 1 1-10-10 8 8 0 0 0 10 10Z'};
+var UI_ICON_PATHS={leaf:'M20 3C9 2 3 7 5 14c2 7 13 6 15-11ZM5 20 16 8',people:'M10 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM20 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM2 21v-3a5 5 0 0 1 10 0v3M12 21v-3a5 5 0 0 1 10 0v3',heart:'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z',briefcase:'M8 6V3h8v3M3 7h18v14H3ZM3 12c5 3 13 3 18 0M10 13h4',wallet:'M20 7H5a2 2 0 0 1 0-4h13v4M3 5v15h18V7M21 12h-6v5h6M17 14.5h.01',check:'m5 12 4 4 10-10',alert:'M12 3 2 20h20ZM12 9.5v4.5M12 17h.01',lock:'M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5ZM12 14v3',chat:'M4 4h16v12H9l-5 4ZM8 8h8M8 12h5',share:'M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7',palette:'M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-3.7 2 2 0 0 1 1-3.8h2a4 4 0 0 0 4-4A8 8 0 0 0 12 3ZM7 9h.01M11 6h.01M16 8h.01M6 14h.01',compass:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM16 8l-3 5-5 3 3-5 5-3Z',spark:'m12 3 2.7 6.3L21 12l-6.3 2.7L12 21l-2.7-6.3L3 12l6.3-2.7L12 3Z',arrow:'m9 5 7 7-7 7',moon:'M19 15a8 8 0 1 1-10-10 8 8 0 0 0 10 10Z',close:'M6 6l12 12M18 6 6 18',back:'m15 5-7 7 7 7',sun:'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'};
 function uiIcon(name){return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="'+(UI_ICON_PATHS[name]||UI_ICON_PATHS.spark)+'" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';}
 WORRY_ICON={연애:uiIcon('heart'),직장:uiIcon('briefcase'),재물:uiIcon('wallet'),건강:uiIcon('leaf'),인간관계:uiIcon('people')};
 var TAB_ICON_SAJU = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="4"/><path d="m12 7 1.4 3.6L17 12l-3.6 1.4L12 17l-1.4-3.6L7 12l3.6-1.4ZM8 5h.01M16 19h.01"/></g></svg>';
@@ -3994,7 +3994,7 @@ var HERO_STARS=[[10,10.8],[21.7,26.5],[33.9,12.5],[42.8,32.3],[57.4,28],[67.6,15
 function starHeroHtml(){
  var stars=HERO_STARS.map(function(p,i){return '<i class="hero-star" style="left:'+p[0]+'%;top:'+p[1]+'%;--d:'+(0.35+i*0.13).toFixed(2)+'s;--t:'+(2.6+(i%3)*0.7).toFixed(1)+'s"></i>';}).join('');
  return '<div class="saju-hero has-art is-intro"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"><div class="hero-stars" aria-hidden="true">'+stars+'</div></div>'+
-  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">✦ 풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
+  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
 /* 결과 맨 위: 내 여덟 글자를 남색 판에 크게. 일간(태어난 날의 위 글자)이 "나"를 나타내서 금색으로 둘러요 */
@@ -4055,7 +4055,7 @@ function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return
 function nextStepsHtml(result){
  var rows=[['contents','spark','연애·돈·일, 자세히 보기','주제별 내 이야기 · 앞부분 무료'],['today','compass','오늘 운세 보기','오늘·이번 주·이번 달 흐름 · 무료'],['compat','people','친구와 궁합 보기','링크를 보내면 둘 다 무료로 봐요']];
  return '<section class="next-steps" aria-label="다음으로 볼 것"><p class="next-steps-k">다음으로 볼 것</p><h2>'+(result.name?esc(result.name)+'님, ':'')+'이제 이렇게 보세요</h2>'+
-  rows.map(function(r,i){return '<button type="button" class="next-step" data-next-go="'+r[0]+'"><i>'+uiIcon(r[1])+'</i><span><b>'+r[2]+'</b><small>'+r[3]+'</small></span><em>›</em></button>';}).join('')+'</section>';
+  rows.map(function(r,i){return '<button type="button" class="next-step" data-next-go="'+r[0]+'"><i>'+uiIcon(r[1])+'</i><span><b>'+r[2]+'</b><small>'+r[3]+'</small></span><em>'+uiIcon('arrow')+'</em></button>';}).join('')+'</section>';
 }
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-next-go]');if(!b)return;var go=b.dataset.nextGo;
  if(go==='contents'){var sec=$('section.home-contents');if(sec)sec.scrollIntoView({behavior:'smooth',block:'start'});return;}
@@ -4066,7 +4066,7 @@ var HOME_PREVIEW_Q={newyear:'의 2027년, 언제 가장 좋을까?',ian:'에게 
 function homePreviewLine(c,result){
  var cat=isPocha(c)?'career':storyCategory(c),q=HOME_PREVIEW_Q[cat];
  if(!q||!result||!result.day)return '';
- return '<em class="home-content-peek">✦ '+(result.name?esc(result.name)+'님'+q:'나'+q.replace(/^은/,'는'))+'</em>';
+ return '<em class="home-content-peek">'+uiIcon('spark')+(result.name?esc(result.name)+'님'+q:'나'+q.replace(/^은/,'는'))+'</em>';
 }
 function fillHomeContents(scope,result){
  wireHomeBanners(scope);
@@ -4224,7 +4224,7 @@ function skyHtml(result,list){
    '<i class="sky-shoot" aria-hidden="true"></i>'+
    (list.length||skyIsDemo()?'':'<div class="sky-nostar-note"><b>아직 내 하늘에 별이 없어요</b><span>링크를 보내면 친구가 생일을 넣는 순간 여기에 별이 떠요. 둘의 궁합도 바로 볼 수 있어요.</span><button type="button" class="sky-nostar-btn" data-album-invite>링크 보내기</button></div>')+
    '<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button>'+
-   '<div class="sky-focus" data-sky-focus hidden><button type="button" class="sky-focus-close" data-sky-close aria-label="별자리로 돌아가기">✕</button>'+
+   '<div class="sky-focus" data-sky-focus hidden><button type="button" class="sky-focus-close" data-sky-close aria-label="별자리로 돌아가기">'+uiIcon('close')+'</button>'+
     '<div class="sky-fcard"><div class="sky-fcard-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img data-sky-fimg alt="" decoding="async"></div></div></div>'+
     '<div class="sky-panel" data-sky-panel aria-live="polite"></div></div>'+
   '</div>'+
@@ -4239,7 +4239,7 @@ function skyPanelHtml(e,i,n){
  var type=cardTypeOf(e),name=esc(e.nameB||'상대방');
  return '<p class="sky-panel-kicker">'+name+'님의 별 · '+esc(type?type.title:'')+'</p><h3>'+skyWord(e)+'</h3>'+
   (ZHI_REL_TEXT[e.zhiRel]?'<p>'+esc(skyRelationCopy(e))+'</p><h4>두 사람의 관계</h4><p>'+esc(ZHI_REL_TEXT[e.zhiRel])+'</p>':'')+(GAN_REL_TEXT[e.ganRel]?'<p>'+esc(GAN_REL_TEXT[e.ganRel])+'</p>':'')+
-  '<div class="sky-panel-nav">'+(n>1?'<button type="button" data-sky-prev aria-label="이전 별">‹</button>':'')+(skyIsDemo()?'':'<button type="button" class="sky-panel-more" data-sky-more>우리 사이 리포트</button>')+(n>1?'<button type="button" data-sky-next aria-label="다음 별">›</button>':'')+'</div>'+
+  '<div class="sky-panel-nav">'+(n>1?'<button type="button" data-sky-prev aria-label="이전 별">'+uiIcon('back')+'</button>':'')+(skyIsDemo()?'':'<button type="button" class="sky-panel-more" data-sky-more>우리 사이 리포트</button>')+(n>1?'<button type="button" data-sky-next aria-label="다음 별">'+uiIcon('arrow')+'</button>':'')+'</div>'+
   '<button type="button" class="sky-panel-close" data-sky-back>별자리로 돌아가기</button>';
 }
 function wireSky(scope,list){
@@ -4268,7 +4268,7 @@ function wireSky(scope,list){
  function expandDetail(){
   if(typeof document==='undefined')return;
   if(!focus.classList.contains('is-expanded')){returnFocus=document.activeElement;previousOverflow=document.body.style.overflow;expandedApp=$('.app');if(expandedApp){previousInert=expandedApp.inert;expandedApp.inert=true;}document.body.appendChild(focus);focus.classList.add('is-expanded');focus.setAttribute('role','dialog');focus.setAttribute('aria-modal','true');document.body.style.overflow='hidden';focus.addEventListener('keydown',detailKeys);}
-  focus.scrollTop=0;var back=$('[data-sky-close]',focus);if(back){back.textContent='‹ 별자리로 돌아가기';back.focus({preventScroll:true});}
+  focus.scrollTop=0;var back=$('[data-sky-close]',focus);if(back){back.textContent='별자리로 돌아가기';back.focus({preventScroll:true});}
  }
  function showCard(i){
   var e=list[i],type=cardTypeOf(e);fimg.src=type?'/assets/guardians/'+type.asset+'.webp':'/assets/guardians/back.webp';
@@ -4319,8 +4319,8 @@ function skyPageHtml(e){
 }
 function openSkyBook(list,i){
  var root=$('#myroom-sheet-root');if(!root||!list[i])return;
- root.innerHTML='<div class="sheet-backdrop sky-book-backdrop" data-sky-backdrop><div class="sky-book" role="dialog" aria-label="별첩"><button type="button" class="sheet-close sky-book-close" data-sky-close aria-label="별첩 닫기">✕</button><div class="sky-book-spread" data-sky-spread></div>'+
-  (list.length>1?'<div class="sky-book-nav"><button type="button" data-sky-prev aria-label="이전 별">‹</button><span data-sky-pos></span><button type="button" data-sky-next aria-label="다음 별">›</button></div>':'')+'</div></div>';
+ root.innerHTML='<div class="sheet-backdrop sky-book-backdrop" data-sky-backdrop><div class="sky-book" role="dialog" aria-label="별첩"><button type="button" class="sheet-close sky-book-close" data-sky-close aria-label="별첩 닫기">'+uiIcon('close')+'</button><div class="sky-book-spread" data-sky-spread></div>'+
+  (list.length>1?'<div class="sky-book-nav"><button type="button" data-sky-prev aria-label="이전 별">'+uiIcon('back')+'</button><span data-sky-pos></span><button type="button" data-sky-next aria-label="다음 별">'+uiIcon('arrow')+'</button></div>':'')+'</div></div>';
  var spread=$('[data-sky-spread]',root),cur=i;
  function paint(dir){
   var draw=function(){spread.innerHTML=skyPageHtml(list[cur]);var pos=$('[data-sky-pos]',root);if(pos)pos.textContent=(cur+1)+' / '+list.length;var d=$('[data-sky-detail]',spread);if(d)d.addEventListener('click',function(){openMyroomDetail(list[cur]);});};
@@ -4585,7 +4585,7 @@ function todayPeekHtml(my){
  try{
   var today=todayGanZhi(),ft=FORTUNE_TEXT[dailyShishenKey(my.day.gan,my.dayGanWx,today.gan,today.wxGan)];if(!ft)return '';
   var tot=String(ft.total||''),mm=tot.match(/^[^.!?]*[.!?]/),first=mm?mm[0]:tot;var now=new Date();
-  return '<button type="button" class="today-peek" data-today-peek><span class="today-peek-k">오늘 '+(now.getMonth()+1)+'월 '+now.getDate()+'일</span><b>'+esc(ft.label)+'</b><span class="today-peek-t">'+esc(first)+'</span><span class="today-peek-go">오늘의 운세 보기 ›</span></button>';
+  return '<button type="button" class="today-peek" data-today-peek><span class="today-peek-k">오늘 '+(now.getMonth()+1)+'월 '+now.getDate()+'일</span><b>'+esc(ft.label)+'</b><span class="today-peek-t">'+esc(first)+'</span><span class="today-peek-go">오늘의 운세 보기'+uiIcon('arrow')+'</span></button>';
  }catch(e){return '';}
 }
 function dayFortuneHtml(my){
@@ -4714,7 +4714,7 @@ function weekFortuneHtml(my){
       '<span class="dt">'+(r.date.getMonth()+1)+'/'+r.date.getDate()+'</span>'+
       '<span class="lbl2">'+r.ganKr+r.zhiKr+'일</span>'+
       '<span style="color:'+color+';font-weight:700;font-size:.78rem;">'+FORTUNE_TEXT[r.ssKey].label+'</span>'+
-      '<span class="pw-chev">›</span>'+
+      '<span class="pw-chev">'+uiIcon('arrow')+'</span>'+
     '</div>';
   }).join('');
   return '<div class="card">'+
@@ -4745,7 +4745,7 @@ function monthFortuneHtml(my){
         '<span class="dt" style="width:40px;">'+(r.date.getMonth()+1)+'/'+r.date.getDate()+'</span>'+
         '<span class="lbl2">'+r.ganKr+r.zhiKr+'일</span>'+
         '<span style="font-size:.76rem;color:var(--fg-muted);">'+FORTUNE_TEXT[r.ssKey].label+'</span>'+
-        '<span class="pw-chev">›</span></div>';
+        '<span class="pw-chev">'+uiIcon('arrow')+'</span></div>';
     }).join('');
   }
   var monthOwned=isUnlocked(premiumPeriodKey('month')),monthPrem=premiumPeriodHtml(my, 'month');
@@ -5013,7 +5013,7 @@ function cardMeaningHtml(entry){var type=cardTypeOf(entry),tier=myroomTier(entry
 function myroomCardHtml(entry,rank){return collectibleCardHtml(entry,false);}
 function cardAlbumIntro(list){return '';}
 function cardSymbolGuideHtml(){return '';}
-function openCardDesignPreview(){var root=$('#myroom-sheet-root');if(!root)return;root.innerHTML='<div class="sheet-backdrop" id="card-design-preview"><div class="sheet" role="dialog" aria-label="인연 카드 디자인 미리보기" style="gap:14px"><div class="sheet-head"><h2 class="section-title">인연 카드 · 디자인 미리보기</h2><button type="button" class="sheet-close" id="card-preview-close" aria-label="카드 미리보기 닫기">✕</button></div><p class="section-desc">아래는 디자인 견본이에요. 실제 수집 카드에는 친구의 이름과 나와의 궁합이 담겨요.</p><div class="card-design-grid">'+[{score:95,dayGanWxB:'목'},{score:80,dayGanWxB:'화'},{score:60,dayGanWxB:'금'},{score:40,dayGanWxB:'수'}].map(function(e,i){return collectibleCardHtml(Object.assign({id:'design-sample-'+i,nameB:'디자인 견본',cardPolarity:i%2?'yin':'yang',shinsalB:i%2?['dohwa']:['hwagae']},e),true);}).join('')+'</div></div></div>';$('#card-preview-close').addEventListener('click',function(){root.innerHTML='';});$('#card-design-preview').addEventListener('click',function(e){if(e.target.id==='card-design-preview')root.innerHTML='';});}
+function openCardDesignPreview(){var root=$('#myroom-sheet-root');if(!root)return;root.innerHTML='<div class="sheet-backdrop" id="card-design-preview"><div class="sheet" role="dialog" aria-label="인연 카드 디자인 미리보기" style="gap:14px"><div class="sheet-head"><h2 class="section-title">인연 카드 · 디자인 미리보기</h2><button type="button" class="sheet-close" id="card-preview-close" aria-label="카드 미리보기 닫기">'+uiIcon('close')+'</button></div><p class="section-desc">아래는 디자인 견본이에요. 실제 수집 카드에는 친구의 이름과 나와의 궁합이 담겨요.</p><div class="card-design-grid">'+[{score:95,dayGanWxB:'목'},{score:80,dayGanWxB:'화'},{score:60,dayGanWxB:'금'},{score:40,dayGanWxB:'수'}].map(function(e,i){return collectibleCardHtml(Object.assign({id:'design-sample-'+i,nameB:'디자인 견본',cardPolarity:i%2?'yin':'yang',shinsalB:i%2?['dohwa']:['hwagae']},e),true);}).join('')+'</div></div></div>';$('#card-preview-close').addEventListener('click',function(){root.innerHTML='';});$('#card-design-preview').addEventListener('click',function(e){if(e.target.id==='card-design-preview')root.innerHTML='';});}
 document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-card-preview]'))openCardDesignPreview();});
 
 
@@ -5064,7 +5064,7 @@ function openMyroomDetail(entry){
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head">'+
           '<p class="section-title" style="font-size:1rem;">'+esc(entry.nameB||'상대방')+'님과의 궁합</p>'+
-          '<button type="button" class="sheet-close" id="myroom-detail-close">✕</button>'+
+          '<button type="button" class="sheet-close" id="myroom-detail-close">'+uiIcon('close')+'</button>'+
         '</div>'+
         collectibleCardHtml(entry,true)+cardMeaningHtml(entry)+
         (chemi ?
@@ -5177,7 +5177,7 @@ function closeMyroomDex(){var root=$('#myroom-sheet-root');if(root)root.innerHTM
 function openMyroomDex(){
  var list=INVITE_MYROOM_CACHE||loadMyRoomList(),rows=cardDexEntries(list),owned=rows.filter(function(r){return r.entry;}).length;
  var root=$('#myroom-sheet-root');if(!root)return;
- root.innerHTML='<div class="sheet-backdrop" id="myroom-dex-backdrop"><div class="sheet card-dex-sheet" role="dialog" aria-label="나의 인연 카드 도감"><div class="sheet-head"><h2 class="section-title">인연 카드 도감</h2><button type="button" class="sheet-close" id="myroom-dex-close" aria-label="카드 도감 닫기">✕</button></div><div class="card-dex-summary"><strong>'+owned+' <small>/ 40종</small></strong><span>10가지 일간 상징 · 4가지 궁합 등급</span></div><div class="card-dex-progress"><i style="width:'+(owned/40*100)+'%"></i></div><div class="card-dex-filters" role="group" aria-label="카드 도감 필터"><button type="button" data-dex-filter="all" aria-pressed="true">전체 40</button><button type="button" data-dex-filter="owned" aria-pressed="false">모은 카드 '+owned+'</button><button type="button" data-dex-filter="missing" aria-pressed="false">없는 카드 '+(40-owned)+'</button></div><p class="section-desc" style="font-size:.75rem">모은 인연은 앞면으로, 아직 만나지 않은 인연은 뒷면으로 남겨두었어요.</p><div class="card-dex-grid" id="card-dex-grid"></div><p class="hint">등급은 나와의 궁합을 기준으로 해요. 같은 종류의 친구를 여러 명 만나도 도감은 한 종류로 집계해요. 실제로 초대해 등록한 사람들이 카드첩에 모여요.</p><div id="dex-card-note" role="status"></div></div></div>';
+ root.innerHTML='<div class="sheet-backdrop" id="myroom-dex-backdrop"><div class="sheet card-dex-sheet" role="dialog" aria-label="나의 인연 카드 도감"><div class="sheet-head"><h2 class="section-title">인연 카드 도감</h2><button type="button" class="sheet-close" id="myroom-dex-close" aria-label="카드 도감 닫기">'+uiIcon('close')+'</button></div><div class="card-dex-summary"><strong>'+owned+' <small>/ 40종</small></strong><span>10가지 일간 상징 · 4가지 궁합 등급</span></div><div class="card-dex-progress"><i style="width:'+(owned/40*100)+'%"></i></div><div class="card-dex-filters" role="group" aria-label="카드 도감 필터"><button type="button" data-dex-filter="all" aria-pressed="true">전체 40</button><button type="button" data-dex-filter="owned" aria-pressed="false">모은 카드 '+owned+'</button><button type="button" data-dex-filter="missing" aria-pressed="false">없는 카드 '+(40-owned)+'</button></div><p class="section-desc" style="font-size:.75rem">모은 인연은 앞면으로, 아직 만나지 않은 인연은 뒷면으로 남겨두었어요.</p><div class="card-dex-grid" id="card-dex-grid"></div><p class="hint">등급은 나와의 궁합을 기준으로 해요. 같은 종류의 친구를 여러 명 만나도 도감은 한 종류로 집계해요. 실제로 초대해 등록한 사람들이 카드첩에 모여요.</p><div id="dex-card-note" role="status"></div></div></div>';
  function paint(mode){var visible=rows.filter(function(r){return mode==='owned'?!!r.entry:mode==='missing'?!r.entry:true;});$('#card-dex-grid').innerHTML=visible.length?visible.map(function(r){return '<button type="button" class="dex-card-slot" data-card-sku="'+r.id+'" aria-label="'+esc(r.type.title)+' '+r.tier.grade+'등급 · '+(r.entry?'보유 '+r.count+'명':'미보유')+'">'+(r.entry?collectibleCardHtml(r.entry,true):cardBackHtml(r))+'<span class="dex-card-id">'+r.type.stem+' · '+r.tier.grade+(r.entry?' · '+r.count+'명':'')+'</span></button>';}).join(''):'<p class="card-dex-empty">아직 모은 카드가 없어요. 함께 볼 사람을 초대해 첫 인연을 만나보세요.</p>';
  $all('.dex-card-slot',root).forEach(function(button){button.addEventListener('click',function(){var row=rows.find(function(r){return r.id===button.dataset.cardSku;});if(row.entry)openMyroomDetail(row.entry);else $('#dex-card-note').textContent=row.type.title+' · '+row.tier.grade+'등급은 아직 모으지 않았어요.';});});
  $all('[data-dex-filter]',root).forEach(function(button){button.setAttribute('aria-pressed',String(button.dataset.dexFilter===mode));});}
@@ -5456,7 +5456,7 @@ function showContentIntro(concept,next){
  var root=$('#intro-sheet-root'),info=CONTENT_INTRO[String(concept.id)],ban=HOME_BANNERS.filter(function(b){return b.id===String(concept.id);})[0];
  if(!root||!info||!ban){next();return;}
  root.innerHTML='<div class="ci" role="dialog" aria-modal="true" aria-label="'+esc(concept.title)+'"><div class="ci-art"><img src="'+ban.img+'" alt="" decoding="async"></div>'+
-  '<button type="button" class="ci-close" data-close aria-label="닫기">✕</button><div class="ci-body">'+
+  '<button type="button" class="ci-close" data-close aria-label="닫기">'+uiIcon('close')+'</button><div class="ci-body">'+
   '<p class="ci-kicker">'+esc(ban.kicker)+' · 앞부분 무료</p><h2 class="ci-title">'+ban.title+'</h2>'+
   '<ul class="ci-list">'+info.list.map(function(t){return '<li>'+uiIcon('check')+'<span>'+esc(t)+'</span></li>';}).join('')+'</ul>'+
   '<button type="button" class="btn-primary ci-go">생일 넣고 바로 보기</button><p class="ci-note">생일만 넣으면 바로 내 이야기가 열려요.</p></div></div>';
@@ -5550,7 +5550,7 @@ function openNewYearViewer(concept){
  if(!$('#report-page-root')){REPORT_READER.previousOverflow=document.body.style.overflow;REPORT_READER.previousFocus=document.activeElement;}
  REPORT_READER.concept=concept;REPORT_READER.stage='story';REPORT_READER.data=null;
  document.body.style.overflow='hidden';$('.app').inert=true;
- root.innerHTML='<div class="report-page ny-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title"><div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="돌아가기">‹</button><span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div><div class="report-page-body ny" id="report-panel-list"><p class="section-desc" role="status">편지를 가져오는 중이에요...</p></div></div>';
+ root.innerHTML='<div class="report-page ny-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title"><div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="돌아가기">'+uiIcon('back')+'</button><span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div><div class="report-page-body ny" id="report-panel-list"><p class="section-desc" role="status">편지를 가져오는 중이에요...</p></div></div>';
  $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
  document.removeEventListener('keydown',readerKeydown);document.addEventListener('keydown',readerKeydown);
  var list=$('#report-panel-list');
@@ -5687,7 +5687,7 @@ function openIanViewer(concept,justPaid){
  if(!$('#report-page-root')){REPORT_READER.previousOverflow=document.body.style.overflow;REPORT_READER.previousFocus=document.activeElement;}
  REPORT_READER.concept=concept;REPORT_READER.stage='story';REPORT_READER.data=null;
  document.body.style.overflow='hidden';$('.app').inert=true;
- root.innerHTML='<div class="report-page ian-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title"><div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="돌아가기">‹</button><span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div><div class="report-page-body ian" id="report-panel-list"><p class="section-desc" role="status">불러오는 중이에요...</p></div><div class="ian-smoke" aria-hidden="true"></div></div>';
+ root.innerHTML='<div class="report-page ian-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title"><div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="돌아가기">'+uiIcon('back')+'</button><span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div><div class="report-page-body ian" id="report-panel-list"><p class="section-desc" role="status">불러오는 중이에요...</p></div><div class="ian-smoke" aria-hidden="true"></div></div>';
  $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
  document.removeEventListener('keydown',readerKeydown);document.addEventListener('keydown',readerKeydown);
  var list=$('#report-panel-list');
@@ -5718,7 +5718,7 @@ function openReportViewer(concept,stage){
   REPORT_READER.concept=concept;REPORT_READER.stage=stage==='detail'?'detail':'story';REPORT_READER.data=null;
   document.body.style.overflow='hidden';$('.app').inert=true;
   root.innerHTML='<div class="report-page" id="report-page-root" role="dialog" aria-modal="true" aria-labelledby="reader-title">'+
-    '<div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="이야기 목록으로 돌아가기">‹</button>'+
+    '<div class="report-page-topbar"><button type="button" class="report-page-back" id="report-page-back" aria-label="이야기 목록으로 돌아가기">'+uiIcon('back')+'</button>'+
     '<span class="report-page-topbar-title" id="reader-title">'+esc(concept.title)+'</span></div>'+
     (isPocha(concept)?'<div class="pocha-cover"><img src="'+esc(reportCoverSource(concept,STATE.mySaju))+'" alt="별지도 서점의 길잡이 서림"><div><p class="reader-kicker">일·진로</p><h1>'+esc(concept.title)+'</h1><p>'+esc(concept.tagline||'')+'</p></div></div>':
     '<div class="reader-cover"><img src="'+esc(reportCoverSource(concept,STATE.mySaju)||('/assets/webtoon/reader-v2/'+storyCategory(concept)+'-'+((STATE.mySaju.gender==='m'||STATE.mySaju.gender==='male')?'m':'f')+'-0.webp'))+'" alt="" decoding="async">'+
@@ -6690,7 +6690,7 @@ function openReportAdminList(){
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">이야기 관리</p>'+
-          '<button type="button" class="sheet-close" id="report-admin-close">✕</button></div>'+
+          '<button type="button" class="sheet-close" id="report-admin-close">'+uiIcon('close')+'</button></div>'+
         '<button type="button" class="btn-primary" id="report-admin-add">+ 새 이야기 추가</button>'+
         '<div id="report-admin-list"><p class="section-desc">불러오는 중...</p></div>'+
       '</div>'+
@@ -6751,7 +6751,7 @@ function openReportAdminLogin(){
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">관리자 확인</p>'+
-          '<button type="button" class="sheet-close" id="report-login-close">✕</button></div>'+
+          '<button type="button" class="sheet-close" id="report-login-close">'+uiIcon('close')+'</button></div>'+
         '<div class="field"><label for="report-admin-pw">관리자 비밀번호</label><input type="password" id="report-admin-pw" autocomplete="off"></div>'+
         '<button type="button" class="btn-primary" id="report-admin-login-btn">확인</button>'+
       '</div>'+
@@ -6775,7 +6775,7 @@ function openReportConceptForm(existing){
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(existing?'이야기 수정':'새 이야기')+'</p>'+
-          '<button type="button" class="sheet-close" id="report-edit-close">✕</button></div>'+
+          '<button type="button" class="sheet-close" id="report-edit-close">'+uiIcon('close')+'</button></div>'+
         '<div class="field"><label>표지 이미지</label>'+
           '<div class="report-edit-img-row">'+
             '<span class="report-admin-thumb" id="report-edit-preview">'+(existing && existing.cover_img_url ? '<img src="'+existing.cover_img_url+'" alt="">' : '📷')+'</span>'+
@@ -6858,7 +6858,7 @@ function openReportPanelAdmin(concept){
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:14px;">'+
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+esc(concept.title)+' · 장면 관리</p>'+
-          '<button type="button" class="sheet-close" id="report-panels-close">✕</button></div>'+
+          '<button type="button" class="sheet-close" id="report-panels-close">'+uiIcon('close')+'</button></div>'+
         '<button type="button" class="btn-primary" id="report-panel-add">+ 새 장면 추가</button>'+
         '<p class="hint">문구에 쓸 수 있는 자리표시자: {name} {dayGan} {dayGanWx} {domWx} {weakWx} {strength} {gender} {jaeseongType}</p>'+
         '<div id="report-panel-admin-list"><p class="section-desc">불러오는 중...</p></div>'+
@@ -6920,7 +6920,7 @@ function openReportPanelForm(concept, existing){
       '<div class="sheet" onclick="event.stopPropagation()" style="gap:12px;">'+
         '<div class="sheet-handle"></div>'+
         '<div class="sheet-head"><p class="section-title" style="font-size:1rem;">'+(existing?'장면 수정':'새 장면')+'</p>'+
-          '<button type="button" class="sheet-close" id="report-panel-edit-close">✕</button></div>'+
+          '<button type="button" class="sheet-close" id="report-panel-edit-close">'+uiIcon('close')+'</button></div>'+
         '<div class="field"><label>이미지</label>'+
           '<div class="report-edit-img-row">'+
             '<span class="report-admin-thumb" id="report-panel-edit-preview">'+(existing && existing.img_url ? '<img src="'+existing.img_url+'" alt="">' : '📷')+'</span>'+
@@ -8283,7 +8283,7 @@ function openSiteMenu(){
     '<div class="menu-top"><h2 id="menu-title">별첩사주</h2><button type="button" class="header-icon-btn" id="menu-close" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button></div>'+
     '<button type="button" class="menu-profile" id="menu-account" aria-expanded="false" aria-controls="menu-auth"><span class="menu-profile-mark">'+BRAND_MARK_SVG+'</span><span><strong id="menu-account-name">로그인하고 함께하기</strong><small id="menu-account-desc">카카오로 간편하게 시작해보세요</small></span></button>'+
     '<div class="menu-auth" id="menu-auth" hidden></div>'+
-    '<div class="menu-nav">'+rows.map(function(row){return '<button type="button" class="menu-row" data-menu-tab="'+row[0]+'"><span class="menu-row-icon">'+MENU_ICONS[row[0]]+'</span><span><strong>'+row[1]+'</strong><small>'+row[2]+'</small></span><span class="menu-chevron" aria-hidden="true">›</span></button>';}).join('')+'</div>'+
+    '<div class="menu-nav">'+rows.map(function(row){return '<button type="button" class="menu-row" data-menu-tab="'+row[0]+'"><span class="menu-row-icon">'+MENU_ICONS[row[0]]+'</span><span><strong>'+row[1]+'</strong><small>'+row[2]+'</small></span><span class="menu-chevron" aria-hidden="true">'+uiIcon('arrow')+'</span></button>';}).join('')+'</div>'+
     '<div id="menu-archive" hidden></div><p class="menu-footnote">로그인하지 않으면 사주와 구매한 콘텐츠는 이 브라우저에만 저장돼요. 로그인하면 다른 기기에서도 이어서 볼 수 있어요.</p><p class="menu-legal"><a href="/legal.html#terms">이용약관</a> · <a href="/legal.html#privacy">개인정보처리방침</a> · <a href="/legal.html#refund">환불 정책</a> · <a href="/legal.html#business">사업자 정보</a></p></aside></div>';
   $('#menu-close').addEventListener('click',closeSiteMenu);
   $('#menu-account').addEventListener('click',function(){var panel=$('#menu-auth');panel.hidden=!panel.hidden;this.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden)renderAuthPanel();});
@@ -8302,7 +8302,7 @@ function renderMenuArchive(){
     var small=['연애','직장','재물','건강','인간관계'].filter(function(c){return isWorryUnlocked(c);}).map(function(c){return ['worry:'+c,'고민 상담 · '+c];});
     if(isUnlocked('feature-today-premium'))small.push(['today','이번 달 더 자세히 보기']);
     target.innerHTML='<h3>보유 콘텐츠</h3>'+(list.length?'<div class="report-grid">'+list.map(reportCardHtml).join('')+'</div>':'')+
-      (small.length?'<div class="archive-rows">'+small.map(function(r){return '<button type="button" class="archive-row" data-archive-go="'+esc(r[0])+'">'+esc(r[1])+'<span>보기 ›</span></button>';}).join('')+'</div>':'')+
+      (small.length?'<div class="archive-rows">'+small.map(function(r){return '<button type="button" class="archive-row" data-archive-go="'+esc(r[0])+'">'+esc(r[1])+'<span>보기'+uiIcon('arrow')+'</span></button>';}).join('')+'</div>':'')+
       (list.length||small.length?'':'<p class="section-desc">아직 구매한 콘텐츠가 없어요. 콘텐츠 탭에서 둘러보세요.</p><button type="button" class="share-btn" data-archive-go="reports">콘텐츠 둘러보기</button>');
     $all('[data-archive-go]',target).forEach(function(b){b.addEventListener('click',function(){var go=b.dataset.archiveGo;closeSiteMenu();
       if(go.indexOf('worry:')===0){var cat=go.slice(6);switchTab('saju');setTimeout(function(){var chip=$('#worry-chips .chip-btn[data-cat="'+cat+'"]');if(chip){chip.click();chip.scrollIntoView({block:'center'});}},120);return;}

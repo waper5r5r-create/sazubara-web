@@ -3,7 +3,7 @@
    글자: 12 라벨 · 13 설명 · 15 본문 · 17 카드 제목 · 20 구역 제목 · 24 화면 제목.
    간격: 4 · 8 · 12 · 16 · 20 · 24 · 32. 화면 좌우 20, 카드 안쪽 20, 카드 사이 16.
    모서리: 카드 20 · 버튼과 안쪽 상자 14 · 알약 999.
-   아이콘: 선 굵기 1.7의 선 아이콘, 20px(본문 옆) 또는 24px(탭·버튼). */
+   아이콘: 선 굵기 1.6의 선 아이콘, 20px(본문 옆) 또는 24px(탭·버튼). */
 :root{
  --ds-paper:#f6f0e4;--ds-card:#fffaf0;--ds-inset:#f6eedc;--ds-line:#e8dec8;
  --ds-ink:#1d2240;--ds-ink-2:#5d6075;--ds-ink-3:#77798a;
@@ -97,3 +97,17 @@ body.compat-view #myroom-card-wrap,#myroom-card-wrap{padding:0;border:0;backgrou
 #myroom-card-wrap .sky-head{padding:0}
 #myroom-card-wrap .sky-stage{margin-left:0;margin-right:0;border-radius:var(--ds-r-card)}
 #myroom-card-wrap .sky-legend{padding:0}
+/* --- 아이콘: 문자 기호 대신 선 아이콘(선 굵기 1.6) --- */
+.sheet-close,.ci-close,.sky-focus-close,.report-page-back,[data-sky-prev],[data-sky-next]{display:inline-grid;place-items:center;padding:0}
+.sheet-close svg,.ci-close svg,.sky-focus-close svg,[data-sky-prev] svg,[data-sky-next] svg{width:20px;height:20px;display:block}
+.report-page .report-page-back{padding:0}
+.report-page-back svg{width:22px;height:22px;display:block}
+.next-step em,.menu-chevron,.pw-chev{display:inline-grid;place-items:center}
+.next-step em svg,.menu-chevron svg,.pw-chev svg{width:16px;height:16px;display:block}
+.today-peek-go svg,.archive-row span svg{width:14px;height:14px;vertical-align:-2px;margin-left:2px}
+.saju-hero-gift svg,.home-content-peek svg{width:13px;height:13px;vertical-align:-1px;margin-right:4px}
+.bf-pick button span svg{width:28px;height:28px;display:block;margin:0 auto}
+[data-sky-close] svg{vertical-align:-4px;margin-right:4px}
+.offer-benefits li::before,.deep-tips li:before,.mini-teaser-list li::before{content:'';top:.45em;width:14px;height:14px;background:currentColor;
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/contain no-repeat;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/contain no-repeat}
