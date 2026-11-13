@@ -1351,6 +1351,10 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .pay-gate-box p{margin:0 0 14px;font-size:.875rem;line-height:1.65;color:#d6d9e6}
 .pay-gate-box .share-btn{color:#f6eedf;border-color:#ffffff33}
 .pay-gate-box .pay-gate-note{margin:10px 0 0;font-size:.8125rem;color:#aab1c8}
+.inapp-tip{margin:12px 0 0;padding:12px 14px;border:1px solid #ffffff22;border-radius:14px;background:#ffffff0f}
+.inapp-tip p{margin:0;font-size:.8125rem;line-height:1.6;color:#d6d9e6}
+.inapp-tip b{color:#f6eedf}
+.inapp-tip .share-btn{margin-top:10px;width:100%;color:#f6eedf;border-color:#ffffff33;background:none}
 .save-nudge{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:70;width:calc(100% - 24px);max-width:480px;padding:18px 18px 12px;border:1px solid #e9c27a66;border-radius:20px;background:#141b38;color:#f6eedf;box-shadow:0 16px 36px #0008;transform:translate(-50%,130%);transition:transform .35s ease;box-sizing:border-box}
 .save-nudge.on{transform:translate(-50%,0)}
 .save-nudge b{display:block;font-size:1rem;margin-bottom:6px}
@@ -3432,7 +3436,10 @@ function loadKakaoSdk(){
 }
 var KAKAO_SHARE_IMAGE = 'https://www.byeolcheop.com/kakao-share-v1.jpg';
 /* 카카오 말풍선은 가로가 좁아서, 글자가 잘리지 않는 정사각형 그림을 따로 쓴다. */
+/* 카카오톡이 아닌 앱 안 브라우저(인스타·스레드 등)에서는 카톡 공유가 카톡 앱 대신 카카오 웹 로그인을 띄운다. */
+function kakaoTalkBlocked(){var app=inAppBrowserName();return !!app&&app!=='카카오톡';}
 function kakaoShare(text, url, buttonTitle, title, image){
+  if(kakaoTalkBlocked())return Promise.reject(new Error('IN_APP_BROWSER'));
   return loadKakaoSdk().then(function(Kakao){
     Kakao.Share.sendDefault({
       objectType: 'feed',
@@ -3455,6 +3462,7 @@ function kakaoShare(text, url, buttonTitle, title, image){
    이미지로 올려서, 누르면 바로 별첩사주로 랜딩되는 "초대 메시지" 형태로 공유한다.
    Kakao.Share.uploadImage는 1회성 이미지 업로드 API — 업로드된 imageUrl을 피드 카드에 꽂아 보낸다. */
 function kakaoShareImage(title, text, blob, url, buttonTitle){
+  if(kakaoTalkBlocked())return Promise.reject(new Error('IN_APP_BROWSER'));
   return loadKakaoSdk().then(function(Kakao){
     return Kakao.Share.uploadImage({ file: [blob] }).then(function(res){
       var imageUrl = (res && res.infos && res.infos.original && res.infos.original.url) || KAKAO_SHARE_IMAGE;
@@ -8412,6 +8420,14 @@ function maybeSaveNudge(kind){
   showSaveNudge(kind);
  },kind==='paid'?2200:3500);
 }
+function inAppLoginTipHtml(){
+ if(!kakaoTalkBlocked())return '';
+ var android=/Android/i.test(navigator.userAgent||'');
+ return '<div class="inapp-tip"><p>'+esc(inAppBrowserName())+' 안에서는 로그인이 잘 안 될 수 있어요. 안 되면 '+(android?'크롬으로 열어서':'오른쪽 위 ⋯ 메뉴에서 <b>외부 브라우저로 열기</b>를 누른 뒤')+' 다시 로그인해 주세요.</p>'+
+  (android?'<button type="button" class="share-btn" data-open-chrome>크롬으로 열기</button>':'')+'</div>';
+}
+function openInChrome(){var u=location.href.replace(/^https?:\/\//,'');location.href='intent://'+u+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(location.href)+';end';}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-open-chrome]');if(b)openInChrome();});
 function renderAuthPanel(){
   var panel=$('#menu-auth');if(!panel)return;
   if(AUTH.user){
@@ -8420,8 +8436,8 @@ function renderAuthPanel(){
   }
   var kakao='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.5 2 10.8c0 2.8 1.9 5.2 4.8 6.6l-1 3.5c-.1.4.2.6.5.4l4.2-2.7H12c5.5 0 10-3.5 10-7.8S17.5 3 12 3Z"/></svg>';
   function provider(id,label,icon){var available=AUTH.settingsLoaded&&AUTH.providers[id]===true;return '<button type="button" class="login-provider login-'+id+'" data-login-provider="'+id+'"'+(available?'':' disabled')+'>'+icon+'<span>'+label+'</span>'+(!available?'<span class="login-status">'+(AUTH.settingsLoaded?'준비 중':'확인 중')+'</span>':'')+'</button>';}
-  panel.innerHTML='<h3>별첩사주에 오신 걸 환영해요</h3><p>카카오 계정으로 로그인하면 휴대폰을 바꾸거나 다른 기기에서 들어와도 구매한 콘텐츠를 다시 볼 수 있어요.</p>'+provider('kakao','카카오로 시작하기',kakao)+'<p id="menu-auth-message" role="status">'+(AUTH.settingsLoaded&&!AUTH.providers.kakao?'카카오 로그인은 연결을 준비하고 있어요. 사주풀이는 로그인 없이 이용할 수 있어요.':'')+'</p>';
-  $all('[data-login-provider]',panel).forEach(function(button){button.addEventListener('click',async function(){button.disabled=true;var message=$('#menu-auth-message');message.textContent='로그인 페이지로 이동 중...';try{var client=await initAuth();var result=await client.auth.signInWithOAuth({provider:button.dataset.loginProvider,options:{redirectTo:window.location.origin+window.location.pathname}});if(result.error)throw result.error;}catch(e){button.disabled=false;message.textContent='로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.';}});});
+  panel.innerHTML='<h3>별첩사주에 오신 걸 환영해요</h3><p>카카오 계정으로 로그인하면 휴대폰을 바꾸거나 다른 기기에서 들어와도 구매한 콘텐츠를 다시 볼 수 있어요.</p>'+provider('kakao','카카오로 시작하기',kakao)+inAppLoginTipHtml()+'<p id="menu-auth-message" role="status">'+(AUTH.settingsLoaded&&!AUTH.providers.kakao?'카카오 로그인은 연결을 준비하고 있어요. 사주풀이는 로그인 없이 이용할 수 있어요.':'')+'</p>';
+  $all('[data-login-provider]',panel).forEach(function(button){button.addEventListener('click',async function(){button.disabled=true;var message=$('#menu-auth-message');message.textContent='로그인 페이지로 이동 중...';try{var client=await initAuth();var opts={redirectTo:window.location.origin+window.location.pathname};if(kakaoTalkBlocked())opts.queryParams={prompt:'login'};var result=await client.auth.signInWithOAuth({provider:button.dataset.loginProvider,options:opts});if(result.error)throw result.error;}catch(e){button.disabled=false;message.textContent='로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.';}});});
   if(!AUTH.settingsLoaded)loadAuthProviders().then(function(){if(panel.isConnected&&!panel.hidden)renderAuthPanel();}).catch(function(){var message=$('#menu-auth-message');if(message)message.textContent='로그인 연결을 확인하지 못했어요. 메뉴를 닫고 다시 열어주세요.';});
 }
 
