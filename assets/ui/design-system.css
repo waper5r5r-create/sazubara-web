@@ -111,3 +111,62 @@ body.compat-view #myroom-card-wrap,#myroom-card-wrap{padding:0;border:0;backgrou
 .offer-benefits li::before,.deep-tips li:before,.mini-teaser-list li::before{content:'';top:.45em;width:14px;height:14px;background:currentColor;
  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/contain no-repeat;
  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/contain no-repeat}
+
+/* ===== 2차: 색 · 로고 · 아이콘 · 모션 ===== */
+/* --- 색: 종이와 카드의 대비를 키우고, 밤하늘 남색과 금박을 브랜드 색으로 --- */
+:root{
+ --ds-paper:#f3ebda;--ds-card:#fffdf8;--ds-inset:#f5edda;--ds-line:#e6dac0;--ds-ink:#171d42;--ds-gold-ink:#8a6420;
+ --ds-night-grad:linear-gradient(160deg,#252e66 0%,#151b43 55%,#0f1331 100%);
+ --ds-gold-grad:linear-gradient(135deg,#f9e4aa 0%,#e7ba62 52%,#cf9a40 100%);
+ --ds-stars:radial-gradient(1.2px 1.2px at 12% 24%,#fff9 50%,transparent 52%),radial-gradient(1px 1px at 28% 70%,#fff6 50%,transparent 52%),radial-gradient(1.4px 1.4px at 46% 16%,#ffe9b0aa 50%,transparent 52%),radial-gradient(1px 1px at 63% 58%,#fff7 50%,transparent 52%),radial-gradient(1.2px 1.2px at 78% 30%,#fff8 50%,transparent 52%),radial-gradient(1px 1px at 90% 76%,#ffe9b088 50%,transparent 52%);
+}
+body{background:var(--ds-paper)}
+.app{background:var(--ds-paper);box-shadow:none}
+.app-header{background:#f3ebdaeb}
+.tabs-bar{background:#fbf6eaf5!important}
+/* 밤하늘 면: 오늘 미리보기 · 사주 여덟 글자 · 오늘의 주제 · 탭 소개 */
+.today-peek,.pillar-hero,.today-ganzhi-panel,.tab-intro{background:var(--ds-stars),var(--ds-night-grad);border:1px solid #f0d38c40;box-shadow:0 10px 26px rgba(15,19,49,.22)}
+.tab-intro .eyebrow{color:#e9c47a}
+.tab-intro h1{color:#fff3d6}
+.tab-intro .section-desc{color:#c9cde0}
+.tab-intro:after{border-color:#f0d38c33}
+/* 금박 버튼 */
+.btn-primary,.unlock-btn{background:var(--ds-gold-grad)!important;color:#1a1436!important;border:1px solid #c58f3780;box-shadow:0 8px 20px rgba(201,145,58,.3),inset 0 1px 0 #fff8}
+.btn-primary:disabled{background:#e9e1cf!important;color:#8d8a94!important;box-shadow:none;border-color:transparent}
+.seg button{transition:background-color .2s ease,color .2s ease}
+.seg button.active{background:var(--ds-ink);color:#f9e4aa}
+/* --- 로고 --- */
+.app-header .mark{background:none;-webkit-background-clip:border-box;background-clip:border-box;-webkit-text-fill-color:currentColor;color:var(--ds-ink)!important;letter-spacing:-.04em}
+.brand-ic{width:30px;height:30px}
+.brand-ic svg,.menu-profile-mark svg{border-radius:28%}
+.bm-star{transform-box:fill-box;transform-origin:center;animation:ds-twinkle 3.6s ease-in-out infinite}
+.bm-dot{transform-box:fill-box;transform-origin:center;animation:ds-twinkle 2.6s ease-in-out infinite}
+.bm-dot:nth-of-type(2){animation-delay:-.9s}.bm-dot:nth-of-type(3){animation-delay:-1.7s}
+/* --- 탭 · 메뉴 아이콘: 선 아이콘에 금색 면을 더한 두 가지 색 --- */
+.ti-fill{fill:#e9b85a;stroke:none;opacity:0;transition:opacity .25s ease}
+.tab-btn.active .ti-fill,.menu-row-icon .ti-fill{opacity:1}
+.tabs-bar .tab-btn .ico{width:26px;height:26px}
+.tabs-bar .tab-btn .ico svg{width:26px;height:26px}
+.tabs-bar .tab-btn.active .ico,.tab-btn.active .ico{background:none;box-shadow:none}
+.tabs-bar .tab-btn.active{color:var(--ds-ink);background:none;text-shadow:none}
+.tab-btn.active .ico svg{filter:none;animation:ds-pop .38s cubic-bezier(.3,1.4,.5,1) both}
+/* --- 모션 --- */
+@keyframes ds-twinkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.78)}}
+@keyframes ds-pop{0%{transform:scale(.78)}60%{transform:scale(1.14)}100%{transform:scale(1)}}
+@keyframes ds-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes ds-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes ds-sheen{0%,62%{transform:translateX(-140%) skewX(-18deg)}100%{transform:translateX(330%) skewX(-18deg)}}
+/* 누르는 느낌 */
+.btn-primary,.btn-secondary,.share-btn,.chip-btn,.next-step,.home-content-card,.report-card,.today-peek,.menu-row,.ny-banner{transition:transform .16s ease,box-shadow .16s ease}
+.btn-primary:not(:disabled):active,.btn-secondary:active,.share-btn:active,.chip-btn:active,.home-content-card:active,.report-card:active,.today-peek:active,.ny-banner:active{transform:scale(.97)}
+.next-step:active,.menu-row:active{transform:translateX(3px)}
+.tab-btn:active .ico{transform:scale(.88);transition:transform .12s ease}
+/* 가장 중요한 버튼에만 빛이 한 번씩 지나감 */
+.saju-hero-cta::after,.star-make-btn::after,.report-stage-buy::after{content:'';position:absolute;top:0;bottom:0;left:0;width:36%;background:linear-gradient(90deg,transparent,#ffffff8c,transparent);animation:ds-sheen 4.4s ease-in-out infinite;pointer-events:none}
+/* 차례로 나타나기 */
+.next-step,.lucky-chip,.home-content-card{animation:ds-rise .5s cubic-bezier(.2,.7,.3,1) both}
+.next-step:nth-of-type(2),.lucky-chip:nth-child(2),.home-content-card:nth-child(2){animation-delay:.07s}
+.next-step:nth-of-type(3),.lucky-chip:nth-child(3),.home-content-card:nth-child(3){animation-delay:.14s}
+.home-content-card:nth-child(4){animation-delay:.21s}.home-content-card:nth-child(n+5){animation-delay:.28s}
+.gauge>i{transform-origin:left center;animation:ds-grow .9s cubic-bezier(.2,.7,.3,1) .15s both}
+@media(prefers-reduced-motion:reduce){.bm-star,.bm-dot,.saju-hero-cta::after,.star-make-btn::after,.report-stage-buy::after,.next-step,.lucky-chip,.home-content-card,.gauge>i,.tab-btn.active .ico svg{animation:none!important}}
