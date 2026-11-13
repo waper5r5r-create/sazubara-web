@@ -1784,7 +1784,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=3">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=4">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
 <script defer src="/_vercel/insights/script.js"></script>
@@ -3995,7 +3995,7 @@ var HERO_STARS=[[10,10.8],[21.7,26.5],[33.9,12.5],[42.8,32.3],[57.4,28],[67.6,15
 function starHeroHtml(){
  var stars=HERO_STARS.map(function(p,i){return '<i class="hero-star" style="left:'+p[0]+'%;top:'+p[1]+'%;--d:'+(0.35+i*0.13).toFixed(2)+'s;--t:'+(2.6+(i%3)*0.7).toFixed(1)+'s"></i>';}).join('');
  return '<div class="saju-hero has-art is-intro"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"><div class="hero-stars" aria-hidden="true">'+stars+'</div></div>'+
-  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p></div>';
+  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p><ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>바로 시작</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
 /* 결과 맨 위: 내 여덟 글자를 남색 판에 크게. 일간(태어난 날의 위 글자)이 "나"를 나타내서 금색으로 둘러요 */

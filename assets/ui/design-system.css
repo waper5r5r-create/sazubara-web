@@ -155,18 +155,49 @@ body{background:var(--ds-paper)}
 @keyframes ds-pop{0%{transform:scale(.78)}60%{transform:scale(1.14)}100%{transform:scale(1)}}
 @keyframes ds-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes ds-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@keyframes ds-sheen{0%,62%{transform:translateX(-140%) skewX(-18deg)}100%{transform:translateX(330%) skewX(-18deg)}}
 /* 누르는 느낌 */
 .btn-primary,.btn-secondary,.share-btn,.chip-btn,.next-step,.home-content-card,.report-card,.today-peek,.menu-row,.ny-banner{transition:transform .16s ease,box-shadow .16s ease}
 .btn-primary:not(:disabled):active,.btn-secondary:active,.share-btn:active,.chip-btn:active,.home-content-card:active,.report-card:active,.today-peek:active,.ny-banner:active{transform:scale(.97)}
 .next-step:active,.menu-row:active{transform:translateX(3px)}
 .tab-btn:active .ico{transform:scale(.88);transition:transform .12s ease}
-/* 가장 중요한 버튼에만 빛이 한 번씩 지나감 */
-.saju-hero-cta::after,.star-make-btn::after,.report-stage-buy::after{content:'';position:absolute;top:0;bottom:0;left:0;width:36%;background:linear-gradient(90deg,transparent,#ffffff8c,transparent);animation:ds-sheen 4.4s ease-in-out infinite;pointer-events:none}
 /* 차례로 나타나기 */
 .next-step,.lucky-chip,.home-content-card{animation:ds-rise .5s cubic-bezier(.2,.7,.3,1) both}
 .next-step:nth-of-type(2),.lucky-chip:nth-child(2),.home-content-card:nth-child(2){animation-delay:.07s}
 .next-step:nth-of-type(3),.lucky-chip:nth-child(3),.home-content-card:nth-child(3){animation-delay:.14s}
 .home-content-card:nth-child(4){animation-delay:.21s}.home-content-card:nth-child(n+5){animation-delay:.28s}
 .gauge>i{transform-origin:left center;animation:ds-grow .9s cubic-bezier(.2,.7,.3,1) .15s both}
-@media(prefers-reduced-motion:reduce){.bm-star,.bm-dot,.saju-hero-cta::after,.star-make-btn::after,.report-stage-buy::after,.next-step,.lucky-chip,.home-content-card,.gauge>i,.tab-btn.active .ico svg{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.bm-star,.bm-dot,.next-step,.lucky-chip,.home-content-card,.gauge>i,.tab-btn.active .ico svg{animation:none!important}}
+
+/* ===== 3차: 차분한 잡지 느낌으로 다듬기 ===== */
+/* 번쩍임을 빼고(그라데이션 버튼·짙은 그림자), 가는 선과 여백으로 정리. 따뜻한 살구색을 포인트로 조금만 씀. */
+:root{
+ --ds-paper:#f5efe4;--ds-card:#fffdfa;--ds-line:#e7dcc6;--ds-inset:#f6efe0;
+ --ds-ink-2:#555a72;--ds-blush:#f7e9e2;--ds-rose:#a2545b;--ds-gold:#d9b060;
+ --ds-shadow:0 1px 2px rgba(23,29,66,.04),0 8px 24px rgba(23,29,66,.04);
+}
+.app-header{background:#f5efe4eb}
+/* 버튼: 밝은 바탕에서는 남색, 밤 바탕에서는 무광 금색. 한 화면에 강조 버튼은 하나. */
+.btn-primary,.unlock-btn{background:var(--ds-ink)!important;color:#fbf3df!important;border:0;box-shadow:0 8px 20px rgba(23,29,66,.16);font-weight:600;letter-spacing:-.01em}
+.report-page .btn-primary,.ci .btn-primary,.site-menu .btn-primary,.sky .btn-primary,.sky-page .btn-primary,.sky-stage .btn-primary,.sky-panel .btn-primary{background:var(--ds-gold)!important;color:#1a1436!important;box-shadow:none}
+.btn-primary:disabled{background:#e9e1cf!important;color:#8d8a94!important;box-shadow:none}
+.btn-secondary,.share-btn{box-shadow:none}
+/* 글자: 라벨은 작고 넓게, 제목은 명조로 또렷하게, 본문은 넉넉한 줄 간격 */
+.eyebrow,.editorial-tag,.quick-heading,.next-steps-k,.report-format{font-size:.6875rem!important;font-weight:600;letter-spacing:.14em}
+.saju-hook-kicker{font-size:.8125rem!important;font-weight:700;letter-spacing:0;color:var(--ds-rose)}
+.section-desc,.fortune-tile .body,.portrait-text,.saju-hook li p,.detail-block .section-desc{line-height:1.75}
+.saju-hook li p{color:var(--ds-ink);font-weight:500}
+.tab-intro h1,.saju-result-head h1,.saju-hero h1,.home-contents>h2,.report-list-title,.next-steps h2,.star-gift h2,.album-heading{font-weight:600;letter-spacing:-.025em}
+/* 살구색 포인트: 꼬리표 · 기억할 한 가지 · 행운 칸 */
+.saju-hook li span{background:var(--ds-blush);color:var(--ds-rose);border-radius:var(--ds-r-pill);font-weight:600}
+.portrait-tip{margin-top:16px;padding:14px 16px;border:0;border-radius:var(--ds-r-ctl);background:var(--ds-blush)}
+.portrait-tip b{color:var(--ds-rose)}
+.lucky-chip{background:var(--ds-blush)}
+.lucky-chip .ic{color:var(--ds-rose)}
+.chip-btn{background:var(--ds-card);border:1px solid var(--ds-line);color:var(--ds-ink)}
+/* 홈 첫 화면: 버튼 아래에 믿을 근거 세 가지 */
+.saju-hero-trust{margin:20px 0 0;padding:16px 0 0;border-top:1px solid var(--ds-line);gap:0}
+.saju-hero-trust li{padding:0 6px;border-radius:0;background:none;gap:4px}
+.saju-hero-trust li+li{border-left:1px solid var(--ds-line)}
+.saju-hero-trust b{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-body);color:var(--ds-ink)}
+.saju-hero-trust span{font-size:var(--ds-fs-label);line-height:1.45;color:var(--ds-ink-3)}
+.saju-hero-gift{font-size:var(--ds-fs-cap)}
