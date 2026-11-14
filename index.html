@@ -1784,7 +1784,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=4">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=5">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
 <script defer src="/_vercel/insights/script.js"></script>
@@ -5408,6 +5408,11 @@ function readerLeftLine(root){
  return root.textContent.indexOf('????년')>-1?'좋은 해 두 개가 가려져 있어요':'나머지 풀이가 이어져요';
 }
 function readerPrice(){var c=REPORT_READER.concept;return c&&isNewYear(c)?NEWYEAR_CONCEPT.price_krw:c&&isIan(c)?IAN_CONCEPT.price_krw:REPORT_STAGE_PRICE.story;}
+/* 읽기 화면 맨 위의 진행 표시 줄 */
+document.addEventListener('scroll',function(e){
+ var root=e.target;if(!root||root.id!=='report-page-root')return;
+ var max=root.scrollHeight-root.clientHeight;root.style.setProperty('--read',max>0?Math.min(1,root.scrollTop/max).toFixed(3):'0');
+},true);
 document.addEventListener('scroll',function(e){
  var root=e.target;if(!root||root.id!=='report-page-root')return;
  var gate=root.querySelector('.reader-offer,.story-gate,#ny-offer,.ian-offer'),bar=root.querySelector('.reader-cta');
@@ -8076,7 +8081,7 @@ function initVisualFeedback(){
   button.appendChild(dot);setTimeout(function(){dot.remove();},600);
  },true);
  if(!('IntersectionObserver' in window)||!('MutationObserver' in window))return;
- var seen=new WeakSet(),selector='.journal-hero,.card,.report-card,.personal-traits,.reading-point,.today-peek,.pillar-hero,.saju-quick-summary,.star-gift,.saju-hook,.next-steps,.home-contents,.tab-intro,.saju-hero';
+ var seen=new WeakSet(),selector='.journal-hero,.card,.report-card,.personal-traits,.reading-point,.today-peek,.pillar-hero,.saju-quick-summary,.star-gift,.saju-hook,.next-steps,.home-contents,.tab-intro,.saju-hero,.reader-cover,.wolha-scene,.wolha-say,.free-chapter,.love-free-card,.love-letter,.ledger-row,.gumbi-scale,.ny-talk,.ny-year,.ny-scene,.ny-letter,.reader-offer h2,.ny-offer h2,.offer-benefits,.ny-teasers,.report-stage-buy';
  var observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(!entry.isIntersecting)return;if(!reduce||!reduce.matches)entry.target.classList.add('ui-arrive');observer.unobserve(entry.target);});},{threshold:.08});
  function scan(node){if(node.nodeType!==1)return;var nodes=Array.from(node.querySelectorAll(selector));if(node.matches(selector))nodes.unshift(node);nodes.forEach(function(el){if(seen.has(el))return;seen.add(el);observer.observe(el);});}
  scan(document.body);new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(scan);});}).observe(document.body,{childList:true,subtree:true});

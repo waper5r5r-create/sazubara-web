@@ -201,3 +201,50 @@ body{background:var(--ds-paper)}
 .saju-hero-trust b{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-body);color:var(--ds-ink)}
 .saju-hero-trust span{font-size:var(--ds-fs-label);line-height:1.45;color:var(--ds-ink-3)}
 .saju-hero-gift{font-size:var(--ds-fs-cap)}
+
+/* ===== 4차: 유료 콘텐츠 연출 + 틀에 박힌 느낌 줄이기 ===== */
+:root{--ds-seal:#b3402f}
+@keyframes ds-photo{from{opacity:0;transform:scale(1.045)}to{opacity:1;transform:none}}
+@keyframes ds-bubble{from{opacity:0;transform:translateY(8px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes ds-stamp{0%{opacity:0;transform:rotate(-14deg) scale(1.7)}60%{opacity:1;transform:rotate(-5deg) scale(.94)}100%{opacity:.94;transform:rotate(-5deg) scale(1)}}
+@keyframes ds-halo{0%{box-shadow:0 0 0 0 rgba(217,176,96,.5)}100%{box-shadow:0 0 0 16px rgba(217,176,96,0)}}
+@keyframes ds-shimmer{from{background-position:130% 0}to{background-position:-130% 0}}
+@keyframes ds-sheet-in{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+/* --- 읽기 화면: 열릴 때 · 읽는 동안 --- */
+.report-page{animation:ds-sheet-in .38s cubic-bezier(.2,.7,.3,1) both}
+.report-page .report-page-topbar::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,#d9b060,#f6dca0);transform-origin:left center;transform:scaleX(var(--read,0));transition:transform .12s linear}
+.report-page .wolha-scene.ui-arrive,.report-page .ny-scene.ui-arrive,.report-page .love-free-card.ui-arrive{animation:ds-photo .9s cubic-bezier(.2,.7,.3,1) both}
+.report-page .wolha-say.ui-arrive,.report-page .ny-talk.ui-arrive{transform-origin:left bottom;animation:ds-bubble .5s cubic-bezier(.2,.9,.3,1.1) both}
+/* 가려진 미리보기 위로 빛이 천천히 지나감 */
+.locked-peek::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(100deg,transparent 42%,#ffffff17 50%,transparent 58%) 130% 0/260% 100% no-repeat;animation:ds-shimmer 3.6s ease-in-out infinite;pointer-events:none}
+/* --- 결제 안내: 제목 옆에 '봉함' 도장, 항목이 차례로, 버튼이 마지막에 --- */
+.reader-offer:not(.story-gate) h2,.ny-offer h2{position:relative;padding-right:60px}
+.reader-offer:not(.story-gate) h2::after,.ny-offer h2::after{content:'封';position:absolute;right:0;top:2px;width:46px;height:46px;display:grid;place-items:center;border-radius:8px;background:var(--ds-seal);color:#fff3e2;font:600 1.5rem/1 'Noto Serif KR',serif;letter-spacing:0;transform:rotate(-5deg);box-shadow:inset 0 0 0 2px #ffffff26;opacity:.94}
+.reader-offer h2.ui-arrive::after,.ny-offer h2.ui-arrive::after{animation:ds-stamp .55s cubic-bezier(.3,1.3,.5,1) .45s both}
+.offer-benefits.ui-arrive li,.ny-teasers.ui-arrive li{animation:ds-rise .5s cubic-bezier(.2,.7,.3,1) both}
+.offer-benefits.ui-arrive li:nth-child(2),.ny-teasers.ui-arrive li:nth-child(2){animation-delay:.14s}
+.offer-benefits.ui-arrive li:nth-child(3),.ny-teasers.ui-arrive li:nth-child(3){animation-delay:.28s}
+.offer-benefits.ui-arrive li:nth-child(n+4),.ny-teasers.ui-arrive li:nth-child(n+4){animation-delay:.42s}
+.report-page .report-stage-buy.ui-arrive{animation:ui-arrive .45s cubic-bezier(.2,.7,.3,1) both,ds-halo 2.2s ease-out .6s 2}
+.reader-cta button{background:var(--ds-gold);color:#1a1436}
+.reader-cta{transition:transform .35s cubic-bezier(.2,.8,.3,1),opacity .25s ease}
+/* --- 콘텐츠 소개 화면(광고에서 처음 닿는 곳) --- */
+.ci-list li{animation:ds-rise .5s cubic-bezier(.2,.7,.3,1) .5s both}
+.ci-list li:nth-child(2){animation-delay:.64s}.ci-list li:nth-child(3){animation-delay:.78s}
+.ci-body>.ci-go{animation:ci-up .6s ease .9s both,ds-halo 2.2s ease-out 1.7s 2}
+/* --- 틀에 박힌 느낌 줄이기: 상자 대신 선, 아이콘 대신 글자 --- */
+.saju-hook li{padding-left:40px}
+.saju-hook li::before{content:counter(hook,cjk-ideographic);left:2px;top:9px;width:auto;height:auto;border-radius:0;background:none;color:var(--ds-gold-ink);font-family:'Noto Serif KR',serif;font-size:1.375rem;font-weight:600;line-height:1.3}
+.report-page .saju-hook li::before{color:#8a6420}
+.next-steps{margin-top:32px;padding:0;border:0;background:none;box-shadow:none}
+.next-step{padding:16px 0}
+.next-step i{display:none}
+.next-step b{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h3);font-weight:600}
+.saju-quick-summary{position:relative;margin-top:24px;padding:20px 0;border:0;border-top:3px double var(--ds-line);border-bottom:1px solid var(--ds-line);border-radius:0;background:none;box-shadow:none}
+.saju-quick-summary::after{content:'별\A첩';white-space:pre;position:absolute;right:0;top:18px;width:36px;height:36px;display:grid;place-items:center;border-radius:6px;background:var(--ds-seal);color:#fff3e2;font:700 .6875rem/1.2 'Noto Serif KR',serif;text-align:center;transform:rotate(-5deg);box-shadow:inset 0 0 0 1.5px #ffffff2e;opacity:.94}
+.saju-quick-summary.ui-arrive::after{animation:ds-stamp .55s cubic-bezier(.3,1.3,.5,1) .4s both}
+.saju-quick-summary .quick-heading,.saju-quick-summary .portrait-title{padding-right:48px}
+.fortune-tile .ttl svg{display:none}
+.fortune-tile .ttl::before{content:'';display:inline-block;width:7px;height:7px;margin-right:8px;border-radius:50%;background:var(--tile-color,var(--ds-gold));vertical-align:2px}
+.home-contents>h2::before,.report-list-title::before{content:'';display:block;width:28px;height:2px;margin-bottom:10px;background:var(--ds-gold)}
+@media(prefers-reduced-motion:reduce){.report-page,.locked-peek::before,.ci-list li,.ci-body>.ci-go,.report-page .report-stage-buy.ui-arrive{animation:none!important}.reader-offer h2::after,.ny-offer h2::after,.saju-quick-summary::after{animation:none!important;opacity:.94}}
