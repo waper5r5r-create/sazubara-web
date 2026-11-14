@@ -248,3 +248,44 @@ body{background:var(--ds-paper)}
 .fortune-tile .ttl::before{content:'';display:inline-block;width:7px;height:7px;margin-right:8px;border-radius:50%;background:var(--tile-color,var(--ds-gold));vertical-align:2px}
 .home-contents>h2::before,.report-list-title::before{content:'';display:block;width:28px;height:2px;margin-bottom:10px;background:var(--ds-gold)}
 @media(prefers-reduced-motion:reduce){.report-page,.locked-peek::before,.ci-list li,.ci-body>.ci-go,.report-page .report-stage-buy.ui-arrive{animation:none!important}.reader-offer h2::after,.ny-offer h2::after,.saju-quick-summary::after{animation:none!important;opacity:.94}}
+
+/* ===== 5차: 홈 · 오늘의 운세 · 콘텐츠 탭도 상자 대신 선으로 ===== */
+/* --- 홈 첫 화면: 카드 틀을 없애고 왼쪽 정렬, 그림 모서리에 별첩 도장 --- */
+#saju-form.bf-host{background:none;border:0;box-shadow:none;border-radius:0}
+.saju-story-welcome{padding:0}
+.saju-hero{padding:8px 0 0;text-align:left}
+.saju-hero h1{font-size:1.875rem;line-height:1.3;margin:10px 0 10px}
+.saju-hero-sub{max-width:none;margin:0}
+.saju-hero-visual{overflow:visible;margin:24px 0 20px}
+.saju-hero-visual>img,.saju-hero-visual .hero-stars{border-radius:var(--ds-r-ctl)}
+.saju-hero-visual>img{overflow:hidden}
+.saju-hero-visual::after{content:'별\A첩';white-space:pre;position:absolute;right:14px;bottom:-14px;z-index:2;width:44px;height:44px;display:grid;place-items:center;border-radius:7px;background:var(--ds-seal);color:#fff3e2;font:700 .8125rem/1.2 'Noto Serif KR',serif;text-align:center;transform:rotate(-5deg);box-shadow:inset 0 0 0 2px #ffffff2e,0 6px 14px rgba(120,40,28,.28);animation:ds-stamp .55s cubic-bezier(.3,1.3,.5,1) 1.1s both}
+.saju-hero-gift{text-align:center}
+.saju-hero-trust{text-align:left}
+.saju-hero-trust li{padding:0 10px}
+.saju-hero-trust li:first-child{padding-left:0}
+/* --- 오늘의 운세: 카드 대신 겹줄로 구역을 나눔 --- */
+#today-period-body>.card{padding:20px 0 0;border:0;border-top:3px double var(--ds-line);border-radius:0;background:none;box-shadow:none}
+#today-period-body>.card:first-child{border-top:0;padding-top:4px}
+#today-period-body{display:flex;flex-direction:column;gap:28px}
+#today-period-body .section-title{font-size:var(--ds-fs-h2)}
+#today-period-body .detail-block .ttl svg{display:none}
+#today-period-body .detail-block .ttl{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h3)}
+.lucky-row{gap:0;border-top:1px solid var(--ds-line);border-bottom:1px solid var(--ds-line)}
+.lucky-chip{padding:16px 8px;border-radius:0;background:none;gap:4px}
+.lucky-chip+.lucky-chip{border-left:1px solid var(--ds-line)}
+.lucky-chip .ic{display:none}
+.lucky-chip .k{color:var(--ds-ink-3)}
+.lucky-chip .v{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h3);color:var(--ds-ink)}
+/* --- 콘텐츠 탭: 상품 카드의 테두리와 그라데이션을 걷고 그림과 글만 --- */
+.report-grid .report-card,.report-card{border:0;background:none;box-shadow:none;border-radius:0;overflow:visible}
+.report-grid .report-card .report-cover{border-radius:var(--ds-r-ctl);overflow:hidden}
+.report-grid .report-card .report-text,.report-card[data-cat] .report-text{background:none;padding:12px 0 0}
+.report-grid:not(.is-small) .report-card .report-text{padding:4px 0 4px 16px}
+.report-grid:not(.is-small){gap:0}
+.report-grid:not(.is-small) .report-card{padding:16px 0;border-bottom:1px solid var(--ds-line)}
+.report-grid.is-small{gap:24px 14px}
+.report-card .nm,.report-grid .report-card .nm{font-family:'Noto Serif KR',serif;font-weight:600}
+.report-discover{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--ds-gold)}
+.report-group{margin-top:32px}
+@media(prefers-reduced-motion:reduce){.saju-hero-visual::after{animation:none!important}}
