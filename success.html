@@ -4,21 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>결제 확인 중 · 별첩사주</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR:wght@600&display=swap" rel="stylesheet">
 <style>
   html,body{margin:0; height:100%;}
   body{
     font-family:'Noto Sans KR',sans-serif; display:flex; align-items:center; justify-content:center;
-    height:100vh; background:#0c1222; color:#e7eaf0; text-align:center; padding:24px; box-sizing:border-box;
+    height:100vh; background:radial-gradient(1.2px 1.2px at 14% 22%,#fff9 50%,transparent 52%),radial-gradient(1px 1px at 30% 72%,#fff6 50%,transparent 52%),radial-gradient(1.4px 1.4px at 52% 14%,#ffe9b0aa 50%,transparent 52%),radial-gradient(1px 1px at 70% 60%,#fff7 50%,transparent 52%),radial-gradient(1.2px 1.2px at 86% 28%,#fff8 50%,transparent 52%),linear-gradient(160deg,#252e66 0%,#151b43 55%,#0f1331 100%);
+    color:#f6ecd6; text-align:center; padding:24px; box-sizing:border-box; letter-spacing:-.02em;
   }
-  .box{max-width:320px;line-height:1.8;}
-  button{border:0;border-radius:12px;background:#e8b96d;color:#20180e;padding:12px 18px;font:inherit;cursor:pointer;}
-  .spin{font-size:2rem; margin-bottom:12px;}
-  a{color:#9c6b1f; text-decoration:none; font-weight:700;}
+  .box{max-width:320px;line-height:1.7;}
+  #msg{margin:0 0 20px;font-family:'Noto Serif KR',serif;font-size:1.125rem;font-weight:600;word-break:keep-all;}
+  button{border:0;border-radius:14px;min-height:48px;background:#d9b060;color:#1a1436;padding:0 22px;font:inherit;font-weight:700;cursor:pointer;}
+  /* 봉함 도장: 확인하는 동안 천천히 숨 쉬듯 움직여요 */
+  .spin{position:relative;width:64px;height:64px;margin:0 auto 24px;display:grid;place-items:center;border-radius:11px;background:#b3402f;color:#fff3e2;font:600 2rem/1 'Noto Serif KR',serif;transform:rotate(-5deg);box-shadow:inset 0 0 0 2px #ffffff2e,0 10px 24px #0006;animation:seal 2.4s ease-in-out infinite;}
+  .spin::after{content:'';position:absolute;inset:-10px;border-radius:16px;border:1px solid #f0d38c66;animation:ring 2.4s ease-out infinite;}
+  @keyframes seal{0%,100%{transform:rotate(-5deg) scale(1)}50%{transform:rotate(-5deg) scale(1.06)}}
+  @keyframes ring{0%{opacity:.9;transform:scale(.9)}100%{opacity:0;transform:scale(1.35)}}
+  @media (prefers-reduced-motion: reduce){.spin,.spin::after{animation:none}}
+  a{color:#e9c47a; text-decoration:underline; text-underline-offset:4px; font-weight:700;}
 </style>
 </head>
 <body>
   <div class="box">
-    <div class="spin">✨</div>
+    <div class="spin" aria-hidden="true">封</div>
     <p id="msg">결제를 확인하고 있어요...</p>
     <button type="button" id="retry" hidden>결제 확인 다시 시도</button>
     <p id="back" hidden><a href="/">홈으로 돌아가기</a></p>

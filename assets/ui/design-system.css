@@ -289,3 +289,38 @@ body{background:var(--ds-paper)}
 .report-discover{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--ds-gold)}
 .report-group{margin-top:32px}
 @media(prefers-reduced-motion:reduce){.saju-hero-visual::after{animation:none!important}}
+
+/* ===== 6차: 잠긴 목차 · 오행 도장 · 메뉴 · 그림 통일 ===== */
+/* --- 결제 안내의 잠긴 목차: 무엇이 남아 있는지 제목으로 보여 줌 --- */
+.offer-toc{margin:4px 0 22px;padding:16px 0 0;border-top:1px solid #ffffff1f;text-align:left}
+.offer-toc-k{display:flex;align-items:center;gap:6px;margin:0 0 10px;font-size:var(--ds-fs-cap);font-weight:700;color:#e9c47a}
+.offer-toc-k svg{width:15px;height:15px;flex:none}
+.reader-offer .offer-toc ol{margin:0;padding:0;list-style:none;counter-reset:toc;columns:2;column-gap:16px;font-size:var(--ds-fs-cap);line-height:1.5;color:#c9cde0}
+.offer-toc li{position:relative;break-inside:avoid;padding:5px 0 5px 22px;counter-increment:toc;word-break:keep-all}
+.offer-toc li::before{content:counter(toc);position:absolute;left:0;top:5px;width:16px;font-family:'Noto Serif KR',serif;font-size:.75rem;color:#8f96b4;text-align:right}
+.offer-toc.ui-arrive li{animation:ds-rise .45s cubic-bezier(.2,.7,.3,1) both}
+.offer-toc.ui-arrive li:nth-child(n+4){animation-delay:.08s}.offer-toc.ui-arrive li:nth-child(n+7){animation-delay:.16s}
+.offer-toc.ui-arrive li:nth-child(n+10){animation-delay:.24s}.offer-toc.ui-arrive li:nth-child(n+13){animation-delay:.32s}.offer-toc.ui-arrive li:nth-child(n+16){animation-delay:.4s}
+/* --- 오행을 한자 도장으로: 색 점에 뜻을 붙임 --- */
+.ph-g i{top:5px;right:5px;width:15px;height:15px;border-radius:4px;display:grid;place-items:center}
+.ph-g i::after{content:attr(data-wx);font:600 .5625rem/1 'Noto Serif KR',serif;color:#fff}
+.today-ganzhi .dot.wx-seal{width:24px!important;height:24px!important;border-radius:6px;display:grid;place-items:center;transform:rotate(-4deg)}
+.today-ganzhi .dot.wx-seal::after{content:attr(data-wx);font:600 .8125rem/1 'Noto Serif KR',serif;color:#fff}
+/* --- 메뉴: 아이콘 줄 대신 글자 위주로 --- */
+.menu-row-icon{display:none}
+.menu-row{min-height:0;padding:18px 0;gap:12px;border-bottom:1px solid #ffffff1a}
+.menu-row>span:nth-child(2){flex:1}
+.menu-row strong{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h3);font-weight:600;color:#f6ecd6}
+.menu-row small{margin-top:3px;color:#aab1c8}
+.menu-chevron{color:#e9c47a}
+.menu-profile{padding:16px;border-radius:var(--ds-r-ctl);background:#ffffff0d;border:1px solid #f0d38c33}
+.menu-top h2{font-family:'Noto Serif KR',serif;color:#f6ecd6}
+/* --- 궁합 탭 빈 상태 --- */
+.sky-nostar-note{border-radius:var(--ds-r-ctl)}
+.sky-nostar-btn{background:var(--ds-gold);color:#1a1436;border-radius:var(--ds-r-ctl)}
+/* --- 그림 통일: 그림체가 달라도 같은 모서리 · 가는 테두리 · 같은 채도로 한 묶음처럼 --- */
+.report-cover,.home-content-card,.ny-banner,.report-page .wolha-scene,.report-page .ny-scene,.ci-art{position:relative}
+.report-cover img,.home-content-card img,.ny-banner img,.report-page .wolha-scene img,.report-page .ny-scene img,.report-page .love-free-card img,.ci-art img,.reader-cover>img{filter:saturate(.9) contrast(1.02)}
+.report-cover::after,.report-page .wolha-scene::after,.report-page .ny-scene::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px #f0d38c33;pointer-events:none}
+.report-page .wolha-scene,.report-page .ny-scene{border-radius:var(--ds-r-ctl);overflow:hidden}
+.report-page .wolha-scene img,.report-page .ny-scene img{border-radius:0}
