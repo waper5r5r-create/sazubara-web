@@ -397,3 +397,13 @@ html[data-theme="dark"] #btn-theme .ic-sun{display:block}
 .char-card:last-child:nth-child(even){grid-column:1/-1;aspect-ratio:16/9}
 .char-card:last-child:nth-child(even) img{object-position:60% 28%}
 html[data-theme="dark"] .report-discover,html[data-theme="dark"] .btn-link,html[data-theme="dark"] .today-peek-go{color:#f1d08a!important}
+
+/* ===== 10차: 홈 순서 — 사주풀이 시작이 먼저, 캐릭터는 그 아래 ===== */
+.char-me{margin:0;padding:8px 0 0;border:0;border-radius:0;background:none}
+.char-me>h1{margin:10px 0;font-family:var(--ds-display);font-size:1.875rem;font-weight:700;line-height:1.3;letter-spacing:-.03em;color:var(--ds-ink)}
+.char-me>.saju-hero-sub{max-width:none;margin:0 0 20px;font-size:var(--ds-fs-body);line-height:1.6;color:var(--ds-ink-2)}
+.char-me .saju-hero-gift{text-align:center}
+.char-list{margin-top:36px;padding-top:28px;border-top:1px solid var(--ds-line)}
+.char-list>h2{margin:0;font-family:var(--ds-display);font-size:var(--ds-fs-h1);font-weight:700;line-height:1.35;letter-spacing:-.03em;color:var(--ds-ink)}
+.char-list-sub{margin:6px 0 16px;font-size:var(--ds-fs-body);line-height:1.6;color:var(--ds-ink-2)}
+.char-card.is-feat{aspect-ratio:1/1}

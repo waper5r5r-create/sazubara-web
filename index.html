@@ -1784,7 +1784,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=12">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=13">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -4009,10 +4009,10 @@ var HERO_STARS=[[10,10.8],[21.7,26.5],[33.9,12.5],[42.8,32.3],[57.4,28],[67.6,15
 function starHeroHtml(){
  var stars=HERO_STARS.map(function(p,i){return '<i class="hero-star" style="left:'+p[0]+'%;top:'+p[1]+'%;--d:'+(0.35+i*0.13).toFixed(2)+'s;--t:'+(2.6+(i%3)*0.7).toFixed(1)+'s"></i>';}).join('');
  var names={};names[String(NEWYEAR_CONCEPT.id)]='다온';names[String(IAN_CONCEPT.id)]='이안';names['운명의-사람은-언제-올까-fyq1z']='해랑';names['타고난-재물복은-얼마나-될까-k7dxw']='금비';names['7c5db9e6-59cb-4a81-8b0a-73da4db7b051']='서림';names['dc6f87f4-86a7-47ce-ae91-3f6715dee2b0']='월하';
- return '<div class="char-home"><p class="editorial-tag">내 사주로 읽는 이야기</p><h1>오늘은 누구에게<br>물어볼까요?</h1><p class="saju-hero-sub">여섯 명의 풀이꾼이 내 생년월일로 이야기를 들려줘요.</p>'+
-  '<div class="char-grid">'+HOME_BANNERS.map(function(b,i){var nm=names[String(b.id)]||'';return '<button type="button" class="char-card'+(i===0?' is-feat':'')+'" data-char-go="'+esc(String(b.id))+'"><img src="'+b.img+'" alt="" '+(i===0?'fetchpriority="high"':'loading="lazy"')+' decoding="async"><span><small>'+(nm?'<b>'+nm+'</b>':'')+esc(b.kicker)+'</small><strong>'+b.title+'</strong>'+(i===0?'<em>무료로 앞부분 읽기</em>':'')+'</span></button>';}).join('')+'</div>'+
-  '<div class="char-me"><b>생년월일로 보는 나의 사주팔자</b><p>타고난 성향과 앞으로의 흐름을 무료로 풀어드려요.</p>'+
-  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p><ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>바로 시작</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div></div>';
+ return '<div class="char-home"><div class="char-me"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p>'+
+  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p><ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>바로 시작</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div>'+
+  '<div class="char-list"><h2>오늘은 누구에게 물어볼까요?</h2><p class="char-list-sub">여섯 명의 풀이꾼이 내 사주로 이야기를 들려줘요. 앞부분은 무료예요.</p>'+
+  '<div class="char-grid">'+HOME_BANNERS.map(function(b,i){var nm=names[String(b.id)]||'';return '<button type="button" class="char-card'+(i===0?' is-feat':'')+'" data-char-go="'+esc(String(b.id))+'"><img src="'+b.img+'" alt="" loading="lazy" decoding="async"><span><small>'+(nm?'<b>'+nm+'</b>':'')+esc(b.kicker)+'</small><strong>'+b.title+'</strong>'+(i===0?'<em>무료로 앞부분 읽기</em>':'')+'</span></button>';}).join('')+'</div></div></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
 /* 결과 맨 위: 내 여덟 글자를 남색 판에 크게. 일간(태어난 날의 위 글자)이 "나"를 나타내서 금색으로 둘러요 */
