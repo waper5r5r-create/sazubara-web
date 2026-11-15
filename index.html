@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="무료 사주풀이, 2027 신년운세, 오늘의 운세, 궁합을 한 곳에서. 생년월일만 넣으면 바로 볼 수 있어요.">
-<meta name="theme-color" content="#f6f0e4">
+<meta name="theme-color" content="#fbfaf8">
 <link rel="canonical" href="https://www.byeolcheop.com/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=8">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7">
@@ -1784,8 +1784,9 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=11">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=12">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
+<script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -1800,6 +1801,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
     </div>
     <div class="header-actions">
       <button type="button" class="persona-chip" id="btn-open-persona" title="풀이자 선택"><span id="persona-chip-ic">🧙</span></button>
+      <button type="button" class="header-icon-btn" id="btn-theme" aria-label="밤 모드로 바꾸기" aria-pressed="false"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 15a8 8 0 1 1-10-10 8 8 0 0 0 10 10Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.400-1.400M17.700 6.300l1.400-1.400" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button type="button" class="header-icon-btn" id="btn-open-menu" aria-label="전체 메뉴 열기" aria-controls="site-menu-root" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
     </div>
   </header>
@@ -3376,6 +3378,12 @@ function closeBirthFlow(fromPop){
 function bfAng(min){return ((min-720)/1440)*360;}
 function bfPt(a,r){var rad=(a-90)*Math.PI/180;return [Math.cos(rad)*r,Math.sin(rad)*r];}
 document.addEventListener('click',function(e){if(e.target.closest('[data-open-birth]')){e.preventDefault();openBirthFlow(STATE.lastForm||null);}});
+/* 홈의 캐릭터 카드: 배너와 같은 방식으로 콘텐츠를 열어요 */
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-char-go]');if(!b)return;var id=b.dataset.charGo;if(id===String(NEWYEAR_CONCEPT.id)){openReportViewer(NEWYEAR_CONCEPT,'story');return;}loadReportList().then(function(list){var c=list.filter(function(x){return String(x.id)===id;})[0];if(c)openReportViewer(c);}).catch(function(){showToast('콘텐츠를 불러오지 못했어요.');});});
+/* 밝은 모드 · 밤 모드 전환(기본은 밝은 모드, 고른 값은 이 브라우저에 저장) */
+function syncThemeButton(){var b=document.getElementById&&document.getElementById('btn-theme');if(!b)return;var on=document.documentElement.getAttribute('data-theme')==='dark';b.setAttribute('aria-pressed',String(on));b.setAttribute('aria-label',on?'밝은 모드로 바꾸기':'밤 모드로 바꾸기');}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#btn-theme');if(!b)return;var d=document.documentElement,on=d.getAttribute('data-theme')!=='dark';if(on)d.setAttribute('data-theme','dark');else d.removeAttribute('data-theme');try{localStorage.setItem('byeolcheop_theme',on?'dark':'light');}catch(x){}syncThemeButton();});
+try{syncThemeButton();}catch(x){}
 
 /* 휴대폰 "뒤로 가기": 열린 창(콘텐츠 화면, 메뉴, 운세 설명, 별첩 책, 풀이자 선택)이 있으면 그 창만 닫고,
    없으면 직전에 보던 탭으로 돌아가요. 창이 열릴 때마다 주소 기록을 하나 쌓고, 닫기 버튼으로 닫으면 그 기록을 지워요.
@@ -4000,8 +4008,11 @@ function myStarCardHtml(result){
 var HERO_STARS=[[10,10.8],[21.7,26.5],[33.9,12.5],[42.8,32.3],[57.4,28],[67.6,15.7],[80.2,29.7],[90.9,16]];
 function starHeroHtml(){
  var stars=HERO_STARS.map(function(p,i){return '<i class="hero-star" style="left:'+p[0]+'%;top:'+p[1]+'%;--d:'+(0.35+i*0.13).toFixed(2)+'s;--t:'+(2.6+(i%3)*0.7).toFixed(1)+'s"></i>';}).join('');
- return '<div class="saju-hero has-art is-intro"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p><div class="saju-hero-visual"><img src="/assets/brand/home-hero.webp" alt="펼친 별첩에서 별빛 여덟 개가 떠오르는 그림" fetchpriority="high" decoding="async"><div class="hero-stars" aria-hidden="true">'+stars+'</div></div>'+
-  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p><ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>바로 시작</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div>';
+ var names={};names[String(NEWYEAR_CONCEPT.id)]='다온';names[String(IAN_CONCEPT.id)]='이안';names['운명의-사람은-언제-올까-fyq1z']='해랑';names['타고난-재물복은-얼마나-될까-k7dxw']='금비';names['7c5db9e6-59cb-4a81-8b0a-73da4db7b051']='서림';names['dc6f87f4-86a7-47ce-ae91-3f6715dee2b0']='월하';
+ return '<div class="char-home"><p class="editorial-tag">내 사주로 읽는 이야기</p><h1>오늘은 누구에게<br>물어볼까요?</h1><p class="saju-hero-sub">여섯 명의 풀이꾼이 내 생년월일로 이야기를 들려줘요.</p>'+
+  '<div class="char-grid">'+HOME_BANNERS.map(function(b,i){var nm=names[String(b.id)]||'';return '<button type="button" class="char-card'+(i===0?' is-feat':'')+'" data-char-go="'+esc(String(b.id))+'"><img src="'+b.img+'" alt="" '+(i===0?'fetchpriority="high"':'loading="lazy"')+' decoding="async"><span><small>'+(nm?'<b>'+nm+'</b>':'')+esc(b.kicker)+'</small><strong>'+b.title+'</strong>'+(i===0?'<em>무료로 앞부분 읽기</em>':'')+'</span></button>';}).join('')+'</div>'+
+  '<div class="char-me"><b>생년월일로 보는 나의 사주팔자</b><p>타고난 성향과 앞으로의 흐름을 무료로 풀어드려요.</p>'+
+  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p><ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>바로 시작</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
 /* 결과 맨 위: 내 여덟 글자를 남색 판에 크게. 일간(태어난 날의 위 글자)이 "나"를 나타내서 금색으로 둘러요 */

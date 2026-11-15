@@ -332,3 +332,68 @@ body{background:var(--ds-paper)}
 .lucky-chip .v,#today-period-body .detail-block .ttl,.technical-details summary b,.saju-hero-trust b,.today-ganzhi .today-theme,.portrait-title,.report-greeting,
 .today-peek b,#birth-flow .bf-q,.home-content-card b,.sky-nostar-note b{font-family:var(--ds-display);font-weight:700;letter-spacing:-.02em}
 .app-header .mark{font-size:1.25rem}
+
+/* ===== 9차: 밝은 모드(기본) · 밤 모드, 캐릭터가 이끄는 홈 ===== */
+/* --- 밝은 모드: 크림색 종이 대신 깨끗한 흰 바탕. 색은 그림이 담당 --- */
+:root{
+ --ds-paper:#fbfaf8;--ds-card:#ffffff;--ds-inset:#f4f2ee;--ds-line:#ebe7df;
+ --ds-ink:#15172e;--ds-ink-2:#565a70;--ds-ink-3:#868a9c;--ds-gold-ink:#8a6420;
+ --ds-header-bg:#fbfaf8eb;--ds-tabs-bg:#fffffff5;
+ --ds-shadow:0 1px 2px rgba(21,23,46,.04),0 8px 24px rgba(21,23,46,.05);
+}
+body,.app{background:var(--ds-paper)}
+.app-header{background:var(--ds-header-bg)}
+.tabs-bar{background:var(--ds-tabs-bg)!important}
+/* --- 밤 모드: 헤더의 달 버튼으로 켬. 읽기 화면과 같은 남색 --- */
+html[data-theme="dark"]{color-scheme:dark;
+ --ds-paper:#0d1024;--ds-card:#171b3a;--ds-inset:#1f2449;--ds-line:#ffffff1f;
+ --ds-ink:#f4efe6;--ds-ink-2:#c3c7da;--ds-ink-3:#9499b3;--ds-gold-ink:#e7c27a;
+ --ds-header-bg:#0d1024eb;--ds-tabs-bg:#0d1024f5;--ds-blush:#2a2147;--ds-rose:#f0a9b0;
+ --ds-shadow:0 1px 2px #0003,0 10px 26px #0000004d;
+ --fg:var(--ds-ink);--fg-muted:var(--ds-ink-2);--fg-faint:var(--ds-ink-3);--surface:var(--ds-card);--surface-2:var(--ds-inset);--surface-3:#262b55;--border:#ffffff1f;--border-strong:#ffffff33;--accent:#e7c27a;--accent-ink:#15172e}
+html[data-theme="dark"] .btn-primary,html[data-theme="dark"] .unlock-btn{background:var(--ds-gold)!important;color:#15172e!important;box-shadow:none}
+html[data-theme="dark"] .seg button.active{background:#f1d08a;color:#15172e}
+html[data-theme="dark"] .tabs-bar .tab-btn.active,html[data-theme="dark"] .header-actions .header-icon-btn,html[data-theme="dark"] .app-header .mark{color:var(--ds-ink)!important}
+/* 모드 전환 버튼: 밝을 땐 달, 밤엔 해 */
+#btn-theme .ic-sun{display:none}
+html[data-theme="dark"] #btn-theme .ic-moon{display:none}
+html[data-theme="dark"] #btn-theme .ic-sun{display:block}
+.header-actions{gap:2px}
+/* --- 홈 첫 화면: "누구에게 물어볼까요?" + 캐릭터 카드 --- */
+.char-home{padding:8px 0 0;text-align:left}
+.char-home>h1{margin:10px 0;font-family:var(--ds-display);font-size:1.875rem;font-weight:700;line-height:1.3;letter-spacing:-.03em;color:var(--ds-ink)}
+.char-home>.saju-hero-sub{max-width:none;margin:0 0 20px;font-size:var(--ds-fs-body);line-height:1.6;color:var(--ds-ink-2)}
+.char-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.char-card{position:relative;display:block;padding:0;border:0;border-radius:16px;overflow:hidden;aspect-ratio:3/4;background:#1a1d3a;color:#fff;text-align:left;cursor:pointer;transition:transform .16s ease;animation:ds-rise .5s cubic-bezier(.2,.7,.3,1) both}
+.char-card:nth-child(2){animation-delay:.06s}.char-card:nth-child(3){animation-delay:.12s}.char-card:nth-child(n+4){animation-delay:.18s}
+.char-card:active{transform:scale(.98)}
+.char-card.is-feat{grid-column:1/-1;aspect-ratio:4/5;border-radius:20px}
+.char-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:78% 30%}
+.char-card.is-feat img{object-position:72% 30%}
+.char-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0d102400 38%,#0d1024f0 94%)}
+.char-card>span{position:absolute;left:12px;right:12px;bottom:12px;z-index:1;display:block}
+.char-card small{display:block;font-size:var(--ds-fs-label);font-weight:700;color:#f6dca0}
+.char-card small b{margin-right:6px;padding:2px 7px;border-radius:99px;background:#ffffff26;color:#fff;font-weight:700}
+.char-card strong{display:block;margin-top:5px;font-family:var(--ds-display);font-size:.9375rem;font-weight:700;line-height:1.35;word-break:keep-all}
+.char-card strong br{display:none}
+.char-card.is-feat>span{left:20px;right:20px;bottom:20px}
+.char-card.is-feat small{font-size:var(--ds-fs-cap)}
+.char-card.is-feat strong{margin-top:8px;font-size:1.625rem;line-height:1.3}
+.char-card.is-feat strong br{display:inline}
+.char-card em{display:flex;align-items:center;justify-content:center;min-height:52px;margin-top:14px;border-radius:var(--ds-r-ctl);background:#f1d08a;color:#15172e;font-style:normal;font-size:var(--ds-fs-body);font-weight:700}
+.char-me{margin-top:28px;padding:20px;border:1px solid var(--ds-line);border-radius:var(--ds-r-card);background:var(--ds-card)}
+.char-me>b{display:block;font-family:var(--ds-display);font-size:var(--ds-fs-h2);font-weight:700;color:var(--ds-ink)}
+.char-me>p:not(.saju-hero-gift){margin:6px 0 16px;font-size:var(--ds-fs-body);line-height:1.6;color:var(--ds-ink-2)}
+@media(prefers-reduced-motion:reduce){.char-card{animation:none}}
+/* 두 모드에서 모두 읽히도록 글자색을 기준 색으로 */
+.next-step b,.report-card .nm,.report-grid .report-card .nm,.home-content-card b,.report-discover,.btn-link,.technical-details summary b,.saju-hook li p,.portrait-title,.lucky-chip .v{color:var(--ds-ink)}
+.next-step small,.report-card .tagline,.report-grid .report-card .tagline,.home-content-card small,.report-greeting,.technical-details summary small,.lucky-chip .k{color:var(--ds-ink-2)}
+.home-content-card{background:var(--ds-card);border-color:var(--ds-line);color:var(--ds-ink)}
+.home-content-card span{background:none}
+.home-content-card .home-content-peek{color:var(--ds-ink);border-top-color:var(--ds-line)}
+.report-grid:not(.is-small) .report-card{border-bottom-color:var(--ds-line)}
+/* 홈 캐릭터 카드: 제목 줄바꿈은 그대로, 마지막 한 장은 가로로 넓게 */
+.char-card strong br{display:inline}
+.char-card:last-child:nth-child(even){grid-column:1/-1;aspect-ratio:16/9}
+.char-card:last-child:nth-child(even) img{object-position:60% 28%}
+html[data-theme="dark"] .report-discover,html[data-theme="dark"] .btn-link,html[data-theme="dark"] .today-peek-go{color:#f1d08a!important}
