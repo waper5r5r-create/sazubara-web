@@ -211,7 +211,9 @@ body{background:var(--ds-paper)}
 @keyframes ds-shimmer{from{background-position:130% 0}to{background-position:-130% 0}}
 @keyframes ds-sheet-in{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 /* --- 읽기 화면: 열릴 때 · 읽는 동안 --- */
-.report-page{animation:ds-sheet-in .38s cubic-bezier(.2,.7,.3,1) both}
+/* 읽기 화면은 투명도만 바꿔요. 위치를 옮기는 효과를 쓰면 아래 고정 구매 버튼이 글과 함께 흘러가요. */
+@keyframes ds-fade-in{from{opacity:0}to{opacity:1}}
+.report-page{animation:ds-fade-in .3s ease-out}
 .report-page .report-page-topbar::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,#d9b060,#f6dca0);transform-origin:left center;transform:scaleX(var(--read,0));transition:transform .12s linear}
 .report-page .wolha-scene.ui-arrive,.report-page .ny-scene.ui-arrive,.report-page .love-free-card.ui-arrive{animation:ds-photo .9s cubic-bezier(.2,.7,.3,1) both}
 .report-page .wolha-say.ui-arrive,.report-page .ny-talk.ui-arrive{transform-origin:left bottom;animation:ds-bubble .5s cubic-bezier(.2,.9,.3,1.1) both}
@@ -324,3 +326,14 @@ body{background:var(--ds-paper)}
 .report-cover::after,.report-page .wolha-scene::after,.report-page .ny-scene::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px #f0d38c33;pointer-events:none}
 .report-page .wolha-scene,.report-page .ny-scene{border-radius:var(--ds-r-ctl);overflow:hidden}
 .report-page .wolha-scene img,.report-page .ny-scene img{border-radius:0}
+
+/* ===== 7차: 다시 점검해서 고친 것 ===== */
+/* 생일 입력 단계의 버튼도 무광 금색으로 */
+#birth-flow .bf-btn{background:var(--ds-gold);color:#1a1436;border:0;border-radius:var(--ds-r-ctl);box-shadow:none;font-weight:700}
+#birth-flow .bf-btn:disabled,#birth-flow .bf-btn[disabled]{background:#ffffff1c;color:#ffffff8c!important;opacity:1}
+/* 남아 있던 기본 아이콘 정리 */
+.chip-btn svg{display:none}
+.chip-btn{padding-left:16px;padding-right:16px;font-weight:600}
+.technical-details summary>span>svg{display:none}
+.technical-details summary b{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h3);font-weight:600}
+.technical-details summary>span{display:flex;flex-direction:column;align-items:flex-start;gap:4px;flex:1;min-width:0}
