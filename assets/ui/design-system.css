@@ -445,3 +445,7 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 #view-reports .report-grid.is-small .report-card .report-text{padding:12px 0 0}
 .char-me>p:not(.saju-hero-gift){margin:0;color:#d5d8e6}
 .char-me>p.editorial-tag:not(.saju-hero-gift){color:#e7c27a}
+
+/* ===== 12차: 결제 버튼 아래 안심 문구 ===== */
+.offer-assure{margin:10px 0 0;text-align:center;font-size:var(--ds-fs-cap);font-weight:600;color:#e9c47a}
+.offer-assure+.reader-price-note,.offer-assure+.ny-price-note,.offer-assure+.ian-note{margin-top:10px}
