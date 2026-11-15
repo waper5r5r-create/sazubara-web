@@ -338,7 +338,7 @@ body{background:var(--ds-paper)}
 .technical-details summary b{font-family:'Noto Serif KR',serif;font-size:var(--ds-fs-h3);font-weight:600}
 .technical-details summary>span{display:flex;flex-direction:column;align-items:flex-start;gap:4px;flex:1;min-width:0}
 
-/* ===== 8차: 콘텐츠 표지를 옛 책 표지로 · 제목 글꼴 교체 ===== */
+/* ===== 8차: 제목 글꼴 교체 ===== */
 /* --- 제목 글꼴: 붓맛이 있는 한글 바탕체(한자는 기존 명조로 이어짐) --- */
 :root{--ds-display:'Gowun Batang','Noto Serif KR',serif}
 .app-header .mark,.saju-hero h1,.tab-intro h1,.saju-result-head h1,.home-contents>h2,.report-list-title,.next-steps h2,.star-gift h2,.album-heading,
@@ -346,32 +346,3 @@ body{background:var(--ds-paper)}
 .lucky-chip .v,#today-period-body .detail-block .ttl,.technical-details summary b,.saju-hero-trust b,.today-ganzhi .today-theme,.portrait-title,.report-greeting,
 .today-peek b,#birth-flow .bf-q,.home-content-card b,.sky-nostar-note b{font-family:var(--ds-display);font-weight:700;letter-spacing:-.02em}
 .app-header .mark{font-size:1.25rem}
-/* --- 책 표지: 콘텐츠마다 전통색 색지 · 오른쪽 실 제본 · 왼쪽 위 제목 띠. 그림은 색지에 한 색으로 찍은 것처럼 --- */
-[data-report-id^="20270101"],[data-home-report^="20270101"]{--cv:#dca88f;--cv-title:'신년운세'}
-[data-report-id^="20270102"],[data-home-report^="20270102"]{--cv:#b7b5cc;--cv-title:'이안의 비밀'}
-[data-report-id^="운명의"],[data-home-report^="운명의"]{--cv:#e3b4b0;--cv-title:'연애 사주'}
-[data-report-id^="타고난"],[data-home-report^="타고난"]{--cv:#dcc68c;--cv-title:'재물 사주'}
-[data-report-id^="7c5db9e6"],[data-home-report^="7c5db9e6"]{--cv:#acc4bf;--cv-title:'직업 사주'}
-[data-report-id^="dc6f87f4"],[data-home-report^="dc6f87f4"]{--cv:#c6b2d2;--cv-title:'결혼 사주'}
-.report-card[data-report-id] .report-cover,.home-content-card[data-home-report]{
- --hole:#2a2233;
- background:
-  radial-gradient(circle at calc(100% - 9px) var(--h1,8%),var(--hole) 1.7px,transparent 2.3px),
-  radial-gradient(circle at calc(100% - 9px) var(--h2,29%),var(--hole) 1.7px,transparent 2.3px),
-  radial-gradient(circle at calc(100% - 9px) var(--h3,50%),var(--hole) 1.7px,transparent 2.3px),
-  radial-gradient(circle at calc(100% - 9px) var(--h4,71%),var(--hole) 1.7px,transparent 2.3px),
-  radial-gradient(circle at calc(100% - 9px) var(--h5,92%),var(--hole) 1.7px,transparent 2.3px),
-  linear-gradient(270deg,transparent 8.5px,#2a223366 8.5px,#2a223366 9.5px,transparent 9.5px),
-  linear-gradient(270deg,#0000001f 0,transparent 20px),
-  var(--cv,#d9c9a8)}
-.report-card[data-report-id] .report-cover{border-radius:10px 4px 4px 10px;box-shadow:0 8px 18px rgba(23,29,66,.16)}
-.report-card[data-report-id] .report-cover img,.home-content-card[data-home-report] img{mix-blend-mode:multiply;filter:grayscale(1) contrast(1.15) brightness(1.1);opacity:.9}
-.report-card[data-report-id] .report-cover::before,.home-content-card[data-home-report]::before{content:var(--cv-title,'');position:absolute;left:10px;top:10px;z-index:2;padding:8px 4px;background:#fffdf6;border:1px solid #2a223326;box-shadow:0 1px 2px #0000001f;writing-mode:vertical-rl;font:700 .6875rem/1 var(--ds-display);letter-spacing:.14em;color:#2a2233}
-.report-cover::after{box-shadow:inset 0 0 0 1px #2a22331f}
-#view-reports .report-grid.is-small .report-card .report-cover{aspect-ratio:3/4}
-.report-grid:not(.is-small) .report-card .report-cover{aspect-ratio:3/4;height:auto;min-height:0;align-self:start}
-/* 결과 화면의 작은 표지 */
-.home-content-card[data-home-report]{border:0;border-radius:10px 4px 4px 10px;box-shadow:0 8px 18px rgba(23,29,66,.14);overflow:hidden}
-.home-content-card[data-home-report] span{background:var(--ds-card)}
-.home-content-card[data-home-report]{--h1:14px;--h2:44px;--h3:74px;--h4:104px;--h5:134px}
-#view-reports .report-grid.is-small .report-card .report-text{padding:12px 0 0}
