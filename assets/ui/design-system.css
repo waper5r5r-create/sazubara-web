@@ -407,3 +407,41 @@ html[data-theme="dark"] .report-discover,html[data-theme="dark"] .btn-link,html[
 .char-list>h2{margin:0;font-family:var(--ds-display);font-size:var(--ds-fs-h1);font-weight:700;line-height:1.35;letter-spacing:-.03em;color:var(--ds-ink)}
 .char-list-sub{margin:6px 0 16px;font-size:var(--ds-fs-body);line-height:1.6;color:var(--ds-ink-2)}
 .char-card.is-feat{aspect-ratio:1/1}
+
+/* ===== 11차: 다시 점검해서 고친 것 ===== */
+/* --- 홈 첫 화면: 밤하늘과 별첩 그림 위에 제목과 시작 버튼 --- */
+.char-me{display:flex;flex-direction:column;min-height:560px;margin:0;padding:28px 20px 20px;border:0;border-radius:var(--ds-r-card);overflow:hidden;color:#fff;
+ background:linear-gradient(180deg,#0d1024f2 0%,#0d1024b3 30%,#0d102400 52%,#0d102400 62%,#0d1024e6 86%),url(/assets/brand/home-hero.webp) center 68%/cover no-repeat #0d1024}
+.char-me>.editorial-tag{color:#e7c27a}
+.char-me>h1{color:#fff;margin:10px 0 8px}
+.char-me>.saju-hero-sub{color:#d5d8e6;margin:0}
+.char-me .saju-hero-cta{margin-top:auto;background:#f1d08a!important;color:#15172e!important;box-shadow:none}
+.char-me .saju-hero-gift{margin:12px 0 0;color:#d5d8e6}
+.char-me .saju-hero-trust{margin:16px 0 0;padding:14px 0 0;border-top:1px solid #ffffff33}
+.char-me .saju-hero-trust li+li{border-left-color:#ffffff33}
+.char-me .saju-hero-trust b{color:#fff}
+.char-me .saju-hero-trust span{color:#c3c7da}
+.saju-hero-cta{box-shadow:0 8px 20px rgba(21,23,46,.16)}
+/* --- 결과 화면에서 콘텐츠로: 작은 가로 카드 대신 캐릭터 카드 두 줄 --- */
+.home-content-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;overflow:visible;margin-right:0;padding:12px 0 4px}
+.home-content-card,.home-content-card[data-home-report]{position:relative;width:auto;max-width:none;aspect-ratio:3/4;padding:0;border:0;border-radius:16px;overflow:hidden;background:#1a1d3a;color:#fff;box-shadow:none}
+.home-content-card img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:50% 20%}
+.home-content-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0d102400 35%,#0d1024f0 92%)}
+.home-content-card span{position:absolute;left:12px;right:12px;bottom:12px;z-index:1;flex:none;padding:0;background:none}
+.home-content-card b{color:#fff;font-size:var(--ds-fs-body)}
+.home-content-card small{display:none}
+.home-content-card .home-content-peek{margin-top:6px;padding-top:0;border-top:0;color:#f6dca0;font-size:var(--ds-fs-cap)!important;line-height:1.4}
+.home-content-card:nth-child(n){animation-delay:0s}
+/* --- 메뉴도 모드를 따름 --- */
+html:not([data-theme="dark"]) .site-menu{background:#fff;--fg:#15172e;--fg-muted:#565a70;--fg-faint:#868a9c;--border:#ebe7df;--border-strong:#dcd7cc;color:#15172e}
+.menu-row{border-bottom-color:var(--border)}
+.menu-row strong,.menu-top h2{color:var(--fg)}
+.menu-row small{color:var(--fg-muted)}
+.menu-chevron{color:var(--ds-gold-ink)}
+.menu-profile{background:transparent;border-color:var(--border);color:var(--fg)}
+html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark"]) .site-menu button[aria-label*="닫기"]{color:#15172e;border-color:#ebe7df}
+/* --- 작은 어긋남 --- */
+.quick-heading{color:var(--ds-gold-ink)}
+#view-reports .report-grid.is-small .report-card .report-text{padding:12px 0 0}
+.char-me>p:not(.saju-hero-gift){margin:0;color:#d5d8e6}
+.char-me>p.editorial-tag:not(.saju-hero-gift){color:#e7c27a}
