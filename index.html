@@ -3395,8 +3395,6 @@ document.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)r
  else if(t.closest('[data-open-birth]'))trackStep('birth_start');
  else if(t.closest('.reader-cta button'))trackStep('sticky_buy',trackContentName());
  else if(t.closest('.report-stage-buy'))trackStep('buy_click',trackContentName());
- else if(t.closest('[data-gate-login]'))trackStep('pay_gate_login');
- else if(t.closest('[data-gate-skip]'))trackStep('pay_gate_skip');
 },true);
 
 /* 휴대폰 "뒤로 가기": 열린 창(콘텐츠 화면, 메뉴, 운세 설명, 별첩 책, 풀이자 선택)이 있으면 그 창만 닫고,
@@ -8419,21 +8417,8 @@ function showSaveNudge(kind){
  $('[data-nudge-later]',el).addEventListener('click',close);
  var ob=$('[data-nudge-open]',el);if(ob)ob.addEventListener('click',function(){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href);});
 }
-/* 결제 직전: 로그인 안 했으면 먼저 권한다. "로그인 없이 결제"를 고르면 이번 방문에는 다시 묻지 않는다. */
-function payLoginGate(go){
- if(AUTH.user)return false;
- var skip=false;try{skip=sessionStorage.getItem('pay-gate-skip')==='1';}catch(e){}
- if(skip||$('.pay-gate'))return false;
- var el=document.createElement('div');el.className='pay-gate';el.setAttribute('role','dialog');el.setAttribute('aria-label','로그인하고 결제하기');
- el.innerHTML='<div class="pay-gate-box"><b>로그인하고 결제할까요?</b><p>로그인해 두면 인스타, 카톡, 다른 브라우저 어디서 들어와도 구매한 콘텐츠를 볼 수 있어요.</p>'+
-  '<div class="save-nudge-btns"><button type="button" class="btn-primary" data-gate-login>카카오로 로그인하기</button><button type="button" class="save-nudge-later" data-gate-skip>로그인 없이 결제</button></div>'+
-  '<p class="pay-gate-note">다른 곳에서 이미 구매했다면, 구매한 곳과 여기서 같은 카카오 계정으로 로그인하면 열려요.</p></div>';
- document.body.appendChild(el);requestAnimationFrame(function(){el.classList.add('on');});
- el.addEventListener('click',function(e){if(e.target===el)el.remove();});
- $('[data-gate-login]',el).addEventListener('click',function(){el.remove();showToast('로그인한 뒤 다시 결제 버튼을 눌러 주세요.');openLoginPanel();});
- $('[data-gate-skip]',el).addEventListener('click',function(){el.remove();try{sessionStorage.setItem('pay-gate-skip','1');}catch(e){}go();});
- return true;
-}
+/* 결제 직전에는 로그인을 권하지 않는다. 구매 버튼을 누르면 바로 결제로 간다. 로그인 권유는 결제가 끝난 뒤 maybeSaveNudge('paid')가 맡는다. */
+function payLoginGate(go){return false;}
 /* 결제 수단 고르기: 토스페이가 켜져 있으면 "토스페이 / 카드" 중에 고른다. 꺼져 있으면 바로 카드 결제. */
 var _payCfg=null;
 function payConfig(){if(!_payCfg)_payCfg=fetch('/api/config').then(function(r){return r.json();}).catch(function(){_payCfg=null;return {};});return _payCfg;}
