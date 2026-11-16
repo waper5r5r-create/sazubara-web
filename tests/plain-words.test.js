@@ -100,7 +100,7 @@ test('birth flow: page-by-page input opens from the first screen, 다시 입력 
   for(const id of ['#f-name','#f-date','#f-time','#f-unknown-time','#f-city','#f-leap'])assert.ok(flow.includes("$('"+id+"')"),id);
   assert.match(flow,/BF_SKIP_REVEAL=true/);assert.match(flow,/requestSubmit/);
   assert.match(flow,/autocomplete="off"/);assert.ok(!/autocomplete="bday"/.test(flow));
-  for(const k of ['첫째 장','둘째 장','셋째 장','넷째 장','별자리 완성','윤달이에요','태어난 곳','시간을 몰라요'])assert.ok(flow.includes(k),k);
+  for(const k of ['첫째 장','둘째 장','셋째 장','별자리 완성','윤달이에요','태어난 곳','시간을 몰라요'])assert.ok(flow.includes(k),k);
   assert.ok(!/faces|daon|\/ian\//.test(flow));
 });
 

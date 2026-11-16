@@ -457,3 +457,9 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .offer-facts span{display:block;margin-top:3px;font-size:var(--ds-fs-cap);color:#c9cde0}
 .reader-offer .offer-toc{margin-bottom:16px}
 .reader-offer .offer-benefits li::before{top:calc(15px + .45em)}
+
+/* 14차: 입력 단계 줄이기 — 이름은 성별 장 아래에 작은 선택 칸으로 */
+#birth-flow .bf-name-opt{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:30px;width:min(320px,100%)}
+#birth-flow .bf-name-opt>span{font-size:var(--ds-fs-cap);color:var(--bf-muted,#aab1c8)}
+#birth-flow .bf-name-opt .bf-line{margin-top:6px;width:100%;font-size:1.25rem;padding:6px 0 8px}
+#birth-flow .bf-name-opt .bf-line::placeholder{font-size:1rem}
