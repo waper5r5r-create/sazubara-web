@@ -354,3 +354,12 @@ test('every birth time band lands in its own 시진, with and without the local-
   assert.equal(at(23,45).day.ganKr+at(23,45).day.zhiKr,at(22,30).day.ganKr+at(22,30).day.zhiKr,'밤 자시 '+city+' '+fix);
  }
 });
+
+test('engine: 절기 순간은 한국 시각으로 견주고, 서머타임 출생은 한 시간을 먼저 뺀다',()=>{
+ const f=(y,m,d,h,mi,o)=>{const r=api.computeSaju({year:y,month:m,day:d,hour:h,minute:mi,isLunar:false,isLeapMonth:false,unknownTime:false,gender:'f',name:'',city:'서울',useCorrection:true,...(o||{})});return {y:r.year.gan+r.year.zhi,m:r.month.gan+r.month.zhi,d:r.day.gan+r.day.zhi,t:r.time&&r.time.gan+r.time.zhi,c:r.correctionMin,dst:r.dstMin};};
+ /* 2024년 입춘은 한국 시각 2월 4일 17:27 */
+ assert.deepEqual([f(2024,2,4,17,10).y,f(2024,2,4,17,10).m],['癸卯','乙丑']);assert.deepEqual([f(2024,2,4,17,40).y,f(2024,2,4,17,40).m],['甲辰','丙寅']);
+ /* 1988년 여름은 서머타임: 시계 09:40은 평소의 08:40 */
+ const s=f(1988,7,1,9,40),n=f(1989,7,1,9,40);assert.equal(s.dst,60);assert.equal(s.c,-92);assert.equal(s.t.charAt(1),'辰');assert.equal(n.dst,0);assert.equal(n.c,-32);assert.equal(n.t.charAt(1),'巳');
+ assert.equal(f(1988,7,1,9,40,{useCorrection:false}).c,-60);assert.equal(f(1996,3,15,14,0).d,'辛亥');assert.equal(f(2000,1,1,12,0).d,'戊午');
+});

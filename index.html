@@ -2428,6 +2428,15 @@ function lonCorrectionMinutes(city){
   return (lon-135)*4;
 }
 
+/* 한국 시계의 이력: 표준시 기준 경도가 바뀐 때(1908~1911, 1954~1961년은 동경 127.5도)와 서머타임을 쓴 때(1948~1951, 1955~1960, 1987~1988년).
+   시계 시각(YYYYMMDDHHMM)으로 견줘 그때 시계가 세계시보다 몇 분 앞섰는지 돌려준다. */
+var KR_DST_RANGES=[[194806010000,194809130000],[194904030000,194909110000],[195004010000,195009100000],[195105060000,195109090000],[195505050000,195509090000],[195605200000,195609300000],[195705050000,195709220000],[195805040000,195809210000],[195905030000,195909200000],[196005010000,196009180000],[198705100200,198710110300],[198805080200,198810090300]];
+function koreaClockOffset(y,m,d,h,mi){
+  var t=(((y*100+m)*100+d)*100+h)*100+mi;
+  var base=((t>=190804010000&&t<191201010000)||(t>=195403210000&&t<196108100000))?510:540,dst=0;
+  for(var i=0;i<KR_DST_RANGES.length;i++){if(t>=KR_DST_RANGES[i][0]&&t<KR_DST_RANGES[i][1]){dst=60;break;}}
+  return {off:base+dst,dst:dst};
+}
 function computeSaju(opts){
   var solar;
   if (opts.isLunar){
@@ -2446,13 +2455,18 @@ function computeSaju(opts){
                               opts.unknownTime?12:opts.hour, opts.unknownTime?0:opts.minute, 0);
   }
 
+  /* 시주·일주는 태어난 곳의 실제 해 위치에 맞춘 시각으로 본다. 서머타임 때 태어났으면 시계가 한 시간 앞서 있었으므로 그만큼 먼저 뺀다. */
+  var clock = koreaClockOffset(solar.getYear(), solar.getMonth(), solar.getDay(), solar.getHour(), solar.getMinute());
   var correctionMin = 0;
   var correctedSolar = solar;
-  if (opts.useCorrection && !opts.unknownTime){
-    correctionMin = Math.round(lonCorrectionMinutes(opts.city));
-    var jd = solar.getJulianDay() + correctionMin/1440;
-    correctedSolar = Solar.fromJulianDay(jd);
+  if (!opts.unknownTime){
+    var lonDeg = CITY_LON[opts.city]!=null ? CITY_LON[opts.city] : CITY_LON['서울'];
+    correctionMin = opts.useCorrection ? Math.round(lonDeg*4 - clock.off) : -clock.dst;
+    if (correctionMin) correctedSolar = Solar.fromJulianDay(solar.getJulianDay() + correctionMin/1440);
   }
+  /* 연주·월주는 절기가 드는 '순간'으로 갈린다. 라이브러리의 절기 시각은 세계시+8시간 기준이라, 태어난 순간을 같은 기준으로 옮겨 견준다. */
+  var termSolar = Solar.fromJulianDay(solar.getJulianDay() - (clock.off-480)/1440);
+  var ecTerm = termSolar.getLunar().getEightChar();
 
   var lunar = correctedSolar.getLunar();
   var ec = lunar.getEightChar();
@@ -2463,17 +2477,22 @@ function computeSaju(opts){
       wxGan:WX_KR[LunarUtil.WU_XING_GAN[ganZh]], wxZhi:WX_KR[LunarUtil.WU_XING_ZHI[zhiZh]]
     };
   }
-  var yearP = pillar(ec.getYearGan(), ec.getYearZhi());
-  var monthP = pillar(ec.getMonthGan(), ec.getMonthZhi());
+  var termDiff = ecTerm.getYearGan()+ecTerm.getYearZhi()+ecTerm.getMonthGan()+ecTerm.getMonthZhi() !== ec.getYearGan()+ec.getYearZhi()+ec.getMonthGan()+ec.getMonthZhi();
+  var yearP = pillar(ecTerm.getYearGan(), ecTerm.getYearZhi());
+  var monthP = pillar(ecTerm.getMonthGan(), ecTerm.getMonthZhi());
+  /* 절기 경계라 연주·월주가 달라진 드문 경우에는, 지장간과 십성을 바뀐 기둥과 실제 일간으로 다시 구한다 */
+  function hideGanOf(key){ if (termDiff && (key==='Year'||key==='Month')) return (LunarUtil.ZHI_HIDE_GAN[key==='Year'?yearP.zhi:monthP.zhi]||[]).slice(); return ec['get'+key+'HideGan'](); }
+  function hideSsOf(key){ if (termDiff && (key==='Year'||key==='Month')) return hideGanOf(key).map(function(g){ return LunarUtil.SHI_SHEN[ec.getDayGan()+g]; }); return ec['get'+key+'ShiShenZhi'](); }
+  function ganSsOf(key){ if (termDiff) return LunarUtil.SHI_SHEN[ec.getDayGan()+(key==='Year'?yearP.gan:monthP.gan)]; return ec['get'+key+'ShiShenGan'](); }
   var dayP = pillar(ec.getDayGan(), ec.getDayZhi());
   var timeP = opts.unknownTime ? null : pillar(ec.getTimeGan(), ec.getTimeZhi());
 
   var deepPillars=['Year','Month','Day'].concat(opts.unknownTime?[]:['Time']).map(function(key,i){
-    return {label:['연주','월주','일주','시주'][i],hidden:ec['get'+key+'HideGan']().map(function(g){return GAN_KR[g]||g;}),hiddenSS:ec['get'+key+'ShiShenZhi']().map(function(v){return SS_KR[v]||v;})};
+    return {label:['연주','월주','일주','시주'][i],hidden:hideGanOf(key).map(function(g){return GAN_KR[g]||g;}),hiddenSS:hideSsOf(key).map(function(v){return SS_KR[v]||v;})};
   });
   var dayGanWxZh = LunarUtil.WU_XING_GAN[ec.getDayGan()];
-  var yearSS = SS_KR[ec.getYearShiShenGan()] || '일주';
-  var monthSS = SS_KR[ec.getMonthShiShenGan()] || '일주';
+  var yearSS = SS_KR[ganSsOf('Year')] || '일주';
+  var monthSS = SS_KR[ganSsOf('Month')] || '일주';
   var timeSS = opts.unknownTime ? null : (SS_KR[ec.getTimeShiShenGan()] || '일주');
 
   var wxCount = {'목':0,'화':0,'토':0,'금':0,'수':0};
@@ -2494,7 +2513,7 @@ function computeSaju(opts){
   var pillarKeys = ['Year','Month','Day'].concat(opts.unknownTime?[]:['Time']);
   pillars.forEach(function(p, pi){
     wxWeighted[p.wxGan] += 1;
-    var hideGans = ec['get'+pillarKeys[pi]+'HideGan']();
+    var hideGans = hideGanOf(pillarKeys[pi]);
     var hw = HIDE_GAN_WEIGHTS[hideGans.length] || [1];
     var mult = (pillarKeys[pi]==='Month') ? MONTH_ZHI_WEIGHT_MULT : 1;
     hideGans.forEach(function(g, gi){
@@ -2575,7 +2594,7 @@ function computeSaju(opts){
   var daeun = [];
   try {
     var isFemaleForYun = (opts.gender==='f' || opts.gender==='female');
-    var daYunList = ec.getYun(isFemaleForYun?0:1).getDaYun();
+    var daYunList = (termDiff?ecTerm:ec).getYun(isFemaleForYun?0:1).getDaYun();
     var nowYear = new Date().getFullYear();
     daeun = daYunList.slice(1).map(function(d){
       var gz = d.getGanZhi();
@@ -2593,7 +2612,7 @@ function computeSaju(opts){
   } catch(e){ daeun = []; }
 
   return {
-    solar:correctedSolar, originalSolar:solar, correctionMin:correctionMin,
+    solar:correctedSolar, originalSolar:solar, correctionMin:correctionMin, dstMin:opts.unknownTime?0:clock.dst,
     year:yearP, month:monthP, day:dayP, time:timeP,
     deepPillars:deepPillars, yearSS:yearSS, monthSS:monthSS, timeSS:timeSS,
     dayGanWx:dayWxKr, wxCount:wxCount, totalCount:totalCount,
@@ -4403,7 +4422,7 @@ function renderSajuResult(result){
   var dayInfo = WUXING_INFO[result.dayGanWx];
 
   var corrNote = result.correctionMin ?
-    ('<p class="hint">태어난 지역에 맞춰 '+Math.abs(result.correctionMin)+'분 '+(result.correctionMin>0?'더해':'빼')+'서 '+result.solar.toYmdHms()+' 기준으로 봤어요</p>') : '';
+    ('<p class="hint">'+(result.dstMin?'서머타임을 쓰던 때라 한 시간을 먼저 빼고, ':'')+'태어난 지역에 맞춰 '+(result.dstMin?'모두 ':'')+Math.abs(result.correctionMin)+'분 '+(result.correctionMin>0?'더해':'빼')+'서 '+result.solar.toYmdHms()+' 기준으로 봤어요</p>') : '';
 
   var html =
     '<div class="card">'+
