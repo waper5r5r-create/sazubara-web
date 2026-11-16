@@ -363,3 +363,17 @@ test('engine: 절기 순간은 한국 시각으로 견주고, 서머타임 출�
  const s=f(1988,7,1,9,40),n=f(1989,7,1,9,40);assert.equal(s.dst,60);assert.equal(s.c,-92);assert.equal(s.t.charAt(1),'辰');assert.equal(n.dst,0);assert.equal(n.c,-32);assert.equal(n.t.charAt(1),'巳');
  assert.equal(f(1988,7,1,9,40,{useCorrection:false}).c,-60);assert.equal(f(1996,3,15,14,0).d,'辛亥');assert.equal(f(2000,1,1,12,0).d,'戊午');
 });
+
+test('paid month lists: 같은 흐름의 달이 되풀이되어도 문장이 돌아가며 바뀐다',()=>{
+  const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const at=html.indexOf('function lineRot(');const ctx={};vm.createContext(ctx);vm.runInContext(html.slice(at,html.indexOf('\n',at)),ctx);
+  const rot=ctx.lineRot(),set={none:['가','나','다'],liuhe:['라']};
+  assert.deepEqual([rot(set,'none','x'),rot(set,'liuhe','x'),rot(set,'none','x'),rot(set,'none','x'),rot(set,'none','x'),rot(set,'chong','기본'),rot(null,'none','기본')],['가','라','나','다','가','기본','기본']);
+  assert.equal(html.split('deep.monthLines||{}').length-1,4);
+  const love=require('../api/_love-deep-3.js'),career=require('../api/_career-deep-3.js'),wealth=require('../api/_wealth-deep-2.js'),marriage=require('../api/_marriage-deep.js');
+  const check=(lines,base,min)=>{for(const k of Object.keys(lines)){const v=lines[k];assert.ok(Array.isArray(v)&&v.length>=min(k),k);assert.equal(new Set(v).size,v.length,k);if(base&&typeof base[k]==='string')assert.equal(v[0],base[k],k);}};
+  const min=k=>k==='none'?12:4;
+  for(const m of [love,career]){check(m.monthLines.rel,m.monthByRelation,min);check(m.monthLines.advice,m.monthAdvice,min);check(m.monthLines.tg,m.monthTenGod,()=>6);assert.deepEqual(Object.keys(m.monthLines.rel).sort(),Object.keys(m.monthByRelation).sort());}
+  check(wealth.monthLines.tg,wealth.monthByTg,()=>6);check(wealth.monthLines.advice,wealth.monthAdvice,min);assert.deepEqual(Object.keys(wealth.monthLines.advice).sort(),Object.keys(wealth.monthAdvice).sort());
+  check(marriage.monthLines.rel,marriage.monthByRelation,()=>6);check(marriage.monthLines.advice,marriage.monthAdvice,()=>6);
+});

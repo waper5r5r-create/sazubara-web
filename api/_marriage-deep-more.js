@@ -112,4 +112,10 @@ const customQuestions = {
   수: ['혼자 생각할 시간이 필요할 때 어떻게 알려줄까?', '힘들 때 어떻게 기대고 싶어?', '중요한 결정은 언제까지 정하는 게 좋을까?', '하루에 몇 분이라도 대화하는 시간을 정할까?', '마음이 복잡할 때 함께 하고 싶은 게 있어?']
 };
 
-module.exports = {yearTenGodLong, yearTodo, monthAdvice, daeunAdvice, matchLong, conflictWhy, conflictAvoid, tenGodTips, elementPattern, roadmapChecks, customQuestions};
+// 달별 풀이에서 가장 자주 나오는 "평온한 달"을 돌려 쓰는 문장들. 첫 줄은 기본 문장과 같다.
+const monthLines = {
+  rel: {none: ['평온하게 나를 돌보는 달', '큰 일 없이 마음이 쉬어 가는 달', '일상을 차분히 가꾸는 달', '서두르지 않아도 되는 달', '조용히 준비가 쌓이는 달', '익숙한 것들의 고마움이 보이는 달']},
+  advice: {none: ['나를 돌보며 평소의 리듬을 지키세요.', '함께 살 집과 생활을 가볍게 상상해 보세요.', '내 생활 습관을 하나 다듬어 두세요. 같이 살 때 큰 힘이 돼요.', '가족에게 안부를 전해 보세요.', '저축이나 건강처럼 기본을 챙기기 좋아요.', '다음 좋은 달에 나눌 이야기를 미리 정리해 두세요.']}
+};
+
+module.exports = {monthLines, yearTenGodLong, yearTodo, monthAdvice, daeunAdvice, matchLong, conflictWhy, conflictAvoid, tenGodTips, elementPattern, roadmapChecks, customQuestions};
