@@ -463,3 +463,6 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 #birth-flow .bf-name-opt>span{font-size:var(--ds-fs-cap);color:var(--bf-muted,#aab1c8)}
 #birth-flow .bf-name-opt .bf-line{margin-top:6px;width:100%;font-size:1.25rem;padding:6px 0 8px}
 #birth-flow .bf-name-opt .bf-line::placeholder{font-size:1rem}
+/* 홈 첫 카드: 그림 위 제목이 묻히지 않게 아래쪽을 더 어둡게 */
+.char-card.is-feat::after{background:linear-gradient(180deg,#0d102400 28%,#0d1024a6 52%,#0d1024f2 82%)}
+.char-card strong{text-shadow:0 1px 12px #0008}

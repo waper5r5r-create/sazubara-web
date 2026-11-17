@@ -236,6 +236,12 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:0;}
 }
 .myroom-empty{display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center;}
 .myroom-empty-ill{width:84px; height:84px; border-radius:20px;}
+.empty-peek{list-style:none;margin:6px 0 16px;padding:0;width:100%;display:grid;gap:8px;text-align:left}
+.empty-peek li{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface-2,#f4f1ea)}
+.empty-peek b{flex:none;width:52px;font-size:.78rem;color:#a0741f}
+.empty-peek span{filter:blur(4.5px);user-select:none;font-size:.9rem;opacity:.85}
+.empty-note{margin:8px 0 0;font-size:.78rem;color:var(--muted,#888)}
+.myroom-empty .btn-primary{margin-top:10px;width:100%}
 .myroom-card .owner-tag{
   position:absolute; top:7px; left:8px; font-weight:700; color:var(--fg-faint);
   background:var(--surface); border-radius:999px; padding:2px 7px; max-width:calc(100% - 16px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
@@ -1293,6 +1299,10 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .ci-list svg{flex:none;width:18px;height:18px;margin-top:2px;color:#e9c27a}
 .ci-go{width:100%}
 .ci-note{margin:10px 0 0;text-align:center;font-size:.8125rem;color:#aab1c8}
+.ci-price{display:grid;grid-template-columns:repeat(3,1fr);margin:0 0 20px;padding:12px 0;border-top:1px solid #ffffff1f;border-bottom:1px solid #ffffff1f;text-align:center}
+.ci-price span{display:flex;flex-direction:column;gap:3px;font-size:.9375rem;font-weight:700;color:#f3e2b8}
+.ci-price span+span{border-left:1px solid #ffffff1a}
+.ci-price b{font-size:.72rem;font-weight:500;color:#aab1c8}
 @keyframes ci-in{from{opacity:0}to{opacity:1}}
 @keyframes ci-zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
 @keyframes ci-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -3394,7 +3404,7 @@ function closeBirthFlow(fromPop){
 }
 function bfAng(min){return ((min-720)/1440)*360;}
 function bfPt(a,r){var rad=(a-90)*Math.PI/180;return [Math.cos(rad)*r,Math.sin(rad)*r];}
-document.addEventListener('click',function(e){if(e.target.closest('[data-open-birth]')){e.preventDefault();openBirthFlow(STATE.lastForm||null);}});
+var RETURN_TAB=null;document.addEventListener('click',function(e){var rt=e.target.closest('[data-return-tab]');if(rt&&!STATE.mySaju){e.preventDefault();RETURN_TAB=rt.getAttribute('data-return-tab');openBirthFlow(STATE.lastForm||null);return;}if(e.target.closest('[data-open-birth]')){e.preventDefault();openBirthFlow(STATE.lastForm||null);}});
 /* 홈의 캐릭터 카드: 배너와 같은 방식으로 콘텐츠를 열어요 */
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-char-go]');if(!b)return;var id=b.dataset.charGo;if(id===String(NEWYEAR_CONCEPT.id)){openReportViewer(NEWYEAR_CONCEPT,'story');return;}loadReportList().then(function(list){var c=list.filter(function(x){return String(x.id)===id;})[0];if(c)openReportViewer(c);}).catch(function(){showToast('콘텐츠를 불러오지 못했어요.');});});
 /* 밝은 모드 · 밤 모드 전환(기본은 밝은 모드, 고른 값은 이 브라우저에 저장) */
@@ -4562,11 +4572,11 @@ function renderTodayView(){
     root.innerHTML =
       '<div class="card" style="align-items:center; text-align:center;">'+
         '<span class="empty-state-icon">'+TAB_ICON_TODAY+'</span><p class="eyebrow">오늘의 운세</p>'+
-        '<h2 class="section-title" style="font-size:1.05rem;">사주를 먼저 확인해주세요</h2>'+
+        '<h2 class="section-title" style="font-size:1.05rem;">생일만 넣으면 오늘 운세가 열려요</h2>'+
         '<p class="section-desc">생년월일을 입력하면 오늘부터 이번 주, 이번 달의 흐름까지 확인할 수 있어요.</p>'+
-        '<button type="button" class="btn-primary" id="btn-today-goto-saju">사주풀이로 가기</button>'+
+        '<ul class="empty-peek" aria-hidden="true"><li><b>오늘</b><span>마음이 먼저 움직이는 날</span></li><li><b>이번 주</b><span>목요일에 말을 아끼세요</span></li><li><b>이번 달</b><span>셋째 주에 좋은 소식</span></li></ul>'+
+        '<button type="button" class="btn-primary" id="btn-today-goto-saju" data-return-tab="today">생일 넣고 오늘 운세 보기</button><p class="empty-note">무료 · 가입 없이 바로 볼 수 있어요</p>'+
       '</div>';
-    $('#btn-today-goto-saju').addEventListener('click', function(){ switchTab('saju'); });
     return;
   }
   root.innerHTML =
@@ -5514,7 +5524,8 @@ function showContentIntro(concept,next){
   '<button type="button" class="ci-close" data-close aria-label="닫기">'+uiIcon('close')+'</button><div class="ci-body">'+
   '<p class="ci-kicker">'+esc(ban.kicker)+' · 앞부분 무료</p><h2 class="ci-title">'+ban.title+'</h2>'+
   '<ul class="ci-list">'+info.list.map(function(t){return '<li>'+uiIcon('check')+'<span>'+esc(t)+'</span></li>';}).join('')+'</ul>'+
-  '<button type="button" class="btn-primary ci-go">생일 넣고 바로 보기</button><p class="ci-note">생일만 넣으면 바로 내 이야기가 열려요.</p></div></div>';
+  '<div class="ci-price"><span><b>앞부분</b>무료</span><span><b>전체 보기</b>'+(isNewYear(concept)?NEWYEAR_CONCEPT.price_krw:isIan(concept)?IAN_CONCEPT.price_krw:REPORT_STAGE_PRICE.story).toLocaleString('ko-KR')+'원</span><span><b>다시 보기</b>1년</span></div>'+
+  '<button type="button" class="btn-primary ci-go">생일 넣고 무료로 읽기</button><p class="ci-note">가입 없이 바로 열려요. 결제는 무료 부분을 읽어 보고 정하면 돼요.</p></div></div>';
  var close=function(){root.innerHTML='';};
  $('.ci-close',root).addEventListener('click',function(){close();PENDING_REPORT=null;var n=$('#pending-report-note');if(n)n.remove();});
  $('.ci-go',root).addEventListener('click',function(){close();setTimeout(next,380);});
@@ -7079,7 +7090,8 @@ function renderMyRoomLocal(root){
     root.innerHTML =
       '<div class="sky-head"><p class="eyebrow">궁합</p><h2 class="album-heading">나의 별자리</h2></div>'+
       '<div class="myroom-empty"><img class="myroom-empty-ill" src="'+MASCOT_EMPTY_IMG+'" alt="" width="84" height="84">'+
-      '<span>내 사주를 먼저 입력하면 나의 별자리가 만들어져요.</span></div>';
+      '<span>내 사주를 넣으면 나의 별자리가 만들어지고, 링크를 보낸 친구와의 궁합이 여기에 쌓여요.</span>'+
+      '<button type="button" class="btn-primary" data-return-tab="compat">생일 넣고 내 별자리 만들기</button></div>';
     return;
   }
   if (INVITE_MYROOM_CACHE === null){
@@ -8283,6 +8295,7 @@ function initSajuForm(){
         attemptInviteRedeem(opts);
         saveMySajuToServer(opts);
         openPendingReport();
+        if(RETURN_TAB){var rtb=RETURN_TAB;RETURN_TAB=null;switchTab(rtb);window.scrollTo({top:0,behavior:'instant'});}
       });
     }catch(err){
       var el=$('#saju-form-error');if(!el){el=document.createElement('p');el.id='saju-form-error';el.className='form-error';el.setAttribute('role','alert');$('#saju-form').appendChild(el);}el.textContent='입력값을 다시 확인해주세요. '+err.message;
