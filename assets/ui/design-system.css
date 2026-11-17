@@ -495,3 +495,6 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .dviz-force em{font-style:normal;font-size:.7rem;color:#8a8d99}.dviz-force li.on em{color:#9a6a12}
 .dviz-force li:last-child:nth-child(odd){grid-column:1/-1}
 @media(prefers-reduced-motion:reduce){.dviz-track i{animation:none}}
+/* 결제 안내: 그림을 낮게 잘라 제목·가격 버튼이 한 화면 안에 더 빨리 보이게 */
+.reader-offer>figure:first-child img{aspect-ratio:16/10!important;height:auto!important;object-fit:cover;object-position:50% 22%}
+.reader-offer .offer-toc{margin-top:22px}
