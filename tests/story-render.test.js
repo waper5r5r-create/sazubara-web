@@ -391,3 +391,20 @@ test('paid 10-year lists: 같은 흐름의 해가 되풀이되어도 이름표�
   }
   const ml=require('../api/_marriage-content.js').detail.yearLines.label;assert.notEqual(ml.xing[0],ml.hai[0]);assert.notEqual(ml.hai[0],ml.yuanjin[0]);
 });
+
+test('paid 10-year paragraphs: 같은 기운의 해·10년이 다시 나와도 긴 문단이 둘째 문장으로 바뀐다',()=>{
+  const V=require('../api/_year-variants.js');
+  for(const f of ['love','career','marriage','wealth']){
+    const m=require('../api/_'+f+'-content.js');
+    for(const [name,set] of [['text',m.story.yearTextLines],['tg',m.story.yearTgLines],['long',m.detail.yearTgLongLines]].concat(f==='wealth'?[]:[['act',m.detail.yearActionLines]])){
+      assert.ok(set&&Object.keys(set).length>=5,f+' '+name);
+      for(const [k,v] of Object.entries(set)){assert.equal(v.length,2,f+' '+name+' '+k);assert.notEqual(v[0],v[1],f+' '+name+' '+k);}
+    }
+    for(const g of ['jaeseong','gwanseong','siksang','inseong','bigyeop'])assert.ok(m.detail.daeunAdvice2[g],f+' daeun '+g);
+  }
+  assert.equal((html.match(/yG\(deep\.yearTgLongLines,r\.tg,/g)||[]).length,4);
+  assert.equal((html.match(/yR\(deep\.yearActionLines,r\.rel,/g)||[]).length,3);
+  assert.equal((html.match(/sT\(story\.yearTextLines,r\.rel,rel\.text\)/g)||[]).length,4);
+  assert.equal((html.match(/i>0&&SS_GROUP\[periods\[i-1\]\.ss\]===/g)||[]).length,4);
+  assert.deepEqual(V.lines({a:'x'},{a:'y'}).a,['x','y']);
+});

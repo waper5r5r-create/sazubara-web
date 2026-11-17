@@ -159,4 +159,10 @@ require('./_stem-persona').wealth(story, detail);
 detail.relLabel = Object.fromEntries(Object.entries(story.yearByRelation).map(([k, v]) => [k, v.label]));
 // 10년 흐름 이름표를 같은 흐름의 해마다 돌려 쓰기 위한 문장 묶음(화면에서 차례로 꺼내 쓴다).
 story.yearLabels = detail.yearLines ? detail.yearLines.label : undefined;
+// 같은 기운의 해가 두 번 나올 때 둘째 문장으로 바꿔 쓴다(api/_year-variants.js).
+const YV = require('./_year-variants');
+story.yearTextLines = YV.lines(story.yearByRelation, YV.wealth.story.text, x => x && x.text);
+story.yearTgLines = YV.lines(story.yearByTenGod, YV.wealth.story.tg);
+detail.daeunAdvice2 = YV.daeunAdvice2.wealth;
+detail.yearTgLongLines = YV.lines(detail.yearTgLong, YV.wealth.deep.tgLong);
 module.exports = {concept, story, detail};
