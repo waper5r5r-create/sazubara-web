@@ -46,4 +46,20 @@ const scaleMove = {
   deficit: '지금 저울은 새는 쪽이 조금 무거워요. 버는 힘이 약해서가 아니라 나가는 길이 많아서예요. 나가는 길을 세 개(고정비, 생활비, 나를 위한 돈)로 좁히고 각각 한도를 정하면, 같은 수입으로도 저울이 금방 반대로 기울어요.'
 };
 
-module.exports = {yearWorker, yearFree, elementWork, elementFill, jaeKeep, scaleMove};
+// 같은 기운의 해가 두 번째로 나올 때 쓰는 문장. 첫 줄은 기본 문장과 같다.
+const yearWorkerLines = {
+  jaeseong: [yearWorker.jaeseong, '성과가 돈으로 이어지기 쉬운 해예요. 맡은 일의 결과를 숫자로 남겨 두고 평가 때 꺼내세요.'],
+  siksang: [yearWorker.siksang, '새로운 방식을 제안하기 좋은 해예요. 작은 개선이라도 내 이름으로 남겨 두세요.'],
+  gwanseong: [yearWorker.gwanseong, '책임이 늘어나는 해예요. 맡는 만큼 조건도 함께 이야기해 두세요.'],
+  inseong: [yearWorker.inseong, '배운 것이 몸에 붙는 해예요. 회사 밖 공부도 다음 이직의 재료가 돼요.'],
+  bigyeop: [yearWorker.bigyeop, '동료와 비교하는 마음이 커지는 해예요. 남의 연봉보다 내 성장 속도를 기준으로 삼으세요.']
+};
+const yearFreeLines = {
+  jaeseong: [yearFree.jaeseong, '들어오는 돈이 늘기 쉬운 해예요. 미수금과 정산 날짜를 꼼꼼히 챙기세요.'],
+  siksang: [yearFree.siksang, '내 솜씨가 알려지기 좋은 해예요. 작업 사례를 꾸준히 보여 주면 일이 따라와요.'],
+  gwanseong: [yearFree.gwanseong, '믿을 만한 거래처가 생기기 쉬운 해예요. 오래 갈 곳과는 조건을 문서로 정리하세요.'],
+  inseong: [yearFree.inseong, '도구와 배움에 투자하기 좋은 해예요. 다음 해의 매출을 위한 준비라고 생각하세요.'],
+  bigyeop: [yearFree.bigyeop, '같은 일을 하는 사람이 늘어나는 해예요. 가격 경쟁보다 나만의 강점을 분명히 하세요.']
+};
+
+module.exports = {yearWorkerLines, yearFreeLines, yearWorker, yearFree, elementWork, elementFill, jaeKeep, scaleMove};

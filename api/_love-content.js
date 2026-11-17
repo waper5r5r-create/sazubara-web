@@ -162,4 +162,6 @@ const detail = require('./_love-deep');
 
 require('./_stem-persona').love(story, detail);
 detail.relLabel = Object.fromEntries(Object.entries(story.yearByRelation).map(([k, v]) => [k, v.label]));
+// 10년 흐름 이름표를 같은 흐름의 해마다 돌려 쓰기 위한 문장 묶음(화면에서 차례로 꺼내 쓴다).
+story.yearLabels = detail.yearLines ? detail.yearLines.label : undefined;
 module.exports = {concept, story, detail};

@@ -102,4 +102,36 @@ const monthLines = {
   }
 };
 
-module.exports = {strengthDeep, stageType, yearTgLong, yearRelNote, yearTodo, yearDaeun, monthByTg, monthAdvice, monthLines, daeunDeep, daeunAdvice};
+// 10년 흐름에서 같은 흐름의 해가 다시 나올 때 차례로 꺼내 쓰는 문장들. 각 묶음의 첫 줄은 기본 문장과 같다.
+// label·relNote 는 그해 땅의 기운(관계) 기준, todo·worker·free 는 그해 기운(십성) 기준이다.
+const yearLines = {
+  label: {
+    liuhe: ['돈이 붙는 해', '들어온 돈이 머무는 해'],
+    sanhe: ['사람으로 돈이 들어오는 해', '소개가 돈이 되는 해', '함께해서 커지는 해'],
+    chong: ['돈의 흐름이 바뀌는 해', '큰 지출을 대비할 해'],
+    same: ['내 힘이 커지는 해', '돈 계획을 새로 짜는 해'],
+    none: ['차곡차곡 쌓는 해', '계획대로 모으는 해', '기본을 다지는 해', '조용히 불어나는 해', '꾸준함이 이기는 해'],
+    xing: ['꼼꼼히 따질 해', '서류를 챙길 해', '계약을 살필 해'],
+    hai: ['새는 돈 점검할 해', '작은 지출을 살필 해'],
+    yuanjin: ['돈 얘기 조심할 해', '가까운 사이 돈을 정리할 해']
+  },
+  relNote: {
+    liuhe: [yearRelNote.liuhe, '그해 기운이 내 자리와 맞물려요. 저축 목표를 한 단계 올려도 좋은 해예요.'],
+    sanhe: [yearRelNote.sanhe, '그해 기운이 내 자리로 모여요. 함께하는 일에서 몫이 생기기 쉬우니 역할을 분명히 해 두세요.'],
+    chong: [yearRelNote.chong, '그해 땅의 기운이 내 자리와 부딪혀요. 큰 계약이나 이동은 비용을 넉넉히 잡고 움직이세요.'],
+    same: [yearRelNote.same, '그해 땅의 기운이 내 자리와 같아요. 내 판단이 강해지는 만큼 큰돈은 한 번 더 물어보고 정하세요.'],
+    xing: [yearRelNote.xing, '그해 땅의 기운이 내 자리와 날카롭게 만나요. 세금과 납부 기한을 달력에 미리 적어 두세요.'],
+    hai: [yearRelNote.hai, '그해 땅의 기운이 내 자리와 은근히 어긋나요. 쓰지 않는 구독과 회비를 정리하기 좋은 해예요.'],
+    yuanjin: [yearRelNote.yuanjin, '그해 기운이 내 자리와 엇갈려요. 가족이나 친구와의 돈 거래는 금액과 기한을 글로 남기세요.'],
+    none: [yearRelNote.none, '그해 땅의 기운이 내 자리를 흔들지 않아요. 자동이체 저축처럼 꾸준한 장치가 힘을 내는 해예요.', '그해 땅의 기운이 잔잔해요. 큰 변화보다 새는 돈을 막는 것만으로도 남는 해예요.', '그해 땅의 기운이 고르게 흘러요. 비상금을 채우고 다음 기회를 기다리기 좋은 해예요.', '그해 땅의 기운이 조용해요. 돈 공부를 하나 시작해 두면 다음 좋은 해에 쓰여요.']
+  },
+  todo: {
+    jaeseong: [yearTodo.jaeseong, ['받을 돈과 정산을 미루지 않기', '수입이 늘면 저축 비율부터 올리기', '큰 소비는 하루 기다린 뒤 결정하기']],
+    siksang: [yearTodo.siksang, ['내 기술로 할 수 있는 일 하나 시험해 보기', '결과물을 모아 한곳에 정리하기', '무료로 해 주던 일에 값 매겨 보기']],
+    gwanseong: [yearTodo.gwanseong, ['세금과 납부 기한 달력에 적기', '오래 갈 자리인지 기준으로 고르기', '지친 날의 보상 지출 줄이기']],
+    inseong: [yearTodo.inseong, ['배움에 쓸 예산 미리 정하기', '돈 관리 방법 하나 익히기', '급한 투자 권유는 한 달 미루기']],
+    bigyeop: [yearTodo.bigyeop, ['함께 쓰는 돈은 나눌 방식 먼저 정하기', '남 따라 하는 소비 한 번 더 묻기', '동업 이야기는 역할과 몫부터 적기']]
+  }
+};
+
+module.exports = {strengthDeep, stageType, yearTgLong, yearRelNote, yearTodo, yearDaeun, yearLines, monthByTg, monthAdvice, monthLines, daeunDeep, daeunAdvice};

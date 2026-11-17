@@ -132,4 +132,48 @@ const monthLines = {
   }
 };
 
-module.exports = {yearSolo, yearCouple, yearAction, yearTenGodLong, yearTodo, yearDaeun, monthByRelation, monthAdvice, monthTenGod, monthLines, daeunDeep, daeunAdvice};
+// 10년 흐름에서 같은 흐름의 해가 다시 나올 때 차례로 꺼내 쓰는 문장들. 각 묶음의 첫 줄은 기본 문장과 같다.
+const yearLines = {
+  label: {
+    liuhe: ['마음이 저절로 닿는 해', '말이 잘 통하는 사람이 다가오는 해'],
+    sanhe: ['인연이 모여드는 해', '사람 사이에서 인연이 닿는 해', '소개가 반가운 해'],
+    chong: ['마음이 크게 움직이는 해', '관계에 물결이 이는 해'],
+    same: ['내 마음을 들여다보는 해', '내 연애 기준이 선명해지는 해'],
+    none: ['조용히 관계를 다지는 해', '일상 속에서 가까워지는 해', '나를 먼저 가꾸는 해', '천천히 마음이 쌓이는 해', '편안함이 무기가 되는 해'],
+    xing: ['가시를 다듬는 해', '말의 온도를 고르는 해', '예민함을 다독이는 해'],
+    hai: ['오해를 풀어가는 해', '마음을 확인하는 해'],
+    yuanjin: ['거리를 조절하는 해', '각자의 시간이 필요한 해']
+  },
+  solo: {
+    liuhe: [yearSolo.liuhe, '마음이 통하는 사람이 의외로 가까이 있을 수 있어요. 자주 연락하는 사람을 다시 보세요.'],
+    sanhe: [yearSolo.sanhe, '친구의 친구, 동료의 소개처럼 한 다리 건넌 인연이 반가운 해예요.'],
+    chong: [yearSolo.chong, '평소 내 취향과 다른 사람에게 끌릴 수 있어요. 열어두되 서두르지는 마세요.'],
+    same: [yearSolo.same, '혼자 보내는 시간이 즐거운 해예요. 그 여유가 오히려 사람을 끌어당겨요.'],
+    none: [yearSolo.none, '운동, 취미, 공부처럼 꾸준히 가는 곳에서 인연이 생기기 쉬워요.', '연애를 서두르기보다 나를 가꾸는 해예요. 생기가 돌면 먼저 다가오는 사람이 생겨요.', '오래 알던 사람이 다르게 보이는 순간이 올 수 있어요. 그 마음을 흘려보내지 마세요.'],
+    xing: [yearSolo.xing, '사소한 단점에 마음이 식기 쉬운 해예요. 한 번 더 만나 보고 판단하세요.'],
+    hai: [yearSolo.hai, '연락이 애매하게 이어지는 사람이 생기기 쉬워요. 내 마음부터 정리해 보세요.'],
+    yuanjin: [yearSolo.yuanjin, '친한 사이에서 마음이 엇갈리기 쉬워요. 고백은 분위기를 충분히 살핀 뒤에 하세요.']
+  },
+  couple: {
+    liuhe: [yearCouple.liuhe, '함께하는 시간이 편안해지는 해예요. 앞으로의 계획을 하나씩 같이 정해 보세요.'],
+    sanhe: [yearCouple.sanhe, '서로의 친구와 가족이 관계를 응원해 주는 해예요. 함께 어울리는 자리를 만들어 보세요.'],
+    chong: [yearCouple.chong, '생활이 바뀌면서 관계도 흔들릴 수 있어요. 바뀐 상황을 함께 정리해 보세요.'],
+    same: [yearCouple.same, '각자 원하는 것이 분명해지는 해예요. 서로의 기준을 솔직하게 나눠 보세요.'],
+    none: [yearCouple.none, '특별한 이벤트보다 매일의 안부가 관계를 지키는 해예요.', '함께 배우거나 운동할 거리를 하나 만들어 보세요. 새로운 공통점이 생겨요.', '익숙함이 편안함으로 자리 잡는 해예요. 고마운 마음을 말로 자주 꺼내 주세요.'],
+    xing: [yearCouple.xing, '피곤할 때 말이 날카로워지기 쉬워요. 지친 날은 이야기를 다음 날로 미루세요.'],
+    hai: [yearCouple.hai, '서로 바쁜 사이 오해가 끼어들기 쉬워요. 일정과 약속을 함께 확인하는 습관을 만드세요.'],
+    yuanjin: [yearCouple.yuanjin, '함께 있어도 마음이 멀게 느껴질 때가 있어요. 따로 보내는 시간이 오히려 도움이 돼요.']
+  },
+  todo: {
+    liuhe: [yearTodo.liuhe, ['자주 연락하는 사람에게 먼저 만나자고 하기', '연애 중이라면 함께할 다음 계획 하나 정하기', '고마운 마음을 그때그때 말로 전하기']],
+    sanhe: [yearTodo.sanhe, ['소개 제안은 한 번은 받아보기', '친구들과의 모임에 꾸준히 얼굴 비추기', '함께할 수 있는 취미 모임 찾아보기']],
+    chong: [yearTodo.chong, ['바뀌는 상황을 연인과 함께 정리하기', '마음이 흔들릴 때 믿을 만한 친구에게 털어놓기', '급한 결정은 한 달 뒤에 다시 확인하기']],
+    same: [yearTodo.same, ['지난 연애에서 반복된 장면 하나 돌아보기', '양보할 수 없는 것 세 가지 정하기', '상대의 기준도 끝까지 들어 보기']],
+    none: [yearTodo.none, ['꾸준히 다니는 운동이나 취미 하나 만들기', '오래 알던 사람에게 안부 묻기', '나를 위한 작은 선물 하나 하기'], ['한 달에 한 번 새로운 곳 가 보기', '연인과 함께 볼 영화나 책 고르기', '잠과 식사를 먼저 챙기기'], ['내 생활 리듬 정돈하기', '고마운 사람에게 마음 표현하기', '다음 좋은 해에 하고 싶은 일 적어 두기']],
+    xing: [yearTodo.xing, ['지친 날에는 중요한 대화 미루기', '"나는 이랬어"로 말 시작하기', '서로의 쉬는 시간 지켜 주기']],
+    hai: [yearTodo.hai, ['약속과 일정은 함께 확인하기', '답이 늦어도 넘겨짚지 않기', '좋았던 일도 바로 말해 주기']],
+    yuanjin: [yearTodo.yuanjin, ['연락 횟수보다 만남의 질 챙기기', '혼자만의 취미 시간 갖기', '서운할 땐 하루 쉬고 이야기하기']]
+  }
+};
+
+module.exports = {yearSolo, yearCouple, yearAction, yearTenGodLong, yearTodo, yearDaeun, yearLines, monthByRelation, monthAdvice, monthTenGod, monthLines, daeunDeep, daeunAdvice};

@@ -114,4 +114,28 @@ const monthLines = {
   }
 };
 
-module.exports = {yearAction, yearTenGodLong, yearTodo, yearDaeun, monthByRelation, monthAdvice, monthTenGod, monthLines, daeunDeep, daeunAdvice};
+// 10년 흐름에서 같은 흐름의 해가 다시 나올 때 차례로 꺼내 쓰는 문장들. 각 묶음의 첫 줄은 기본 문장과 같다.
+const yearLines = {
+  label: {
+    liuhe: ['손잡을 사람이 나타나는 해', '좋은 연결이 생기는 해'],
+    sanhe: ['힘이 모여드는 해', '함께 판을 키우는 해', '일에 속도가 붙는 해'],
+    chong: ['길이 바뀌는 해', '자리가 움직이는 해'],
+    same: ['내 자리를 다지는 해', '전문성이 깊어지는 해'],
+    none: ['조용히 쌓는 해', '실력을 다지는 해', '다음을 준비하는 해', '기본기를 채우는 해', '꾸준함이 쌓이는 해'],
+    xing: ['마찰을 다듬는 해', '꼼꼼함이 필요한 해', '절차를 챙기는 해'],
+    hai: ['보이지 않는 틈을 메우는 해', '소통을 촘촘히 하는 해'],
+    yuanjin: ['거리를 조절하는 해', '일과 감정을 나누는 해']
+  },
+  todo: {
+    liuhe: [yearTodo.liuhe, ['도움받은 사람에게 감사 표시하기', '함께 일하고 싶은 사람에게 먼저 제안하기', '소개받은 기회는 한 번은 만나 보기']],
+    sanhe: [yearTodo.sanhe, ['맡은 일의 범위를 넓혀 보기', '함께한 사람의 공을 분명히 알리기', '큰 목표를 분기별로 나누기']],
+    chong: [yearTodo.chong, ['바뀐 역할에 맞춰 일의 우선순위 다시 정하기', '이동 전 인수인계 꼼꼼히 남기기', '제안은 하루 생각한 뒤 답하기']],
+    same: [yearTodo.same, ['내가 잘하는 일 하나를 자료로 정리하기', '같은 분야 사람들과 교류하기', '하던 일의 깊이를 한 단계 더하기']],
+    none: [yearTodo.none, ['이력서와 포트폴리오 최신으로 고치기', '반복 업무를 줄일 방법 하나 찾기', '관심 분야의 글 꾸준히 읽기'], ['짧은 강의나 교육 하나 듣기', '일의 순서를 문서로 남기기', '쉬는 날을 미리 정해 두기'], ['오래 연락 못 한 동료에게 안부 묻기', '올해 성과를 세 줄로 정리하기', '내년에 하고 싶은 일 미리 적기']],
+    xing: [yearTodo.xing, ['보내기 전에 한 번 더 읽기', '지적은 확인 질문으로 받기', '감정이 올라온 날은 결정 미루기']],
+    hai: [yearTodo.hai, ['마감과 담당을 표로 함께 보기', '들은 이야기는 당사자에게 확인하기', '작은 진행도 자주 알리기']],
+    yuanjin: [yearTodo.yuanjin, ['바라는 것을 미리 말해 두기', '혼자 정리하는 시간 갖기', '일 밖의 응원군 만들기']]
+  }
+};
+
+module.exports = {yearAction, yearTenGodLong, yearTodo, yearDaeun, yearLines, monthByRelation, monthAdvice, monthTenGod, monthLines, daeunDeep, daeunAdvice};

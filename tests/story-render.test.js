@@ -375,5 +375,19 @@ test('paid month lists: 같은 흐름의 달이 되풀이되어도 문장이 돌
   const min=k=>k==='none'?12:4;
   for(const m of [love,career]){check(m.monthLines.rel,m.monthByRelation,min);check(m.monthLines.advice,m.monthAdvice,min);check(m.monthLines.tg,m.monthTenGod,()=>6);assert.deepEqual(Object.keys(m.monthLines.rel).sort(),Object.keys(m.monthByRelation).sort());}
   check(wealth.monthLines.tg,wealth.monthByTg,()=>6);check(wealth.monthLines.advice,wealth.monthAdvice,min);assert.deepEqual(Object.keys(wealth.monthLines.advice).sort(),Object.keys(wealth.monthAdvice).sort());
-  check(marriage.monthLines.rel,marriage.monthByRelation,()=>6);check(marriage.monthLines.advice,marriage.monthAdvice,()=>6);
+  const mm=k=>k==='none'?6:4;check(marriage.monthLines.rel,marriage.monthByRelation,mm);check(marriage.monthLines.advice,marriage.monthAdvice,mm);
+});
+
+test('paid 10-year lists: 같은 흐름의 해가 되풀이되어도 이름표와 할 일이 돌아가며 바뀐다',()=>{
+  const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const at=html.indexOf('function lineRot(');const ctx={};vm.createContext(ctx);vm.runInContext(html.slice(at,html.indexOf('\n',at)),ctx);
+  const rot=ctx.lineRot();assert.deepEqual([rot({a:[null,'둘']},'a','기본'),rot({a:[null,'둘']},'a','기본')],['기본','둘']);
+  assert.equal(html.split('var YL=deep.yearLines||{}').length-1,4);assert.equal(html.split('sL(story.yearLabels,r.rel,rel.label)').length-1,3);
+  for(const n of ['love','career','wealth','marriage']){const m=require('../api/_'+n+'-content.js');const L=m.detail.yearLines;assert.ok(L&&L.label,n);
+    assert.equal(m.story.yearLabels,L.label,n);
+    for(const k of Object.keys(m.story.yearByRelation)){const v=L.label[k];assert.ok(Array.isArray(v)&&v.length>=2,n+' '+k);assert.equal(new Set(v).size,v.length,n+' '+k);}
+    assert.ok(L.label.none.length>=5,n);
+    for(const set of Object.keys(L).filter(x=>x!=='label'))for(const [k,v] of Object.entries(L[set])){const s=v.filter(x=>x!=null).map(x=>JSON.stringify(x));assert.equal(new Set(s).size,s.length,n+' '+set+' '+k);}
+  }
+  const ml=require('../api/_marriage-content.js').detail.yearLines.label;assert.notEqual(ml.xing[0],ml.hai[0]);assert.notEqual(ml.hai[0],ml.yuanjin[0]);
 });
