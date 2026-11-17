@@ -1306,17 +1306,43 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .ci-more{margin-top:36px}.ci-more section{padding:28px 0;border-top:1px solid #ffffff1a}
 .ci-more h3{margin:0 0 4px;font-family:'Noto Serif KR',serif;font-size:1.25rem;font-weight:600;color:#f6eedf}
 .ci-sub{margin:0 0 16px;font-size:.8125rem;line-height:1.55;color:#aab1c8;word-break:keep-all}
-.ci-art3{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;height:300px}
-.ci-art3 img{display:block;min-height:0;width:100%;height:100%;object-fit:cover;border-radius:14px;background:#151b38}.ci-art3 img:first-child{grid-row:1/3}
 .ci-toc{margin:0;padding:0;list-style:none;counter-reset:t;display:grid;grid-template-columns:1fr 1fr;gap:2px 14px}
 .ci-toc li{counter-increment:t;position:relative;padding:6px 0 6px 24px;font-size:.8125rem;line-height:1.45;color:#d6d9e6;word-break:keep-all}
 .ci-toc li::before{content:counter(t);position:absolute;left:0;top:6px;width:18px;text-align:right;font-family:'Noto Serif KR',serif;font-size:.75rem;color:#e9c27a}
-.ci-trust{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.ci-trust li{display:flex;flex-direction:column;gap:3px;padding:14px 16px;border-radius:14px;background:#ffffff0d;border:1px solid #ffffff14}
-.ci-trust b{font-size:.9375rem;color:#f3e2b8}.ci-trust span{font-size:.8125rem;line-height:1.55;color:#c3c8db;word-break:keep-all}
 .ci-faq{margin:0}.ci-faq dt{margin-top:14px;font-size:.9375rem;font-weight:700;color:#f6eedf}.ci-faq dt:first-child{margin-top:0}
 .ci-faq dd{margin:4px 0 0;font-size:.8125rem;line-height:1.6;color:#c3c8db}.ci-faq a{color:#e9c27a}
 .ci-go-end{margin-top:8px}
+.ci-talk{display:flex;gap:10px;align-items:flex-end;margin:0 0 14px}
+.ci-face{flex:none;width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:50% 20%;background:#1b2246;border:2px solid #e9c27a66}
+.ci-face.pop{animation:ci-face .35s ease}
+.ci-bubble{position:relative;margin:0;padding:11px 14px;border-radius:16px 16px 16px 4px;background:#ffffff14;border:1px solid #ffffff1f;font-size:.875rem;line-height:1.55;color:#eef0f7;word-break:keep-all}
+.ci-bubble b{display:block;font-size:.72rem;color:#e9c27a;margin-bottom:2px}
+.ci-bubble.pop{animation:ci-say .35s ease}
+@keyframes ci-face{0%{transform:scale(.85)}60%{transform:scale(1.08)}100%{transform:none}}
+@keyframes ci-say{0%{opacity:.3;transform:translateY(4px)}100%{opacity:1;transform:none}}
+.ci-form{margin:0 0 12px;padding:16px;border-radius:20px;background:#ffffff0b;border:1px solid #ffffff1a}
+.ci-pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 16px}
+.ci-pillars div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 6px;border-radius:12px;border:1px dashed #ffffff2e;color:#ffffff40;font-family:'Noto Serif KR',serif;font-size:1.3rem;line-height:1.25;transition:background .3s,border-color .3s,color .3s}
+.ci-pillars em{font-style:normal;font-family:var(--font-body,sans-serif);font-size:.65rem;color:#8f96b4;margin-top:2px}
+.ci-pillars div.on{border:1px solid #e9c27a99;background:linear-gradient(180deg,#e9c27a24,#e9c27a08);color:#f6dca0}
+.ci-pillars div.lit{animation:ci-lit .7s ease}
+@keyframes ci-lit{0%{box-shadow:0 0 0 0 #e9c27a00;transform:translateY(4px)}40%{box-shadow:0 0 22px 2px #e9c27a66}100%{box-shadow:0 0 0 0 #e9c27a00;transform:none}}
+.ci-f{display:block;margin:0 0 14px}
+.ci-f>span,.ci-two label>span{display:block;margin:0 0 6px;font-size:.78rem;font-weight:700;color:#c9cde0}
+.ci-f small{font-weight:400;color:#8f96b4;margin-left:4px}
+.ci-form input[type=text],.ci-form input[inputmode],.ci-form select{width:100%;box-sizing:border-box;height:48px;padding:0 14px;border-radius:12px;border:1px solid #ffffff26;background:#0b1026;color:#f6eedf;font:inherit;font-size:16px}
+.ci-form input:focus,.ci-form select:focus{outline:none;border-color:#e9c27a}
+.ci-form input::placeholder{color:#6f7695}
+.ci-seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ci-seg button{height:46px;border-radius:12px;border:1px solid #ffffff26;background:transparent;color:#c9cde0;font:inherit;font-size:.9375rem}
+.ci-seg button.on{background:#e9c27a;border-color:#e9c27a;color:#15172e;font-weight:700}
+.ci-seg-sm{width:132px;gap:4px;margin:0 0 8px}.ci-seg-sm button{height:32px;font-size:.8125rem}
+.ci-date{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px}.ci-date input{text-align:center}
+.ci-leap{display:flex;gap:6px;align-items:center;margin-top:8px;font-size:.8125rem;color:#c9cde0}
+.ci-two{display:grid;grid-template-columns:1.3fr 1fr;gap:8px}
+.ci-err{margin:0 0 8px;font-size:.8125rem;color:#ff9f8f}.ci-err:empty{display:none}
+.ci-submit{width:100%;margin-top:4px}
+@media(prefers-reduced-motion:reduce){.ci-face.pop,.ci-bubble.pop,.ci-pillars div.lit{animation:none}}
 @keyframes ci-in{from{opacity:0}to{opacity:1}}
 @keyframes ci-zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
 @keyframes ci-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -5531,43 +5557,101 @@ CONTENT_INTRO['운명의-사람은-언제-올까-fyq1z']={slug:'love',list:['내
 CONTENT_INTRO['타고난-재물복은-얼마나-될까-k7dxw']={slug:'money',list:['돈이 들어오는 힘과 새는 힘 점수','돈 흐름이 좋은 세 해','지출·저축·투자, 나에게 맞는 방법']};
 CONTENT_INTRO['7c5db9e6-59cb-4a81-8b0a-73da4db7b051']={slug:'work',list:['일하는 스타일과 잘 맞는 일','길이 크게 열리는 세 해','이직·연봉·번아웃, 상황별 대응']};
 CONTENT_INTRO['dc6f87f4-86a7-47ce-ae91-3f6715dee2b0']={slug:'marriage',list:['나와 잘 맞는 배우자 유형','결혼운이 좋은 세 해','함께 살 때 다툼·돈·양가 가족']};
-/* 인스타 등에서 ?c=love 로 바로 들어온 사람이 생일을 넣기 전에 무엇을 받는지 보는 랜딩. 사주가 없을 때만 보인다. */
+/* 인스타 등에서 ?c=love 로 바로 들어온 사람에게 보이는 랜딩. 첫 화면에서 바로 생일을 넣고, 풀이꾼이 입력에 맞춰 말을 건다. 사주가 없을 때만 보인다. */
 var CI_MORE={
- love:{toc:'love',art:['/assets/love/scenes/date.webp','/assets/love/scenes/confession.webp','/assets/love/scenes/future.webp']},
- money:{toc:'wealth',art:['/assets/wealth/scenes/ledger-open.webp','/assets/wealth/scenes/scale.webp','/assets/wealth/scenes/receipt.webp']},
- work:{toc:'career',art:['/assets/career/scenes/map-reveal.webp','/assets/career/scenes/job-change.webp','/assets/career/scenes/pay-growth.webp']},
- marriage:{toc:'marriage',art:['/assets/marriage/scenes/year-gather.webp','/assets/marriage/scenes/detail-talk.webp','/assets/marriage/scenes/timeline.webp']},
- ian:{art:['/assets/ian/w-greenhouse.webp','/assets/ian/candle-back.webp','/assets/ian/w-museum.webp']},
- '2027':{art:['/assets/daon/spring.webp','/assets/daon/summer.webp','/assets/daon/autumn.webp']}
+ love:{toc:'love',who:'해랑',face:'/assets/love/faces/haerang-',f:{hi:'smile',think:'thinking',wow:'surprised',ok:'wink',go:'cheer'},hi:'어서 와요. 생일을 알려 주면 당신의 연애를 꽃으로 읽어 줄게요.'},
+ money:{toc:'wealth',who:'금비',face:'/assets/wealth/faces/gumbi-',f:{hi:'smile',think:'thinking',wow:'surprised',ok:'wink',go:'cheer'},hi:'장부를 펼쳐 둘게요. 생일부터 알려 주면 돈이 새는 곳을 찾아 볼게요.'},
+ work:{toc:'career',who:'서림',face:'/assets/career/faces/seorim-',f:{hi:'smile',think:'thinking',wow:'surprised',ok:'wink',go:'cheer'},hi:'지도를 펴 두었어요. 생일을 알려 주면 당신에게 맞는 길을 찾아 볼게요.'},
+ marriage:{toc:'marriage',who:'월하',face:'/assets/marriage/faces/wolha-',f:{hi:'smile',think:'thinking',wow:'surprised',ok:'wink',go:'cheer'},hi:'붉은 실의 끝을 찾으려면 당신의 생일이 필요해요.'},
+ ian:{who:'이안',face:'/assets/ian/f-',f:{hi:'smell',think:'side',wow:'surprise',ok:'shh',go:'laugh'},hi:'향을 고르기 전에, 당신이 태어난 날부터 알려 줄래요?'},
+ '2027':{who:'다온',face:'/assets/daon/f-',f:{hi:'smile',think:'shy',wow:'surprise',ok:'wink',go:'cheer'},hi:'편지를 전하려면 받는 사람 생일이 필요해요!'}
 };
-function contentIntroMore(slug){
- var m=CI_MORE[slug];if(!m)return '';var toc=m.toc&&DEEP_TOC[m.toc];
+function contentIntroForm(m){
+ var bands=BIRTH_BANDS.slice(0,12).map(function(b,i){return '<option value="'+i+'">'+b.name+' · '+b.range+'</option>';}).join('');
+ var city=$('#f-city')?$('#f-city').innerHTML:'<option>서울</option>';
+ return '<div class="ci-talk"><img class="ci-face" src="'+m.face+m.f.hi+'.webp" alt="" width="52" height="52"><p class="ci-bubble"><b>'+m.who+'</b><span data-ci-say>'+esc(m.hi)+'</span></p></div>'+
+  '<form class="ci-form" novalidate>'+
+   '<div class="ci-pillars" aria-hidden="true">'+['시','일','월','년'].map(function(k){return '<div data-ci-p="'+k+'"><span>?</span><span>?</span><em>'+k+'</em></div>';}).join('')+'</div>'+
+   '<label class="ci-f"><span>이름 <small>풀이에서 불러 드릴 이름 · 비워도 돼요</small></span><input type="text" data-ci="name" maxlength="12" autocomplete="given-name" placeholder="이름 또는 별명"></label>'+
+   '<div class="ci-f"><span>성별</span><div class="ci-seg" data-ci="gender"><button type="button" data-val="f">여성</button><button type="button" data-val="m">남성</button></div></div>'+
+   '<div class="ci-f"><span>생년월일</span><div class="ci-seg ci-seg-sm" data-ci="cal"><button type="button" data-val="solar" class="on">양력</button><button type="button" data-val="lunar">음력</button></div>'+
+    '<div class="ci-date"><input inputmode="numeric" maxlength="4" data-ci="yy" placeholder="1995" aria-label="태어난 해"><input inputmode="numeric" maxlength="2" data-ci="mm" placeholder="월" aria-label="태어난 달"><input inputmode="numeric" maxlength="2" data-ci="dd" placeholder="일" aria-label="태어난 날"></div>'+
+    '<label class="ci-leap" data-ci="leapRow" hidden><input type="checkbox" data-ci="leap"> 윤달이에요</label></div>'+
+   '<div class="ci-f ci-two"><label><span>태어난 시간</span><select data-ci="time"><option value="">몰라요</option>'+bands+'</select></label><label><span>태어난 곳</span><select data-ci="city">'+city+'</select></label></div>'+
+   '<p class="ci-err" data-ci="err" role="alert"></p>'+
+   '<button type="submit" class="btn-primary ci-submit">'+m.who+'에게 내 이야기 듣기</button>'+
+  '</form>';
+}
+function contentIntroMore(m){
+ var toc=m.toc&&DEEP_TOC[m.toc];
  return '<div class="ci-more">'+
-  '<section><h3>이야기 속 장면</h3><p class="ci-sub">글 사이사이에 이런 그림이 함께 나와요.</p><div class="ci-art3">'+m.art.map(function(u){return '<img src="'+u+'" alt="" loading="lazy" decoding="async">';}).join('')+'</div></section>'+
   (toc?'<section><h3>담긴 내용 '+toc.length+'가지</h3><p class="ci-sub">앞부분 이야기는 무료로 읽고, 결제하면 아래 리포트가 모두 열려요.</p><ol class="ci-toc">'+toc.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol></section>':'')+
-  '<section><h3>대충 계산하지 않아요</h3><p class="ci-sub">같은 생일이어도 계산법에 따라 사주가 달라져요.</p><ul class="ci-trust">'+
-   '<li><b>절기가 바뀌는 시각까지</b><span>입춘·절기 당일에 태어났어도 한국 시각으로 정확히 나눠요.</span></li>'+
-   '<li><b>서머타임 출생 보정</b><span>서머타임 기간에 태어났다면 한 시간을 빼고 계산해요.</span></li>'+
-   '<li><b>태어난 지역의 실제 시각</b><span>태어난 곳의 경도에 맞춰 시간을 고쳐요.</span></li></ul></section>'+
   '<section><h3>궁금한 점</h3><dl class="ci-faq">'+
    '<dt>태어난 시간을 몰라도 되나요?</dt><dd>네. 시간 없이 여섯 글자로 풀어요. 시간을 알면 더 자세해져요.</dd>'+
    '<dt>결제하면 언제까지 볼 수 있나요?</dt><dd>결제 즉시 열리고, 결제일로부터 1년 동안 다시 볼 수 있어요.</dd>'+
    '<dt>환불은 어떻게 하나요?</dt><dd><a href="/legal.html#refund" target="_blank" rel="noopener">환불 정책</a>에서 자세히 볼 수 있어요.</dd></dl></section>'+
-  '<button type="button" class="btn-primary ci-go ci-go-end">생일 넣고 무료로 읽기</button></div>';
+  '<button type="button" class="btn-primary ci-go-end">위로 올라가 생일 넣기</button></div>';
 }
 function showContentIntro(concept,next){
- var root=$('#intro-sheet-root'),info=CONTENT_INTRO[String(concept.id)],ban=HOME_BANNERS.filter(function(b){return b.id===String(concept.id);})[0];
- if(!root||!info||!ban){next();return;}
+ var root=$('#intro-sheet-root'),info=CONTENT_INTRO[String(concept.id)],ban=HOME_BANNERS.filter(function(b){return b.id===String(concept.id);})[0],m=info&&CI_MORE[info.slug];
+ if(!root||!info||!ban||!m){next();return;}
+ var price=(isNewYear(concept)?NEWYEAR_CONCEPT.price_krw:isIan(concept)?IAN_CONCEPT.price_krw:REPORT_STAGE_PRICE.story).toLocaleString('ko-KR');
  root.innerHTML='<div class="ci" role="dialog" aria-modal="true" aria-label="'+esc(concept.title)+'"><div class="ci-art"><img src="'+ban.img+'" alt="" decoding="async"></div>'+
   '<button type="button" class="ci-close" data-close aria-label="닫기">'+uiIcon('close')+'</button><div class="ci-body">'+
   '<p class="ci-kicker">'+esc(ban.kicker)+' · 앞부분 무료</p><h2 class="ci-title">'+ban.title+'</h2>'+
+  contentIntroForm(m)+
+  '<p class="ci-note">가입 없이 바로 열려요 · 앞부분 무료 · 전체 보기 '+price+'원</p>'+
   '<ul class="ci-list">'+info.list.map(function(t){return '<li>'+uiIcon('check')+'<span>'+esc(t)+'</span></li>';}).join('')+'</ul>'+
-  '<div class="ci-price"><span><b>앞부분</b>무료</span><span><b>전체 보기</b>'+(isNewYear(concept)?NEWYEAR_CONCEPT.price_krw:isIan(concept)?IAN_CONCEPT.price_krw:REPORT_STAGE_PRICE.story).toLocaleString('ko-KR')+'원</span><span><b>다시 보기</b>1년</span></div>'+
-  '<button type="button" class="btn-primary ci-go">생일 넣고 무료로 읽기</button><p class="ci-note">가입 없이 바로 열려요. 결제는 무료 부분을 읽어 보고 정하면 돼요.</p>'+contentIntroMore(info.slug)+'</div></div>';
+  contentIntroMore(m)+'</div></div>';
+ trackStep('landing_view',info.slug);
  var close=function(){root.innerHTML='';};
+ var q=function(k){return root.querySelector('[data-ci="'+k+'"]');};
+ var face=root.querySelector('.ci-face'),say=root.querySelector('[data-ci-say]'),mood='hi',st={gender:'',lunar:false},started=false;
+ function talk(md,text){if(md!==mood){mood=md;face.src=m.face+m.f[md]+'.webp';face.classList.remove('pop');void face.offsetWidth;face.classList.add('pop');}if(say.textContent!==text){say.textContent=text;say.parentNode.classList.remove('pop');void say.offsetWidth;say.parentNode.classList.add('pop');}}
+ function opts(){
+  var y=+q('yy').value,mo=+q('mm').value,d=+q('dd').value,t=q('time').value;
+  if(q('yy').value.length!==4||y<1900||y>new Date().getFullYear()||!mo||mo>12||!d||d>31)return null;
+  var b=t===''?null:BIRTH_BANDS[+t],hm=b?b.t.split(':'):null;
+  return {year:y,month:mo,day:d,hour:b?+hm[0]:12,minute:b?+hm[1]:0,isLunar:st.lunar,isLeapMonth:st.lunar&&q('leap').checked,unknownTime:!b,gender:st.gender||'f',name:q('name').value.trim(),city:q('city').value||'서울',useCorrection:$('#f-correction')?$('#f-correction').checked:true};
+ }
+ function fillPillars(r){['time','day','month','year'].forEach(function(k,i){var el=root.querySelector('[data-ci-p="'+['시','일','월','년'][i]+'"]'),p=r&&r[k],sp=el.querySelectorAll('span'),txt=p?[p.gan,p.zhi]:['?','?'];if(sp[0].textContent!==txt[0]||sp[1].textContent!==txt[1]){sp[0].textContent=txt[0];sp[1].textContent=txt[1];el.classList.toggle('on',!!p);if(p){el.classList.remove('lit');void el.offsetWidth;el.classList.add('lit');}}});}
+ function refresh(){
+  var o=opts(),r=null;if(o){try{r=computeSaju(o);}catch(e){r=null;}}
+  fillPillars(r);q('err').textContent='';
+  if(!started){started=true;trackStep('birth_start',info.slug);}
+  var nm=q('name').value.trim();
+  if(r){var an=BIRTH_ANIMAL[r.year.zhiKr]||'';talk(o.unknownTime?'wow':'ok',o.unknownTime?(nm?nm+'님, ':'')+r.year.ganKr+r.year.zhiKr+'년 '+an+'띠군요. 태어난 시간도 알면 더 자세히 볼 수 있어요.':(nm?nm+'님의 ':'')+'여덟 글자가 다 모였어요. 이제 이야기를 시작할게요.');}
+  else if(q('yy').value||q('mm').value||q('dd').value)talk('think',nm?nm+'님, 언제 태어났는지 알려 주세요.':'음, 언제 태어났나요?');
+  else if(nm)talk('think',nm+'님, 반가워요. 생일도 알려 줄래요?');
+ }
+ function digits(el,n){el.value=el.value.replace(/[^0-9]/g,'').slice(0,n);}
+ q('yy').addEventListener('input',function(){digits(this,4);if(this.value.length===4)q('mm').focus({preventScroll:true});refresh();});
+ q('mm').addEventListener('input',function(){digits(this,2);if(this.value.length===1&&+this.value>1)this.value='0'+this.value;if(this.value.length===2)q('dd').focus({preventScroll:true});refresh();});
+ q('dd').addEventListener('input',function(){digits(this,2);if(this.value.length===1&&+this.value>3)this.value='0'+this.value;refresh();});
+ q('yy').addEventListener('paste',function(e){var t=((e.clipboardData||window.clipboardData).getData('text')||'').replace(/[^0-9]/g,'');if(t.length>=8){e.preventDefault();this.value=t.slice(0,4);q('mm').value=t.slice(4,6);q('dd').value=t.slice(6,8);refresh();}});
+ ['name','time','city','leap'].forEach(function(k){q(k).addEventListener(k==='name'?'input':'change',refresh);});
+ q('gender').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st.gender=b.dataset.val;$all('button',this).forEach(function(x){x.classList.toggle('on',x===b);});refresh();});
+ q('cal').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st.lunar=b.dataset.val==='lunar';$all('button',this).forEach(function(x){x.classList.toggle('on',x===b);});q('leapRow').hidden=!st.lunar;refresh();});
+ root.querySelector('.ci-form').addEventListener('submit',function(e){
+  e.preventDefault();var o=opts(),err=q('err');
+  if(!st.gender){err.textContent='성별을 골라 주세요. 10년마다 바뀌는 흐름을 계산할 때 써요.';talk('think','성별도 알려 줄래요?');return;}
+  if(!o){err.textContent='생년월일을 다시 확인해 주세요.';q('yy').focus();return;}
+  try{computeSaju(o);}catch(x){err.textContent='없는 날짜예요. 생년월일을 다시 확인해 주세요.';return;}
+  talk('go','좋아요, 지금 펼쳐 볼게요!');trackStep('landing_submit',info.slug);
+  var t=q('time').value;
+  setTimeout(function(){
+   $('#f-name').value=o.name;setSegSelection($('#f-gender'),o.gender);setSegSelection($('#f-calendar'),o.isLunar?'lunar':'solar');
+   $('#leap-row').hidden=!o.isLunar;$('#f-leap').checked=!!o.isLeapMonth;
+   $('#f-date').value=o.year+'-'+String(o.month).padStart(2,'0')+'-'+String(o.day).padStart(2,'0');
+   $('#f-unknown-time').checked=o.unknownTime;$('#f-time').disabled=o.unknownTime;$('#f-time').value=o.unknownTime?'':BIRTH_BANDS[+t].t;
+   $('#f-city').value=o.city;refreshBirthInputs();
+   SAJU_FORM_FULL=true;close();var form=$('#saju-form');
+   if(form.requestSubmit)form.requestSubmit();else form.dispatchEvent(new Event('submit',{cancelable:true}));
+   window.scrollTo({top:0,behavior:'instant'});
+  },650);
+ });
  $('.ci-close',root).addEventListener('click',function(){close();PENDING_REPORT=null;var n=$('#pending-report-note');if(n)n.remove();});
- $all('.ci-go',root).forEach(function(b){b.addEventListener('click',function(){close();setTimeout(next,380);});});
- setTimeout(function(){var go=$('.ci-go',root);if(go)go.focus();},50);
+ root.querySelector('.ci-go-end').addEventListener('click',function(){var f=root.querySelector('.ci-talk');f.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){q(st.gender?'yy':'name').focus({preventScroll:true});},500);});
 }
 /* 주소로 바로 들어오기: /?c=love · money · work · marriage · 2027 · ian */
 function openContentFromUrl(){
