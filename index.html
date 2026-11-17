@@ -1303,6 +1303,20 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .ci-price span{display:flex;flex-direction:column;gap:3px;font-size:.9375rem;font-weight:700;color:#f3e2b8}
 .ci-price span+span{border-left:1px solid #ffffff1a}
 .ci-price b{font-size:.72rem;font-weight:500;color:#aab1c8}
+.ci-more{margin-top:36px}.ci-more section{padding:28px 0;border-top:1px solid #ffffff1a}
+.ci-more h3{margin:0 0 4px;font-family:'Noto Serif KR',serif;font-size:1.25rem;font-weight:600;color:#f6eedf}
+.ci-sub{margin:0 0 16px;font-size:.8125rem;line-height:1.55;color:#aab1c8;word-break:keep-all}
+.ci-art3{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;height:300px}
+.ci-art3 img{display:block;min-height:0;width:100%;height:100%;object-fit:cover;border-radius:14px;background:#151b38}.ci-art3 img:first-child{grid-row:1/3}
+.ci-toc{margin:0;padding:0;list-style:none;counter-reset:t;display:grid;grid-template-columns:1fr 1fr;gap:2px 14px}
+.ci-toc li{counter-increment:t;position:relative;padding:6px 0 6px 24px;font-size:.8125rem;line-height:1.45;color:#d6d9e6;word-break:keep-all}
+.ci-toc li::before{content:counter(t);position:absolute;left:0;top:6px;width:18px;text-align:right;font-family:'Noto Serif KR',serif;font-size:.75rem;color:#e9c27a}
+.ci-trust{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ci-trust li{display:flex;flex-direction:column;gap:3px;padding:14px 16px;border-radius:14px;background:#ffffff0d;border:1px solid #ffffff14}
+.ci-trust b{font-size:.9375rem;color:#f3e2b8}.ci-trust span{font-size:.8125rem;line-height:1.55;color:#c3c8db;word-break:keep-all}
+.ci-faq{margin:0}.ci-faq dt{margin-top:14px;font-size:.9375rem;font-weight:700;color:#f6eedf}.ci-faq dt:first-child{margin-top:0}
+.ci-faq dd{margin:4px 0 0;font-size:.8125rem;line-height:1.6;color:#c3c8db}.ci-faq a{color:#e9c27a}
+.ci-go-end{margin-top:8px}
 @keyframes ci-in{from{opacity:0}to{opacity:1}}
 @keyframes ci-zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
 @keyframes ci-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -5517,6 +5531,30 @@ CONTENT_INTRO['운명의-사람은-언제-올까-fyq1z']={slug:'love',list:['내
 CONTENT_INTRO['타고난-재물복은-얼마나-될까-k7dxw']={slug:'money',list:['돈이 들어오는 힘과 새는 힘 점수','돈 흐름이 좋은 세 해','지출·저축·투자, 나에게 맞는 방법']};
 CONTENT_INTRO['7c5db9e6-59cb-4a81-8b0a-73da4db7b051']={slug:'work',list:['일하는 스타일과 잘 맞는 일','길이 크게 열리는 세 해','이직·연봉·번아웃, 상황별 대응']};
 CONTENT_INTRO['dc6f87f4-86a7-47ce-ae91-3f6715dee2b0']={slug:'marriage',list:['나와 잘 맞는 배우자 유형','결혼운이 좋은 세 해','함께 살 때 다툼·돈·양가 가족']};
+/* 인스타 등에서 ?c=love 로 바로 들어온 사람이 생일을 넣기 전에 무엇을 받는지 보는 랜딩. 사주가 없을 때만 보인다. */
+var CI_MORE={
+ love:{toc:'love',art:['/assets/love/scenes/date.webp','/assets/love/scenes/confession.webp','/assets/love/scenes/future.webp']},
+ money:{toc:'wealth',art:['/assets/wealth/scenes/ledger-open.webp','/assets/wealth/scenes/scale.webp','/assets/wealth/scenes/receipt.webp']},
+ work:{toc:'career',art:['/assets/career/scenes/map-reveal.webp','/assets/career/scenes/job-change.webp','/assets/career/scenes/pay-growth.webp']},
+ marriage:{toc:'marriage',art:['/assets/marriage/scenes/year-gather.webp','/assets/marriage/scenes/detail-talk.webp','/assets/marriage/scenes/timeline.webp']},
+ ian:{art:['/assets/ian/w-greenhouse.webp','/assets/ian/candle-back.webp','/assets/ian/w-museum.webp']},
+ '2027':{art:['/assets/daon/spring.webp','/assets/daon/summer.webp','/assets/daon/autumn.webp']}
+};
+function contentIntroMore(slug){
+ var m=CI_MORE[slug];if(!m)return '';var toc=m.toc&&DEEP_TOC[m.toc];
+ return '<div class="ci-more">'+
+  '<section><h3>이야기 속 장면</h3><p class="ci-sub">글 사이사이에 이런 그림이 함께 나와요.</p><div class="ci-art3">'+m.art.map(function(u){return '<img src="'+u+'" alt="" loading="lazy" decoding="async">';}).join('')+'</div></section>'+
+  (toc?'<section><h3>담긴 내용 '+toc.length+'가지</h3><p class="ci-sub">앞부분 이야기는 무료로 읽고, 결제하면 아래 리포트가 모두 열려요.</p><ol class="ci-toc">'+toc.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol></section>':'')+
+  '<section><h3>대충 계산하지 않아요</h3><p class="ci-sub">같은 생일이어도 계산법에 따라 사주가 달라져요.</p><ul class="ci-trust">'+
+   '<li><b>절기가 바뀌는 시각까지</b><span>입춘·절기 당일에 태어났어도 한국 시각으로 정확히 나눠요.</span></li>'+
+   '<li><b>서머타임 출생 보정</b><span>서머타임 기간에 태어났다면 한 시간을 빼고 계산해요.</span></li>'+
+   '<li><b>태어난 지역의 실제 시각</b><span>태어난 곳의 경도에 맞춰 시간을 고쳐요.</span></li></ul></section>'+
+  '<section><h3>궁금한 점</h3><dl class="ci-faq">'+
+   '<dt>태어난 시간을 몰라도 되나요?</dt><dd>네. 시간 없이 여섯 글자로 풀어요. 시간을 알면 더 자세해져요.</dd>'+
+   '<dt>결제하면 언제까지 볼 수 있나요?</dt><dd>결제 즉시 열리고, 결제일로부터 1년 동안 다시 볼 수 있어요.</dd>'+
+   '<dt>환불은 어떻게 하나요?</dt><dd><a href="/legal.html#refund" target="_blank" rel="noopener">환불 정책</a>에서 자세히 볼 수 있어요.</dd></dl></section>'+
+  '<button type="button" class="btn-primary ci-go ci-go-end">생일 넣고 무료로 읽기</button></div>';
+}
 function showContentIntro(concept,next){
  var root=$('#intro-sheet-root'),info=CONTENT_INTRO[String(concept.id)],ban=HOME_BANNERS.filter(function(b){return b.id===String(concept.id);})[0];
  if(!root||!info||!ban){next();return;}
@@ -5525,10 +5563,10 @@ function showContentIntro(concept,next){
   '<p class="ci-kicker">'+esc(ban.kicker)+' · 앞부분 무료</p><h2 class="ci-title">'+ban.title+'</h2>'+
   '<ul class="ci-list">'+info.list.map(function(t){return '<li>'+uiIcon('check')+'<span>'+esc(t)+'</span></li>';}).join('')+'</ul>'+
   '<div class="ci-price"><span><b>앞부분</b>무료</span><span><b>전체 보기</b>'+(isNewYear(concept)?NEWYEAR_CONCEPT.price_krw:isIan(concept)?IAN_CONCEPT.price_krw:REPORT_STAGE_PRICE.story).toLocaleString('ko-KR')+'원</span><span><b>다시 보기</b>1년</span></div>'+
-  '<button type="button" class="btn-primary ci-go">생일 넣고 무료로 읽기</button><p class="ci-note">가입 없이 바로 열려요. 결제는 무료 부분을 읽어 보고 정하면 돼요.</p></div></div>';
+  '<button type="button" class="btn-primary ci-go">생일 넣고 무료로 읽기</button><p class="ci-note">가입 없이 바로 열려요. 결제는 무료 부분을 읽어 보고 정하면 돼요.</p>'+contentIntroMore(info.slug)+'</div></div>';
  var close=function(){root.innerHTML='';};
  $('.ci-close',root).addEventListener('click',function(){close();PENDING_REPORT=null;var n=$('#pending-report-note');if(n)n.remove();});
- $('.ci-go',root).addEventListener('click',function(){close();setTimeout(next,380);});
+ $all('.ci-go',root).forEach(function(b){b.addEventListener('click',function(){close();setTimeout(next,380);});});
  setTimeout(function(){var go=$('.ci-go',root);if(go)go.focus();},50);
 }
 /* 주소로 바로 들어오기: /?c=love · money · work · marriage · 2027 · ian */
