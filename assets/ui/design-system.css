@@ -466,3 +466,32 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 /* 홈 첫 카드: 그림 위 제목이 묻히지 않게 아래쪽을 더 어둡게 */
 .char-card.is-feat::after{background:linear-gradient(180deg,#0d102400 28%,#0d1024a6 52%,#0d1024f2 82%)}
 .char-card strong{text-shadow:0 1px 12px #0008}
+/* 심층 리포트 다듬기: 섹션 번호는 금색 숫자, 글 상자는 굵은 왼쪽 막대 대신 얇은 테두리와 점 */
+.deep-sec h3{font-family:'Noto Serif KR',serif;font-size:1.1875rem;font-weight:600;letter-spacing:-.04em;gap:12px}
+.deep-report .deep-no,.seorim-deep .deep-no,.haerang-deep .deep-no,.gumbi-deep .deep-no{width:auto!important;height:auto!important;padding:0 10px 0 0;border-radius:0!important;border-right:1px solid #9a6a1240;background:none!important;color:#9a6a12!important;font-family:'Noto Serif KR',serif;font-size:1rem!important;font-weight:600}
+.deep-box{padding:16px 16px 6px;border-left:0!important;border:1px solid #2528331a;border-radius:14px;box-shadow:0 1px 0 #2528330a}
+.deep-box b{display:flex;align-items:center;gap:7px}
+.deep-box.good b::before,.deep-box.warn b::before{content:'';flex:none;width:6px;height:6px;border-radius:50%;background:#3f8f6b}
+.deep-box.warn b::before{background:#c8303a}
+/* 오행 막대 */
+.dviz-wx{margin:4px 0 18px;padding:16px;border-radius:14px;background:#fff;border:1px solid #2528331a}
+.dviz-row{display:grid;grid-template-columns:22px 1fr 22px 62px;align-items:center;gap:10px;padding:5px 0}
+.dviz-row b{font-family:'Noto Serif KR',serif;font-size:.9375rem;color:#252833}
+.dviz-track{height:10px;border-radius:99px;background:#2528330d;overflow:hidden}
+.dviz-track i{display:block;height:100%;border-radius:99px;transform-origin:left;animation:dviz-grow .9s cubic-bezier(.2,.7,.3,1) both}
+.dviz-row em{font-style:normal;font-size:.8125rem;font-weight:700;color:#252833;text-align:right}
+.dviz-row small{font-size:.7rem;color:#8a8d99;white-space:nowrap}
+.dviz-row.is-dom small{color:#9a6a12;font-weight:700}.dviz-row.is-weak small{color:#5f7fa8;font-weight:700}
+.dviz-cap{margin:8px 0 0!important;font-size:.75rem!important;color:#8a8d99!important}
+@keyframes dviz-grow{from{transform:scaleX(0)}to{transform:none}}
+/* 다섯 가지 힘 칩 */
+.dviz-force{list-style:none;margin:4px 0 14px;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dviz-force li{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px dashed #25283326;background:transparent}
+.dviz-force li.on{border:1px solid #9a6a1255;background:#fff}
+.dviz-force i{flex:none;width:8px;height:8px;border-radius:50%;border:1.5px solid #b9bcc6}
+.dviz-force li.on i{border-color:#9a6a12;background:#9a6a12}
+.dviz-force span{flex:1;font-size:.8125rem;font-weight:700;color:#252833;word-break:keep-all}
+.dviz-force li:not(.on) span{color:#8a8d99}
+.dviz-force em{font-style:normal;font-size:.7rem;color:#8a8d99}.dviz-force li.on em{color:#9a6a12}
+.dviz-force li:last-child:nth-child(odd){grid-column:1/-1}
+@media(prefers-reduced-motion:reduce){.dviz-track i{animation:none}}
