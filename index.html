@@ -3102,7 +3102,7 @@ function lockedCardHtml(priceKrw, title, desc, btnLabel){
     '<p class="section-desc">'+desc+'</p>'+
     '<button type="button" class="unlock-btn" data-price="'+priceKrw+'">'+esc(btnLabel)+'</button>'+
     '<span class="cost-badge">'+krwFmt(priceKrw)+'원 · 1회 결제</span>'+
-    '<span class="cost-term">제공 기간: 결제 즉시 제공 (오류 시 1영업일 이내)<br>이용 기간: 결제일로부터 1년간 다시 보기</span>'+
+    '<span class="cost-term">제공 기간: 결제 즉시 제공<br>이용 기간: 결제일로부터 1년간 다시 보기</span>'+
     '<span class="cost-note">결제 후 바로 열리는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></span>'+
   '</div>';
 }
@@ -3806,7 +3806,7 @@ function restorePayReturn(){
    궁합 상세) 목록을 받아와 로컬 잠금 상태에 반영한다. 리포트 건별결제와는 별개 경로(pullReportUnlocks). */
 function pullPaidUnlocks(){
   if (!DEVICE.shareCode) return Promise.resolve();
-  return fetch('/api/unlock?device_id='+encodeURIComponent(DEVICE.shareCode))
+  return apiGet('/api/unlock?device_id='+encodeURIComponent(DEVICE.shareCode))
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data || !data.ok || !data.rows) return;
@@ -3819,7 +3819,7 @@ function pullPaidUnlocks(){
    반영한다. 매번 전체 목록 — 리포트는 가짓수가 적어 가볍다. */
 function pullReportUnlocks(){
   if (!DEVICE.shareCode) return;
-  return fetch('/api/reports/unlock?device_id='+encodeURIComponent(DEVICE.shareCode))
+  return apiGet('/api/reports/unlock?device_id='+encodeURIComponent(DEVICE.shareCode))
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data || !data.ok || !data.rows) return;
@@ -5390,16 +5390,27 @@ function openMyroomDex(){
    바로 열어주지만, 독립 배포본(build_standalone.py)에서는 실제 토스페이먼츠 결제로 교체된다.
    ============================================================ */
 var REPORT_LIST_CACHE = null;
+/* 읽기 전용 서버 요청: 연결이 끊기거나 서버가 잠깐 오류(5xx)를 내면 두 번 더 시도한다(0.7초, 2초 뒤). */
+function apiGet(url,opts,tries){
+  tries=tries==null?3:tries;
+  return fetch(url,opts).then(function(r){if(r.status>=500&&tries>1)throw new Error('RETRY');return r;}).catch(function(e){
+    if(tries<=1)throw e;
+    return new Promise(function(ok){setTimeout(ok,tries===3?700:2000);}).then(function(){return apiGet(url,opts,tries-1);});
+  });
+}
+/* 콘텐츠 목록을 끝내 못 받아도 광고 링크(?c=, ?go=)나 홈 배너로 온 손님이 빈 화면에 머물지 않게 쓰는 기본 목록.
+   서버 목록(/api/reports/list)과 같은 모양이고, 저장해 두지 않아서 다음에 다시 서버에서 받아 온다. */
+var REPORT_LIST_FALLBACK=[{"id":"20270101-7a3e-4c1d-9b52-6d0e8f4a1c27","title":"2027 신년운세","tagline":"2027년이 보낸 편지 12통","category":"신년운세","cover_img_url":"/assets/daon/cover-thumb.webp","price_krw":4900},{"id":"20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18","title":"이안의 비밀","tagline":"누가 나에게 빠지고, 나는 언제 무너질까","category":"연애","cover_img_url":"/assets/ian/bottle.webp","price_krw":7900},{"id":"운명의-사람은-언제-올까-fyq1z","title":"연애 사주","tagline":"끌리는 사람과 앞으로 10년의 인연 흐름","category":"연애","cover_img_url":"/assets/love/scenes/cover.webp","price_krw":7900},{"id":"타고난-재물복은-얼마나-될까-k7dxw","title":"재물 사주","tagline":"돈이 들어오는 힘과 새는 구멍, 10년 돈 흐름","category":"재물","cover_img_url":"/assets/wealth/scenes/cover.webp","price_krw":7900},{"id":"7c5db9e6-59cb-4a81-8b0a-73da4db7b051","title":"직업 사주","tagline":"나에게 맞는 일과 앞으로 10년의 흐름","category":"일·진로","cover_img_url":"/assets/career/scenes/cover.webp","price_krw":7900},{"id":"dc6f87f4-86a7-47ce-ae91-3f6715dee2b0","title":"결혼 사주","tagline":"언제, 어떤 사람과 함께할까","category":"결혼","cover_img_url":"/assets/marriage/scenes/cover.webp","price_krw":7900}];
 function loadReportList(forceRefresh){
   if (REPORT_LIST_CACHE && !forceRefresh) return Promise.resolve(REPORT_LIST_CACHE);
-  return fetch('/api/reports/list').then(function(r){if(!r.ok)throw new Error('REPORT_LIST_FAILED');return r.json();}).then(function(data){
+  return apiGet('/api/reports/list').then(function(r){if(!r.ok)throw new Error('REPORT_LIST_FAILED');return r.json();}).then(function(data){
     if(!data||!data.ok||!Array.isArray(data.rows))throw new Error('REPORT_LIST_FAILED');
     REPORT_LIST_CACHE = data.rows;
     return REPORT_LIST_CACHE;
-  });
+  }).catch(function(){return REPORT_LIST_FALLBACK.map(function(c){return Object.assign({},c);});});
 }
 function loadReportPanels(conceptId){
-  return fetch('/api/reports/list?conceptId='+encodeURIComponent(conceptId)+'&device_id='+encodeURIComponent(DEVICE.shareCode),{headers:getAdminSecret()?{'x-admin-secret':getAdminSecret()}:{}}).then(function(r){if(!r.ok)throw new Error('REPORT_PANELS_FAILED');return r.json();}).then(function(data){
+  return apiGet('/api/reports/list?conceptId='+encodeURIComponent(conceptId)+'&device_id='+encodeURIComponent(DEVICE.shareCode),{headers:getAdminSecret()?{'x-admin-secret':getAdminSecret()}:{}}).then(function(r){if(!r.ok)throw new Error('REPORT_PANELS_FAILED');return r.json();}).then(function(data){
     if(!data||!data.ok||!Array.isArray(data.rows))throw new Error('REPORT_PANELS_FAILED');
     return data.rows;
   });
@@ -5580,7 +5591,7 @@ function startReportUnlock(concept,stage,method){
   }).finally(function(){buttons.forEach(function(b){if(b.isConnected)b.disabled=false;});});
 }
 function loadReportReader(concept){
-  return fetch('/api/reports/list?conceptId='+encodeURIComponent(concept.id)+'&device_id='+encodeURIComponent(DEVICE.shareCode))
+  return apiGet('/api/reports/list?conceptId='+encodeURIComponent(concept.id)+'&device_id='+encodeURIComponent(DEVICE.shareCode))
     .then(function(r){if(!r.ok)throw new Error('READER_FAILED');return r.json();})
     .then(function(data){if(!data.ok||!Array.isArray(data.rows)||!data.access)throw new Error('READER_FAILED');return data;});
 }
@@ -5851,7 +5862,7 @@ function openNewYearViewer(concept){
  $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
  document.removeEventListener('keydown',readerKeydown);document.addEventListener('keydown',readerKeydown);
  var list=$('#report-panel-list');
- fetch('/api/reports/list?conceptId='+encodeURIComponent(concept.id)+'&device_id='+encodeURIComponent(DEVICE.shareCode||'')+'&gan='+encodeURIComponent(my.day.gan)+'&zhi='+encodeURIComponent(my.day.zhi)+'&weak='+encodeURIComponent(fillWx(my)||''))
+ apiGet('/api/reports/list?conceptId='+encodeURIComponent(concept.id)+'&device_id='+encodeURIComponent(DEVICE.shareCode||'')+'&gan='+encodeURIComponent(my.day.gan)+'&zhi='+encodeURIComponent(my.day.zhi)+'&weak='+encodeURIComponent(fillWx(my)||''))
   .then(function(r){if(!r.ok)throw new Error('READER_FAILED');return r.json();})
   .then(function(data){
    if(requestId!==reportViewerRequest)return;
@@ -5990,7 +6001,7 @@ function openIanViewer(concept,justPaid){
  var list=$('#report-panel-list');
  function gz(p){return p?p.gan+p.zhi:'';}
  var params={conceptId:concept.id,device_id:DEVICE.shareCode||'',year:gz(my.year),month:gz(my.month),day:gz(my.day),time:gz(my.time),gender:(my.gender==='m'||my.gender==='male')?'m':'f',strength:my.strength||'',wx:[w.목||0,w.화||0,w.토||0,w.금||0,w.수||0].join(',')};
- fetch('/api/reports/list?'+new URLSearchParams(params).toString())
+ apiGet('/api/reports/list?'+new URLSearchParams(params).toString())
   .then(function(r){if(!r.ok)throw new Error('READER_FAILED');return r.json();})
   .then(function(data){
    if(requestId!==reportViewerRequest)return;
@@ -6023,6 +6034,12 @@ function openReportViewer(concept,stage){
     '<div id="reader-steps"></div><div class="report-page-body" id="report-panel-list"><div role="status" aria-label="이야기를 불러오는 중"><div class="skel" style="height:220px;margin-bottom:12px"></div><div class="skel" style="height:18px;width:70%;margin-bottom:8px"></div><div class="skel" style="height:18px;width:90%"></div></div></div></div>';
   $('#report-page-back').addEventListener('click',closeReportSheet);$('#report-page-back').focus();
   document.removeEventListener('keydown',readerKeydown);document.addEventListener('keydown',readerKeydown);
+  /* 12초가 지나도 못 받았으면, 기다리는 중이라는 걸 알리고 다시 불러올 수 있게 한다 */
+  setTimeout(function(){
+    var list=$('#report-panel-list');if(requestId!==reportViewerRequest||REPORT_READER.data||!list||!list.querySelector('.skel')||list.querySelector('.reader-slow'))return;
+    list.insertAdjacentHTML('beforeend','<p class="section-desc reader-slow">연결이 느려 조금 오래 걸리고 있어요.</p><button type="button" class="share-btn" id="reader-retry-slow">다시 불러오기</button>');
+    $('#reader-retry-slow').addEventListener('click',function(){openReportViewer(concept,stage);});
+  },12000);
   loadReportReader(concept).then(function(data){
     if(requestId!==reportViewerRequest)return;
     REPORT_READER.data=data;

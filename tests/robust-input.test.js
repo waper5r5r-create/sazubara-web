@@ -18,3 +18,31 @@ test('a cancelled content payment offers a way back to that content, for every p
   }
   assert.ok(fail.includes('[hidden]{display:none!important;}'));
 });
+
+test('read requests retry twice on network errors or 5xx, and the catalogue falls back to the built-in list', async () => {
+  const vm = require('node:vm');
+  const start = html.indexOf('var REPORT_LIST_CACHE = null;'), end = html.indexOf('function loadReportPanels');
+  let calls = 0, plan = [];
+  const ctx = { setTimeout: (f) => f(), Promise, Object, Error,
+    fetch: async () => { calls++; const s = plan.shift(); if (s === 'net') throw new Error('offline'); return { status: s, ok: s < 400, json: async () => ({ ok: true, rows: [{ id: 'server' }] }) }; } };
+  vm.createContext(ctx); vm.runInContext(html.slice(start, end), ctx);
+  plan = ['net', 503, 200]; calls = 0; assert.equal((await ctx.apiGet('/x')).status, 200); assert.equal(calls, 3);
+  plan = [404]; calls = 0; assert.equal((await ctx.apiGet('/x')).status, 404); assert.equal(calls, 1, '4xx is not retried');
+  plan = ['net', 'net', 'net']; calls = 0; await assert.rejects(ctx.apiGet('/x')); assert.equal(calls, 3);
+  plan = [500, 500, 500]; const list = await ctx.loadReportList(true);
+  assert.deepEqual(list.map(x => x.id), ctx.REPORT_LIST_FALLBACK.map(x => x.id)); assert.equal(ctx.REPORT_LIST_CACHE, null, 'fallback is not cached');
+  plan = [200]; assert.deepEqual((await ctx.loadReportList(true)).map(x => x.id), ['server']);
+  for (const name of ['love', 'wealth', 'career', 'marriage', 'newyear', 'ian']) {
+    const c = require('../api/_' + name + '-content').concept;
+    const f = ctx.REPORT_LIST_FALLBACK.find(x => x.id === c.id);
+    assert.ok(f, name + ' missing from fallback'); assert.equal(f.title, c.title, name + ' title');
+  }
+  assert.ok(html.includes("'<p class=\"section-desc reader-slow\">연결이 느려 조금 오래 걸리고 있어요.</p>"));
+});
+
+test('the payment note promises no fixed delivery time on errors', () => {
+  const legal = fs.readFileSync(path.join(__dirname, '..', 'legal.html'), 'utf8');
+  assert.ok(!html.includes('1영업일'));
+  assert.ok(!legal.includes('영업일 기준 1일'));
+  assert.ok(html.includes('제공 기간: 결제 즉시 제공<br>이용 기간: 결제일로부터 1년간 다시 보기'));
+});
