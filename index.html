@@ -1413,6 +1413,9 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .save-nudge-btns{display:grid;gap:8px}
 .save-nudge .share-btn{color:#f6eedf;border-color:#ffffff33;background:none}
 .save-nudge .btn-primary{background:var(--ds-gold,#e9c27a)!important;color:#1a1436!important;box-shadow:none}
+.birth-shift-note,.ci-shift-note{margin:8px 0 0;font-size:.8125rem;line-height:1.6;color:var(--accent);word-break:keep-all}
+.ci-shift-note{color:#e9c27a}
+.bf-shift-note{margin:6px auto 0;max-width:300px;font-size:.8125rem;line-height:1.6;color:#f3d79b;text-align:center;word-break:keep-all}
 .restore-link-btn{min-height:44px;border:1px dashed var(--border-strong);border-radius:14px;background:none;color:var(--fg-muted,var(--fg));font-size:.875rem;font-weight:600}
 .restore-box{border-top:1px solid var(--border-strong);padding-top:12px;font-size:.875rem}
 .restore-box summary{cursor:pointer;color:var(--fg-muted,var(--fg));font-weight:600;list-style:none}
@@ -2506,8 +2509,11 @@ function computeSaju(opts){
     try{
       lunar0 = Lunar.fromYmd(opts.year, opts.isLeapMonth? -opts.month : opts.month, opts.day);
     }catch(e){
-      if (opts.isLeapMonth) throw new Error('해당 연도의 '+opts.month+'월에는 윤달이 없어요. 윤달 체크를 해제해주세요');
-      throw new Error('음력 날짜가 올바르지 않아요. 날짜를 다시 확인해주세요');
+      /* 윤달이 아예 없는 건지, 윤달은 있는데 그 날짜(30일 등)가 없는 건지 나눠서 알려 준다 */
+      var leapExists=false;try{Lunar.fromYmd(opts.year,-opts.month,1);leapExists=true;}catch(_){}
+      if (opts.isLeapMonth&&!leapExists) throw new Error('해당 연도의 '+opts.month+'월에는 윤달이 없어요. 윤달 체크를 해제해주세요');
+      if (opts.isLeapMonth) throw new Error('그해 윤'+opts.month+'월에는 '+opts.day+'일이 없어요. 날짜를 다시 확인해주세요');
+      throw new Error('그해 음력 '+opts.month+'월에는 '+opts.day+'일이 없어요. 날짜를 다시 확인해주세요');
     }
     var s0 = lunar0.getSolar();
     solar = Solar.fromYmdHms(s0.getYear(), s0.getMonth(), s0.getDay(),
@@ -3181,10 +3187,42 @@ var BIRTH_BANDS=[
  {t:'23:45',name:'자시',range:'밤 11:30~자정',tone:'night'}
 ];
 var BIRTH_ANIMAL={자:'쥐',축:'소',인:'호랑이',묘:'토끼',진:'용',사:'뱀',오:'말',미:'양',신:'원숭이',유:'닭',술:'개',해:'돼지'};
-function birthBandIndex(hm){
+function birthBandIndex(hm,bands){
  var p=String(hm||'').split(':');if(p.length<2)return -1;var m=Number(p[0])*60+Number(p[1]);if(isNaN(m))return -1;
+ if(bands&&bands!==BIRTH_BANDS){for(var i=0;i<bands.length;i++)if(m>=bands[i].s&&m<bands[i].e)return i;return -1;}
  if(m<90)return 0;if(m>=1410)return 12;return Math.floor((m-90)/120)+1;
 }
+/* 서머타임(1948~60, 1987~88년)이나 동경 127.5도를 쓰던 때(1954~61년)는 시계가 지금과 달라서,
+   같은 시진이라도 시계로는 30분~1시간 늦게 시작해요. 그날의 시계에 맞춘 시간대 목록을 만들어요.
+   shift는 지금 시계 대비 몇 분 밀리는지(0, 60, -30, 30). 0이면 기본 목록 그대로예요. */
+var BAND_SI=[['자시','night'],['축시','night'],['인시','dawn'],['묘시','dawn'],['진시','morning'],['사시','morning'],['오시','day'],['미시','day'],['신시','day'],['유시','evening'],['술시','evening'],['해시','night']];
+function bandHm(m){var h=Math.floor(m/60)%12;if(h===0)h=12;return h+':'+String(m%60).padStart(2,'0');}
+function bandWord(m){var h=m/60;return h<5?'새벽':h<9?'아침':h<11?'오전':h<13?'낮':h<17?'오후':h<21?'저녁':'밤';}
+function birthBandsFor(shift){
+ if(!shift)return BIRTH_BANDS;
+ var out=[];
+ BAND_SI.forEach(function(si,k){var s=((-30+shift+120*k)%1440+1440)%1440,e=s+120;
+  (e>1440?[[s,1440],[0,e-1440]]:[[s,e]]).forEach(function(p){out.push({s:p[0],e:p[1],name:si[0],tone:si[1]});});});
+ out.sort(function(a,b){return a.s-b.s;});
+ return out.map(function(b){var mid=Math.floor((b.s+b.e)/2);
+  return {t:String(Math.floor(mid/60)).padStart(2,'0')+':'+String(mid%60).padStart(2,'0'),name:b.name,tone:b.tone,s:b.s,e:b.e,
+   range:b.s===0?'자정~새벽 '+bandHm(b.e):bandWord(b.s)+' '+bandHm(b.s)+'~'+(b.e===1440?'자정':bandHm(b.e))};});
+}
+/* 태어난 날(음력이면 양력으로 바꿔서)의 한국 시계가 지금 시계보다 몇 분 밀렸는지. 계산이 안 되면 0. */
+function bandClockShift(y,m,d,isLunar,leap){
+ try{
+  if(!y||!m||!d)return 0;
+  if(isLunar){var s=Lunar.fromYmd(y,leap?-m:m,d).getSolar();y=s.getYear();m=s.getMonth();d=s.getDay();}
+  return Math.round((koreaClockOffset(y,m,d,12,0).off-540)/30)*30;
+ }catch(e){return 0;}
+}
+/* 시간대 목록이 바뀌었을 때, 전에 고른 시간대(시진과 자정 앞뒤)를 새 목록에서 찾아요. 없으면 -1. */
+function sameBandIn(oldBand,bands){
+ if(!oldBand)return -1;var am=oldBand.t<'12:00',hit=-1;
+ bands.forEach(function(b,i){if(b.name===oldBand.name&&(hit<0||((b.t<'12:00')===am)))hit=i;});
+ return hit;
+}
+var BAND_SHIFT_NOTE={60:'이날은 서머타임 기간이라 시계가 1시간 빨랐어요. 시간대를 그때 시계에 맞춰 두었어요.',30:'이날은 지금과 시계 기준이 달라 30분 늦게 맞춰 두었어요.','-30':'이날은 지금과 시계 기준이 달라 30분 이르게 맞춰 두었어요.'};
 function parseBirthDigits(raw){
  var parts=String(raw||'').trim().split(/[^0-9]+/).filter(Boolean),y,mo,d;
  if(parts.length>=3){y=parts[0];mo=parts[1];d=parts[2];}
@@ -3227,6 +3265,8 @@ function enhanceBirthDate(native,calendarSeg,onChange){
   /* 음력은 그달에 실제로 있는 날인지(29일까지인 달의 30일 등) 만세력으로 확인한다. 윤달에만 있는 날도 받아 준다. */
   if(iso&&isLunar()&&!lunarDayExists(p))iso='';
   native.value=iso;show(iso,p);
+  /* 같은 묶음의 시간대 버튼을 그날 시계(서머타임 등)에 맞춰 다시 그린다 */
+  var tEl=document.getElementById(native.id.replace('date','time'));if(tEl&&tEl._birthUi&&tEl._birthUi.shift)tEl._birthUi.shift();
   if(p&&iso&&/^[0-9]{8}$/.test(text.value.trim()))text.value=p.y+'. '+String(p.m).padStart(2,'0')+'. '+String(p.d).padStart(2,'0');
   if(onChange)onChange(!!iso);
  }
@@ -3241,30 +3281,53 @@ function enhanceBirthTime(time,unknown,onChange){
  if(!time||time._birthUi)return;
  var wrap=time.closest('.two-col')||time.closest('.field');
  var box=document.createElement('div');box.className='birth-time';
- box.innerHTML='<p class="birth-time-label">태어난 시간</p><div class="birth-bands" role="group" aria-label="태어난 시간대">'+BIRTH_BANDS.map(function(b,i){return '<button type="button" class="birth-band tone-'+b.tone+'" data-band="'+i+'"><b>'+b.range+'</b><small>'+b.name+'</small></button>';}).join('')+
-  '<button type="button" class="birth-band is-unknown" data-band="unknown"><b>시간을 몰라요</b><small>시간 없이도 볼 수 있어요</small></button></div>'+
+ /* 같은 입력 묶음의 생년월일 칸(f-time ↔ f-date, c-time-a ↔ c-date-a)을 보고, 그날 시계에 맞춘 시간대를 보여 줘요 */
+ var bands=BIRTH_BANDS,shift=0,picked=false;
+ function sib(k){return document.getElementById(time.id.replace('time',k));}
+ function curShift(){
+  var d=sib('date'),cal=sib('calendar'),leap=sib('leap');var v=d&&d.value?d.value.split('-').map(Number):null;if(!v||v.length<3)return 0;
+  var lunarBtn=cal&&cal.querySelector('button.active');return bandClockShift(v[0],v[1],v[2],!!(lunarBtn&&lunarBtn.dataset.val==='lunar'),!!(leap&&leap.checked));
+ }
+ function bandsHtml(){return bands.map(function(b,i){return '<button type="button" class="birth-band tone-'+b.tone+'" data-band="'+i+'"><b>'+b.range+'</b><small>'+b.name+'</small></button>';}).join('')+
+  '<button type="button" class="birth-band is-unknown" data-band="unknown"><b>시간을 몰라요</b><small>시간 없이도 볼 수 있어요</small></button>';}
+ box.innerHTML='<p class="birth-time-label">태어난 시간</p><div class="birth-bands" role="group" aria-label="태어난 시간대">'+bandsHtml()+'</div><p class="birth-shift-note" hidden></p>'+
   '<button type="button" class="birth-exact-toggle">분까지 정확히 알아요</button><div class="birth-exact" hidden><input type="text" inputmode="numeric" maxlength="5" placeholder="예: 08 30" aria-label="태어난 시각"><span>24시간 기준으로 시·분을 넣어 주세요</span></div>';
  wrap.parentNode.insertBefore(box,wrap);wrap.classList.add('birth-native-wrap');
- var exactBox=box.querySelector('.birth-exact'),exact=exactBox.querySelector('input');
+ var exactBox=box.querySelector('.birth-exact'),exact=exactBox.querySelector('input'),note=box.querySelector('.birth-shift-note');
+ function applyShift(){
+  var s=curShift();if(s===shift)return;
+  var old=picked&&time.value?bands[birthBandIndex(time.value,bands)]:null;
+  shift=s;bands=birthBandsFor(s);box.querySelector('.birth-bands').innerHTML=bandsHtml();
+  note.hidden=!s;note.textContent=BAND_SHIFT_NOTE[s]||'';
+  var j=sameBandIn(old,bands);if(j>=0)time.value=bands[j].t;
+ }
+ var leapEl=sib('leap');if(leapEl)leapEl.addEventListener('change',function(){applyShift();mark();});
  function mark(){
-  var idx=unknown&&unknown.checked?'unknown':(time.value?String(birthBandIndex(time.value)):'');
+  var idx=unknown&&unknown.checked?'unknown':(time.value?String(birthBandIndex(time.value,bands)):'');
   box.querySelectorAll('.birth-band').forEach(function(b){var on=b.dataset.band===idx;b.classList.toggle('is-on',on);b.setAttribute('aria-pressed',on?'true':'false');});
   if(onChange)onChange(idx);
  }
  box.querySelector('.birth-bands').addEventListener('click',function(e){
   var b=e.target.closest('.birth-band');if(!b)return;
-  if(b.dataset.band==='unknown'){if(unknown)unknown.checked=true;time.value='';time.disabled=true;exact.value='';}
-  else{if(unknown)unknown.checked=false;time.disabled=false;time.value=BIRTH_BANDS[Number(b.dataset.band)].t;exact.value='';}
+  if(b.dataset.band==='unknown'){if(unknown)unknown.checked=true;time.value='';time.disabled=true;exact.value='';picked=false;}
+  else{if(unknown)unknown.checked=false;time.disabled=false;time.value=bands[Number(b.dataset.band)].t;exact.value='';picked=true;}
   mark();
  });
  box.querySelector('.birth-exact-toggle').addEventListener('click',function(){exactBox.hidden=!exactBox.hidden;if(!exactBox.hidden)exact.focus();});
  exact.addEventListener('input',function(){
   var dg=exact.value.replace(/[^0-9]/g,'');if(dg.length<3)return;if(dg.length===3)dg='0'+dg;
   var h=Number(dg.slice(0,2)),mi=Number(dg.slice(2,4));if(h>23||mi>59)return;
-  if(unknown)unknown.checked=false;time.disabled=false;time.value=String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0');mark();
+  if(unknown)unknown.checked=false;time.disabled=false;time.value=String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0');picked=false;mark();
  });
  time.focus=function(){var on=box.querySelector('.birth-band.is-on')||box.querySelector('.birth-band');if(on)on.focus({preventScroll:true});};
- var ui={refresh:function(){var known=time.value&&!(unknown&&unknown.checked);if(known&&BIRTH_BANDS.every(function(b){return b.t!==time.value;})){exactBox.hidden=false;exact.value=time.value.replace(':',' ');}mark();}};
+ var ui={refresh:function(){
+  var known=time.value&&!(unknown&&unknown.checked);
+  /* 처음 채워질 때: 시간대 값과 같으면 시간대로 고른 것으로 본다(날짜가 바뀌면 같은 시진으로 옮겨 준다) */
+  applyShift();
+  if(known&&!exact.value&&(bands.some(function(b){return b.t===time.value;})))picked=true;
+  if(known&&!picked&&bands.every(function(b){return b.t!==time.value;})){exactBox.hidden=false;exact.value=time.value.replace(':',' ');}
+  mark();
+ },shift:function(){applyShift();mark();}};
  time._birthUi=ui;BIRTH_UIS.push(ui);ui.refresh();
 }
 
@@ -3282,8 +3345,9 @@ function openBirthFlow(prefill,opt){
  var lines='';for(i=0;i<7;i++)lines+='<line data-l="'+i+'" x1="'+BF_PTS[i][0]+'" y1="'+BF_PTS[i][1]+'" x2="'+BF_PTS[i+1][0]+'" y2="'+BF_PTS[i+1][1]+'" vector-effect="non-scaling-stroke"/>';
  var stars=BF_PTS.map(function(p,i){return '<span class="bf-st" data-s="'+i+'" style="left:'+p[0]+'%;top:'+p[1]+'%"></span>';}).join('');
  var lbs=['년','월','일','시'].map(function(t,i){return '<span class="bf-lb" data-lb="'+i+'" style="left:'+((BF_PTS[i*2][0]+BF_PTS[i*2+1][0])/2)+'%">'+t+'</span>';}).join('');
- var secs='';for(i=0;i<12;i++){var a0=bfAng(1410+i*120),a1=a0+30,p0=bfPt(a0,138),p1=bfPt(a1,138),q1=bfPt(a1,96),q0=bfPt(a0,96),mid=bfPt(a0+15,117);
-  secs+='<path class="bf-sec" data-z="'+i+'" d="M'+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+'A138 138 0 0 1 '+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+'L'+q1[0].toFixed(1)+' '+q1[1].toFixed(1)+'A96 96 0 0 0 '+q0[0].toFixed(1)+' '+q0[1].toFixed(1)+'Z"/><text class="bf-zh" data-zt="'+i+'" x="'+mid[0].toFixed(1)+'" y="'+mid[1].toFixed(1)+'">'+'子丑寅卯辰巳午未申酉戌亥'[i]+'</text>';}
+ function bfSecs(shift){var secs='';for(var i=0;i<12;i++){var a0=bfAng(1410+shift+i*120),a1=a0+30,p0=bfPt(a0,138),p1=bfPt(a1,138),q1=bfPt(a1,96),q0=bfPt(a0,96),mid=bfPt(a0+15,117);
+  secs+='<path class="bf-sec" data-z="'+i+'" d="M'+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+'A138 138 0 0 1 '+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+'L'+q1[0].toFixed(1)+' '+q1[1].toFixed(1)+'A96 96 0 0 0 '+q0[0].toFixed(1)+' '+q0[1].toFixed(1)+'Z"/><text class="bf-zh" data-zt="'+i+'" x="'+mid[0].toFixed(1)+'" y="'+mid[1].toFixed(1)+'">'+'子丑寅卯辰巳午未申酉戌亥'[i]+'</text>';}return secs;}
+ var secs=bfSecs(0);
  var cities=Object.keys(CITY_LON).map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('');
  root.innerHTML='<div class="bf-sky" aria-hidden="true"><i class="t-base"></i><i class="t-night"></i><i class="t-dawn"></i><i class="t-morning"></i><i class="t-day"></i><i class="t-evening"></i></div>'+
   '<div class="bf-dust" aria-hidden="true">'+dust+'</div><div class="bf-book" aria-hidden="true"><img src="/assets/brand/home-hero.webp" alt=""></div>'+
@@ -3301,9 +3365,9 @@ function openBirthFlow(prefill,opt){
     '<label class="bf-leap" data-bf="leapRow" hidden><input type="checkbox" data-bf="leap"> 윤달이에요</label>'+
     '<p class="bf-echo" data-bf="echo" aria-live="polite"></p><div class="bf-actions"><button class="bf-btn" type="button" data-bf-next="date" hidden>다음</button></div></section>'+
    '<section class="bf-page" data-page="3"><p class="bf-kicker">셋째 장</p><h2 class="bf-q">몇 시쯤 태어났나요?</h2>'+
-    '<div class="bf-dial-wrap"><svg class="bf-dial" viewBox="-150 -150 300 300" role="slider" aria-label="태어난 시간대" tabindex="0"><defs><radialGradient id="bfOrbGlow"><stop offset="0" stop-color="#fff6d8"/><stop offset=".35" stop-color="#f3c46b" stop-opacity=".9"/><stop offset="1" stop-color="#f3c46b" stop-opacity="0"/></radialGradient></defs>'+secs+
+    '<div class="bf-dial-wrap"><svg class="bf-dial" viewBox="-150 -150 300 300" role="slider" aria-label="태어난 시간대" tabindex="0"><defs><radialGradient id="bfOrbGlow"><stop offset="0" stop-color="#fff6d8"/><stop offset=".35" stop-color="#f3c46b" stop-opacity=".9"/><stop offset="1" stop-color="#f3c46b" stop-opacity="0"/></radialGradient></defs><g class="bf-secs">'+secs+'</g>'+
      '<circle class="bf-rim" r="138"/><circle class="bf-rim" r="96"/><text class="bf-mark" x="0" y="-146">낮 12시</text><text class="bf-mark" x="0" y="147">자정</text><g class="bf-orb"><circle r="20" fill="url(#bfOrbGlow)"/><text class="bf-orb-ic">☀</text></g></svg>'+
-     '<div class="bf-dial-center"><b data-bf="range">해를 돌려 보세요</b><small data-bf="band">원 위를 누르거나 돌려서 골라요</small></div></div>'+
+     '<div class="bf-dial-center"><b data-bf="range">해를 돌려 보세요</b><small data-bf="band">원 위를 누르거나 돌려서 골라요</small></div></div><p class="bf-shift-note" data-bf="shiftNote" hidden></p>'+
     '<div class="bf-actions"><button class="bf-btn" type="button" data-bf-next="time" disabled>이 시간으로</button><div class="bf-links"><button class="bf-ghost" type="button" data-bf="unknown">시간을 몰라요</button><button class="bf-ghost" type="button" data-bf="exactToggle">분까지 알아요</button></div>'+
     '<div class="bf-exact" data-bf="exact" hidden><input data-bf="exactIn" inputmode="numeric" maxlength="5" placeholder="08 30" autocomplete="off" aria-label="태어난 시각"></div>'+
     '<label class="bf-city">태어난 곳 <select data-bf="city" aria-label="태어난 지역">'+cities+'</select></label></div></section>'+
@@ -3345,6 +3409,7 @@ function openBirthFlow(prefill,opt){
   var bk=root.querySelector('.bf-book');bk.classList.remove('turn');void bk.offsetWidth;bk.classList.add('turn');
   root.querySelector('.bf-back').hidden=n<=1||n===4;
   ['p0','p1','p2','p3','p4'].forEach(function(c,k){root.classList.toggle(c,k===n);});
+  if(n===3)syncShift();
   if(n===4)finale();else if(n!==3)tone('');
   if(n===2)setTimeout(function(){var e=(!yearOk()?$b('yy'):!monthOk()?$b('mm'):!dayOk()?$b('dd'):null);if(e)e.focus({preventScroll:true});},520);
  }
@@ -3389,24 +3454,33 @@ function openBirthFlow(prefill,opt){
  $b('leap').addEventListener('change',function(){S.leap=this.checked;refreshDate(false);});
  /* 4. 시간 */
  var dial=root.querySelector('.bf-dial'),okBtn=root.querySelector('[data-bf-next="time"]'),dragging=false;
+ /* 그날 시계(서머타임 등)에 맞춘 시간대. 날짜가 바뀌면 다시 맞추고, 시간대로 고른 값은 같은 시진으로 옮겨 준다. */
+ var bfBands=BIRTH_BANDS,bfShift=0,bfPicked=false;
+ function syncShift(){
+  var s=bandClockShift(S.y,S.m,S.d,S.lunar,S.leap);if(s===bfShift)return;
+  var old=bfPicked&&S.time&&!S.unknown?bfBands[birthBandIndex(S.time,bfBands)]:null;
+  bfShift=s;bfBands=birthBandsFor(s);root.querySelector('.bf-secs').innerHTML=bfSecs(s);
+  var nt=$b('shiftNote');nt.hidden=!s;nt.textContent=BAND_SHIFT_NOTE[s]||'';
+  var j=sameBandIn(old,bfBands);if(j>=0)pick(j);else if(S.time&&!S.unknown)pick(birthBandIndex(S.time,bfBands),+S.time.split(':')[0]*60+ +S.time.split(':')[1]);
+ }
  function pick(i,exactMin){
-  var b=BIRTH_BANDS[i],p=b.t.split(':'),min=exactMin!=null?exactMin:(+p[0]*60+ +p[1]);
+  var b=bfBands[i];bfPicked=exactMin==null;var p=b.t.split(':'),min=exactMin!=null?exactMin:(+p[0]*60+ +p[1]);
   S.time=String(Math.floor(min/60)).padStart(2,'0')+':'+String(min%60).padStart(2,'0');S.unknown=false;
   var pt=bfPt(bfAng(min),146);root.querySelector('.bf-orb').style.transform='translate('+pt[0].toFixed(1)+'px,'+pt[1].toFixed(1)+'px)';
   root.querySelector('.bf-orb-ic').textContent=min>=360&&min<1080?'☀':'☾';
-  var zi=i===12?0:i;$all('.bf-sec',root).forEach(function(x){x.classList.toggle('on',+x.dataset.z===zi);});$all('.bf-zh',root).forEach(function(x){x.classList.toggle('on',+x.dataset.zt===zi);});
+  var zi=BAND_SI.map(function(x){return x[0];}).indexOf(b.name);$all('.bf-sec',root).forEach(function(x){x.classList.toggle('on',+x.dataset.z===zi);});$all('.bf-zh',root).forEach(function(x){x.classList.toggle('on',+x.dataset.zt===zi);});
   $b('range').textContent=b.range;$b('band').textContent=b.name+(exactMin!=null?' · '+S.time:'');dial.setAttribute('aria-valuetext',b.range+' '+b.name);
   tone(b.tone);okBtn.disabled=false;
  }
- function fromPointer(e){var r=dial.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2),a=Math.atan2(y,x)*180/Math.PI+90;if(a<0)a+=360;var m=((720+(a/360)*1440)%1440+1440)%1440;pick(birthBandIndex(String(Math.floor(m/60)).padStart(2,'0')+':'+String(Math.floor(m%60)).padStart(2,'0')));}
+ function fromPointer(e){var r=dial.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2),a=Math.atan2(y,x)*180/Math.PI+90;if(a<0)a+=360;var m=((720+(a/360)*1440)%1440+1440)%1440;pick(birthBandIndex(String(Math.floor(m/60)).padStart(2,'0')+':'+String(Math.floor(m%60)).padStart(2,'0'),bfBands));}
  dial.addEventListener('pointerdown',function(e){dragging=true;try{dial.setPointerCapture(e.pointerId);}catch(_){}fromPointer(e);});
  dial.addEventListener('pointermove',function(e){if(dragging)fromPointer(e);});
  dial.addEventListener('pointerup',function(){dragging=false;});dial.addEventListener('pointercancel',function(){dragging=false;});
- dial.addEventListener('keydown',function(e){var cur=S.time?birthBandIndex(S.time):6;if(e.key==='ArrowRight'||e.key==='ArrowUp'){e.preventDefault();pick((cur+1)%13);}if(e.key==='ArrowLeft'||e.key==='ArrowDown'){e.preventDefault();pick((cur+12)%13);}});
+ dial.addEventListener('keydown',function(e){var cur=S.time?birthBandIndex(S.time,bfBands):6,L=bfBands.length;if(cur<0)cur=6;if(e.key==='ArrowRight'||e.key==='ArrowUp'){e.preventDefault();pick((cur+1)%L);}if(e.key==='ArrowLeft'||e.key==='ArrowDown'){e.preventDefault();pick((cur+L-1)%L);}});
  okBtn.addEventListener('click',function(){unlight([6,7]);fly(dial,[6,7],function(){setTimeout(function(){go(4);},350);});});
  $b('unknown').addEventListener('click',function(){S.unknown=true;S.time='';light(6,true);light(7,true);tone('night');setTimeout(function(){go(4);},400);});
  $b('exactToggle').addEventListener('click',function(){var x=$b('exact');x.hidden=!x.hidden;if(!x.hidden)$b('exactIn').focus({preventScroll:true});});
- $b('exactIn').addEventListener('input',function(){var dg=this.value.replace(/[^0-9]/g,'');if(dg.length===3)dg='0'+dg;if(dg.length<4)return;var h=+dg.slice(0,2),mi=+dg.slice(2,4);if(h>23||mi>59)return;var m=h*60+mi;pick(birthBandIndex(dg.slice(0,2)+':'+dg.slice(2,4)),m);});
+ $b('exactIn').addEventListener('input',function(){var dg=this.value.replace(/[^0-9]/g,'');if(dg.length===3)dg='0'+dg;if(dg.length<4)return;var h=+dg.slice(0,2),mi=+dg.slice(2,4);if(h>23||mi>59)return;var m=h*60+mi;pick(birthBandIndex(dg.slice(0,2)+':'+dg.slice(2,4),bfBands),m);});
  $b('city').addEventListener('change',function(){S.city=this.value;});
  /* 5. 완성 */
  var OPTS=null,autoGo=null;
@@ -3449,7 +3523,7 @@ function openBirthFlow(prefill,opt){
   yy.value=String(prefill.year);mm.value=String(prefill.month).padStart(2,'0');dd.value=String(prefill.day).padStart(2,'0');refreshDate(false);
   if(prefill.city&&CITY_LON[prefill.city]){S.city=prefill.city;$b('city').value=prefill.city;}
   if(prefill.unknownTime){S.unknown=true;light(6,true);light(7,true);}
-  else{var hm=String(prefill.hour).padStart(2,'0')+':'+String(prefill.minute).padStart(2,'0'),bi=birthBandIndex(hm),exact=BIRTH_BANDS[bi].t===hm?null:(+prefill.hour*60+ +prefill.minute);pick(bi,exact);light(6);light(7);tone('');}
+  else{syncShift();var hm=String(prefill.hour).padStart(2,'0')+':'+String(prefill.minute).padStart(2,'0'),bi=birthBandIndex(hm,bfBands),exact=bfBands[bi].t===hm?null:(+prefill.hour*60+ +prefill.minute);pick(bi,exact);light(6);light(7);tone('');}
  }
  go(1);
 }
@@ -5587,8 +5661,10 @@ var CI_MORE={
  ian:{who:'이안',face:'/assets/ian/f-',f:{hi:'smell',think:'side',wow:'surprise',ok:'shh',go:'laugh'},hi:'향을 고르기 전에, 당신이 태어난 날부터 알려 줄래요?'},
  '2027':{who:'다온',face:'/assets/daon/f-',f:{hi:'smile',think:'shy',wow:'surprise',ok:'wink',go:'cheer'},hi:'편지를 전하려면 받는 사람 생일이 필요해요!'}
 };
+function ciBandOptions(list){return list.map(function(b,i){return '<option value="'+i+'">'+b.name+' · '+b.range+'</option>';}).join('');}
 function contentIntroForm(m){
- var bands=BIRTH_BANDS.slice(0,12).map(function(b,i){return '<option value="'+i+'">'+b.name+' · '+b.range+'</option>';}).join('');
+ /* 밤 11:30~자정 자시도 고를 수 있게 열세 칸을 모두 보여 줘요(전에는 빠져 있었어요) */
+ var bands=ciBandOptions(BIRTH_BANDS);
  var city=$('#f-city')?$('#f-city').innerHTML:'<option>서울</option>';
  return '<div class="ci-talk"><img class="ci-face" src="'+m.face+m.f.hi+'.webp" alt="" width="52" height="52"><p class="ci-bubble"><b>'+m.who+'</b><span data-ci-say>'+esc(m.hi)+'</span></p></div>'+
   '<form class="ci-form" novalidate>'+
@@ -5598,7 +5674,7 @@ function contentIntroForm(m){
    '<div class="ci-f"><span>생년월일</span><div class="ci-seg ci-seg-sm" data-ci="cal"><button type="button" data-val="solar" class="on">양력</button><button type="button" data-val="lunar">음력</button></div>'+
     '<div class="ci-date"><input inputmode="numeric" maxlength="4" data-ci="yy" placeholder="1995" aria-label="태어난 해"><input inputmode="numeric" maxlength="2" data-ci="mm" placeholder="월" aria-label="태어난 달"><input inputmode="numeric" maxlength="2" data-ci="dd" placeholder="일" aria-label="태어난 날"></div>'+
     '<label class="ci-leap" data-ci="leapRow" hidden><input type="checkbox" data-ci="leap"> 윤달이에요</label></div>'+
-   '<div class="ci-f ci-two"><label><span>태어난 시간</span><select data-ci="time"><option value="">몰라요</option>'+bands+'</select></label><label><span>태어난 곳</span><select data-ci="city">'+city+'</select></label></div>'+
+   '<div class="ci-f ci-two"><label><span>태어난 시간</span><select data-ci="time"><option value="">몰라요</option>'+bands+'</select></label><label><span>태어난 곳</span><select data-ci="city">'+city+'</select></label></div><p class="ci-shift-note" data-ci="shiftNote" hidden></p>'+
    '<p class="ci-err" data-ci="err" role="alert"></p>'+
    '<button type="submit" class="btn-primary ci-submit">'+m.who+'에게 내 이야기 듣기</button>'+
   '</form>';
@@ -5632,11 +5708,23 @@ function showContentIntro(concept,next){
  function opts(){
   var y=+q('yy').value,mo=+q('mm').value,d=+q('dd').value,t=q('time').value;
   if(q('yy').value.length!==4||y<1900||y>new Date().getFullYear()||!mo||mo>12||!d||d>31)return null;
-  var b=t===''?null:BIRTH_BANDS[+t],hm=b?b.t.split(':'):null;
+  var b=t===''?null:ciBands[+t],hm=b?b.t.split(':'):null;
   return {year:y,month:mo,day:d,hour:b?+hm[0]:12,minute:b?+hm[1]:0,isLunar:st.lunar,isLeapMonth:st.lunar&&q('leap').checked,unknownTime:!b,gender:st.gender||'f',name:q('name').value.trim(),city:q('city').value||'서울',useCorrection:$('#f-correction')?$('#f-correction').checked:true};
  }
  function fillPillars(r){['time','day','month','year'].forEach(function(k,i){var el=root.querySelector('[data-ci-p="'+['시','일','월','년'][i]+'"]'),p=r&&r[k],sp=el.querySelectorAll('span'),txt=p?[p.gan,p.zhi]:['?','?'];if(sp[0].textContent!==txt[0]||sp[1].textContent!==txt[1]){sp[0].textContent=txt[0];sp[1].textContent=txt[1];el.classList.toggle('on',!!p);if(p){el.classList.remove('lit');void el.offsetWidth;el.classList.add('lit');}}});}
+ /* 서머타임 등으로 그날 시계가 달랐으면 시간대 목록을 그 시계에 맞추고, 고른 시진은 그대로 옮겨요 */
+ var ciBands=BIRTH_BANDS,ciShift=0;
+ function syncBands(){
+  var y=+q('yy').value,mo=+q('mm').value,d=+q('dd').value;
+  var s=q('yy').value.length===4&&mo>=1&&mo<=12&&d>=1&&d<=31?bandClockShift(y,mo,d,st.lunar,st.lunar&&q('leap').checked):0;
+  if(s===ciShift)return;
+  var sel=q('time'),old=sel.value===''?null:ciBands[+sel.value];
+  ciShift=s;ciBands=birthBandsFor(s);sel.innerHTML='<option value="">몰라요</option>'+ciBandOptions(ciBands);
+  var j=sameBandIn(old,ciBands);sel.value=j>=0?String(j):'';
+  var nt=q('shiftNote');if(nt){nt.hidden=!s;nt.textContent=BAND_SHIFT_NOTE[s]||'';}
+ }
  function refresh(){
+  syncBands();
   var o=opts(),r=null;if(o){try{r=computeSaju(o);}catch(e){r=null;}}
   fillPillars(r);q('err').textContent='';
   if(!started){started=true;trackStep('birth_start',info.slug);}
@@ -5664,7 +5752,7 @@ function showContentIntro(concept,next){
    $('#f-name').value=o.name;setSegSelection($('#f-gender'),o.gender);setSegSelection($('#f-calendar'),o.isLunar?'lunar':'solar');
    $('#leap-row').hidden=!o.isLunar;$('#f-leap').checked=!!o.isLeapMonth;
    $('#f-date').value=o.year+'-'+String(o.month).padStart(2,'0')+'-'+String(o.day).padStart(2,'0');
-   $('#f-unknown-time').checked=o.unknownTime;$('#f-time').disabled=o.unknownTime;$('#f-time').value=o.unknownTime?'':BIRTH_BANDS[+t].t;
+   $('#f-unknown-time').checked=o.unknownTime;$('#f-time').disabled=o.unknownTime;$('#f-time').value=o.unknownTime?'':ciBands[+t].t;
    $('#f-city').value=o.city;refreshBirthInputs();
    SAJU_FORM_FULL=true;close();var form=$('#saju-form');
    if(form.requestSubmit)form.requestSubmit();else form.dispatchEvent(new Event('submit',{cancelable:true}));
@@ -7384,7 +7472,8 @@ function readPersonForm(suf){
     hour:timeParts[0], minute:timeParts[1],
     isLunar:isLunar, isLeapMonth:isLeapMonth,
     unknownTime:unknownTime, gender:gender, name:name,
-    city:'서울', useCorrection:false
+    /* 내 사주와 같은 기준(서울 기준 실제 해 위치)으로 본다. 보정 없이 보면 같은 사람도 시주·일주가 달라질 수 있었다. */
+    city:'서울', useCorrection:true
   });
 }
 
