@@ -1411,7 +1411,19 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .save-nudge b{display:block;font-size:1rem;margin-bottom:6px}
 .save-nudge p{margin:0 0 12px;font-size:.875rem;line-height:1.65;color:#d6d9e6}
 .save-nudge-btns{display:grid;gap:8px}
-.save-nudge .share-btn{color:#f6eedf;border-color:#ffffff33}
+.save-nudge .share-btn{color:#f6eedf;border-color:#ffffff33;background:none}
+.save-nudge .btn-primary{background:var(--ds-gold,#e9c27a)!important;color:#1a1436!important;box-shadow:none}
+.restore-link-btn{min-height:44px;border:1px dashed var(--border-strong);border-radius:14px;background:none;color:var(--fg-muted,var(--fg));font-size:.875rem;font-weight:600}
+.restore-box{border-top:1px solid var(--border-strong);padding-top:12px;font-size:.875rem}
+.restore-box summary{cursor:pointer;color:var(--fg-muted,var(--fg));font-weight:600;list-style:none}
+.restore-box summary::-webkit-details-marker{display:none}
+.restore-box summary::after{content:' ›';}
+.restore-box[open] summary::after{content:'';}
+.restore-box p{margin:8px 0;line-height:1.6;color:var(--fg-muted,var(--fg));word-break:keep-all}
+.restore-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.restore-form input{width:100%;box-sizing:border-box;min-width:0;min-height:44px;padding:0 12px;border:1px solid var(--border-strong);border-radius:12px;background:var(--bg,#fff);color:var(--fg);font-size:16px}
+.restore-form .share-btn{width:auto;margin:0;min-height:44px;padding:0 16px}
+.restore-msg{min-height:1em;color:var(--accent)!important}
 .save-nudge-later{min-height:40px;border:0;background:none;color:#aab1c8;font-size:.875rem}
 .worry-peek{margin-top:12px;padding:12px 14px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0}
 .worry-peek p{margin:0;font-size:.9375rem;line-height:1.7;word-break:keep-all}
@@ -8506,7 +8518,8 @@ function renderMenuArchive(){
     if(isUnlocked('feature-today-premium'))small.push(['today','이번 달 더 자세히 보기']);
     target.innerHTML='<h3>보유 콘텐츠</h3>'+(list.length?'<div class="report-grid">'+list.map(reportCardHtml).join('')+'</div>':'')+
       (small.length?'<div class="archive-rows">'+small.map(function(r){return '<button type="button" class="archive-row" data-archive-go="'+esc(r[0])+'">'+esc(r[1])+'<span>보기'+uiIcon('arrow')+'</span></button>';}).join('')+'</div>':'')+
-      (list.length||small.length?'':'<p class="section-desc">아직 구매한 콘텐츠가 없어요. 콘텐츠 탭에서 둘러보세요.</p><button type="button" class="share-btn" data-archive-go="reports">콘텐츠 둘러보기</button>');
+      (list.length||small.length?(AUTH.user?'':'<button type="button" class="restore-link-btn" data-restore-share>다른 브라우저에서도 보게 링크 저장하기</button>'):'<p class="section-desc">아직 구매한 콘텐츠가 없어요. 콘텐츠 탭에서 둘러보세요.</p><button type="button" class="share-btn" data-archive-go="reports">콘텐츠 둘러보기</button>')+
+      restoreOrderHtml(!(list.length||small.length));
     $all('[data-archive-go]',target).forEach(function(b){b.addEventListener('click',function(){var go=b.dataset.archiveGo;closeSiteMenu();
       if(go.indexOf('worry:')===0){var cat=go.slice(6);switchTab('saju');setTimeout(function(){var chip=$('#worry-chips .chip-btn[data-cat="'+cat+'"]');if(chip){chip.click();chip.scrollIntoView({block:'center'});}},120);return;}
       switchTab(go);window.scrollTo({top:0,behavior:'instant'});});});
@@ -8577,13 +8590,60 @@ function showSaveNudge(kind){
  if(AUTH.user||$('.save-nudge'))return;
  var app=inAppBrowserName(),el=document.createElement('div');el.className='save-nudge';el.setAttribute('role','dialog');el.setAttribute('aria-label','구매 내역 지키기');
  el.innerHTML='<b>'+(kind==='paid'?'구매한 콘텐츠, 다른 곳에서도 보려면':'구매한 콘텐츠를 지키려면')+'</b><p>'+(app?'지금은 '+app+' 안에서 열린 화면이에요. ':'')+'로그인하지 않으면 다른 앱이나 브라우저로 들어왔을 때 구매 내역이 안 보여요. 카카오로 로그인해 두면 어디서든 다시 볼 수 있어요.</p>'+
-  '<div class="save-nudge-btns"><button type="button" class="btn-primary" data-nudge-login>카카오로 로그인</button>'+(app==='카카오톡'?'<button type="button" class="share-btn" data-nudge-open>다른 브라우저로 열기</button>':'')+'<button type="button" class="save-nudge-later" data-nudge-later>나중에</button></div>';
+  '<div class="save-nudge-btns"><button type="button" class="btn-primary" data-nudge-login>카카오로 로그인</button>'+(kind==='paid'?'<button type="button" class="share-btn" data-restore-share>로그인 없이 링크로 저장하기</button>':'')+(app==='카카오톡'?'<button type="button" class="share-btn" data-nudge-open>다른 브라우저로 열기</button>':'')+'<button type="button" class="save-nudge-later" data-nudge-later>나중에</button></div>';
  document.body.appendChild(el);requestAnimationFrame(function(){el.classList.add('on');});
  var close=function(){el.remove();try{sessionStorage.setItem('save-nudge-off','1');}catch(e){}};
  $('[data-nudge-login]',el).addEventListener('click',function(){close();openLoginPanel();});
  $('[data-nudge-later]',el).addEventListener('click',close);
  var ob=$('[data-nudge-open]',el);if(ob)ob.addEventListener('click',function(){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href);});
 }
+/* 로그인 없이 구매 내역 옮기기: 이 브라우저의 "구매 내역 링크"를 만들거나, 링크나 결제 주문번호로 다른 브라우저의 구매를 가져온다.
+   인스타·카톡 안에서 결제하고 나중에 사파리·크롬으로 들어오면 저장 공간이 달라 구매가 안 보이는 일을 막는다. */
+function accountCall(body){body.deviceId=DEVICE.shareCode;body.deviceSecret=DEVICE.secret;return fetch('/api/account/link',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json();});}
+var RESTORE_MSG={RESTORE_LINK_INVALID:'링크가 만료됐거나 올바르지 않아요.',ORDER_NOT_FOUND:'이 주문번호로 결제한 내역을 찾지 못했어요. 번호를 다시 확인해 주세요.',DEVICE_MISMATCH:'이 브라우저 정보를 확인하지 못했어요. 새로고침 후 다시 시도해 주세요.'};
+function restorePurchases(body){
+ return accountCall(body).then(function(data){
+  if(!data||!data.ok)throw new Error((data&&(data.message||RESTORE_MSG[data.error]))||'구매 내역을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.');
+  return Promise.all([pullPaidUnlocks(),pullReportUnlocks()]).then(function(){
+   if(typeof renderReportsTabView==='function'&&$('#view-reports')&&!$('#view-reports').hidden)renderReportsTabView();
+   if(STATE.mySaju)renderSajuResult(STATE.mySaju);
+   var arch=$('#menu-archive');if(arch&&arch.isConnected&&!arch.hidden)renderMenuArchive();
+   return data;
+  });
+ });
+}
+function restoreFromUrl(){
+ var token=new URLSearchParams(location.search).get('restore');if(!token)return;
+ var clean=new URL(location.href);clean.searchParams.delete('restore');history.replaceState(null,'',clean.pathname+clean.search+clean.hash);
+ restorePurchases({action:'restore',token:token}).then(function(d){showToast(d.same?'이 브라우저에 이미 있는 구매 내역이에요.':'구매 내역을 가져왔어요. 메뉴의 보유 콘텐츠에서 볼 수 있어요.');}).catch(function(e){showToast(e.message);});
+}
+function copyRestoreLink(url){
+ var done=function(){showToast('링크를 복사했어요. 카톡 나와의 채팅에 붙여 두세요.');};
+ var fallback=function(){window.prompt('이 링크를 복사해 카톡 나와의 채팅 같은 곳에 저장해 두세요.',url);};
+ try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(url).then(done,fallback);}catch(e){}
+ fallback();
+}
+function shareRestoreLink(btn){
+ if(btn)btn.disabled=true;
+ accountCall({action:'restore-issue'}).then(function(data){
+  if(!data||!data.ok)throw new Error('ISSUE_FAILED');
+  var url=location.origin+'/?restore='+encodeURIComponent(data.token);
+  if(navigator.share)return navigator.share({title:'별첩사주 구매 내역',text:'다른 브라우저에서 이 링크를 열면 구매한 콘텐츠를 다시 볼 수 있어요.',url:url}).catch(function(e){if(!e||e.name!=='AbortError')return copyRestoreLink(url);});
+  return copyRestoreLink(url);
+ }).catch(function(){showToast('링크를 만들지 못했어요. 잠시 후 다시 시도해 주세요.');}).then(function(){if(btn)btn.disabled=false;});
+}
+function restoreOrderHtml(open){
+ return '<details class="restore-box"'+(open?' open':'')+'><summary>다른 브라우저나 앱에서 결제했나요?</summary><p>결제 영수증의 주문번호(sazubara_로 시작)를 넣으면 구매 내역을 여기로 가져와요. 저장해 둔 구매 내역 링크가 있다면 그 링크를 열어도 돼요.</p>'+
+  '<form class="restore-form" data-restore-order><input name="order" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sazubara_로 시작하는 번호" aria-label="주문번호"><button type="submit" class="share-btn">가져오기</button></form><p class="restore-msg" role="status"></p></details>';
+}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-restore-share]');if(b)shareRestoreLink(b);});
+document.addEventListener('submit',function(e){
+ var f=e.target.closest&&e.target.closest('[data-restore-order]');if(!f)return;e.preventDefault();
+ var v=f.order.value.trim(),msg=f.parentNode.querySelector('.restore-msg'),b=f.querySelector('button');
+ if(!v){msg.textContent='주문번호를 넣어 주세요.';return;}
+ b.disabled=true;msg.textContent='찾는 중...';
+ restorePurchases({action:'restore',orderId:v}).then(function(d){showToast(d.same?'이 브라우저에 이미 있는 구매 내역이에요.':'구매 내역을 가져왔어요.');if(msg.isConnected)msg.textContent='';}).catch(function(err){if(msg.isConnected)msg.textContent=err.message;}).then(function(){b.disabled=false;});
+});
 /* 결제 직전에는 로그인을 권하지 않는다. 구매 버튼을 누르면 바로 결제로 간다. 로그인 권유는 결제가 끝난 뒤 maybeSaveNudge('paid')가 맡는다. */
 function payLoginGate(go){return false;}
 /* 결제 수단 고르기: 토스페이가 켜져 있으면 "토스페이 / 카드" 중에 고른다. 꺼져 있으면 바로 카드 결제. */
@@ -8648,6 +8708,7 @@ function init(){
   initAuth().catch(function(){/* Other features remain available if the auth SDK cannot load. */});
   var invited = initDevice();
   handleTossPaymentCallback();
+  restoreFromUrl();
   pullPaidUnlocks();
   pullReportUnlocks();
   var btnOpenInvite = $('#btn-open-invite'); if (btnOpenInvite) btnOpenInvite.addEventListener('click', openInviteSheet);

@@ -19,6 +19,7 @@ function reset() {
       return Response.json({totalAmount:body.amount,orderId:body.orderId,status:'DONE',currency:'KRW',approvedAt:'2026-10-12T00:00:00+09:00'});
     }
     if(parsed.pathname==='/auth/v1/user'){const token=(options.headers||{}).Authorization||'';return token==='Bearer good-login-token-123456789'?Response.json({id:'11111111-1111-4111-8111-111111111111'}):Response.json({},{status:401});}
+    if(parsed.pathname.startsWith('/auth/v1/admin/users/'))return (tables.realUsers||[]).includes(decodeURIComponent(parsed.pathname.split('/').pop()))?Response.json({id:'x'}):Response.json({},{status:404});
     const name=parsed.pathname.split('/').pop(),table=tables[name];assert.ok(table,'unexpected mock table '+name);
     if(options.method==='POST') {
       const row=JSON.parse(options.body);
@@ -118,6 +119,47 @@ test('logging in links devices: purchases follow the account, the saju carries o
  assert.equal((await link('phone-a','someone-else-guessing-the-key-123')).error,'DEVICE_MISMATCH');
  assert.equal(tables.account_devices.length,2);
  const stranger=await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id=phone-c');assert.equal(stranger.access.story,false);
+});
+
+test('purchases move to another browser without login: by saved link or by order number, never by a 0원 order or a forged link',async()=>{
+ reset();const api=require('../api/account/link'),A='secret-a-0123456789abcdefghij',B='secret-b-0123456789abcdefghij',C='secret-c-0123456789abcdefghij';
+ const post=body=>call(api,'POST','/api/account/link',body);
+ const owns=async d=>(await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id='+d)).access.story;
+ const bought=await buy('story','insta-a');assert.equal(bought.result.ok,true);
+ assert.equal(await owns('safari-b'),false);
+ const issued=await post({action:'restore-issue',deviceId:'insta-a',deviceSecret:A});assert.equal(issued.ok,true);assert.ok(issued.token.length<200);
+ assert.equal((await post({action:'restore-issue',deviceId:'insta-a',deviceSecret:'someone-else-guessing-the-key-123'})).error,'DEVICE_MISMATCH');
+ assert.equal((await post({action:'restore',token:issued.token+'x',deviceId:'safari-b',deviceSecret:B})).error,'RESTORE_LINK_INVALID');
+ const [p,s]=issued.token.split('.');const forged=Buffer.from(JSON.stringify({d:'someone-else',e:Date.now()+1e9})).toString('base64url')+'.'+s;
+ assert.equal((await post({action:'restore',token:forged,deviceId:'safari-b',deviceSecret:B})).error,'RESTORE_LINK_INVALID');
+ const r=await post({action:'restore',token:issued.token,deviceId:'safari-b',deviceSecret:B});assert.equal(r.ok,true);assert.equal(r.devices,2);
+ assert.equal(await owns('safari-b'),true);assert.equal((await prepare('story','safari-b')).error,'ALREADY_OWNED');
+ assert.equal((await post({action:'restore',token:issued.token,deviceId:'safari-b',deviceSecret:B})).ok,true);assert.equal(tables.account_devices.length,2);
+ // 주문번호로도 가져올 수 있다. 0원(초대·쿠폰) 주문번호는 짐작할 수 있어서 쓸 수 없다.
+ tables.paid_unlocks.push({device_id:'insta-a',unlock_key:'invite-compat-x',order_id:'invite_insta-a_friend-device-01',amount:0});
+ assert.equal((await post({action:'restore',orderId:'invite_insta-a_friend-device-01',deviceId:'chrome-c',deviceSecret:C})).error,'ORDER_NOT_FOUND');
+ assert.equal((await post({action:'restore',orderId:'sazubara_doesnotexist0000000000',deviceId:'chrome-c',deviceSecret:C})).error,'ORDER_NOT_FOUND');
+ assert.equal(await owns('chrome-c'),false);
+ assert.equal((await post({action:'restore',orderId:bought.body.orderId,deviceId:'chrome-c',deviceSecret:C})).ok,true);assert.equal(await owns('chrome-c'),true);
+ assert.equal(await owns('stranger-d'),false);
+});
+test('restore joins a Kakao account the buyer already has, but never merges two different Kakao accounts',async()=>{
+ reset();const api=require('../api/account/link'),post=body=>call(api,'POST','/api/account/link',body);
+ const owns=async d=>(await call(listReports,'GET','/api/reports/list?conceptId=theme&device_id='+d)).access.story;
+ const K1='11111111-1111-4111-8111-111111111111',K2='22222222-2222-4222-8222-222222222222';tables.realUsers=[K1,K2];
+ await buy('story','phone-a');tables.account_devices.push({user_id:K1,device_id:'phone-a'});
+ const t=(await post({action:'restore-issue',deviceId:'phone-a',deviceSecret:'secret-a-0123456789abcdefghij'})).token;
+ assert.equal((await post({action:'restore',token:t,deviceId:'new-b',deviceSecret:'secret-b-0123456789abcdefghij'})).ok,true);
+ assert.ok(tables.account_devices.some(r=>r.user_id===K1&&r.device_id==='new-b'));assert.equal(await owns('new-b'),true);
+ tables.account_devices.push({user_id:K2,device_id:'family-c'});
+ const refused=await post({action:'restore',token:t,deviceId:'family-c',deviceSecret:'secret-c-0123456789abcdefghij'});assert.equal(refused.error,'OTHER_ACCOUNT');assert.equal(await owns('family-c'),false);
+});
+test('the page restores from ?restore= once, removes the link from the address bar, and offers the order-number box',()=>{
+ const html=require('fs').readFileSync(require('path').join(__dirname,'..','index.html'),'utf8');
+ assert.match(html,/restoreFromUrl\(\);\s*pullPaidUnlocks\(\);/);
+ assert.match(html,/searchParams\.delete\('restore'\);history\.replaceState/);
+ assert.ok(html.includes('data-restore-order')&&html.includes('data-restore-share'));
+ assert.ok(html.includes("kind==='paid'?'<button type=\"button\" class=\"share-btn\" data-restore-share>"));
 });
 
 test('new year costs 4,900 at checkout, other content stays 7,900, and the old amount is refused',async()=>{

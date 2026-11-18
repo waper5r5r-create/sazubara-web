@@ -44,4 +44,39 @@ async function verifyUser(accessToken) {
   return user && user.id ? user : null;
 }
 
-module.exports = { hashSecret, deviceFilter, linkedDeviceIds, verifyUser, MAX_LINKED };
+// 구매 내역 링크: 기기 id를 서버 키로 서명한다. 링크를 가진 사람은 그 기기의 구매 내역을 볼 수 있으니 1년만 유효하다.
+const RESTORE_DAYS = 366;
+function restoreKey() { return 'byeolcheop-restore:' + (SERVICE_KEY || ''); }
+function signRestore(deviceId) {
+  const payload = Buffer.from(JSON.stringify({ d: deviceId, e: Date.now() + RESTORE_DAYS * 86400000 })).toString('base64url');
+  return payload + '.' + crypto.createHmac('sha256', restoreKey()).update(payload).digest('base64url').slice(0, 32);
+}
+function verifyRestore(token) {
+  if (typeof token !== 'string' || token.length > 512 || !SERVICE_KEY) return null;
+  try {
+    const [payload, signature] = token.split('.');
+    const actual = Buffer.from(crypto.createHmac('sha256', restoreKey()).update(payload).digest('base64url').slice(0, 32));
+    const provided = Buffer.from(String(signature));
+    if (actual.length !== provided.length || !crypto.timingSafeEqual(actual, provided)) return null;
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString());
+    return data && typeof data.d === 'string' && data.e >= Date.now() ? data.d : null;
+  } catch (e) { return null; }
+}
+
+// 로그인한 적 없는 기기를 위한 게스트 계정 id. 같은 기기면 늘 같은 값이다(UUID 모양, 버전 자리는 8).
+function guestUserId(deviceId) {
+  const h = crypto.createHmac('sha256', 'byeolcheop-guest:' + (SERVICE_KEY || '')).update(String(deviceId)).digest('hex');
+  return h.slice(0, 8) + '-' + h.slice(8, 12) + '-8' + h.slice(13, 16) + '-' + ((parseInt(h[16], 16) & 3) | 8).toString(16) + h.slice(17, 20) + '-' + h.slice(20, 32);
+}
+
+// 실제 로그인 계정인지(게스트 id가 아닌지) Supabase 인증 목록에서 확인한다. 확인이 안 되면 실제 계정으로 본다(합치지 않는 쪽).
+async function isRealUser(userId) {
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-8/.test(String(userId))) return false;
+  try {
+    const r = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + encodeURIComponent(userId), { headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + SERVICE_KEY } });
+    if (r.status === 404) return false;
+    return true;
+  } catch (e) { return true; }
+}
+
+module.exports = { hashSecret, deviceFilter, linkedDeviceIds, verifyUser, signRestore, verifyRestore, guestUserId, isRealUser, MAX_LINKED };
