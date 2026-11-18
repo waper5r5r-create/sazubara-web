@@ -3200,13 +3200,17 @@ function birthDateIso(p,isLunar){
 }
 var BIRTH_UIS=[];
 function refreshBirthInputs(){BIRTH_UIS.forEach(function(u){u.refresh();});}
+function lunarDayExists(p){
+ return [false,true].some(function(leap){try{var r=computeSaju({year:p.y,month:p.m,day:p.d,hour:12,minute:0,isLunar:true,isLeapMonth:leap,unknownTime:true,gender:'f',name:'',city:'서울',useCorrection:false});return !!(r&&r.year&&r.day);}catch(e){return false;}});
+}
 function enhanceBirthDate(native,calendarSeg,onChange){
  if(!native||native._birthUi)return;
  var field=native.closest('.field');
  var text=document.createElement('input');text.type='text';text.id=native.id+'-text';text.className='birth-date-text';
  text.setAttribute('inputmode','numeric');text.setAttribute('autocomplete','bday');text.placeholder='예: 19940512';text.maxLength=14;
  var live=document.createElement('p');live.className='birth-live';live.setAttribute('aria-live','polite');
- native.classList.add('birth-native');native.tabIndex=-1;native.setAttribute('aria-hidden','true');
+ /* 숨은 진짜 입력칸을 글자 칸으로 바꾼다. 날짜 칸은 음력 2월 29·30일 같은 날을 담지 못해 제출이 막혔다. */
+ native.type='text';native.classList.add('birth-native');native.tabIndex=-1;native.setAttribute('aria-hidden','true');
  native.parentNode.insertBefore(text,native.nextSibling);text.parentNode.insertBefore(live,text.nextSibling);
  var label=field&&field.querySelector('label[for="'+native.id+'"]');if(label)label.htmlFor=text.id;
  function isLunar(){var b=calendarSeg&&calendarSeg.querySelector('button.active');return !!(b&&b.dataset.val==='lunar');}
@@ -3220,6 +3224,8 @@ function enhanceBirthDate(native,calendarSeg,onChange){
  function sync(){
   var p=parseBirthDigits(text.value),iso=birthDateIso(p,isLunar());
   if(iso&&((native.min&&iso<native.min)||(native.max&&iso>native.max)))iso='';
+  /* 음력은 그달에 실제로 있는 날인지(29일까지인 달의 30일 등) 만세력으로 확인한다. 윤달에만 있는 날도 받아 준다. */
+  if(iso&&isLunar()&&!lunarDayExists(p))iso='';
   native.value=iso;show(iso,p);
   if(p&&iso&&/^[0-9]{8}$/.test(text.value.trim()))text.value=p.y+'. '+String(p.m).padStart(2,'0')+'. '+String(p.d).padStart(2,'0');
   if(onChange)onChange(!!iso);
@@ -8740,7 +8746,7 @@ function init(){
   initVisualFeedback();
   initCompatView();
   var dateNow=new Date(),maxBirthday=dateNow.getFullYear()+'-'+String(dateNow.getMonth()+1).padStart(2,'0')+'-'+String(dateNow.getDate()).padStart(2,'0');
-  $all('input[type="date"]').forEach(function(input){input.max=maxBirthday;});
+  $all('input[type="date"],input.birth-native').forEach(function(input){input.max=maxBirthday;});
   if (STATE.mySaju){
     SHOW_TODAY_PEEK=true;renderSajuResult(STATE.mySaju);SHOW_TODAY_PEEK=false;
     if (STATE.lastForm){

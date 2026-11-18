@@ -3,28 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>결제 실패 · 별첩사주</title>
+<title>결제 취소 · 별첩사주</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR:wght@600&display=swap" rel="stylesheet">
 <style>
   html,body{margin:0; height:100%;}
   body{
     font-family:'Noto Sans KR',sans-serif; display:flex; align-items:center; justify-content:center;
-    height:100vh; background:#eef1f7; color:#1b2033; text-align:center; padding:24px; box-sizing:border-box;
+    min-height:100vh; background:linear-gradient(160deg,#252e66 0%,#151b43 55%,#0f1331 100%);
+    color:#f6ecd6; text-align:center; padding:24px; box-sizing:border-box; letter-spacing:-.02em;
   }
-  .box{max-width:320px;}
-  .ic{font-size:2rem; margin-bottom:12px;}
-  a{color:#9c6b1f; text-decoration:none; font-weight:700;}
+  .box{max-width:320px;width:100%;line-height:1.7;}
+  h1{margin:0 0 8px;font-family:'Noto Serif KR',serif;font-size:1.25rem;font-weight:600;word-break:keep-all;}
+  p{margin:0 0 6px;font-size:.9375rem;color:#d6d9e6;word-break:keep-all;}
+  .why{margin-bottom:24px;color:#aab1c8;font-size:.875rem;}
+  a{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:14px;font-weight:700;text-decoration:none;box-sizing:border-box;}
+  .go{background:#d9b060;color:#1a1436;margin-bottom:10px;}
+  .home{color:#e9c47a;border:1px solid #ffffff33;}
+  [hidden]{display:none!important;}
 </style>
 </head>
 <body>
   <div class="box">
-    <div class="ic">😥</div>
-    <p id="msg">결제가 취소되었거나 실패했어요.</p>
-    <p><a href="/">홈으로 돌아가기</a></p>
+    <h1>결제가 완료되지 않았어요</h1>
+    <p>결제가 끝나지 않았다면 요금은 청구되지 않아요.</p>
+    <p class="why" id="msg"></p>
+    <a class="go" id="go" href="/" hidden>보던 풀이로 돌아가기</a>
+    <a class="home" href="/">홈으로 가기</a>
   </div>
   <script>
     var params = new URLSearchParams(location.search);
     var message = params.get('message');
     if (message) document.getElementById('msg').textContent = message;
+    // 콘텐츠 결제에서 돌아왔으면, 홈 대신 보던 콘텐츠로 바로 돌아갈 수 있게 한다.
+    var BACK = {
+      '운명의-사람은-언제-올까-fyq1z': '/?go=love',
+      '타고난-재물복은-얼마나-될까-k7dxw': '/?go=wealth',
+      '7c5db9e6-59cb-4a81-8b0a-73da4db7b051': '/?go=career',
+      'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0': '/?go=marriage',
+      '20270101-7a3e-4c1d-9b52-6d0e8f4a1c27': '/?newyear',
+      '20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18': '/?ian'
+    };
+    var back = BACK[params.get('report') || ''];
+    if (back) { var go = document.getElementById('go'); go.href = back; go.hidden = false; }
   </script>
 </body>
 </html>
