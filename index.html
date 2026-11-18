@@ -3696,7 +3696,7 @@ function startUnlock(unlockKey, priceKrw, label, method){
       amount: priceKrw,
       orderId: orderId,
       orderName: '별첩사주 — ' + label,
-      successUrl: location.origin + '/success.html?type=unlock&unlockKey=' + encodeURIComponent(unlockKey)+'&tab='+encodeURIComponent(location.hash.replace('#','')||'saju'),
+      successUrl: location.origin + '/success.html?type=unlock&unlockKey=' + encodeURIComponent(unlockKey)+'&tab='+encodeURIComponent(location.hash.replace('#','')||'saju')+'&device='+encodeURIComponent(DEVICE.shareCode||''),
       failUrl: location.origin + '/fail.html'
     });
   }).catch(function(){
@@ -3707,10 +3707,13 @@ function startUnlock(unlockKey, priceKrw, label, method){
 function handleTossPaymentCallback(){
   var params=new URLSearchParams(location.search);
   if(!params.get('paid'))return;
-  var reportId=params.get('report'),stage=params.get('stage')||'story',returnTab=params.get('tab')||'saju';
+  var reportId=params.get('report'),stage=params.get('stage')||'story',returnTab=params.get('tab')||'saju',order=params.get('order');
   var clean=new URL(location.href);['paid','order','report','stage','tab'].forEach(function(k){clean.searchParams.delete(k);});
   history.replaceState({},'',clean.pathname+clean.search+clean.hash);
-  Promise.all([pullPaidUnlocks(),pullReportUnlocks()]).then(function(){
+  /* 결제한 곳과 돌아온 브라우저가 다르면(카드사 앱을 거쳐 사파리로 돌아오는 등) 이 브라우저를 그 구매에 바로 이어 준다.
+     같은 브라우저면 서버가 그대로 두고, 실패해도 아래 흐름은 그대로 간다. */
+  var linkOrder=order&&DEVICE.shareCode&&DEVICE.secret?accountCall({action:'restore',orderId:order}).catch(function(){}):Promise.resolve();
+  linkOrder.then(function(){return Promise.all([pullPaidUnlocks(),pullReportUnlocks()]);}).then(function(){
     if(reportId)maybeSaveNudge('paid');
     if(reportId===NEWYEAR_CONCEPT.id){openNewYearViewer(NEWYEAR_CONCEPT);return;}
     if(reportId===IAN_CONCEPT.id){openIanViewer(IAN_CONCEPT,true);return;}

@@ -23,6 +23,10 @@
   @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.86)}}
   @media (prefers-reduced-motion: reduce){.spin{animation:none}}
   a{color:#e9c47a; text-decoration:underline; text-underline-offset:4px; font-weight:700;}
+  .help{margin-top:28px;padding-top:18px;border-top:1px solid #ffffff22;font-size:.875rem;color:#c9cde0;word-break:keep-all;}
+  .help p{margin:0 0 8px;}
+  .help .order{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8125rem;color:#f6ecd6;word-break:break-all;user-select:all;-webkit-user-select:all;}
+  [hidden]{display:none!important;}
 </style>
 </head>
 <body>
@@ -31,6 +35,11 @@
     <p id="msg">결제를 확인하고 있어요...</p>
     <button type="button" id="retry" hidden>결제 확인 다시 시도</button>
     <p id="back" hidden><a href="/">홈으로 돌아가기</a></p>
+    <div id="help" class="help" hidden>
+      <p>요금이 빠져나갔는데 콘텐츠가 열리지 않으면, 아래 주문번호와 함께 알려 주세요. 확인한 뒤 연락드릴게요.</p>
+      <p class="order" id="order"></p>
+      <p><a href="mailto:ieumlab22@gmail.com">ieumlab22@gmail.com</a> · <a href="tel:010-5440-0335">010-5440-0335</a></p>
+    </div>
   </div>
   <script>
   (function(){
@@ -53,12 +62,46 @@
     var viaTossPay = params.get('pv') === 'tp';
     if (viaTossPay){ orderId = params.get('orderNo'); paymentKey = 'tosspay'; amount = '0'; }
 
-    function showError(text){
+    // 서버가 돌려준 오류 코드를 손님이 알아들을 말로 바꾼다. 토스가 준 한국어 안내(카드 한도 등)는 그대로 보여 준다.
+    var FRIENDLY = {
+      INVALID_CHECKOUT: '결제 정보가 맞지 않아 승인하지 않았어요.',
+      AMOUNT_MISMATCH: '결제 금액이 맞지 않아 승인하지 않았어요.',
+      PAYMENT_MISMATCH: '결제 내용이 맞지 않아 승인하지 않았어요.',
+      ALREADY_OWNED: '이미 가지고 계신 콘텐츠예요. 홈에서 바로 보실 수 있어요.',
+      ORDER_CONFLICT: '이미 다른 곳에서 확인된 주문이에요.',
+      UNLOCK_CONFLICT: '구매 내역을 저장하지 못했어요.',
+      UNLOCK_INSERT_FAILED: '구매 내역을 저장하지 못했어요.',
+      PAYMENT_UNAVAILABLE: '지금은 결제를 확인할 수 없어요.',
+      SERVER_ERROR: '결제를 확인하는 중 문제가 생겼어요.',
+      NETWORK: '인터넷 연결이 불안정해 결제를 확인하지 못했어요.'
+    };
+    function friendly(data){
+      var code = data && data.error;
+      if (FRIENDLY[code]) return FRIENDLY[code];
+      if (data && data.message && /[가-힣]/.test(data.message)) return data.message;
+      return '결제를 확인하지 못했어요.';
+    }
+    // 결제 확인이 실패하면 운영자가 알 수 있게 기록을 남긴다(실패해도 손님 화면에는 영향 없음).
+    function logFail(code, message, extra){
+      try{
+        fetch('/api/pay-log', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code, message: message || '', orderId: orderId, deviceId: deviceId || null, hadLocalDevice: !!localDevice,
+            item: (type || '') + ':' + (conceptId || unlockKey || ''), stage: stage || null, extra: extra || null }) }).catch(function(){});
+      }catch(e){}
+    }
+    function showError(text, code){
+      var spin = document.querySelector('.spin'); if (spin) spin.hidden = true;
       document.getElementById('msg').textContent = text;
       document.getElementById('back').hidden = false;
-      document.getElementById('retry').hidden=!paymentKey||!orderId||!amount;
+      document.getElementById('retry').hidden=!paymentKey||!orderId||!amount||code==='ALREADY_OWNED';
       document.getElementById('retry').onclick=function(){location.reload();};
+      if (orderId && code !== 'ALREADY_OWNED'){
+        var help = document.getElementById('help');
+        help.hidden = false;
+        document.getElementById('order').textContent = orderId;
+      }
     }
+    var deviceId = null, localDevice = null;
 
     function readShareCode(raw){
       try{
@@ -80,11 +123,27 @@
       showError('결제 정보가 올바르지 않습니다.');
       return;
     }
-    var deviceId = readDeviceId();
+    // 결제를 시작한 기기를 먼저 쓴다. 카드사 앱을 거쳐 다른 브라우저로 돌아오면 그 브라우저의 기기 정보가 달라서
+    // 승인이 거절되던 문제를 막는다. 콘텐츠 결제는 서버가 서명한 견적(quote) 안의 기기라 바꿔치기할 수 없다.
+    function quoteDevice(q){
+      try{
+        var p = String(q||'').split('.')[0].replace(/-/g,'+').replace(/_/g,'/');
+        while (p.length % 4) p += '=';
+        var o = JSON.parse(decodeURIComponent(escape(atob(p))));
+        return typeof o.deviceId === 'string' ? o.deviceId : null;
+      }catch(e){ return null; }
+    }
+    var urlDevice = params.get('device');
+    if (urlDevice && !/^[A-Za-z0-9_.~-]{4,64}$/.test(urlDevice)) urlDevice = null;
+    localDevice = readDeviceId();
+    deviceId = quoteDevice(quote) || urlDevice || localDevice;
     if (!deviceId){
-      showError('결제 정보를 확인할 수 없습니다. 홈 화면을 먼저 한 번 열어주세요.');
+      showError('결제한 기기 정보를 찾지 못했어요. 결제를 시작한 앱이나 브라우저에서 다시 열어 주세요.', 'NO_DEVICE');
+      logFail('NO_DEVICE');
       return;
     }
+    // 결제한 곳과 돌아온 곳이 다른 경우가 얼마나 되는지 알 수 있게 함께 기록한다(승인은 결제한 기기로 진행).
+    if (localDevice && localDevice !== deviceId) logFail('DEVICE_SWITCHED', '', 'local:' + localDevice);
 
     var isReport = (type === 'report' && conceptId);
     var isUnlock = (type === 'unlock' && unlockKey);
@@ -112,10 +171,12 @@
         if(isUnlock) back+='&tab='+encodeURIComponent(returnTab||'saju');
         location.replace(back);
       } else {
-        showError('결제 승인에 실패했습니다: ' + (data.message || data.error || '알 수 없는 오류'));
+        showError(friendly(data), data.error);
+        logFail(data.error || 'UNKNOWN', data.message);
       }
-    }).catch(function(){
-      showError('결제 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    }).catch(function(e){
+      showError(FRIENDLY.NETWORK + ' 아래 버튼으로 다시 확인해 주세요.', 'NETWORK');
+      logFail('NETWORK', String(e && e.message || ''));
     });
   })();
   </script>
