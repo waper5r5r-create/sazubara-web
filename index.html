@@ -1523,6 +1523,8 @@ html.bf-open,html.bf-open body{overflow:hidden}
 .bf-sub{margin:10px 0 0;font-size:.875rem;line-height:1.6;color:var(--bf-muted);word-break:keep-all}
 .bf-line{margin-top:34px;width:min(300px,100%);border:0;border-bottom:1px solid var(--bf-line);border-radius:0;background:transparent;color:var(--bf-cream);font-family:'Noto Serif KR',serif;font-size:1.75rem;text-align:center;padding:6px 0 10px;outline:0;transition:border-color .3s}
 .bf-line::placeholder{color:#ffffff38;font-size:1.25rem}.bf-line:focus{border-color:var(--bf-gold)}
+.name-ask-actions{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:6px}
+#name-ask-sheet .sheet-head{margin-bottom:4px}
 .bf-name-warn{margin:14px 0 0;color:#f3cf80;font-size:.875rem}
 .bf-actions{margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
 .bf-btn{min-width:200px;height:52px;padding:0 28px;border:0;border-radius:26px;background:linear-gradient(135deg,#f6dca0,#d9a95a);color:#2a1f0c!important;font-weight:700;font-size:1rem;box-shadow:0 8px 30px #e9c27a40;transition:transform .15s,opacity .3s}
@@ -3844,6 +3846,11 @@ function pullReportUnlocks(){
 function attemptInviteRedeem(opts){
   if (!DEVICE.pendingInviteCode) return;
   if (DEVICE.pendingInviteCode === DEVICE.shareCode){ DEVICE.pendingInviteCode = null; saveDevice(); return; }
+  /* 이름 없이 저장해 둔 사주로는 등록하지 않는다(초대한 친구 별첩에 '상대방'으로 남던 문제). 이름을 받고 나서 등록한다. */
+  if (!String(opts && opts.name || '').trim()){
+    askMyName('초대한 친구 별첩에 이 이름으로 카드가 생겨요.', function(ok){ if (ok) attemptInviteRedeem(STATE.lastForm); });
+    return;
+  }
   fetch('/api/invite?action=redeem', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
@@ -3865,6 +3872,41 @@ function attemptInviteRedeem(opts){
 /* 내가 초대한 상대 쪽 마이룸에 "나를 초대한 상대" 카드가 뜨려면, 그 친구가 내 사주를 알아야 한다.
    invite_redemptions에는 초대받은 쪽 사주만 저장되므로, 내가 사주를 입력/수정할 때마다
    내 기기의 현재 사주를 devices.saju_opts에 올려서 항상 최신으로 유지해둔다. */
+/* 예전에 이름 없이 저장한 사람에게 이름을 한 번 받는다. 받은 이름은 이 기기와 서버(devices.saju_opts)에 함께 저장한다. */
+var NAME_ASK_KEY = 'mysaju_name_asked_v1';
+function setMyName(n){
+  var o = STATE._mySajuOpts || STATE.lastForm; if (!o) return;
+  o.name = n; if (STATE.lastForm && STATE.lastForm !== o) STATE.lastForm.name = n;
+  try{ STATE.mySaju = computeSaju(o); }catch(e){}
+  saveState();
+  if ($('#f-name')) $('#f-name').value = n;
+  try{ SHOW_TODAY_PEEK = true; renderSajuResult(STATE.mySaju); SHOW_TODAY_PEEK = false; refreshCompatPersonA(); renderMyRoom(); }catch(e){ SHOW_TODAY_PEEK = false; }
+  saveMySajuToServer(o);
+}
+function askMyName(why, done){
+  if ($('#name-ask-root')) return;
+  var root = document.createElement('div'); root.id = 'name-ask-root';
+  root.innerHTML = '<div class="sheet-backdrop" id="name-ask-backdrop"><form class="sheet" id="name-ask-sheet" novalidate>'+
+    '<div class="sheet-handle"></div>'+
+    '<div class="sheet-head"><h2 class="section-title">풀이에서 부를 이름을 알려 주세요</h2></div>'+
+    '<p class="section-desc">'+esc(why)+'</p>'+
+    '<div class="field"><input type="text" id="name-ask-input" maxlength="12" placeholder="이름 또는 별명" autocomplete="name" aria-label="풀이에서 부를 이름"></div>'+
+    '<p class="form-error" id="name-ask-err" role="alert" hidden>이름을 적어 주세요.</p>'+
+    '<div class="name-ask-actions"><button type="button" class="share-btn" id="name-ask-later">나중에</button><button type="submit" class="btn-primary">저장</button></div>'+
+  '</form></div>';
+  document.body.appendChild(root);
+  var input = $('#name-ask-input'), finished = false;
+  function close(ok){ if (finished) return; finished = true; root.remove(); if (done) done(ok); }
+  $('#name-ask-sheet').addEventListener('submit', function(e){
+    e.preventDefault();
+    var n = input.value.trim();
+    if (!n){ $('#name-ask-err').hidden = false; input.focus(); return; }
+    setMyName(n); close(true); showToast(n+'님으로 불러 드릴게요.');
+  });
+  $('#name-ask-later').addEventListener('click', function(){ close(false); });
+  $('#name-ask-backdrop').addEventListener('click', function(e){ if (e.target.id === 'name-ask-backdrop') close(false); });
+  input.addEventListener('input', function(){ if (input.value.trim()) $('#name-ask-err').hidden = true; });
+}
 function saveMySajuToServer(opts){
   if (!DEVICE.shareCode) return;
   fetch('/api/device/save-saju', {
@@ -8917,6 +8959,11 @@ function init(){
   /* 이미 사주를 넣어 둔 사람이 초대 링크를 열면 다시 입력하지 않으니, 저장된 사주로 바로 등록해요 */
   if (invited && STATE.mySaju && STATE.lastForm) attemptInviteRedeem(STATE.lastForm);
   else if (invited) showToast('친구가 보낸 링크예요. 생일을 넣으면 둘 사이를 바로 볼 수 있어요.');
+  /* 예전에 이름 없이 저장한 사람에게는 다른 화면이 열리지 않는 평범한 방문에서 한 번만 묻는다 */
+  else if (STATE.mySaju && STATE.lastForm && !String(STATE.lastForm.name||'').trim() && !location.search){
+    var asked = false; try{ asked = !!localStorage.getItem(NAME_ASK_KEY); localStorage.setItem(NAME_ASK_KEY, '1'); }catch(e){ asked = true; }
+    if (!asked) setTimeout(function(){ askMyName('풀이와 궁합 카드에서 이 이름으로 불러 드려요.'); }, 1500);
+  }
   /* 별첩을 다시 열거나 앱으로 돌아오면, 그사이 등록한 친구가 보이도록 목록을 새로 받아요 */
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&INVITE_MYROOM_CACHE!==null&&Date.now()-INVITE_MYROOM_AT>15000&&!$('#view-compat').hidden){INVITE_MYROOM_CACHE=null;renderMyRoom();}});
 

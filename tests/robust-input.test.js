@@ -62,3 +62,9 @@ test('a name is required everywhere a birth chart is entered, so partners never 
   assert.ok(!/이름 <span class="hint">\(선택\)<\/span>/.test(html));
   assert.match(html, /function readPersonForm\(suf\)\{\s*if \(!\$\('#c-name-'\+suf\)\.value\.trim\(\)\) throw/);
 });
+
+test('people who saved a chart without a name are asked once, and an invite is never registered without a name', () => {
+  assert.match(html, /if \(!String\(opts && opts\.name \|\| ''\)\.trim\(\)\)\{\s*askMyName\(/);
+  assert.match(html, /function setMyName\(n\)\{[\s\S]*?saveState\(\);[\s\S]*?saveMySajuToServer\(o\);/);
+  assert.match(html, /!String\(STATE\.lastForm\.name\|\|''\)\.trim\(\) && !location\.search\)\{\s*var asked = false; try\{ asked = !!localStorage\.getItem\(NAME_ASK_KEY\)/);
+});
