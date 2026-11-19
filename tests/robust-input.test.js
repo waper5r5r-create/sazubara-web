@@ -46,3 +46,19 @@ test('the payment note promises no fixed delivery time on errors', () => {
   assert.ok(!legal.includes('영업일 기준 1일'));
   assert.ok(html.includes('제공 기간: 결제 즉시 제공<br>이용 기간: 결제일로부터 1년간 다시 보기'));
 });
+
+test('a name is required everywhere a birth chart is entered, so partners never show up as "상대방"', () => {
+  // 별자리 입력: 이름 칸이 성별보다 먼저 나오고, 이름이 비면 성별을 눌러도 넘어가지 않는다
+  const page1 = html.slice(html.indexOf('data-page="1"><p class="bf-kicker">'), html.indexOf('data-page="2"><p class="bf-kicker">'));
+  assert.ok(page1.indexOf('data-bf="name"') < page1.indexOf('data-bf="gender"'));
+  assert.ok(!page1.includes('비워 둬도'));
+  assert.match(html, /S\.gender=b\.dataset\.val;syncWho\(\);if\(whoDone\(\)\)setTimeout\(function\(\)\{go\(2\);\},420\);/);
+  assert.match(html, /function whoDone\(\)\{S\.name=\$b\('name'\)\.value\.trim\(\);if\(!S\.name\)\{/);
+  // 기본 입력폼
+  assert.ok(html.includes('<label for="f-name">이름</label>'));
+  assert.match(html, /if\(SAJU_FORM_STEP===0&&sajuNameMissing\(\)\)return;/);
+  assert.match(html, /if\(sajuNameMissing\(\)\)return;/);
+  // 궁합: 두 사람 모두 이름 필수
+  assert.ok(!/이름 <span class="hint">\(선택\)<\/span>/.test(html));
+  assert.match(html, /function readPersonForm\(suf\)\{\s*if \(!\$\('#c-name-'\+suf\)\.value\.trim\(\)\) throw/);
+});

@@ -1523,6 +1523,7 @@ html.bf-open,html.bf-open body{overflow:hidden}
 .bf-sub{margin:10px 0 0;font-size:.875rem;line-height:1.6;color:var(--bf-muted);word-break:keep-all}
 .bf-line{margin-top:34px;width:min(300px,100%);border:0;border-bottom:1px solid var(--bf-line);border-radius:0;background:transparent;color:var(--bf-cream);font-family:'Noto Serif KR',serif;font-size:1.75rem;text-align:center;padding:6px 0 10px;outline:0;transition:border-color .3s}
 .bf-line::placeholder{color:#ffffff38;font-size:1.25rem}.bf-line:focus{border-color:var(--bf-gold)}
+.bf-name-warn{margin:14px 0 0;color:#f3cf80;font-size:.875rem}
 .bf-actions{margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
 .bf-btn{min-width:200px;height:52px;padding:0 28px;border:0;border-radius:26px;background:linear-gradient(135deg,#f6dca0,#d9a95a);color:#2a1f0c!important;font-weight:700;font-size:1rem;box-shadow:0 8px 30px #e9c27a40;transition:transform .15s,opacity .3s}
 .bf-btn:active{transform:scale(.97)}.bf-btn[disabled]{opacity:.35;box-shadow:none}
@@ -1885,7 +1886,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
         </div>
 
         <div class="field">
-          <label for="f-name">이름 <span class="hint">(선택)</span></label>
+          <label for="f-name">이름</label>
           <input type="text" id="f-name" placeholder="이름을 입력해주세요 (예: 홍길동)" maxlength="12" autocomplete="name" aria-describedby="name-help">
           <p class="hint" id="name-help">이름은 부를 때만 써요. 한자·획수를 보는 성명학은 포함하지 않아요.</p>
         </div>
@@ -3354,11 +3355,13 @@ function openBirthFlow(prefill,opt){
   '<div class="bf-app"><div class="bf-top"><button type="button" class="bf-back" hidden>이전</button><span class="bf-brand">별첩사주</span><button type="button" class="bf-close" aria-label="닫기">닫기</button></div>'+
   '<div class="bf-cons" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none">'+lines+'</svg>'+stars+lbs+'</div>'+
   '<div class="bf-pages">'+
-   /* 이름만 묻던 첫 장은 없앴다. 이름은 성별 장에서 함께(선택) 받는다. 자리 번호가 밀리지 않게 빈 장만 남겨 둔다. */
+   /* 이름만 묻던 첫 장은 없앴다. 이름은 성별 장에서 함께(필수) 받는다. 자리 번호가 밀리지 않게 빈 장만 남겨 둔다. */
    '<section class="bf-page" data-page="0" hidden></section>'+
-   '<section class="bf-page" data-page="1"><p class="bf-kicker">첫째 장</p><h2 class="bf-q" data-bf="hello">성별을 알려 주세요</h2><p class="bf-sub">'+(opt.note?'「'+esc(opt.note)+'」'+(hasBatchim(String(opt.note).slice(-1))?'을':'를')+' 열기 전에, 세 가지만 알려 주세요.':'10년마다 바뀌는 큰 흐름을 계산할 때 써요.')+'</p>'+
+   '<section class="bf-page" data-page="1"><p class="bf-kicker">첫째 장</p><h2 class="bf-q" data-bf="hello">이름과 성별을 알려 주세요</h2><p class="bf-sub">'+(opt.note?'「'+esc(opt.note)+'」'+(hasBatchim(String(opt.note).slice(-1))?'을':'를')+' 열기 전에, 세 가지만 알려 주세요.':'성별은 10년마다 바뀌는 큰 흐름을 계산할 때 써요.')+'</p>'+
+    '<input class="bf-line bf-name" data-bf="name" type="text" maxlength="12" placeholder="이름 또는 별명" autocomplete="off" enterkeyhint="next" aria-label="풀이에서 부를 이름" required>'+
     '<div class="bf-pick" data-bf="gender"><button type="button" data-val="f"><span>'+uiIcon('moon')+'</span>여성</button><button type="button" data-val="m"><span>'+uiIcon('sun')+'</span>남성</button></div>'+
-    '<label class="bf-name-opt"><span>풀이에서 부를 이름 · 비워 둬도 돼요</span><input class="bf-line" data-bf="name" type="text" maxlength="12" placeholder="이름 또는 별명" autocomplete="off" enterkeyhint="done" aria-label="이름"></label></section>'+
+    '<p class="bf-name-warn" data-bf="nameWarn" role="alert" hidden>풀이에서 부를 이름을 먼저 적어 주세요.</p>'+
+    '<div class="bf-actions"><button class="bf-btn" type="button" data-bf-next="who" hidden>다음</button></div></section>'+
    '<section class="bf-page" data-page="2"><p class="bf-kicker">둘째 장</p><h2 class="bf-q">언제 태어났나요?</h2>'+
     '<div class="bf-cal" data-bf="cal"><button type="button" class="on" data-val="solar">양력</button><button type="button" data-val="lunar">음력</button></div>'+
     '<div class="bf-ymd"><label><input class="y" data-bf="yy" inputmode="numeric" maxlength="4" placeholder="1994" autocomplete="off" aria-label="태어난 해">년</label><span class="dot">.</span><label><input class="m" data-bf="mm" inputmode="numeric" maxlength="2" placeholder="05" autocomplete="off" aria-label="태어난 달">월</label><span class="dot">.</span><label><input class="d" data-bf="dd" inputmode="numeric" maxlength="2" placeholder="12" autocomplete="off" aria-label="태어난 날">일</label></div>'+
@@ -3416,10 +3419,16 @@ function openBirthFlow(prefill,opt){
  root.querySelector('.bf-back').addEventListener('click',function(){go(Math.max(1,S.page-1));});
  root.querySelector('.bf-close').addEventListener('click',function(){closeBirthFlow();});
 
- /* 1. 이름(선택): 성별을 고르는 순간 함께 읽는다 */
- $b('name').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();$b('name').blur();}});
+ /* 1. 이름(필수)과 성별: 이름이 비어 있으면 성별을 눌러도 다음 장으로 넘어가지 않는다.
+    (성별부터 누르면 이름을 못 적고 넘어가 궁합·카드에 '상대방'으로 남던 문제) */
+ var whoNext=root.querySelector('[data-bf-next="who"]');
+ function syncWho(){var n=$b('name').value.trim();whoNext.hidden=!(n&&S.gender);if(n)$b('nameWarn').hidden=true;}
+ function whoDone(){S.name=$b('name').value.trim();if(!S.name){$b('nameWarn').hidden=false;$b('name').focus();return false;}if(!S.gender)return false;$b('name').blur();return true;}
+ $b('name').addEventListener('input',syncWho);
+ $b('name').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();if(S.gender&&whoDone())go(2);else if($b('name').value.trim())$b('name').blur();}});
+ whoNext.addEventListener('click',function(){if(whoDone())go(2);});
  /* 2. 성별 */
- $b('gender').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$all('button',$b('gender')).forEach(function(x){x.classList.toggle('on',x===b);});S.gender=b.dataset.val;S.name=$b('name').value.trim();$b('name').blur();setTimeout(function(){go(2);},420);});
+ $b('gender').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$all('button',$b('gender')).forEach(function(x){x.classList.toggle('on',x===b);});S.gender=b.dataset.val;syncWho();if(whoDone())setTimeout(function(){go(2);},420);});
  /* 3. 생년월일 */
  var yy=$b('yy'),mm=$b('mm'),dd=$b('dd'),echo=$b('echo'),dateNext=root.querySelector('[data-bf-next="date"]'),timer=null,thisYear=new Date().getFullYear();
  function yearOk(){var v=+yy.value;return yy.value.length===4&&v>=1900&&v<=thisYear;}
@@ -3522,6 +3531,7 @@ function openBirthFlow(prefill,opt){
   setCal(!!prefill.isLunar);S.leap=!!prefill.isLeapMonth;$b('leap').checked=S.leap;
   yy.value=String(prefill.year);mm.value=String(prefill.month).padStart(2,'0');dd.value=String(prefill.day).padStart(2,'0');refreshDate(false);
   if(prefill.city&&CITY_LON[prefill.city]){S.city=prefill.city;$b('city').value=prefill.city;}
+  syncWho();
   if(prefill.unknownTime){S.unknown=true;light(6,true);light(7,true);}
   else{syncShift();var hm=String(prefill.hour).padStart(2,'0')+':'+String(prefill.minute).padStart(2,'0'),bi=birthBandIndex(hm,bfBands),exact=bfBands[bi].t===hm?null:(+prefill.hour*60+ +prefill.minute);pick(bi,exact);light(6);light(7);tone('');}
  }
@@ -4963,8 +4973,8 @@ function monthFortuneHtml(my){
 function personFieldsHtml(suffix, titleLabel){
   return (
     '<div class="field">'+
-      '<label for="c-name-'+suffix+'">'+titleLabel+' 이름 <span class="hint">(선택)</span></label>'+
-      '<input type="text" id="c-name-'+suffix+'" maxlength="12" placeholder="'+(suffix==='a'?'나':'상대방')+'" autocomplete="off">'+
+      '<label for="c-name-'+suffix+'">'+titleLabel+' 이름</label>'+
+      '<input type="text" id="c-name-'+suffix+'" maxlength="12" placeholder="이름 또는 별명" autocomplete="off">'+
     '</div>'+
     '<div class="two-col">'+
       '<div class="field"><label>성별</label><div class="seg" id="c-gender-'+suffix+'"><button type="button" data-val="f" class="active">여성</button><button type="button" data-val="m">남성</button></div></div>'+
@@ -7474,6 +7484,7 @@ function segValue(segEl){
 }
 
 function readPersonForm(suf){
+  if (!$('#c-name-'+suf).value.trim()) throw new Error((suf==='a'?'내':'상대방')+' 이름을 입력해주세요');
   var dateStr = $('#c-date-'+suf).value;
   if (!dateStr) throw new Error('생년월일을 입력해주세요');
   var parts = dateStr.split('-').map(Number);
@@ -8487,7 +8498,15 @@ function updateBirthSky(){
  var txt=$('[data-birth-sky-txt]');if(!txt)return;
  txt.textContent=!BIRTH_STATE.date?'생일을 넣으면 별이 켜져요':timeOn?'여덟 글자가 모두 모였어요':unknown?'여섯 글자로 풀어 볼게요':'여덟 글자 중 여섯 개가 켜졌어요';
 }
+function sajuNameMissing(){
+  var n=$('#f-name');if(n.value.trim())return false;
+  if(SAJU_FORM_STEP!==0&&!SAJU_FORM_FULL)showSajuStep(0,false);
+  n.setCustomValidity('이름을 입력해주세요.');n.reportValidity();n.focus();
+  n.addEventListener('input',function(){n.setCustomValidity('');},{once:true});
+  return true;
+}
 function advanceSajuStep(){
+  if(SAJU_FORM_STEP===0&&sajuNameMissing())return;
   if(SAJU_FORM_STEP===1&&!$('#f-date').checkValidity()){$('#f-date').reportValidity();return;}
   showSajuStep(Math.min(2,SAJU_FORM_STEP+1),true);
 }
@@ -8495,7 +8514,7 @@ function showSajuStep(step,focus){
   var hero=$('.saju-story-welcome');if(hero)hero.hidden=step>0&&!SAJU_FORM_FULL;
   SAJU_FORM_STEP=step;var form=$('#saju-form');
   var name=$('#f-name').value.trim(),hello=name?name+'님, ':'당신의 ';
-  var lines=['풀이를 볼 분의 이름과 성별을 입력해주세요. 이름은 생략할 수 있어요.','양력·음력을 확인하고 생년월일을 입력해주세요.','출생시간과 태어난 지역을 입력해주세요. 시간을 모르면 ‘모름’을 선택하세요.'];
+  var lines=['풀이를 볼 분의 이름과 성별을 입력해주세요.','양력·음력을 확인하고 생년월일을 입력해주세요.','출생시간과 태어난 지역을 입력해주세요. 시간을 모르면 ‘모름’을 선택하세요.'];
   if($('#saju-guide-line'))$('#saju-guide-line').textContent=lines[step];
   $all('[data-form-step]',form).forEach(function(g){var was=g.hidden;g.hidden=!SAJU_FORM_FULL&&Number(g.dataset.formStep)!==step;if(focus&&was&&!g.hidden){g.classList.remove('step-in');void g.offsetWidth;g.classList.add('step-in');}});
   var skyEl=$('.birth-sky',form);if(skyEl)skyEl.hidden=!SAJU_FORM_FULL&&step===0;
@@ -8520,6 +8539,7 @@ function initSajuForm(){
   $('#saju-form').addEventListener('submit', function(e){
     e.preventDefault();
     if(!SAJU_FORM_FULL&&SAJU_FORM_STEP<2){advanceSajuStep();return;}
+    if(sajuNameMissing())return;
     if(!$('#f-date').checkValidity()){SAJU_FORM_FULL=false;showSajuStep(1,true);$('#f-date').reportValidity();return;}
     try{
       var previousError=$('#saju-form-error');if(previousError)previousError.remove();
