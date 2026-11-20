@@ -1273,6 +1273,20 @@ body{letter-spacing:-.025em}.app{min-height:100vh}.app-header{backdrop-filter:bl
 .archive-row{display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:0 16px;border:1px solid var(--border-strong);border-radius:14px;background:transparent;color:var(--fg);font-size:.9375rem;font-weight:600;text-align:left}
 .archive-row span{font-size:.8125rem;color:var(--fg-muted);font-weight:500}
 /* 다음으로 볼 것 */
+.year-peek{margin:22px 0 0;padding:22px 16px 14px;border-radius:20px;background:linear-gradient(160deg,#252e66 0%,#151b43 60%,#0f1331 100%);color:#f6ecd6;box-shadow:0 10px 26px #0b102033}
+.yp-k{margin:0;font-size:.8125rem;font-weight:700;letter-spacing:.08em;color:#e9c27a}
+.year-peek h2{margin:6px 0 6px;font-family:'Noto Serif KR',serif;font-size:1.3125rem;font-weight:600;line-height:1.4;color:#fff6e3;word-break:keep-all}
+.yp-sub{margin:0 0 8px;font-size:.8125rem;line-height:1.6;color:#c9cde0;word-break:keep-all}
+.year-peek-row{display:grid;grid-template-columns:52px 1fr auto;grid-template-areas:"n m h" "n g g";align-items:center;gap:4px 10px;width:100%;padding:14px 2px;border:0;border-top:1px solid #ffffff1f;background:none;text-align:left;color:inherit;cursor:pointer}
+.yp-name{grid-area:n;align-self:start;padding-top:4px;font-size:.8125rem;font-weight:700;color:#e9c27a}
+.yp-main{grid-area:m;display:flex;flex-direction:column;gap:2px;min-width:0}
+.yp-main b{font-family:'Noto Serif KR',serif;font-size:1.375rem;font-weight:600;color:#fff6e3;line-height:1.2}
+.yp-main small{font-size:.8125rem;color:#d6d9e6;word-break:keep-all}
+.yp-hidden{grid-area:h;display:flex;gap:6px}
+.yp-hidden i{padding:5px 8px;border-radius:8px;background:#ffffff14;font-style:normal;font-size:.8125rem;font-weight:600;color:#f3dfb7;filter:blur(2.5px)}
+.yp-go{grid-area:g;display:inline-flex;align-items:center;gap:4px;font-size:.75rem;color:#aab1c8}
+.yp-go svg{width:14px;height:14px}
+.yp-foot{margin:6px 0 0;padding-top:12px;border-top:1px solid #ffffff1f;font-size:.75rem;color:#aab1c8;word-break:keep-all}
 .next-steps{margin:22px 0 6px;padding:20px 16px 12px;border-radius:20px;background:#fffaf0;border:1px solid #e9c27a59;box-shadow:0 8px 22px #0b10200f}
 .next-steps-k{margin:0;font-size:.8125rem;font-weight:700;letter-spacing:.08em;color:#8a6420}
 .next-steps h2{margin:4px 0 12px;font-family:'Noto Serif KR',serif;font-size:1.25rem;line-height:1.4;color:#1f2547;word-break:keep-all}
@@ -4178,7 +4192,7 @@ function everydayTraitsHtml(result){
  return '<section class="personal-traits"><h2>사주로 살펴본 내 특징 세 가지</h2><ol>'+rows.map(function(r,i){return '<li><span class="trait-symbol">'+uiIcon(r[2])+'</span><div><small>0'+(i+1)+' · '+r[0]+'</small><p>'+esc(r[1])+'</p></div></li>';}).join('')+'</ol><p class="hint">일간과 오행 분포를 참고한 해석이에요. 실제 경험과 함께 읽어보세요.</p></section>';
 }
 function everydaySajuHtml(result){
- return '<section class="everyday-saju"><p class="editorial-tag">나의 사주팔자</p><div class="saju-result-head"><h1>'+(result.name?esc(result.name)+'님의 사주':'나의 사주')+'</h1><button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button></div>'+pillarHeroHtml(result)+sajuQuickSummaryHtml(result)+starGiftHtml(result)+sajuHookHtml('self',result,(result.name?result.name+'님은':'나는')+' 이런 사람이에요')+nextStepsHtml(result)+homeContentsHtml()+'</section>';
+ return '<section class="everyday-saju"><p class="editorial-tag">나의 사주팔자</p><div class="saju-result-head"><h1>'+(result.name?esc(result.name)+'님의 사주':'나의 사주')+'</h1><button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button></div>'+pillarHeroHtml(result)+sajuQuickSummaryHtml(result)+starGiftHtml(result)+sajuHookHtml('self',result,(result.name?result.name+'님은':'나는')+' 이런 사람이에요')+yearPeekHtml(result)+nextStepsHtml(result)+homeContentsHtml()+'</section>';
 }
 var WORRY_PREVIEW_LENS={
  목:{연애:'서로의 가능성을 알아가고 함께 경험을 넓히는 관계',직장:'새로운 역할을 배우고 시도하며 방향을 만드는 과정',재물:'새로운 기회를 발견하고 자원을 활용하는 과정',건강:'활동과 회복 사이에 지속 가능한 리듬을 만드는 과정',인간관계:'새로운 만남과 기존 관계를 함께 넓혀가는 과정'},
@@ -4230,6 +4244,12 @@ function myStarCardHtml(result){
   '<div class="my-star-actions"><button type="button" class="btn-primary" data-star-share>내 별 카드 저장·공유</button><button type="button" class="share-btn" data-star-album>내 별자리 보기</button></div>'+
   '<p class="hint">친구를 초대하면 내 별자리에 친구 별이 생겨요.</p></section>';
 }
+/* 첫 화면 풀이꾼 순서: 가장 많이 찾는 결혼 사주를 크게 맨 앞에, 연애가 그 다음. 콘텐츠 탭 배너 순서는 그대로 둔다. */
+var HOME_CHAR_FIRST=['dc6f87f4-86a7-47ce-ae91-3f6715dee2b0','운명의-사람은-언제-올까-fyq1z'];
+function homeCharOrder(){
+ var first=HOME_CHAR_FIRST.map(function(id){return HOME_BANNERS.filter(function(b){return String(b.id)===id;})[0];}).filter(Boolean);
+ return first.concat(HOME_BANNERS.filter(function(b){return first.indexOf(b)===-1;}));
+}
 /* 첫 화면 큰 그림: 별 카드 세 장을 부채꼴로 */
 /* 첫 화면: 광고로 온 사람이 바로 입력하도록 계산 방식 설명은 빼고, 별 카드는 한 줄로 */
 /* 첫 화면 연출: 그림 속 별 여덟 개가 차례로 켜져요. 입력은 처음부터 바로 할 수 있어요. */
@@ -4237,10 +4257,10 @@ var HERO_STARS=[[10,10.8],[21.7,26.5],[33.9,12.5],[42.8,32.3],[57.4,28],[67.6,15
 function starHeroHtml(){
  var stars=HERO_STARS.map(function(p,i){return '<i class="hero-star" style="left:'+p[0]+'%;top:'+p[1]+'%;--d:'+(0.35+i*0.13).toFixed(2)+'s;--t:'+(2.6+(i%3)*0.7).toFixed(1)+'s"></i>';}).join('');
  var names={};names[String(NEWYEAR_CONCEPT.id)]='다온';names[String(IAN_CONCEPT.id)]='이안';names['운명의-사람은-언제-올까-fyq1z']='해랑';names['타고난-재물복은-얼마나-될까-k7dxw']='금비';names['7c5db9e6-59cb-4a81-8b0a-73da4db7b051']='서림';names['dc6f87f4-86a7-47ce-ae91-3f6715dee2b0']='월하';
- return '<div class="char-home"><div class="char-me"><p class="editorial-tag">무료 사주풀이</p><h1>생년월일로 보는<br>나의 사주팔자</h1><p class="saju-hero-sub">타고난 성향과 앞으로의 흐름을 알려드려요.</p>'+
+ return '<div class="char-home"><div class="char-me"><p class="editorial-tag">무료 사주풀이</p><h1>내 사주에 적힌<br>사랑과 일의 때</h1><p class="saju-hero-sub">태어난 날의 여덟 글자로 타고난 성향과<br>앞으로 10년의 흐름을 짚어 드려요.</p>'+
   '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p><ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>바로 시작</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div>'+
   '<div class="char-list"><h2>오늘은 누구에게 물어볼까요?</h2><p class="char-list-sub">여섯 명의 풀이꾼이 내 사주로 이야기를 들려줘요. 앞부분은 무료예요.</p>'+
-  '<div class="char-grid">'+HOME_BANNERS.map(function(b,i){var nm=names[String(b.id)]||'';return '<button type="button" class="char-card'+(i===0?' is-feat':'')+'" data-char-go="'+esc(String(b.id))+'"><img src="'+b.img+'" alt="" loading="lazy" decoding="async"><span><small>'+(nm?'<b>'+nm+'</b>':'')+esc(b.kicker)+'</small><strong>'+b.title+'</strong>'+(i===0?'<em>무료로 앞부분 읽기</em>':'')+'</span></button>';}).join('')+'</div></div></div>';
+  '<div class="char-grid">'+homeCharOrder().map(function(b,i){var nm=names[String(b.id)]||'';return '<button type="button" class="char-card'+(i===0?' is-feat':'')+'" data-char-go="'+esc(String(b.id))+'"><img src="'+b.img+'" alt="" loading="lazy" decoding="async"><span><small>'+(nm?'<b>'+nm+'</b>':'')+esc(b.kicker)+'</small><strong>'+b.title+'</strong>'+(i===0?'<em>무료로 앞부분 읽기</em>':'')+'</span></button>';}).join('')+'</div></div></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
 /* 결과 맨 위: 내 여덟 글자를 남색 판에 크게. 일간(태어난 날의 위 글자)이 "나"를 나타내서 금색으로 둘러요 */
@@ -4297,6 +4317,23 @@ function wireStarGift(scope,result){
 }
 /* 콘텐츠 줄: 목록 API에서 자동으로 */
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
+/* 결과 화면의 "미리 본 좋은 해": 유료 콘텐츠가 계산하는 10년 중 좋은 해 세 개 가운데 가장 가까운 해 하나만 보여 주고,
+   나머지 두 해는 가린 채 그 콘텐츠로 이어 준다. 콘텐츠 안의 계산(marriageTimeline 등)을 그대로 써서 숫자가 어긋나지 않는다. */
+var YEAR_PEEK=[
+ {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',name:'결혼운',who:'월하 · 결혼 사주',rows:function(r){return marriageTimeline(r,marriageStartYear());},label:function(x){return marriageYearLabel(x);}},
+ {id:'운명의-사람은-언제-올까-fyq1z',name:'연애운',who:'해랑 · 연애 사주',rows:function(r){return loveTimeline(r,marriageStartYear());},label:function(x){return loveYearLabel(x);}},
+ {id:'타고난-재물복은-얼마나-될까-k7dxw',name:'재물운',who:'금비 · 재물 사주',rows:function(r){return wealthTimeline(r,marriageStartYear());},label:function(x){return wealthYearLabel(x);}}
+];
+function yearPeekHtml(result){
+ if(!result||!result.day)return '';
+ var items=YEAR_PEEK.map(function(p){
+  try{var first=p.rows(result).filter(function(x){return x.top;}).sort(function(a,b){return a.year-b.year;})[0];if(!first)return '';
+   return '<button type="button" class="year-peek-row" data-char-go="'+esc(p.id)+'"><span class="yp-name">'+p.name+'</span><span class="yp-main"><b>'+first.year+'년</b><small>'+esc(p.label(first)||'')+'</small></span><span class="yp-hidden" aria-label="나머지 좋은 해 두 개는 콘텐츠에서 볼 수 있어요"><i>????</i><i>????</i></span><span class="yp-go">'+esc(p.who)+uiIcon('arrow')+'</span></button>';
+  }catch(e){return '';}
+ }).join('');
+ if(!items)return '';
+ return '<section class="year-peek" aria-label="내 사주로 미리 본 좋은 해"><p class="yp-k">내 사주로 미리 본 좋은 해</p><h2>'+(result.name?esc(result.name)+'님에게':'나에게')+' 먼저 오는<br>좋은 해</h2><p class="yp-sub">앞으로 10년 중 특히 좋은 해는 주제마다 세 번이에요. 가장 가까운 해만 먼저 보여 드려요.</p>'+items+'<p class="yp-foot">나머지 두 해와 그해에 할 일은 각 이야기에서 이어져요 · 앞부분 무료</p></section>';
+}
 /* 사주 결과를 본 다음 어디로 가면 되는지 세 갈래로 알려 준다 */
 function nextStepsHtml(result){
  var rows=[['contents','spark','연애·돈·일, 자세히 보기','주제별 내 이야기 · 앞부분 무료'],['today','compass','오늘 운세 보기','오늘·이번 주·이번 달 흐름 · 무료'],['compat','people','친구와 궁합 보기','링크를 보내면 둘 다 무료로 봐요']];

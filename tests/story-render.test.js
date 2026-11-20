@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
-source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={ianPageHtml,homeBannerHtml,newYearPageHtml,sajuQuickSummaryHtml,skyHtml,skyLayout,skyPageHtml,homePreviewLine,reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.storyTest={yearPeekHtml,ianPageHtml,homeBannerHtml,newYearPageHtml,sajuQuickSummaryHtml,skyHtml,skyLayout,skyPageHtml,homePreviewLine,reportEmphasis,readingPreviewHtml,reportCoverSource,storyProfile,reportSampleHtml,storyCategory,ZHI_REL_TEXT,GAN_REL_TEXT,ZHI_REL_MARRIAGE_TEXT,DATE_GUIDE_TEXT,GAN_REL_TALK_TEXT,CONFLICT_TEXT,COUPLE_TODAY_DETAIL,scoreLabel,everydayTraitsHtml,everydaySajuHtml,worryPreviewHtml,computeSaju,sajuDepthHtml,fillReportTemplate,reportImageSource,reportSectionHtml,prologueDialogue,detailReportHtml,stageOfferHtml,readerStepsHtml,reportCardHtml,myroomTier,collectibleCardHtml,cardDexEntries,cardBackHtml,cardTypeOf,cardAlbumIntro,cardMeaningHtml,storyFlowHtml,myStarCardHtml,starHeroHtml,albumFirstPageHtml,cardBackHtml,cardDexEntries,wealthTimeline,wealthProfile,careerTimeline,loveTimeline,marriageTimeline,marriageStartYear,isMarriage,storyPaidScenes,storyAtlasArt,storyNarrativePlan,reportSituationGuides,CARD_SPIRITS,STATE,DEVICE,REPORT_READER,isWorryUnlocked};})();');
 const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
 vm.createContext(sandbox);vm.runInContext(source,sandbox);
 const api=sandbox.storyTest;
@@ -283,7 +283,7 @@ test('wealth report: 금비 free view hides paid copy, ledger story and 18-secti
 test('star card: every day stem gets its own animal card, home hero and album first page render real art',()=>{
  const seen=new Set();for(const s of ['갑','을','병','정','무','기','경','신','임','계']){const h=api.myStarCardHtml({...result,day:{...result.day,ganKr:s,gan:'X'}});assert.ok(h.includes('my-star-card'),s);const m=h.match(new RegExp('assets/guardians/([a-z-]+)[.]webp'));assert.ok(m,s);seen.add(m[1]);assert.ok(fs.existsSync(require('node:path').join(__dirname,'..','assets/guardians/'+m[1]+'.webp')));assert.ok(!h.includes('undefined'));}
  assert.equal(seen.size,10);
- const hero=api.starHeroHtml();assert.ok(hero.includes('나의 사주팔자'));assert.ok(!hero.includes('출생지 보정'));for(const x of hero.matchAll(/src="([^"]+)"/g))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',x[1])),x[1]);
+ const hero=api.starHeroHtml();assert.ok(hero.includes('사랑과 일의 때'));assert.ok(hero.indexOf('dc6f87f4-86a7-47ce-ae91-3f6715dee2b0')<hero.indexOf('운명의-사람은-언제-올까-fyq1z'));assert.ok(!hero.includes('출생지 보정'));for(const x of hero.matchAll(/src="([^"]+)"/g))assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',x[1])),x[1]);
  const sky0=api.skyHtml(result,[]);assert.ok(sky0.includes('data-sky-enter'));assert.ok(sky0.includes('data-album-invite'));assert.equal((sky0.match(/sky-empty/g)||[]).length,3);const fr={id:'f',score:95,dayGanWxB:'목',dayGanB:'갑',cardPolarity:'yang',nameB:'민지',zhiRel:'liuhe',ganRel:'sheng'};const sky=api.skyHtml(result,[fr,{...fr,id:'g',score:30,nameB:'도윤',dayGanWxB:'수',dayGanB:'임'}]);assert.equal((sky.match(/class="sky-star sky-/g)||[]).length,2);assert.ok(!/[SABC]등급/.test(sky));const p=api.skyLayout([fr,{...fr,score:30}]);assert.ok(Math.hypot(p[0].x-180,p[0].y-240)<Math.hypot(p[1].x-180,p[1].y-240));assert.ok(p[0].x>180);const page=api.skyPageHtml(fr);assert.ok(page.includes('민지님과 나'));assert.ok(page.includes('운명처럼 닿은 인연'));assert.ok(page.includes('말 안 해도 편한'));
  const back=api.cardBackHtml(api.cardDexEntries([])[0]);assert.ok(back.includes('card-back-art'));
  const unsafe=api.myStarCardHtml({...result,name:'<script>x</script>'});assert.ok(!unsafe.includes('<script>x</script>'));
@@ -407,4 +407,15 @@ test('paid 10-year paragraphs: 같은 기운의 해·10년이 다시 나와도 �
   assert.equal((html.match(/sT\(story\.yearTextLines,r\.rel,rel\.text\)/g)||[]).length,4);
   assert.equal((html.match(/i>0&&SS_GROUP\[periods\[i-1\]\.ss\]===/g)||[]).length,4);
   assert.deepEqual(V.lines({a:'x'},{a:'y'}).a,['x','y']);
+});
+
+test('result page previews the nearest good year from the same calculation the paid stories use, hiding the other two',()=>{
+ const html=api.yearPeekHtml(result);
+ assert.ok(html.includes('먼저 오는'));
+ assert.equal((html.match(/class="year-peek-row"/g)||[]).length,3);
+ const first=api.marriageTimeline(result,api.marriageStartYear()).filter(r=>r.top).sort((a,b)=>a.year-b.year)[0];
+ assert.ok(html.includes('data-char-go="dc6f87f4-86a7-47ce-ae91-3f6715dee2b0"><span class="yp-name">결혼운</span><span class="yp-main"><b>'+first.year+'년</b>'));
+ assert.equal((html.match(/<i>\?\?\?\?<\/i>/g)||[]).length,6);
+ assert.ok(!html.includes('undefined'));
+ assert.equal(api.yearPeekHtml(null),'');
 });
