@@ -1700,8 +1700,8 @@ html.bf-open,html.bf-open body{overflow:hidden}
 .sky-stage:not(.is-far) .sky-nebula{opacity:.7}
 .sky-legend{margin:10px 2px 14px;font-size:.75rem;line-height:1.6;color:var(--fg-muted);text-align:center;word-break:keep-all}
 .sky-list{margin-top:14px}
-.sky-list summary{padding:10px 2px;font-size:.875rem;font-weight:700;cursor:pointer}
-.sky-list ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.sky-head+.sky-list{margin:14px 0 0}.sky-list+.album-invite-btn{margin:12px 0 18px}
+.sky-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
 .sky-list li button{display:flex;justify-content:space-between;gap:10px;width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--fg);text-align:left;font-size:.875rem}
 .sky-list li span{color:var(--fg-muted);font-size:.8125rem}
 .sky-book-backdrop{align-items:center;justify-content:center;padding:16px}
@@ -4504,20 +4504,19 @@ function skyHtml(result,list){
  var empty=list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">빈자리</text></g>';}).join(''):'';
  var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
-  '<div class="sky-head"><p class="eyebrow">궁합</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':list.length?'친구 '+list.length+'명이 내 별자리에 있어요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
-  '<div class="sky-stage is-far" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
+  '<div class="sky-head"><p class="eyebrow">궁합</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':list.length?'친구 '+list.length+'명이 내 별자리에 있어요. 이름을 누르면 궁합이 열려요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
+  (list.length?'<ul class="sky-list">'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></button></li>';}).join('')+'</ul>'+'<button type="button" class="btn-primary album-invite-btn" data-album-invite>'+(skyIsDemo()?'친구 초대하기':'친구 더 초대하기')+'</button>':'')+
+  '<div class="sky-stage '+(list.length?'is-open':'is-far')+'" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
    '<div class="sky-depth" data-sky-depth aria-hidden="true"></div><div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
    '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs>'+skyGlowDefs()+'<radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
    '<i class="sky-shoot" aria-hidden="true"></i>'+
    (list.length||skyIsDemo()?'':'<div class="sky-nostar-note"><b>아직 내 하늘에 별이 없어요</b><span>링크를 보내면 친구가 생일을 넣는 순간 여기에 별이 떠요. 둘의 궁합도 바로 볼 수 있어요.</span><button type="button" class="sky-nostar-btn" data-album-invite>링크 보내기</button></div>')+
-   '<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button>'+
+   (list.length?'':'<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button>')+
    '<div class="sky-focus" data-sky-focus hidden><button type="button" class="sky-focus-close" data-sky-close aria-label="별자리로 돌아가기">'+uiIcon('close')+'</button>'+
     '<div class="sky-fcard"><div class="sky-fcard-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img data-sky-fimg alt="" decoding="async"></div></div></div>'+
     '<div class="sky-panel" data-sky-panel aria-live="polite"></div></div>'+
   '</div>'+
   '<p class="sky-legend">가까이, 밝게 빛날수록 잘 맞는 사이예요. 하늘을 끌어서 둘러보세요.</p>'+
-  (list.length||skyIsDemo()?'<button type="button" class="btn-primary album-invite-btn" data-album-invite>'+(list.length?'친구 더 초대하기':'친구 초대하기')+'</button>':'')+
-  (list.length?'<details class="sky-list"><summary>별 목록 '+list.length+'</summary><ul>'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></button></li>';}).join('')+'</ul></details>':'')+
  '</section>';
 }
 function skyFirst(text){text=String(text||'');var i=text.indexOf('. ');return i>0?text.slice(0,i+1):text;}
@@ -4544,7 +4543,7 @@ function wireSky(scope,list){
  function camFar(anim){size();var S=.62;apply(S,W/2-180*k*S,H/2-240*k*S,anim);}
  function camNear(anim){size();apply(1,pan.x,(H-480*k)/2+pan.y,anim);}
  function camFocus(i){size();var S=2.3,p=pos[i];apply(S,W/2-p.x*k*S,H*.30-p.y*k*S,true);}
- camFar(false);
+ if(stage.classList.contains('is-far'))camFar(false);else camNear(false);
  function enter(){if(!stage.classList.contains('is-far'))return;stage.classList.remove('is-far');stage.classList.add('is-open');camNear(true);try{soundReveal();}catch(e){}}
  function markCur(i){$all('.sky-star',stage).forEach(function(g){g.classList.toggle('is-cur',Number(g.dataset.skyStar)===i);});}
  function detailKeys(e){
