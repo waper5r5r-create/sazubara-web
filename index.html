@@ -6525,7 +6525,15 @@ var WX_ART_KEY={목:'mok',화:'hwa',토:'to',금:'geum',수:'su'};
 function loveCardArt(stem){var k=LOVE_CARD_ART[stem];return k?'<img class="spouse-card-art love-card-art" src="'+HAERANG_ART+'cards/card-'+k+'.webp" alt="'+esc((LOVE_TITLE[stem]||'')+' 카드')+'" loading="lazy" decoding="async">':'';}
 function loveVarScene(kind,wx){var k=WX_ART_KEY[wx];return k?'var/'+kind+'-'+k:kind;}
 var LOVE_FREE={갑:'좋아하는 사람이 생기면 그 사람만 보는 타입이에요. 마음이 생기면 말보다 행동이 먼저 나가요.',을:'상대 기분을 먼저 살피고 맞춰주는 타입이에요. 같이 있으면 편하다는 말을 자주 들어요.',병:'좋으면 좋다고 바로 표현하는 타입이에요. 연애를 시작하면 주변에서 먼저 알아채요.',정:'겉으로는 티를 덜 내도 속으로 깊게 좋아하는 타입이에요. 서운한 건 혼자 오래 품는 편이에요.',무:'말보다 옆에 있어 주는 걸로 마음을 보여주는 타입이에요. 연애에서도 믿음이 제일 중요해요.',기:'상대 일상을 꼼꼼하게 챙기는 타입이에요. 생색은 안 내도 해주는 게 많아요.',경:'좋고 싫음이 분명한 타입이에요. 애매한 관계를 오래 못 끌고 가요.',신:'작은 디테일에 마음이 움직이는 타입이에요. 그만큼 사소한 실망에도 마음이 식기 쉬워요.',임:'상대를 있는 그대로 받아주는 타입이에요. 대신 나만의 시간이 꼭 있어야 해요.',계:'한번 좋아하면 오래 못 잊는 타입이에요. 마음을 표현하기까지 시간이 걸려요.'};
-var LOVE_REL_SCORE={liuhe:3,sanhe:2,chong:1,same:1,none:0,xing:-1,hai:-1,yuanjin:-1};
+/* 주제마다 좋은 해를 다른 기준으로 고른다(예전엔 셋이 같은 기준이라 같은 해가 자주 겹쳤다).
+   결혼: 배우자를 뜻하는 기운(여성은 관성, 남성은 재성)이 들어오는 해와 배우자 자리(일지)가 합을 이루는 해.
+   연애: 도화(일지 기준으로 이성의 눈길이 모이는 글자)가 오는 해와 마음을 표현하는 기운(식상)이 들어오는 해.
+   재물: 재성이 들어오는 해와, 내 재물 기운이 쌓이는 창고 글자(재고)가 오는 해. */
+function spouseStarOf(result){var g=result&&result.gender;return g==='f'||g==='female'?'gwanseong':'jaeseong';}
+var DOHWA_OF={寅:'卯',午:'卯',戌:'卯',申:'酉',子:'酉',辰:'酉',巳:'午',酉:'午',丑:'午',亥:'子',卯:'子',未:'子'};
+var WX_CONTROLS={목:'토',화:'금',토:'수',금:'목',수:'화'},WX_STORE={목:'未',화:'戌',토:'辰',금:'丑',수:'辰'};
+function yearFlags(result,g){var sp=spouseStarOf(result);return {sp:sp,dohwa:DOHWA_OF[result.day.zhi]===g.zhi||(result.year&&DOHWA_OF[result.year.zhi]===g.zhi),store:WX_STORE[WX_CONTROLS[result.dayGanWx]]===g.zhi};}
+var LOVE_REL_SCORE={liuhe:2,sanhe:1,chong:1,same:0,none:0,xing:-1,hai:-1,yuanjin:-1};
 var LOVE_TG_SCORE={jaeseong:2,gwanseong:2,siksang:1,inseong:1,bigyeop:0};
 var LOVE_TOP_LABEL={jaeseong:'설레는 인연이 오는 해',gwanseong:'진지한 인연이 닿는 해',siksang:'마음을 전하기 좋은 해',inseong:'사랑받는 해',bigyeop:'친구가 연인이 되는 해'};
 var LOVE_YEAR_FACE={jaeseong:'cheer',gwanseong:'serious',siksang:'smile',inseong:'smile',bigyeop:'wink'};
@@ -6535,12 +6543,13 @@ function loveTimeline(result,fromYear,count){
  for(var y=fromYear;y<fromYear+(count||10);y++){
   var g=yearGanZhi(new Date(y,6,1)),rel=zhiRelation(result.day.zhi,g.zhi),tg=dailyFortuneRelation(result.dayGanWx,g.wxGan);
   var du=daeun.filter(function(d){return y>=d.startYear&&y<=d.endYear;})[0],dg=du?SS_GROUP[du.ss]:null;
-  rows.push({year:y,ganKr:g.ganKr,zhiKr:g.zhiKr,rel:rel,tg:tg,score:LOVE_REL_SCORE[rel]+LOVE_TG_SCORE[tg]+(dg==='jaeseong'||dg==='gwanseong'||dg==='siksang'?1:0),top:0});
+  var fl=yearFlags(result,g);
+  rows.push({year:y,ganKr:g.ganKr,zhiKr:g.zhiKr,rel:rel,tg:tg,dohwa:fl.dohwa,score:LOVE_REL_SCORE[rel]+(fl.dohwa?3:0)+(tg==='siksang'||tg===fl.sp?2:tg==='jaeseong'||tg==='gwanseong'?1:0)+(dg==='siksang'||dg===fl.sp?1:0),top:0});
  }
  rows.slice().sort(function(a,b){return b.score-a.score||a.year-b.year;}).slice(0,3).forEach(function(r,i){r.top=i+1;});
  return rows;
 }
-function loveYearLabel(r){return r.rel==='liuhe'?'마음이 저절로 닿는 해':r.rel==='chong'?'마음이 크게 움직이는 해':LOVE_TOP_LABEL[r.tg];}
+function loveYearLabel(r){return r.dohwa?'설레는 인연이 눈에 띄는 해':r.rel==='liuhe'?'마음이 저절로 닿는 해':r.rel==='chong'?'마음이 크게 움직이는 해':LOVE_TOP_LABEL[r.tg];}
 function loveMonths(result,year){
  var rows=[];
  for(var m=1;m<=12;m++){
@@ -6748,7 +6757,7 @@ var SPOUSE_STAR={자:'깊은 물의 별',축:'단단한 들판의 별',인:'새�
 /* 배우자 별 카드 그림: 일지 12종. 그림이 없는 일지는 글자 카드로 나온다. */
 var SPOUSE_ART={자:'ja',축:'chuk',인:'in',묘:'myo',진:'jin',사:'sa',오:'o',미:'mi',신:'sin',유:'yu',술:'sul',해:'hae'};
 function spouseArtHtml(zhi){var k=SPOUSE_ART[zhi];return k?'<img class="spouse-card-art" src="'+WOLHA_ART+'cards/spouse-'+k+'.webp" alt="'+esc((SPOUSE_STAR[zhi]||'')+' 카드')+'" loading="lazy" decoding="async">':'';}
-var MARRIAGE_REL_SCORE={liuhe:3,sanhe:2,chong:2,same:1,none:0,xing:-1,hai:-1,yuanjin:-1};
+var MARRIAGE_REL_SCORE={liuhe:3,sanhe:2,chong:1,same:1,none:0,xing:-1,hai:-1,yuanjin:-1};
 var MARRIAGE_TG_SCORE={gwanseong:2,jaeseong:2,siksang:1,inseong:1,bigyeop:0};
 var MARRIAGE_TOP_LABEL={liuhe:'인연이 자연스럽게 닿는 해',sanhe:'만남이 많아지는 해',chong:'관계에 큰 변화가 오는 해',same:'원하는 결혼이 또렷해지는 해'};
 var MARRIAGE_REL_SCENE={liuhe:['year-closer','smile'],sanhe:['year-gather','cheer'],chong:['year-decide','serious'],same:['year-standard','thinking'],xing:['year-untangle','worried'],hai:['year-untangle','worried'],yuanjin:['year-untangle','worried'],none:['year-rest','smile']};
@@ -6759,7 +6768,8 @@ function marriageTimeline(result,fromYear,count){
  for(var y=fromYear;y<fromYear+(count||10);y++){
   var g=yearGanZhi(new Date(y,6,1)),rel=zhiRelation(result.day.zhi,g.zhi),tg=dailyFortuneRelation(result.dayGanWx,g.wxGan);
   var du=daeun.filter(function(d){return y>=d.startYear&&y<=d.endYear;})[0],dg=du?SS_GROUP[du.ss]:null;
-  rows.push({year:y,ganKr:g.ganKr,zhiKr:g.zhiKr,rel:rel,tg:tg,score:MARRIAGE_REL_SCORE[rel]+MARRIAGE_TG_SCORE[tg]+(dg==='jaeseong'||dg==='gwanseong'?1:0),top:0});
+  var fl=yearFlags(result,g);
+  rows.push({year:y,gan:g.gan,zhi:g.zhi,ganKr:g.ganKr,zhiKr:g.zhiKr,rel:rel,tg:tg,spouse:tg===fl.sp,score:MARRIAGE_REL_SCORE[rel]+(tg===fl.sp?3:tg==='jaeseong'||tg==='gwanseong'?1:0)+(dg===fl.sp?1:0),top:0});
  }
  rows.slice().sort(function(a,b){return b.score-a.score||a.year-b.year;}).slice(0,3).forEach(function(r,i){r.top=i+1;});
  return rows;
@@ -6769,6 +6779,26 @@ function currentDaeunGroup(result){var d=(result.daeun||[]).filter(function(x){r
 /* 월하 대화 조각: 장면 그림, 말풍선(얼굴 + 말) */
 function wolhaScene(name,alt){return '<figure class="wolha-scene"><img src="'+WOLHA_ART+'scenes/'+name+'.webp" alt="'+esc(alt||'인연 공방의 월하')+'" loading="lazy" decoding="async"></figure>';}
 function wolhaSay(face,html){return '<div class="wolha-say"><img class="wolha-face" src="'+WOLHA_ART+'faces/wolha-'+face+'.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><div class="wolha-bubble"><span class="wolha-name">월하</span>'+html+'</div></div>';}
+/* 결혼 사주 개인화: 배우자 자리의 십신, 그해 천간의 십신(10가지), 그해 나이대로 문장을 고른다(api/_marriage-content.js) */
+function isFemale(result){var g=result&&result.gender;return g==='f'||g==='female';}
+function birthYearOf(result){try{return result.solar.getYear();}catch(e){return null;}}
+function ageBandOf(age){return age<=26?'early':age<=30?'late20':age<=34?'early30':age<=39?'late30':'forty';}
+function yearKindOf(r){return r.top?'top':(r.rel==='xing'||r.rel==='hai'||r.rel==='yuanjin'||r.rel==='chong')?'care':'calm';}
+function palaceSSOf(result){var d=(result.deepPillars||[]).filter(function(p){return p.label==='일주';})[0];return d&&d.hiddenSS?d.hiddenSS[0]:'';}
+function marriagePersonalYear(story,result,r){
+ var ss=r.gan&&result.day?(SS_KR[LunarUtil.SHI_SHEN[result.day.gan+r.gan]]||''):'',v=story.yearSS&&story.yearSS[ss];
+ if(v&&typeof v==='object')v=v[isFemale(result)?'f':'m'];
+ var by=birthYearOf(result),age=by?r.year-by:null,band=story.ageBand&&age!=null&&age>0?story.ageBand[ageBandOf(age)]:null;
+ return {ss:ss,ssText:v||'',age:age,ageText:band?band[yearKindOf(r)]||'':''};
+}
+var REL_NAME_KR={liuhe:'합(서로 끌어당김)을 이뤄요',sanhe:'삼합(힘을 모음)을 이뤄요',chong:'충(정면으로 부딪힘)을 이뤄요',xing:'형(서로 긁힘)을 이뤄요',hai:'해(조금씩 엇나감)를 이뤄요',yuanjin:'원진(자꾸 엇갈림)을 이뤄요',same:'같은 글자로 겹쳐요',none:'특별히 부딪히거나 묶이지 않아요'};
+function hasBatchimKr(w){var t=String(w||''),c=t.charCodeAt(t.length-1)-0xAC00;return c>=0&&c<11172&&c%28!==0;}
+function jo(w,a,b){return hasBatchimKr(w)?a:b;}
+/* 근거 문장을 앞에 붙일 때, 관계를 다시 설명하는 첫 문장(그해 기운이 배우자 자리와 …)은 겹치므로 뺀다 */
+function afterRelLead(t){t=String(t||'');return /^(그해 기운|그해엔 배우자 자리|그해 기운과 배우자 자리)/.test(t)?t.replace(/^[^.]*\.\s*/,''):t;}
+function marriageRelLead(result,r){if(!r.zhi||!result.day)return '';return r.year+'년 '+r.ganKr+r.zhiKr+'의 '+r.zhiKr+'('+r.zhi+')'+jo(r.zhiKr,'이','가')+' 배우자 자리 '+result.day.zhiKr+'('+result.day.zhi+')'+jo(result.day.zhiKr,'과','와')+' '+(REL_NAME_KR[r.rel]||REL_NAME_KR.none)+'. ';}
+function marriageSSLead(result,r,ss){if(!ss||!r.gan||!result.day)return '';return '그해 천간 '+r.ganKr+'('+r.gan+')'+jo(r.ganKr,'은','는')+' 일간 '+result.day.ganKr+'('+result.day.gan+')에게 '+ss+josaIeyo(ss)+'. ';}
+function marriagePersonalHtml(pp,r,result){return (pp.ssText?'<p>'+esc((result?marriageSSLead(result,r,pp.ss):'')+pp.ssText)+'</p>':'')+(pp.ageText?'<p class="deep-muted">'+r.year+'년은 만 '+pp.age+'세가 되는 해예요. '+esc(pp.ageText)+'</p>':'');}
 function marriageCallName(result){return result.name?esc(result.name)+'님':'당신';}
 function marriagePreviewHtml(concept,result,rows){
  var zhi=result.day.zhiKr,zhiLabel=zhi+'('+result.day.zhi+')',who=marriageCallName(result);
@@ -6788,7 +6818,7 @@ function marriageStoryHtml(story,result,rows){
  var zhi=result.day.zhiKr,card=story.spouseCards[zhi]||{},dg=currentDaeunGroup(result),who=marriageCallName(result);
  var html='<section class="wolha-talk thread-talk">'+wolhaScene('thread-end','밤하늘로 뻗은 붉은 실 끝을 올려다보는 월하')+
   wolhaSay('smile','<p>그럼 시작할게요. 먼저 '+who+'과 잘 맞는 배우자부터요.</p>')+
-  '<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드</p><h2>'+esc(card.star||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(card.who||'')+'</p><h3>만나기 쉬운 자리</h3><p>'+esc(card.meet||'')+'</p><h3>오래가는 비결</h3><p>'+esc(card.keep||'')+'</p></section>'+
+  '<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드</p><h2>'+esc(card.star||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(card.who||'')+'</p><h3>만나기 쉬운 자리</h3><p>'+esc(card.meet||'')+'</p><h3>오래가는 비결</h3><p>'+esc(card.keep||'')+'</p>'+(function(){var ss=palaceSSOf(result),pl=story.palace&&story.palace[ss];return pl?'<h3>배우자 자리에 앉은 기운 · '+esc(pl.title)+'</h3><p>'+esc(pl[isFemale(result)?'f':'m'])+'</p>':'';})()+'</section>'+
   wolhaScene('timeline','열 개의 매듭 중 세 개가 빛나는 붉은 실')+
   wolhaSay('smile','<p>앞으로 10년 결혼운이에요. ★ 표시가 있는 세 해가 특히 좋아요.</p>');
  html+='<section class="marriage-timeline"><ol>'+rows.map(function(r){
@@ -6797,7 +6827,7 @@ function marriageStoryHtml(story,result,rows){
  }).join('')+'</ol></section>';
  var sT=lineRot(),sG=lineRot();rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;}).forEach(function(r){
   var rel=story.yearByRelation[r.rel]||story.yearByRelation.none,sc=MARRIAGE_REL_SCENE[r.rel]||MARRIAGE_REL_SCENE.none;
-  html+=wolhaScene(sc[0],marriageYearLabel(r)+'의 장면')+wolhaSay(sc[1],'<p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(marriageYearLabel(r))+'</p><p>'+esc(sT(story.yearTextLines,r.rel,rel.text))+'</p><p>'+esc(sG(story.yearTgLines,r.tg,story.yearByTenGod[r.tg]||''))+'</p>');
+  html+=wolhaScene(sc[0],marriageYearLabel(r)+'의 장면')+wolhaSay(sc[1],'<p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(marriageYearLabel(r))+'</p><p>'+esc(marriageRelLead(result,r)+afterRelLead(sT(story.yearTextLines,r.rel,rel.text)))+'</p>'+(function(){var pp=marriagePersonalYear(story,result,r);return pp.ssText?marriagePersonalHtml(pp,r,result):'<p>'+esc(sG(story.yearTgLines,r.tg,story.yearByTenGod[r.tg]||''))+'</p>';})());
  });
  if(dg&&story.daeunText[dg])html+=wolhaSay('thinking','<p>마지막으로, 큰 흐름 하나만 더요.</p><p>'+esc(story.daeunText[dg])+'</p>');
  return html+'</section>';
@@ -6895,7 +6925,7 @@ function marriageDeepHtml(deep,result,rows){
  html+=sec('나의 힘과 관계의 주도권 · '+st.title,p(st.text)+tips(st.tips));
  html+=sec('결혼 생활 미리보기','<p class="deep-muted">결혼 생활의 시기별 모습이에요.</p>'+(deep.marriedLife[wk]||[]).map(function(x){return box('',x.when,p(x.text));}).join(''));
  var YL=deep.yearLines||{},yL=lineRot(),yA=lineRot(),yB=lineRot(),yT=lineRot(),yW=lineRot(),yF=lineRot(),yG=lineRot(),yR=lineRot();
- html+=sec('10년 결혼 흐름 상세','<ol class="deep-years">'+rows.map(function(r,ri){var rp=sameRelBefore(rows,ri);var todo=yT(YL.todo,r.rel,deep.yearTodo[r.rel]||deep.yearTodo.none);return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'★ ':'')+esc(r.top?marriageYearLabel(r):yL(YL.label,r.rel,deep.relLabel[r.rel]||deep.relLabel.none))+'</p>'+(rp?yearSameHtml(rp):p(yR(deep.yearActionLines,r.rel,deep.yearAction[r.rel]||deep.yearAction.none)))+p(yG(deep.yearTgLongLines,r.tg,deep.yearTenGodLong[r.tg]))+'<div class="deep-two">'+box('','아직 상대가 없다면',p(yA(YL.single,r.rel,deep.yearSingle[r.rel]||deep.yearSingle.none)))+box('','만나는 사람이 있다면',p(yB(YL.dating,r.rel,deep.yearDating[r.rel]||deep.yearDating.none)))+'</div>'+(function(){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],g=du&&SS_GROUP[du.ss];return g&&du!==rows._du&&(rows._du=du)&&deep.yearDaeun[g]?'<p class="deep-muted">'+esc(deep.yearDaeun[g])+'</p>':'';})()+'<p class="deep-label">이 해에 해볼 일</p>'+tips(todo)+'</li>';}).join('')+'</ol>');
+ html+=sec('10년 결혼 흐름 상세','<p class="deep-muted">해마다 그해 기운이 '+who+'의 배우자 자리와 일간에 닿는 방식, 그해 나이를 함께 읽었어요. ★ 표시된 세 해는 더 자세히 풀었어요.</p><ol class="deep-years">'+rows.map(function(r,ri){var rp=sameRelBefore(rows,ri);var todo=yT(YL.todo,r.rel,deep.yearTodo[r.rel]||deep.yearTodo.none);return '<li class="'+(r.top?'is-top':'')+'"><div class="deep-year-head"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+stars(r.score)+'</div><p class="deep-year-label">'+(r.top?'★ ':'')+esc(r.top?marriageYearLabel(r):yL(YL.label,r.rel,deep.relLabel[r.rel]||deep.relLabel.none))+'</p>'+(rp?'<p>'+esc(marriageRelLead(result,r))+'</p>'+yearSameHtml(rp):p(marriageRelLead(result,r)+afterRelLead(yR(deep.yearActionLines,r.rel,deep.yearAction[r.rel]||deep.yearAction.none))))+marriagePersonalHtml(marriagePersonalYear(deep,result,r),r,result)+(r.top?p(yG(deep.yearTgLongLines,r.tg,deep.yearTenGodLong[r.tg]))+'<div class="deep-two">'+box('','아직 상대가 없다면',p(yA(YL.single,r.rel,deep.yearSingle[r.rel]||deep.yearSingle.none)))+box('','만나는 사람이 있다면',p(yB(YL.dating,r.rel,deep.yearDating[r.rel]||deep.yearDating.none)))+'</div>':'')+(function(){var du=daeun.filter(function(x){return r.year>=x.startYear&&r.year<=x.endYear;})[0],g=du&&SS_GROUP[du.ss];return g&&du!==rows._du&&(rows._du=du)&&deep.yearDaeun[g]?'<p class="deep-muted">'+esc(deep.yearDaeun[g])+'</p>':'';})()+(r.top?'<p class="deep-label">이 해에 해볼 일</p>'+tips(todo):'')+'</li>';}).join('')+'</ol>');
  if(best){var monthYears=tops.slice(0,2);html+=sec('가장 강한 해의 월별 흐름',(function(){var ML=deep.monthLines||{},rR=lineRot(),rA=lineRot(),rT=lineRot();return monthYears.map(function(ty,yi){var months=marriageMonths(result,ty.year);return '<h4>'+ty.year+'년'+(yi===0?' · 가장 강한 해':' · 두 번째로 강한 해')+'</h4><p class="deep-muted">★ 표시는 그해에서 가장 좋은 세 달이에요.</p><ol class="deep-months">'+months.map(function(m){return '<li class="'+(m.top?'is-top':'')+'"><b>'+m.month+'월</b><p>'+(m.top?'★ ':'')+esc(rR(ML.rel,m.rel,deep.monthByRelation[m.rel]||deep.monthByRelation.none))+'</p><p class="deep-muted">'+esc(rA(ML.advice,m.rel,deep.monthAdvice[m.rel]||deep.monthAdvice.none))+' '+esc(rT(ML.tg,m.tg,pickLine(deep.monthTenGod[m.tg],m.month)))+'</p></li>';}).join('')+'</ol>';}).join('');})());}
  html+=sec('10년 단위로 보는 결혼',periods.length?periods.map(function(d,i){var g=SS_GROUP[d.ss];return box(i===0?'good':'',(i===0?'지금':i===1?'다음':(i+1)+'번째')+' 10년 · '+d.startYear+'~'+d.endYear,(i>0&&SS_GROUP[periods[i-1].ss]===g?p(DAEUN_SAME+' 앞 10년에 세운 약속과 생활의 틀이 이때 더 단단해지기 쉬워요.')+p((deep.daeunAdvice2||{})[g]||''):p(deep.daeunDeep[g])+p(deep.daeunAdvice[g])));}).join(''):'<p class="deep-muted">대운 정보를 계산하지 못했어요.</p>');
  html+=sec('궁합 가이드',['liuhe','sanhe','chong','yuanjin'].filter(function(k){return mt[k].length;}).map(function(k){var good=k==='liuhe'||k==='sanhe';return box(good?'good':'warn',(good?'잘 맞는 상대 · ':'조율이 필요한 상대 · ')+mt[k].map(zhiTag).join(', '),p(deep.matchLong[k])+mt[k].map(function(z){var o=deep.spouseDeep[ZHI_KR[z]]||{};return '<p class="deep-partner"><span class="deep-label">상대 태어난 날 글자가 '+esc(ZHI_KR[z]+'('+z+')')+zhiRamyeon(z)+'</span>'+esc(o.daily||'')+'</p><p class="deep-muted">끌림: '+esc(o.pull||'')+'</p><p class="deep-muted">부딪히는 지점: '+esc(o.friction||'')+'</p><p class="deep-muted">이 사람과 잘 지내려면: '+esc(o.fit||'')+'</p>';}).join(''));}).join('')+'<p class="deep-muted">'+esc(deep.matchNote)+'</p>');
@@ -6952,12 +6982,13 @@ function wealthTimeline(result,fromYear,count){
  for(var y=fromYear;y<fromYear+(count||10);y++){
   var g=yearGanZhi(new Date(y,6,1)),rel=zhiRelation(result.day.zhi,g.zhi),tg=dailyFortuneRelation(result.dayGanWx,g.wxGan);
   var du=daeun.filter(function(d){return y>=d.startYear&&y<=d.endYear;})[0],dg=du?SS_GROUP[du.ss]:null;
-  rows.push({year:y,ganKr:g.ganKr,zhiKr:g.zhiKr,rel:rel,tg:tg,score:WEALTH_TG_SCORE[tg]+WEALTH_REL_SCORE[rel]+(dg==='jaeseong'||dg==='siksang'?1:0),top:0});
+  var fl=yearFlags(result,g);
+  rows.push({year:y,ganKr:g.ganKr,zhiKr:g.zhiKr,rel:rel,tg:tg,store:fl.store,score:WEALTH_TG_SCORE[tg]+(fl.store?2:0)+WEALTH_REL_SCORE[rel]+(dg==='jaeseong'||dg==='siksang'?1:0),top:0});
  }
  rows.slice().sort(function(a,b){return b.score-a.score||a.year-b.year;}).slice(0,3).forEach(function(r,i){r.top=i+1;});
  return rows;
 }
-function wealthYearLabel(r){return r.tg==='jaeseong'&&r.rel==='liuhe'?'돈이 붙어 머무는 해':WEALTH_TG_LABEL[r.tg];}
+function wealthYearLabel(r){return r.store?'모은 돈이 쌓여 남는 해':r.tg==='jaeseong'&&r.rel==='liuhe'?'돈이 붙어 머무는 해':WEALTH_TG_LABEL[r.tg];}
 function wealthMonths(result,year){
  var rows=[];
  for(var m=1;m<=12;m++){
