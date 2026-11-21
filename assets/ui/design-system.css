@@ -520,3 +520,5 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .reports-intro{padding:6px 2px 2px}
 .reports-intro h1{margin:8px 0 6px;font-family:'Noto Serif KR',serif;font-weight:600;font-size:1.375rem;line-height:1.5;letter-spacing:-.04em;color:var(--fg);word-break:keep-all}
 .reports-intro .section-desc{margin:0;font-size:var(--ds-fs-cap);color:var(--fg-muted)}
+/* 결혼 사주: 월하 말풍선(어두운 바탕) 안의 나이대 문장이 너무 흐려 읽기 어려워서 밝힌다 */
+.wolha-say .deep-muted{color:#c9cde0}
