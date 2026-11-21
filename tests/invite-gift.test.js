@@ -96,7 +96,7 @@ test('a friend card with the invite gift opens the compat detail without payment
 test('opening an invite link with a saved saju registers right away, and 별첩 refetches so new friends appear',()=>{
   const fs=require('node:fs'),path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
   assert.match(html,/if \(invited && STATE\.mySaju && STATE\.lastForm\) attemptInviteRedeem\(STATE\.lastForm\);/);
-  assert.match(html,/if \(data\.registered\)\{ INVITE_MYROOM_CACHE = null;/);
+  assert.match(html,/if \(data\.registered \|\| data\.already\)\{[\s\S]{0,400}pullPaidUnlocks\(\)\.then\(function\(\)\{ INVITE_MYROOM_CACHE = null; switchTab\('compat'\);[^\n]*renderMyRoom\(\);/);
   assert.match(html,/INVITE_MYROOM_AT = Date\.now\(\);/);
   assert.match(html,/if \(name==='compat'\)\{refreshCompatPersonA\(\);setupAlbumEntry\(\);if\(INVITE_MYROOM_CACHE!==null&&Date\.now\(\)-INVITE_MYROOM_AT>15000\)/);
 });
