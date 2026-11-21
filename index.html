@@ -4331,26 +4331,28 @@ function wireStarGift(scope,result){
 function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
 /* 결과 화면의 "미리 본 좋은 해": 유료 콘텐츠가 계산하는 10년 중 좋은 해 세 개 가운데 가장 가까운 해 하나만 보여 주고,
    나머지 두 해는 가린 채 그 콘텐츠로 이어 준다. 콘텐츠 안의 계산(marriageTimeline 등)을 그대로 써서 숫자가 어긋나지 않는다. */
+/* 결과 화면 "먼저 오는 좋은 달": 유료 풀이 맨 앞의 '앞으로 12개월'과 같은 계산으로, 주제마다 가장 가까운 좋은 달 하나만 보여 주고 나머지 둘은 가린다 */
+function monthLabelOf(label){return String(label||'').replace(/해$/,'달');}
 var YEAR_PEEK=[
- {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',name:'결혼운',who:'월하 · 결혼 사주',rows:function(r){return marriageTimeline(r,marriageStartYear());},label:function(x){return marriageYearLabel(x);}},
- {id:'운명의-사람은-언제-올까-fyq1z',name:'연애운',who:'해랑 · 연애 사주',rows:function(r){return loveTimeline(r,marriageStartYear());},label:function(x){return loveYearLabel(x);}},
- {id:'타고난-재물복은-얼마나-될까-k7dxw',name:'재물운',who:'금비 · 재물 사주',rows:function(r){return wealthTimeline(r,marriageStartYear());},label:function(x){return wealthYearLabel(x);}}
+ {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',name:'결혼운',who:'월하 · 결혼 사주',months:function(r){return marriageNextMonths(r);},label:function(x){return monthLabelOf(marriageYearLabel(x));}},
+ {id:'운명의-사람은-언제-올까-fyq1z',name:'연애운',who:'해랑 · 연애 사주',months:function(r){return nearMonthsFor('love',r);},label:function(x){return monthLabelOf(loveYearLabel(x));}},
+ {id:'타고난-재물복은-얼마나-될까-k7dxw',name:'재물운',who:'금비 · 재물 사주',months:function(r){return nearMonthsFor('wealth',r);},label:function(x){return monthLabelOf(wealthYearLabel(x));}}
 ];
 function yearPeekHtml(result){
  if(!result||!result.day)return '';
  var picks=YEAR_PEEK.map(function(p){
-  try{var first=p.rows(result).filter(function(x){return x.top;}).sort(function(a,b){return a.year-b.year;})[0];return first?{p:p,first:first}:null;}catch(e){return null;}
+  try{var ms=p.months(result),first=ms.filter(function(x){return x.top;})[0];return first?{p:p,first:first,ms:ms}:null;}catch(e){return null;}
  }).filter(Boolean);
  if(!picks.length)return '';
- var items=picks.map(function(o){var p=o.p,first=o.first;
-  return '<button type="button" class="year-peek-row" data-char-go="'+esc(p.id)+'"><span class="yp-name">'+p.name+'</span><span class="yp-main"><b>'+first.year+'년</b><small>'+esc(p.label(first)||'')+'</small></span><span class="yp-hidden" aria-label="나머지 좋은 해 두 개는 콘텐츠에서 볼 수 있어요"><i>????</i><i>????</i></span><span class="yp-go">'+esc(p.who)+uiIcon('arrow')+'</span></button>';
+ var items=picks.map(function(o){var p=o.p,f=o.first;
+  return '<button type="button" class="year-peek-row" data-char-go="'+esc(p.id)+'"><span class="yp-name">'+p.name+'</span><span class="yp-main"><b>'+(f.year!==o.ms[0].year&&f.month===1?f.year+'년 ':'')+f.month+'월</b><small>'+esc(p.label(f)||'')+'</small></span><span class="yp-hidden" aria-label="나머지 좋은 달 두 개는 콘텐츠에서 볼 수 있어요"><i>??월</i><i>??월</i></span><span class="yp-go">'+esc(p.who)+uiIcon('arrow')+'</span></button>';
  }).join('');
- /* 세 주제의 가장 가까운 좋은 해가 모두 같으면, 같은 숫자를 세 번 늘어놓는 대신 그해가 겹친다는 점을 제목으로 알려 준다 */
- var y=picks[0].first.year,same=picks.length===3&&picks.every(function(o){return o.first.year===y;});
- var who=result.name?esc(result.name)+'님':'나';
- var h2=who+'에게 '+(same?y+'년은<br>세 가지가 함께 열리는 해':'먼저 오는<br>좋은 해');
- var sub=same?'결혼·연애·재물의 좋은 해가 '+y+'년에 겹쳐요. 주제마다 좋은 해는 세 번이고, 가장 가까운 해를 먼저 보여 드려요.':'앞으로 10년 중 특히 좋은 해는 주제마다 세 번이에요. 가장 가까운 해만 먼저 보여 드려요.';
- return '<section class="year-peek'+(same?' is-same':'')+'" aria-label="내 사주로 미리 본 좋은 해"><p class="yp-k">내 사주로 미리 본 좋은 해</p><h2>'+h2+'</h2><p class="yp-sub">'+sub+'</p>'+items+'<p class="yp-foot">나머지 두 해와 그해에 할 일은 각 이야기에서 이어져요 · 앞부분 무료</p></section>';
+ /* 세 주제의 가장 가까운 좋은 달이 모두 같으면, 같은 달이 겹친다는 점을 제목으로 알려 준다 */
+ var f0=picks[0].first,same=picks.length===3&&picks.every(function(o){return o.first.year===f0.year&&o.first.month===f0.month;});
+ var who=result.name?esc(result.name)+'님':'나',ms0=picks[0].ms,from=ms0[0],to=ms0[ms0.length-1];
+ var h2=who+'에게 '+(same?f0.month+'월은<br>세 가지가 함께 열리는 달':'먼저 오는<br>좋은 달');
+ var sub=(same?'결혼·연애·재물의 좋은 달이 '+f0.month+'월에 겹쳐요. ':'')+from.year+'년 '+from.month+'월부터 '+to.year+'년 '+to.month+'월까지, 주제마다 좋은 달이 세 번 있어요. 가장 가까운 달만 먼저 보여 드려요.';
+ return '<section class="year-peek'+(same?' is-same':'')+'" aria-label="내 사주로 미리 본 좋은 달"><p class="yp-k">앞으로 12개월 · 내 사주로 미리 본 좋은 달</p><h2>'+h2+'</h2><p class="yp-sub">'+sub+'</p>'+items+'<p class="yp-foot">나머지 두 달과 그달에 해볼 일은 각 이야기에서 이어져요 · 앞부분 무료</p></section>';
 }
 /* 사주 결과를 본 다음 어디로 가면 되는지 세 갈래로 알려 준다 */
 function nextStepsHtml(result){
@@ -4917,10 +4919,10 @@ function dayFortuneHtml(my){
     '<div class="card">'+
       '<p class="section-title" style="font-size:.98rem;">영역별 운세</p>'+
       '<div class="fortune-grid">'+
-        '<div class="fortune-tile" style="--tile-color:var(--gold)"><p class="ttl">'+ICO_COIN+' 재물운</p><p class="body">'+ft.money+'</p></div>'+
-        '<div class="fortune-tile" style="--tile-color:#ff6f91"><p class="ttl">'+ICO_HEART2+' 애정운</p><p class="body">'+ft.love+'</p></div>'+
+        '<div class="fortune-tile" style="--tile-color:var(--gold)"><p class="ttl">'+ICO_COIN+' 재물운</p><p class="body">'+ft.money+'</p><button type="button" class="tile-go" data-char-go="타고난-재물복은-얼마나-될까-k7dxw">앞으로 12개월 돈 흐름 · 재물 사주'+uiIcon('arrow')+'</button></div>'+
+        '<div class="fortune-tile" style="--tile-color:#ff6f91"><p class="ttl">'+ICO_HEART2+' 애정운</p><p class="body">'+ft.love+'</p><button type="button" class="tile-go" data-char-go="운명의-사람은-언제-올까-fyq1z">앞으로 12개월 인연 흐름 · 연애 사주'+uiIcon('arrow')+'</button></div>'+
         '<div class="fortune-tile" style="--tile-color:var(--good)"><p class="ttl">'+ICO_LOTUS+' 건강운</p><p class="body">'+ft.health+'</p></div>'+
-        '<div class="fortune-tile" style="--tile-color:var(--el-water)"><p class="ttl">'+ICO_PEOPLE+' 관계운</p><p class="body">'+peopleText+'</p></div>'+
+        '<div class="fortune-tile" style="--tile-color:var(--el-water)"><p class="ttl">'+ICO_PEOPLE+' 관계운</p><p class="body">'+peopleText+'</p><button type="button" class="tile-go" data-next-go="compat">친구와 궁합 보기 · 무료'+uiIcon('arrow')+'</button></div>'+
       '</div>'+
     '</div>'+
     '<div class="card">'+
@@ -4967,10 +4969,10 @@ function premiumPeriodUnlockedHtml(my, period){
     '<div class="card">'+
       '<p class="section-title" style="font-size:.98rem;">영역별 심층 풀이</p>'+
       '<div class="fortune-grid">'+
-        '<div class="fortune-tile" style="--tile-color:var(--gold)"><p class="ttl">'+ICO_COIN+' 재물운</p><p class="body">'+ft.money+'</p></div>'+
-        '<div class="fortune-tile" style="--tile-color:#ff6f91"><p class="ttl">'+ICO_HEART2+' 애정운</p><p class="body">'+ft.love+'</p></div>'+
+        '<div class="fortune-tile" style="--tile-color:var(--gold)"><p class="ttl">'+ICO_COIN+' 재물운</p><p class="body">'+ft.money+'</p><button type="button" class="tile-go" data-char-go="타고난-재물복은-얼마나-될까-k7dxw">앞으로 12개월 돈 흐름 · 재물 사주'+uiIcon('arrow')+'</button></div>'+
+        '<div class="fortune-tile" style="--tile-color:#ff6f91"><p class="ttl">'+ICO_HEART2+' 애정운</p><p class="body">'+ft.love+'</p><button type="button" class="tile-go" data-char-go="운명의-사람은-언제-올까-fyq1z">앞으로 12개월 인연 흐름 · 연애 사주'+uiIcon('arrow')+'</button></div>'+
         '<div class="fortune-tile" style="--tile-color:var(--good)"><p class="ttl">'+ICO_LOTUS+' 건강운</p><p class="body">'+ft.health+'</p></div>'+
-        '<div class="fortune-tile" style="--tile-color:var(--el-water)"><p class="ttl">'+ICO_PEOPLE+' 관계운</p><p class="body">'+peopleText+'</p></div>'+
+        '<div class="fortune-tile" style="--tile-color:var(--el-water)"><p class="ttl">'+ICO_PEOPLE+' 관계운</p><p class="body">'+peopleText+'</p><button type="button" class="tile-go" data-next-go="compat">친구와 궁합 보기 · 무료'+uiIcon('arrow')+'</button></div>'+
       '</div>'+
     '</div>'+
     '<div class="card">'+
@@ -6865,7 +6867,7 @@ function nearMonthsFor(t,result,now){
   var d=new Date(now.getFullYear(),now.getMonth()+i,15),Y=d.getFullYear(),M=d.getMonth()+1;
   var gz=Solar.fromYmd(Y,M,15).getLunar().getMonthInGanZhiExact(),g=gz.charAt(0),z=gz.charAt(1);
   var rel=zhiRelation(pz.zhi,z),tg=dailyFortuneRelation(result.dayGanWx,WX_KR[LunarUtil.WU_XING_GAN[g]]);
-  rows.push({year:Y,month:M,gan:g,zhi:z,ganKr:GAN_KR[g],zhiKr:ZHI_KR[z],rel:rel,tg:tg,score:c.score(result,rel,tg,z),top:0});
+  rows.push({year:Y,month:M,gan:g,zhi:z,ganKr:GAN_KR[g],zhiKr:ZHI_KR[z],rel:rel,tg:tg,dohwa:DOHWA_OF[result.day.zhi]===z||!!(result.year&&DOHWA_OF[result.year.zhi]===z),store:WX_STORE[WX_CONTROLS[result.dayGanWx]]===z,score:c.score(result,rel,tg,z),top:0});
  }
  rows.slice().sort(function(a,b){return b.score-a.score||(a.year*12+a.month)-(b.year*12+b.month);}).slice(0,3).forEach(function(r,i){r.top=i+1;});
  return rows;
