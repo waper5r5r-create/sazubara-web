@@ -368,7 +368,7 @@ test('paid month lists: 같은 흐름의 달이 되풀이되어도 문장이 돌
   const at=html.indexOf('function lineRot(');const ctx={};vm.createContext(ctx);vm.runInContext(html.slice(at,html.indexOf('\n',at)),ctx);
   const rot=ctx.lineRot(),set={none:['가','나','다'],liuhe:['라']};
   assert.deepEqual([rot(set,'none','x'),rot(set,'liuhe','x'),rot(set,'none','x'),rot(set,'none','x'),rot(set,'none','x'),rot(set,'chong','기본'),rot(null,'none','기본')],['가','라','나','다','가','기본','기본']);
-  assert.equal(html.split('deep.monthLines||{}').length-1,5); // 결혼 사주 '앞으로 12개월'에서 한 번 더 쓴다
+  assert.equal(html.split('deep.monthLines||{}').length-1,6); // 결혼 사주와 연애·직업·재물 공통 '앞으로 12개월'에서 한 번씩 더 쓴다
   const love=require('../api/_love-deep-3.js'),career=require('../api/_career-deep-3.js'),wealth=require('../api/_wealth-deep-2.js'),marriage=require('../api/_marriage-deep.js');
   const check=(lines,base,min)=>{for(const k of Object.keys(lines)){const v=lines[k];assert.ok(Array.isArray(v)&&v.length>=min(k),k);assert.equal(new Set(v).size,v.length,k);if(base&&typeof base[k]==='string')assert.equal(v[0],base[k],k);}};
   const min=k=>k==='none'?12:4;
@@ -403,7 +403,7 @@ test('paid 10-year paragraphs: 같은 기운의 해·10년이 다시 나와도 �
   }
   assert.equal((html.match(/yG\(deep\.yearTgLongLines,r\.tg,/g)||[]).length,4);
   assert.equal((html.match(/yR\(deep\.yearActionLines,r\.rel,/g)||[]).length,3);
-  assert.equal((html.match(/sT\(story\.yearTextLines,r\.rel,rel\.text\)/g)||[]).length,5); // 결혼 사주 '3년 안의 흐름'에서 한 번 더 쓴다
+  assert.equal((html.match(/sT\(story\.yearTextLines,r\.rel,rel\.text\)/g)||[]).length,6); // 결혼 사주와 연애·직업·재물 공통 '3년 안의 흐름'에서 한 번씩 더 쓴다
   assert.equal((html.match(/i>0&&SS_GROUP\[periods\[i-1\]\.ss\]===/g)||[]).length,4);
   assert.deepEqual(V.lines({a:'x'},{a:'y'}).a,['x','y']);
 });
