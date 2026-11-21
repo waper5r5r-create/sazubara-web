@@ -6810,22 +6810,58 @@ function marriagePreviewHtml(concept,result,rows){
   wolhaScene('intro','엉킨 붉은 실타래를 살펴보는 월하')+
   wolhaSay('thinking','<p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><p class="wolha-basis">내 사주의 배우자 자리 기준</p>')+
   (first?wolhaSay('smile','<p>앞으로 10년 중 결혼운이 가장 먼저 좋아지는 해는 <strong class="wolha-year">'+first.year+'년</strong>이에요. '+esc(first.ganKr+first.zhiKr)+'년의 기운이 배우자 자리 '+esc(zhiLabel)+'에 닿아요. <strong>'+esc(marriageYearLabel(first))+'</strong>'+josaIeyo(marriageYearLabel(first))+'.</p>'+soonerYearHtml(rows,first,marriageYearLabel,'그해에도 좋은 인연을 만날 수 있어요.')+'<div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div><p class="hint">앞으로 10년 중 특히 좋은 해는 세 번이에요.</p>'):'')+
+  /* 10년 뒤보다 가까운 이야기: 앞으로 12개월 중 좋은 달이 언제인지는 결제 후에 보여 준다 */
+  (function(){var ms=marriageNextMonths(result),f=ms[0],l=ms[ms.length-1];return wolhaSay('thinking','<p>그보다 가까운 이야기도 있어요. '+f.year+'년 '+f.month+'월부터 '+l.year+'년 '+l.month+'월까지, 앞으로 12개월 중 인연이 가까이 오는 달이 세 번 있어요.</p><div class="marriage-locked-years" aria-hidden="true"><span>??월</span><span>??월</span><span>??월</span></div><p class="hint">달마다 배우자 자리에 닿는 기운과 그달 해볼 일까지 이어서 읽어 드려요.</p>');})()+
   wolhaSay('surprised','<p>당신과 잘 맞는 배우자 유형은 <strong>「'+esc(SPOUSE_STAR[zhi]||'')+'」</strong>이에요. 구체적으로 어떤 사람인지는 이어서 말씀드릴게요.</p>')+
   lockedPeekHtml('<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드</p><h2>'+esc(SPOUSE_STAR[zhi]||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(SPOUSE_FREE[zhi]||'')+'</p><h3>만나기 쉬운 자리</h3><p>어디서, 어떤 계기로 만나기 쉬운지 알려 드려요.</p></section><section class="marriage-timeline"><ol>'+rows.map(function(r,i){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+esc(marriageYearLabel(r))+'</p></div></li>';}).join('')+'</ol></section>')+
  '</section>';
 }
-function marriageStoryHtml(story,result,rows){
+/* 10년 뒤는 멀게 느껴져서, 결혼 사주는 가까운 것부터 보여 준다: 앞으로 12개월(달마다 근거·십신·할 일) → 3년 안 → 10년. */
+function marriageNextMonths(result,now){
+ now=now||new Date();var sp=spouseStarOf(result),rows=[];
+ for(var i=1;i<=12;i++){
+  var d=new Date(now.getFullYear(),now.getMonth()+i,15),Y=d.getFullYear(),M=d.getMonth()+1;
+  var gz=Solar.fromYmd(Y,M,15).getLunar().getMonthInGanZhiExact(),g=gz.charAt(0),z=gz.charAt(1);
+  var rel=zhiRelation(result.day.zhi,z),tg=dailyFortuneRelation(result.dayGanWx,WX_KR[LunarUtil.WU_XING_GAN[g]]);
+  rows.push({year:Y,month:M,gan:g,zhi:z,ganKr:GAN_KR[g],zhiKr:ZHI_KR[z],rel:rel,tg:tg,score:MARRIAGE_REL_SCORE[rel]+(tg===sp?3:tg==='jaeseong'||tg==='gwanseong'?1:0),top:0});
+ }
+ rows.slice().sort(function(a,b){return b.score-a.score||(a.year*12+a.month)-(b.year*12+b.month);}).slice(0,3).forEach(function(r,i){r.top=i+1;});
+ return rows;
+}
+function marriageNearHtml(story,deep,result,rows){
+ deep=deep||{};var who=marriageCallName(result),ms=marriageNextMonths(result),ML=deep.monthLines||{},rT=lineRot(),rA=lineRot(),sT=lineRot(),fem=isFemale(result);
+ var mh=ms.map(function(m,i){
+  var ss=SS_KR[LunarUtil.SHI_SHEN[result.day.gan+m.gan]]||'',v=story.monthSS&&story.monthSS[ss];if(v&&typeof v==='object')v=v[fem?'f':'m'];
+  var title=rT(ML.rel,m.rel,(deep.monthByRelation||{})[m.rel]||'');
+  var lead=m.month+'월 '+m.ganKr+m.zhiKr+'월의 '+m.zhiKr+'('+m.zhi+')'+jo(m.zhiKr,'이','가')+' 배우자 자리 '+result.day.zhiKr+'('+result.day.zhi+')'+jo(result.day.zhiKr,'과','와')+' '+(REL_NAME_KR[m.rel]||REL_NAME_KR.none)+'. ';
+  var adv=rA(ML.advice,m.rel,(deep.monthAdvice||{})[m.rel]||'');
+  var ssLead=ss?'이달 천간 '+m.ganKr+'('+m.gan+')'+jo(m.ganKr,'은','는')+' 일간 '+result.day.ganKr+'('+result.day.gan+')에게 '+ss+josaIeyo(ss)+'. ':'';
+  return '<li class="nm-item'+(m.top?' is-top':'')+'"><div class="nm-head"><b>'+(i===0||m.month===1?m.year+'년 ':'')+m.month+'월</b><span>'+esc(m.ganKr+m.zhiKr)+'월</span>'+(m.top?'<em>★ 좋은 달</em>':'')+'</div>'+
+   (title?'<p class="nm-title">'+esc(title)+'</p>':'')+'<p>'+esc(lead+adv)+'</p>'+(v?'<p>'+esc(ssLead+v)+'</p>':'')+
+   (m.top&&story.monthSingle?'<div class="nm-two"><p><b>아직 상대가 없다면</b>'+esc(story.monthSingle[m.rel]||'')+'</p><p><b>만나는 사람이 있다면</b>'+esc((story.monthDating||{})[m.rel]||'')+'</p></div>':'')+'</li>';
+ }).join('');
+ var th=rows.slice(0,3).map(function(r){
+  var rel=story.yearByRelation[r.rel]||story.yearByRelation.none,pp=marriagePersonalYear(story,result,r);
+  return '<li class="nm-item'+(r.top?' is-top':'')+'"><div class="nm-head"><b>'+r.year+'년</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span>'+(r.top?'<em>★ 좋은 해</em>':'')+'</div><p class="nm-title">'+esc(r.top?marriageYearLabel(r):rel.label)+'</p><p>'+esc(marriageRelLead(result,r)+afterRelLead(sT(story.yearTextLines,r.rel,rel.text)))+'</p>'+marriagePersonalHtml(pp,r,result)+'</li>';
+ }).join('');
+ return wolhaSay('smile','<p>먼 이야기보다 가까운 이야기부터 할게요. 앞으로 12개월 동안 '+who+'의 배우자 자리에 어떤 기운이 닿는지 달마다 읽었어요. ★ 표시된 세 달이 특히 좋아요.</p>')+
+  '<section class="near-months" aria-label="앞으로 12개월"><ol>'+mh+'</ol></section>'+
+  wolhaSay('thinking','<p>조금 넓혀서, 3년 안의 흐름이에요.</p>')+
+  '<section class="near-months near-years" aria-label="3년 안의 흐름"><ol>'+th+'</ol></section>';
+}
+function marriageStoryHtml(story,result,rows,deep){
  var zhi=result.day.zhiKr,card=story.spouseCards[zhi]||{},dg=currentDaeunGroup(result),who=marriageCallName(result);
  var html='<section class="wolha-talk thread-talk">'+wolhaScene('thread-end','밤하늘로 뻗은 붉은 실 끝을 올려다보는 월하')+
   wolhaSay('smile','<p>그럼 시작할게요. 먼저 '+who+'과 잘 맞는 배우자부터요.</p>')+
   '<section class="spouse-card">'+spouseArtHtml(zhi)+'<p class="reader-kicker">배우자 별 카드</p><h2>'+esc(card.star||'')+'</h2><h3>잘 맞는 사람</h3><p>'+esc(card.who||'')+'</p><h3>만나기 쉬운 자리</h3><p>'+esc(card.meet||'')+'</p><h3>오래가는 비결</h3><p>'+esc(card.keep||'')+'</p>'+(function(){var ss=palaceSSOf(result),pl=story.palace&&story.palace[ss];return pl?'<h3>배우자 자리에 앉은 기운 · '+esc(pl.title)+'</h3><p>'+esc(pl[isFemale(result)?'f':'m'])+'</p>':'';})()+'</section>'+
+  marriageNearHtml(story,deep,result,rows)+
   wolhaScene('timeline','열 개의 매듭 중 세 개가 빛나는 붉은 실')+
-  wolhaSay('smile','<p>앞으로 10년 결혼운이에요. ★ 표시가 있는 세 해가 특히 좋아요.</p>');
+  wolhaSay('smile','<p>더 멀리, 10년의 큰 그림도 볼게요. ★ 표시가 있는 세 해가 특히 좋아요.</p>');
  html+='<section class="marriage-timeline"><ol>'+rows.map(function(r){
   var rel=story.yearByRelation[r.rel]||story.yearByRelation.none;
   return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+(r.top?'★ ':'')+esc(r.top?marriageYearLabel(r):rel.label)+'</p></div></li>';
  }).join('')+'</ol></section>';
- var sT=lineRot(),sG=lineRot();rows.filter(function(r){return r.top;}).sort(function(a,b){return a.year-b.year;}).forEach(function(r){
+ var sT=lineRot(),sG=lineRot(),nearEnd=rows[2]?rows[2].year:0;rows.filter(function(r){return r.top&&r.year>nearEnd;}).sort(function(a,b){return a.year-b.year;}).forEach(function(r){
   var rel=story.yearByRelation[r.rel]||story.yearByRelation.none,sc=MARRIAGE_REL_SCENE[r.rel]||MARRIAGE_REL_SCENE.none;
   html+=wolhaScene(sc[0],marriageYearLabel(r)+'의 장면')+wolhaSay(sc[1],'<p><strong class="wolha-year">'+r.year+'년</strong> · '+esc(marriageYearLabel(r))+'</p><p>'+esc(marriageRelLead(result,r)+afterRelLead(sT(story.yearTextLines,r.rel,rel.text)))+'</p>'+(function(){var pp=marriagePersonalYear(story,result,r);return pp.ssText?marriagePersonalHtml(pp,r,result):'<p>'+esc(sG(story.yearTgLines,r.tg,story.yearByTenGod[r.tg]||''))+'</p>';})());
  });
@@ -6833,7 +6869,7 @@ function marriageStoryHtml(story,result,rows){
  return html+'</section>';
 }
 function marriageOffer(stage){
- var benefits=['배우자 별 카드와 앞으로 10년의 결혼 흐름, 가장 크게 빛나는 세 해','함께 살 때의 모습: 다툼, 돈, 양가 가족, 바로 쓸 대화, 체크리스트','18개 항목 결혼 심층 리포트: 배우자 자리, 궁합, 갈등 대응법, 결혼 준비 로드맵과 함께 나눌 질문'];
+ var benefits=['배우자 별 카드와 앞으로 12개월, 달마다 배우자 자리에 닿는 기운과 그달 해볼 일','3년 안의 흐름과 10년의 큰 그림, 가장 크게 빛나는 세 해','함께 살 때의 모습: 다툼, 돈, 양가 가족, 바로 쓸 대화, 체크리스트','18개 항목 결혼 심층 리포트: 배우자 자리, 궁합, 갈등 대응법, 결혼 준비 로드맵과 함께 나눌 질문'];
  return '<section class="reader-offer marriage-offer" data-gate="'+stage+'"><p class="reader-kicker">결혼 사주 · 월하</p><h2>나머지 풀이는<br>여기서 이어져요</h2>'+offerPreviewHtml('marriage')+'<ul class="offer-benefits">'+benefits.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>'+OFFER_FACTS+'<button type="button" class="btn-primary report-stage-buy" data-stage="'+stage+'">결혼 사주 전체 보기 · 7,900원</button><p class="offer-assure">카드 · 간편결제 · 가입 없이 결제할 수 있어요</p><p class="reader-price-note">1회 결제 · 이야기와 18개 항목 결혼 심층 리포트를 한 번에 열기<br>결제 즉시 제공 · 결제일로부터 1년간 다시 보기<br>결제 후 바로 열람되는 디지털 콘텐츠라, 열어본 뒤에는 환불이 제한돼요. <a href="/legal.html#refund">환불 정책</a></p>'+lockedTocHtml('marriage')+'</section>';
 }
 /* 결혼 사주 계산 보조: 월별 흐름, 궁합 짝, 십신 묶음 */
@@ -6939,7 +6975,7 @@ function marriageDeepHtml(deep,result,rows){
 function marriageFlow(concept,data,result){
  var rows=marriageTimeline(result,marriageStartYear());
  if(!data.access.story||!data.rows||!data.rows[0])return marriagePreviewHtml(concept,result,rows)+marriageOffer('story');
- var html='<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>'+marriageStoryHtml(data.rows[0],result,rows)+marriageLifeHtml(data.rows[0],result,rows);
+ var html='<div class="reader-owned-badge">'+uiIcon('check')+' 콘텐츠 보유'+(data.access.detail?' · 심층 리포트 보유':'')+'</div>'+marriageStoryHtml(data.rows[0],result,rows,data.detailRows&&data.detailRows[0])+marriageLifeHtml(data.rows[0],result,rows);
  if(data.detailRows&&data.detailRows[0])return html+'<section id="owned-detail-report">'+marriageDeepHtml(data.detailRows[0],result,rows)+'</section>';
  return html;
 }

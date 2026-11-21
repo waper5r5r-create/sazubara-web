@@ -522,3 +522,18 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .reports-intro .section-desc{margin:0;font-size:var(--ds-fs-cap);color:var(--fg-muted)}
 /* 결혼 사주: 월하 말풍선(어두운 바탕) 안의 나이대 문장이 너무 흐려 읽기 어려워서 밝힌다 */
 .wolha-say .deep-muted{color:#c9cde0}
+/* 결혼 사주: 앞으로 12개월 · 3년 안의 흐름(어두운 이야기 화면 위 카드) */
+.near-months{margin:14px 0 22px}
+.near-months ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.near-months .nm-item{padding:16px 16px 14px;border-radius:16px;background:#ffffff0b;border:1px solid #ffffff14;color:#e6e9f3}
+.near-months .nm-item.is-top{background:#e9c47a14;border-color:#e9c47a59}
+.nm-head{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
+.nm-head b{font-family:'Noto Serif KR',serif;font-size:1.0625rem;color:#f3d48f}
+.nm-head span{font-size:.75rem;color:#aab3c8}
+.nm-head em{margin-left:auto;font-style:normal;font-size:.75rem;font-weight:700;color:#f3d48f}
+.near-months .nm-title{margin:0 0 6px;font-weight:700;color:#f6ecd6}
+.near-months p{margin:0 0 8px;font-size:.875rem;line-height:1.75;word-break:keep-all}
+.near-months .deep-muted{color:#c9cde0}
+.nm-two{display:grid;gap:8px;margin-top:4px}
+.nm-two p{margin:0;padding:10px 12px;border-radius:12px;background:#0b10265c;font-size:.8125rem}
+.nm-two b{display:block;margin-bottom:2px;font-size:.75rem;color:#f3d48f}
