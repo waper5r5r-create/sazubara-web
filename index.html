@@ -4196,7 +4196,7 @@ function everydayTraitsHtml(result){
  return '<section class="personal-traits"><h2>사주로 살펴본 내 특징 세 가지</h2><ol>'+rows.map(function(r,i){return '<li><span class="trait-symbol">'+uiIcon(r[2])+'</span><div><small>0'+(i+1)+' · '+r[0]+'</small><p>'+esc(r[1])+'</p></div></li>';}).join('')+'</ol><p class="hint">일간과 오행 분포를 참고한 해석이에요. 실제 경험과 함께 읽어보세요.</p></section>';
 }
 function everydaySajuHtml(result){
- return '<section class="everyday-saju"><p class="editorial-tag">나의 사주팔자</p><div class="saju-result-head"><h1>'+(result.name?esc(result.name)+'님의 사주':'나의 사주')+'</h1><button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button></div>'+pillarHeroHtml(result)+sajuQuickSummaryHtml(result)+starGiftHtml(result)+sajuHookHtml('self',result,(result.name?result.name+'님은':'나는')+' 이런 사람이에요')+yearPeekHtml(result)+nextStepsHtml(result)+homeContentsHtml()+'</section>';
+ return '<section class="everyday-saju"><p class="editorial-tag">나의 사주팔자</p><div class="saju-result-head"><h1>'+(result.name?esc(result.name)+'님의 사주':'나의 사주')+'</h1><button type="button" class="btn-link" id="btn-edit-saju">다시 입력</button></div>'+pillarHeroHtml(result)+sajuQuickSummaryHtml(result)+starGiftHtml(result)+sajuHookHtml('self',result,(result.name?result.name+'님은':'나는')+' 이런 사람이에요')+yearPeekHtml(result)+homeContentsHtml()+nextStepsHtml(result)+'</section>';
 }
 var WORRY_PREVIEW_LENS={
  목:{연애:'서로의 가능성을 알아가고 함께 경험을 넓히는 관계',직장:'새로운 역할을 배우고 시도하며 방향을 만드는 과정',재물:'새로운 기회를 발견하고 자원을 활용하는 과정',건강:'활동과 회복 사이에 지속 가능한 리듬을 만드는 과정',인간관계:'새로운 만남과 기존 관계를 함께 넓혀가는 과정'},
@@ -4330,17 +4330,24 @@ var YEAR_PEEK=[
 ];
 function yearPeekHtml(result){
  if(!result||!result.day)return '';
- var items=YEAR_PEEK.map(function(p){
-  try{var first=p.rows(result).filter(function(x){return x.top;}).sort(function(a,b){return a.year-b.year;})[0];if(!first)return '';
-   return '<button type="button" class="year-peek-row" data-char-go="'+esc(p.id)+'"><span class="yp-name">'+p.name+'</span><span class="yp-main"><b>'+first.year+'년</b><small>'+esc(p.label(first)||'')+'</small></span><span class="yp-hidden" aria-label="나머지 좋은 해 두 개는 콘텐츠에서 볼 수 있어요"><i>????</i><i>????</i></span><span class="yp-go">'+esc(p.who)+uiIcon('arrow')+'</span></button>';
-  }catch(e){return '';}
+ var picks=YEAR_PEEK.map(function(p){
+  try{var first=p.rows(result).filter(function(x){return x.top;}).sort(function(a,b){return a.year-b.year;})[0];return first?{p:p,first:first}:null;}catch(e){return null;}
+ }).filter(Boolean);
+ if(!picks.length)return '';
+ var items=picks.map(function(o){var p=o.p,first=o.first;
+  return '<button type="button" class="year-peek-row" data-char-go="'+esc(p.id)+'"><span class="yp-name">'+p.name+'</span><span class="yp-main"><b>'+first.year+'년</b><small>'+esc(p.label(first)||'')+'</small></span><span class="yp-hidden" aria-label="나머지 좋은 해 두 개는 콘텐츠에서 볼 수 있어요"><i>????</i><i>????</i></span><span class="yp-go">'+esc(p.who)+uiIcon('arrow')+'</span></button>';
  }).join('');
- if(!items)return '';
- return '<section class="year-peek" aria-label="내 사주로 미리 본 좋은 해"><p class="yp-k">내 사주로 미리 본 좋은 해</p><h2>'+(result.name?esc(result.name)+'님에게':'나에게')+' 먼저 오는<br>좋은 해</h2><p class="yp-sub">앞으로 10년 중 특히 좋은 해는 주제마다 세 번이에요. 가장 가까운 해만 먼저 보여 드려요.</p>'+items+'<p class="yp-foot">나머지 두 해와 그해에 할 일은 각 이야기에서 이어져요 · 앞부분 무료</p></section>';
+ /* 세 주제의 가장 가까운 좋은 해가 모두 같으면, 같은 숫자를 세 번 늘어놓는 대신 그해가 겹친다는 점을 제목으로 알려 준다 */
+ var y=picks[0].first.year,same=picks.length===3&&picks.every(function(o){return o.first.year===y;});
+ var who=result.name?esc(result.name)+'님':'나';
+ var h2=who+'에게 '+(same?y+'년은<br>세 가지가 함께 열리는 해':'먼저 오는<br>좋은 해');
+ var sub=same?'결혼·연애·재물의 좋은 해가 '+y+'년에 겹쳐요. 주제마다 좋은 해는 세 번이고, 가장 가까운 해를 먼저 보여 드려요.':'앞으로 10년 중 특히 좋은 해는 주제마다 세 번이에요. 가장 가까운 해만 먼저 보여 드려요.';
+ return '<section class="year-peek'+(same?' is-same':'')+'" aria-label="내 사주로 미리 본 좋은 해"><p class="yp-k">내 사주로 미리 본 좋은 해</p><h2>'+h2+'</h2><p class="yp-sub">'+sub+'</p>'+items+'<p class="yp-foot">나머지 두 해와 그해에 할 일은 각 이야기에서 이어져요 · 앞부분 무료</p></section>';
 }
 /* 사주 결과를 본 다음 어디로 가면 되는지 세 갈래로 알려 준다 */
 function nextStepsHtml(result){
- var rows=[['contents','spark','연애·돈·일, 자세히 보기','주제별 내 이야기 · 앞부분 무료'],['today','compass','오늘 운세 보기','오늘·이번 주·이번 달 흐름 · 무료'],['compat','people','친구와 궁합 보기','링크를 보내면 둘 다 무료로 봐요']];
+ /* 주제별 콘텐츠는 바로 위 '좋은 해' 카드와 콘텐츠 줄에서 이미 보여 주므로, 여기서는 무료로 더 볼 것만 남긴다 */
+ var rows=[['today','compass','오늘 운세 보기','오늘·이번 주·이번 달 흐름 · 무료'],['compat','people','친구와 궁합 보기','링크를 보내면 둘 다 무료로 봐요']];
  return '<section class="next-steps" aria-label="다음으로 볼 것"><p class="next-steps-k">다음으로 볼 것</p><h2>'+(result.name?esc(result.name)+'님, ':'')+'이제 이렇게 보세요</h2>'+
   rows.map(function(r,i){return '<button type="button" class="next-step" data-next-go="'+r[0]+'"><i>'+uiIcon(r[1])+'</i><span><b>'+r[2]+'</b><small>'+r[3]+'</small></span><em>'+uiIcon('arrow')+'</em></button>';}).join('')+'</section>';
 }
@@ -5598,10 +5605,9 @@ function renderReportsTabView(){
   var view = $('#view-reports');
   if (!view) return;
   view.innerHTML =
-        homeBannerHtml()+
-        '<p class="report-greeting">'+(STATE.mySaju&&STATE.mySaju.name?esc(STATE.mySaju.name)+'님, ':'')+'2027년에 가장 좋은 달은 언제일까요?</p>'+
+        /* 위 배너와 아래 목록이 같은 콘텐츠를 두 번 보여 주던 것을, 목록 하나로 합친다 */
+        '<div class="reports-intro"><p class="eyebrow">콘텐츠</p><h1>'+(STATE.mySaju&&STATE.mySaju.name?esc(STATE.mySaju.name)+'님, ':'')+'2027년에<br>가장 좋은 달은 언제일까요?</h1><p class="section-desc">내 사주로 읽는 이야기 · 앞부분은 모두 무료예요</p></div>'+
     '<div id="report-sections"><p class="section-desc">불러오는 중...</p></div>';
-  wireHomeBanners(view);
   loadReportList().then(function(list){
     renderReportGrid(list);
   }).catch(function(){

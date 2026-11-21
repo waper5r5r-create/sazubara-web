@@ -410,7 +410,8 @@ test('paid 10-year paragraphs: 같은 기운의 해·10년이 다시 나와도 �
 
 test('result page previews the nearest good year from the same calculation the paid stories use, hiding the other two',()=>{
  const html=api.yearPeekHtml(result);
- assert.ok(html.includes('먼저 오는'));
+ const ys=[...html.matchAll(/<b>(\d{4})년<\/b>/g)].map(m=>m[1]);assert.equal(ys.length,3);
+ if(new Set(ys).size===1){assert.ok(html.includes(ys[0]+'년은<br>세 가지가 함께 열리는 해'));assert.ok(html.includes('is-same'));}else{assert.ok(html.includes('먼저 오는'));assert.ok(!html.includes('is-same'));}
  assert.equal((html.match(/class="year-peek-row"/g)||[]).length,3);
  const first=api.marriageTimeline(result,api.marriageStartYear()).filter(r=>r.top).sort((a,b)=>a.year-b.year)[0];
  assert.ok(html.includes('data-char-go="dc6f87f4-86a7-47ce-ae91-3f6715dee2b0"><span class="yp-name">결혼운</span><span class="yp-main"><b>'+first.year+'년</b>'));

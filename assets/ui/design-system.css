@@ -516,3 +516,7 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .offer-toc[open] summary{margin-bottom:10px}
 /* 결제 안내 문구: 작은 글씨 덩어리 대신 한 칸에 모아 줄 간격을 넓힌다(문구는 그대로) */
 .report-page .reader-offer .reader-price-note{margin-top:14px;padding:12px 14px;border-radius:12px;background:#ffffff0d;line-height:1.85;color:#bcc5d8}
+/* 콘텐츠 탭 첫머리(배너 대신): 밝은 바탕에 맞춘 제목 */
+.reports-intro{padding:6px 2px 2px}
+.reports-intro h1{margin:8px 0 6px;font-family:'Noto Serif KR',serif;font-weight:600;font-size:1.375rem;line-height:1.5;letter-spacing:-.04em;color:var(--fg);word-break:keep-all}
+.reports-intro .section-desc{margin:0;font-size:var(--ds-fs-cap);color:var(--fg-muted)}
