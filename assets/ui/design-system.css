@@ -498,3 +498,21 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 /* 결제 안내: 그림을 낮게 잘라 제목·가격 버튼이 한 화면 안에 더 빨리 보이게 */
 .reader-offer>figure:first-child img{aspect-ratio:16/10!important;height:auto!important;object-fit:cover;object-position:50% 22%}
 .reader-offer .offer-toc{margin-top:22px}
+/* 결제 안내: 그림 대신 유료 리포트 한 장을 미리 보여 준다(항목 이름만 보이고 글은 가림) */
+.offer-preview{position:relative;margin:6px 0 24px;padding-bottom:4px}
+.opv-page{padding:18px 18px 34px;border-radius:14px;background:#f6efe1;color:#2a2438;text-align:left;box-shadow:0 12px 30px #00000059;-webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}
+.opv-sec+.opv-sec{margin-top:14px;padding-top:12px;border-top:1px solid #2a243817}
+.reader-offer .opv-sec p{margin:0 0 9px;font-family:'Noto Serif KR',serif;font-size:.8125rem;font-weight:600;line-height:1.5;color:#2a2438;word-break:keep-all}
+.opv-sec b{margin-right:7px;font-family:var(--ds-display);font-size:.75rem;color:#a87a34}
+.opv-sec i{display:block;height:7px;margin:7px 0;border-radius:4px;background:#2a24382b;filter:blur(1.2px)}
+.opv-sec i.s{width:58%}
+.reader-offer .opv-tag{position:absolute;left:50%;bottom:0;transform:translateX(-50%);display:flex;align-items:center;gap:6px;margin:0;padding:8px 14px;white-space:nowrap;border-radius:999px;background:#11192e;border:1px solid #e9c47a59;color:#f3d48f;font-size:var(--ds-fs-cap);font-weight:700;line-height:1.3}
+.opv-tag svg{width:14px;height:14px;flex:none}
+/* 18개 항목 목록은 접어 두고 원할 때 펼친다 */
+.offer-toc summary{cursor:pointer;list-style:none;margin:0}
+.offer-toc summary::-webkit-details-marker{display:none}
+.offer-toc summary::after{content:'';width:7px;height:7px;margin-left:auto;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
+.offer-toc[open] summary::after{transform:rotate(-135deg)}
+.offer-toc[open] summary{margin-bottom:10px}
+/* 결제 안내 문구: 작은 글씨 덩어리 대신 한 칸에 모아 줄 간격을 넓힌다(문구는 그대로) */
+.report-page .reader-offer .reader-price-note{margin-top:14px;padding:12px 14px;border-radius:12px;background:#ffffff0d;line-height:1.85;color:#bcc5d8}
