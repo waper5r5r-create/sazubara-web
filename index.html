@@ -1703,7 +1703,7 @@ html.bf-open,html.bf-open body{overflow:hidden}
 .sky-head+.sky-list{margin:14px 0 0}.sky-list+.album-invite-btn{margin:12px 0 18px}
 .sky-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
 .sky-list li button{display:flex;justify-content:space-between;gap:10px;width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--fg);text-align:left;font-size:.875rem}
-.sky-list li span{color:var(--fg-muted);font-size:.8125rem}
+.sky-list li span{color:var(--fg-muted);font-size:.8125rem}.sky-stage.is-sample .sky-star,.sky-stage.is-sample .sky-line,.sky-stage.is-sample .sky-curve{opacity:.32!important;pointer-events:none;animation:none!important}.sky-stage.is-sample .sky-star .sky-name{display:none}
 .sky-book-backdrop{align-items:center;justify-content:center;padding:16px}
 .sky-book{position:relative;width:min(100%,420px);max-height:88vh;overflow:auto;padding:22px 18px 16px;border-radius:18px;background:#0d1430;box-shadow:0 24px 60px #0009;perspective:1200px}
 .sky-book-close{position:absolute;top:10px;right:10px;z-index:2;color:#e8dcc0}
@@ -4504,21 +4504,23 @@ function skyCurves(list,pos){
  return out;
 }
 function skyHtml(result,list){
- list=list||[];var t=myStarType(result),pos=skyLayout(list),dom=result&&result.wxCount?dominantWx(result.wxCount).wx:'수';
+ list=list||[];
+ /* 친구가 없으면 예시 별을 흐리게 깔아 두고(누를 수 없음) 링크 보내기 안내만 보여 준다 */
+ var sample=!list.length&&!skyIsDemo(),real=list;if(sample)list=SKY_DEMO.map(function(e){return Object.assign({dayGanWxA:result&&result.dayGanWx},e);});
+ var t=myStarType(result),pos=skyLayout(list),dom=result&&result.wxCount?dominantWx(result.wxCount).wx:'수';
  var best=list.map(function(e,i){return i;}).sort(function(a,b){return (Number(list[b].score)||0)-(Number(list[a].score)||0);}).slice(0,2);
  var lines=best.map(function(i,k){return '<line pathLength="1" x1="180" y1="240" x2="'+pos[i].x+'" y2="'+pos[i].y+'" class="sky-line is-near" style="--d:'+(0.35+k*0.16).toFixed(2)+'s"/>';}).join('')+skyCurves(list,pos);
  var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e),sz=p.size,col=SKY_STAR_COLOR[e.dayGanWxB]||SKY_STAR_COLOR['토'],yin=type?type.polarity==='yin':e.cardPolarity==='yin',beat=(2.6+((i*37)%17)/10).toFixed(1),score=Number(e.score)||0;return '<g class="sky-star sky-'+col[0]+'" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+';--d:'+(0.5+i*0.16).toFixed(2)+'s;--sc:'+col[1]+';--beat:'+beat+'s;--tilt:'+((skyHash(e.id||i)%31)-15)+'deg">'+skyCluster(e,i,sz,score)+'<g class="sky-star-in"><circle class="sky-hit" r="22"/><circle class="sky-halo" r="'+(sz*4.2).toFixed(1)+'" style="fill:url(#sky-glow-'+col[0]+')"/><circle class="sky-burst" r="'+(sz*1.6).toFixed(1)+'"/><path class="sky-spark'+(yin?' is-yin':'')+'" d="'+skyStarShape(sz,yin)+'" style="fill:url(#sky-ray-'+col[0]+')"/><circle class="sky-core" r="'+(sz*.5).toFixed(1)+'"/></g><text class="sky-name" y="'+(sz+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
- var empty=list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">빈자리</text></g>';}).join(''):'';
+ var empty=!sample&&list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" transform="translate('+p[0]+' '+p[1]+')"><circle r="6"/><text y="21">빈자리</text></g>';}).join(''):'';
  var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
-  '<div class="sky-head"><p class="eyebrow">궁합</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':list.length?'친구 '+list.length+'명이 내 별자리에 있어요. 이름을 누르면 궁합이 열려요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
-  (list.length?'<ul class="sky-list">'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-star="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></button></li>';}).join('')+'</ul>'+'<button type="button" class="btn-primary album-invite-btn" data-album-invite>'+(skyIsDemo()?'친구 초대하기':'친구 더 초대하기')+'</button>':'')+
-  '<div class="sky-stage '+(list.length?'is-open':'is-far')+'" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
+  '<div class="sky-head"><p class="eyebrow">궁합</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':!sample?'친구 '+list.length+'명이 내 별자리에 있어요. 이름을 누르면 궁합이 열려요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
+  (!sample?'<ul class="sky-list">'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-open="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></button></li>';}).join('')+'</ul>'+'<button type="button" class="btn-primary album-invite-btn" data-album-invite>'+(skyIsDemo()?'친구 초대하기':'친구 더 초대하기')+'</button>':'')+
+  '<div class="sky-stage is-open'+(sample?' is-sample':'')+'" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
    '<div class="sky-depth" data-sky-depth aria-hidden="true"></div><div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
    '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs>'+skyGlowDefs()+'<radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
    '<i class="sky-shoot" aria-hidden="true"></i>'+
-   (list.length||skyIsDemo()?'':'<div class="sky-nostar-note"><b>아직 내 하늘에 별이 없어요</b><span>링크를 보내면 친구가 생일을 넣는 순간 여기에 별이 떠요. 둘의 궁합도 바로 볼 수 있어요.</span><button type="button" class="sky-nostar-btn" data-album-invite>링크 보내기</button></div>')+
-   (list.length?'':'<button type="button" class="sky-enter" data-sky-enter><span>나의 별자리</span><b>눌러서 펼쳐보기</b></button>')+
+   (!sample?'':'<div class="sky-nostar-note"><b>아직 내 하늘에 별이 없어요</b><span>링크를 보내면 친구가 생일을 넣는 순간 여기에 별이 떠요. 둘의 궁합도 바로 볼 수 있어요.</span><button type="button" class="sky-nostar-btn" data-album-invite>링크 보내기</button></div>')+
    '<div class="sky-focus" data-sky-focus hidden><button type="button" class="sky-focus-close" data-sky-close aria-label="별자리로 돌아가기">'+uiIcon('close')+'</button>'+
     '<div class="sky-fcard"><div class="sky-fcard-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img data-sky-fimg alt="" decoding="async"></div></div></div>'+
     '<div class="sky-panel" data-sky-panel aria-live="polite"></div></div>'+
@@ -4586,6 +4588,7 @@ function wireSky(scope,list){
  $('[data-sky-close]',stage).addEventListener('click',close);
  focus.addEventListener('click',function(e){if(e.target===focus&&!focus.classList.contains('is-expanded'))close();});
  var enterBtn=$('[data-sky-enter]',stage);if(enterBtn)enterBtn.addEventListener('click',enter);
+ $all('[data-sky-open]',scope).forEach(function(el){if(el.dataset.skyOpen==null)return;el.addEventListener('click',function(){var e=list[Number(el.dataset.skyOpen)];if(e&&typeof openMyroomDetail==='function'){try{soundTap();}catch(x){}openMyroomDetail(e);}});});
  $all('[data-sky-star]',scope).forEach(function(el){
   function open(){if(dragMoved)return;var i=Number(el.dataset.skyStar);
    if(!stage.contains(el))stage.scrollIntoView({behavior:'smooth',block:'center'});
@@ -5360,6 +5363,7 @@ function openMyroomDetail(entry){
           '<button type="button" class="sheet-close" id="myroom-detail-close">'+uiIcon('close')+'</button>'+
         '</div>'+
         collectibleCardHtml(entry,true)+cardMeaningHtml(entry)+
+        '<section class="sky-premium" data-myroom-premium></section>'+
         (chemi ?
           '<div class="detail-block"><p class="ttl">오늘의 케미</p>'+
             '<span class="couple-today-badge" style="--tier-color:'+chemi.tier.color+'; --tier-soft:'+chemi.tier.soft+';">'+
@@ -5368,20 +5372,15 @@ function openMyroomDetail(entry){
             autoParas(chemi.tier.text)+
             '<div id="chemi-detail-slot"></div>'+
           '</div>' : '')+
-        (myroomShinsalKeys(entry).length ?
-          '<div class="detail-block"><p class="ttl">신살(神殺)</p>'+
-            '<p class="section-desc" style="margin-bottom:4px;"><b>나</b></p><div class="shinsal-badges">'+shinsalBadgeRowHtml(entry.shinsalA)+'</div>'+
-            '<p class="section-desc" style="margin:8px 0 4px;"><b>'+esc(entry.nameB||'상대방')+'</b></p><div class="shinsal-badges">'+shinsalBadgeRowHtml(entry.shinsalB)+'</div>'+
-          '</div>' : '')+
         (dateTxt ? '<p class="hint">'+dateTxt+'</p>' : '')+
-        '<section class="sky-premium" data-myroom-premium></section><div class="detail-block" id="myroom-delete-zone">'+myroomDeleteZoneHtml()+'</div>'+
+        '<div class="detail-block" id="myroom-delete-zone">'+myroomDeleteZoneHtml()+'</div>'+
       '</div>'+
     '</div>';
   $('#myroom-detail-backdrop').addEventListener('click', closeMyroomDetail);
   $('#myroom-detail-close').addEventListener('click', closeMyroomDetail);
   renderSkyPremium(entry,$('[data-myroom-premium]',root));
   wireMyroomDeleteBtn(entry);
-  if (chemi) renderChemiDetailSlot(entry, chemi);
+  if (chemi && isUnlocked('feature-today-premium')) renderChemiDetailSlot(entry, chemi);
 }
 function myroomDeleteZoneHtml(){
   return '<button type="button" class="myroom-delete-btn" id="btn-myroom-delete">🗑️ 이 카드 삭제</button>';
