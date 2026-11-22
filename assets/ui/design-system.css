@@ -567,3 +567,4 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .compat-sheetlike .compat-sheet-title{font-size:1rem;margin:0 0 14px}
 [data-theme="dark"] #compat-result .locked-card .section-title{color:#ece6d8!important}
 [data-theme="dark"] #compat-result .locked-card .section-desc{color:#c9cde0!important}
+.yp-hidden i{filter:none!important;background:transparent!important;border:1px dashed #f3dfb766;color:#f3dfb7b3!important;letter-spacing:.02em;padding:4px 8px}
