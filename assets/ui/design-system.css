@@ -561,3 +561,9 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 [data-theme="dark"] .saju-sal .shinsal-badge{background:#ffffff12;color:#f1d08a}
 .saju-sal li::before{content:none!important;display:none!important}
 .saju-sal li,.saju-sal li:first-child{padding-left:0!important}
+[data-theme="dark"] #compat-result .locked-card{background:#ffffff0d!important;border-color:#ffffff1f!important}
+[data-theme="dark"] #compat-result .locked-card .cost-term,[data-theme="dark"] #compat-result .locked-card .cost-badge{color:#c9cde0!important}
+[data-theme="dark"] #compat-result .locked-card .lock-ic{color:#f1d08a}
+.compat-sheetlike .compat-sheet-title{font-size:1rem;margin:0 0 14px}
+[data-theme="dark"] #compat-result .locked-card .section-title{color:#ece6d8!important}
+[data-theme="dark"] #compat-result .locked-card .section-desc{color:#c9cde0!important}

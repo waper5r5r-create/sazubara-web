@@ -7750,58 +7750,32 @@ function shinsalCompatHtml(resA, resB){
     '<p class="hint">각자 태어난 날을 기준으로 본 도화살·역마살·화개살이에요.</p>'+
   '</div>';
 }
+/* 직접 입력한 궁합도 별자리에서 친구를 열었을 때와 같은 순서로 보여 준다:
+   궁합 카드 → 이런 존재 → 우리 사이 리포트(990원) → 오늘의 케미 → 공유. 결제 키와 결제 흐름은 그대로다. */
 function renderCompatResult(resA, resB, compat){
   var wrap = $('#compat-result');
   var total = compat.scores.total;
-  var tier = myroomTier(total);
-  var subKeys = ['personality','love','values','money'];
-  var subHtml = subKeys.map(function(k){
-    return '<div class="sub-score-row"><span class="nm">'+scoreLabel(k)+'</span>'+
-      '<span class="gauge"><i style="width:'+compat.scores[k]+'%"></i></span>'+
-      '<span class="pct">'+compat.scores[k]+'</span></div>';
-  }).join('');
-
+  var entry = {
+    id:'compat-'+resA.day.gan+resA.day.zhi+'-'+resB.day.gan+resB.day.zhi, nameB:resB.name||'상대방',
+    dayGanWxA:resA.dayGanWx, dayGanWxB:resB.dayGanWx, dayGanB:resB.day.ganKr, cardPolarity:['甲','丙','戊','庚','壬'].indexOf(resB.day.gan)>=0?'yang':'yin',
+    shinsalA:resA.shinsal||[], shinsalB:resB.shinsal||[], zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:total
+  };
   wrap.innerHTML =
-    '<div class="card">'+
-      '<div class="compat-people">'+
-        '<div class="person-chip"><span class="av">'+personAvatarHtml(resA, resA.name? resA.name.charAt(0): 'A')+'</span><span>'+(resA.name||'나')+'</span></div>'+
-        '<span class="compat-plus">'+uiIcon('people')+'</span>'+
-        '<div class="person-chip"><span class="av">'+personAvatarHtml(resB, resB.name? resB.name.charAt(0): 'B')+'</span><span>'+(resB.name||'상대방')+'</span></div>'+
-      '</div>'+
-      '<div class="score-ring-wrap" style="--tier-color:'+tier.color+';">'+
-        '<div class="score-ring-outer">'+
-          '<div style="width:112px;height:112px;border-radius:50%;background:conic-gradient(var(--accent) 0% '+total+'%, var(--surface-2) '+total+'% 100%);display:flex;align-items:center;justify-content:center;">'+
-            '<div style="width:88px;height:88px;border-radius:50%;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;">'+
-              '<span class="num">'+total+'점</span><span class="lbl">종합 궁합</span>'+
-            '</div>'+
-          '</div>'+
-        '</div>'+
-        '<span class="tier-chip" style="background:'+tier.soft+';color:'+tier.color+';">'+tier.icon+' '+tier.label+'</span>'+
-      '</div>'+
-      '<div class="rel-line"><span class="tag">일상</span><span>'+ZHI_REL_TEXT[compat.zhiRel]+'</span></div>'+
-      '<div class="rel-line"><span class="tag">성향</span><span>'+GAN_REL_TEXT[compat.ganRel]+'</span></div>'+
-    '</div>'+
-    '<div class="card" id="couple-today-card"></div>'+
-    '<div class="card">'+
-      '<p class="section-title" style="font-size:.98rem;">항목별 궁합</p>'+
-      '<div class="sub-scores">'+subHtml+'</div>'+
-      '<p class="disclaimer">태어난 날을 중심으로 본 약식 궁합이에요. 참고로만 봐 주세요.</p>'+
-    '</div>'+
-    shinsalCompatHtml(resA, resB) +
-    '<div class="card">'+
-      '<button type="button" class="share-btn" id="btn-share-compat">'+uiIcon('share')+' 이 궁합 결과 공유하기</button>'+
+    '<div class="card compat-sheetlike">'+
+      '<p class="section-title compat-sheet-title">'+esc(entry.nameB)+'님과의 궁합</p>'+
+      collectibleCardHtml(entry,true)+cardMeaningHtml(entry)+
     '</div>'+
     '<div class="card" id="compat-detail-card"></div>'+
-    '<div class="card" id="compat-dateguide-card"></div>';
+    '<div class="card" id="couple-today-card"></div>'+
+    '<div class="card">'+
+      '<button type="button" class="share-btn" id="btn-share-compat">'+uiIcon('share')+' 이 궁합 결과 공유하기</button>'+
+    '</div>';
   wrap.hidden = false;
 
   $('#btn-share-compat').addEventListener('click', function(){ doShareCompat(resA, resB, total, compat); });
 
   renderCoupleTodayCard(resA, resB);
-
-  var detailKey = 'compat-'+resA.day.gan+resA.day.zhi+'-'+resB.day.gan+resB.day.zhi;
-  renderCompatDetailSection(resA, resB, compat, detailKey);
-  renderCompatDateGuideSection(resA, resB, compat, detailKey+'-dateguide');
+  renderCompatDetailSection(resA, resB, compat, entry.id);
   /* standalone 웹에서는 궁합보기에 아무나 입력한다고 바로 마이룸에 저장하지 않습니다.
      마이룸은 "내가 초대해서 실제로 등록한 사람"만 보여줍니다 (renderMyRoomLocal 참고). */
 }
