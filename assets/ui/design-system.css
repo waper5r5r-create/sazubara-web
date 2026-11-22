@@ -551,3 +551,5 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .char-me .saju-hero-trust li,.char-me .saju-hero-trust li:first-child{padding:0 4px;text-align:center;align-items:center}
 .char-me .saju-hero-trust b{font-size:.9375rem;letter-spacing:-.01em}
 .char-me .saju-hero-trust span{margin-top:2px;font-size:.75rem;color:#cfd3e4}
+.sky-stage,.sky-stage.is-focus{container-type:inline-size;background:#030714}
+.sky-stage::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(#030714 calc(50% - 55cqw + 6px),#03071400 calc(50% - 55cqw + 90px),#03071400 calc(50% + 55cqw - 90px),#030714 calc(50% + 55cqw - 6px))}
