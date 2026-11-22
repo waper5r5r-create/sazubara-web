@@ -5018,7 +5018,8 @@ function weekFortuneHtml(my){
   var todayStr = (new Date()).toDateString();
   var rowsHtml = rows.map(function(r, i){
     var isToday = r.date.toDateString()===todayStr;
-    var color = r.score>0 ? 'var(--good)' : (r.score<0 ? 'var(--bad)' : 'var(--fg-muted)');
+    /* 좋은 날은 금색, 조심할 날은 차분한 자주색. 빨강·초록은 경고처럼 읽혀서 쓰지 않는다. */
+    var color = r.score>0 ? 'var(--pw-good,#9a6b1f)' : (r.score<0 ? 'var(--pw-care,#8a5a6a)' : 'var(--fg-muted)');
     var dLabel = (r.date.getMonth()+1)+'월 '+r.date.getDate()+'일 ('+dowKr[i]+')';
     return '<div class="period-week-row pw-clickable'+(isToday?' is-today':'')+'" role="button" tabindex="0" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
       '<span class="dow">'+dowKr[i]+'</span>'+
