@@ -547,3 +547,7 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 [data-theme="dark"] .star-gift .btn-primary.star-make-btn{color:#ece6d8!important;border-color:#ece6d85c!important}
 .char-card img{filter:saturate(.88) contrast(.96) brightness(1.01)}
 .locked-peek .love-card .spouse-card-art,.locked-peek .career-card .spouse-card-art{display:none}
+.char-me .saju-hero-trust{display:grid;grid-template-columns:repeat(3,1fr);margin-top:18px;padding-top:16px}
+.char-me .saju-hero-trust li,.char-me .saju-hero-trust li:first-child{padding:0 4px;text-align:center;align-items:center}
+.char-me .saju-hero-trust b{font-size:.9375rem;letter-spacing:-.01em}
+.char-me .saju-hero-trust span{margin-top:2px;font-size:.75rem;color:#cfd3e4}
