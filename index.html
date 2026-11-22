@@ -5715,7 +5715,7 @@ function readerKeydown(e){
 function readerLeftLine(root){
  var c=REPORT_READER.concept;if(c&&isNewYear(c))return '편지 11통이 더 남았어요';
  if(c&&isIan(c))return '다섯 장이 더 남았어요';
- return root.textContent.indexOf('????년')>-1?'좋은 해 두 개가 가려져 있어요':'나머지 풀이가 이어져요';
+ var t=root.textContent;return t.indexOf('??월')>-1?'좋은 달 세 개가 가려져 있어요':t.indexOf('????년')>-1?'좋은 해 두 개가 가려져 있어요':'나머지 풀이가 이어져요';
 }
 function readerPrice(){var c=REPORT_READER.concept;return c&&isNewYear(c)?NEWYEAR_CONCEPT.price_krw:c&&isIan(c)?IAN_CONCEPT.price_krw:REPORT_STAGE_PRICE.story;}
 /* 읽기 화면 맨 위의 진행 표시 줄 */
@@ -5729,7 +5729,7 @@ document.addEventListener('scroll',function(e){
  var gate=root.querySelector('.reader-offer,.story-gate,#ny-offer,.ian-offer'),bar=root.querySelector('.reader-cta');
  if(!gate){if(bar)bar.remove();return;}
  var my=STATE.mySaju||{},who=my.name?esc(my.name)+'님의':'내';
- if(!gate.dataset.hooked&&root.textContent.indexOf('????년')>-1){gate.dataset.hooked='1';var h=gate.querySelector('h2');if(h){h.innerHTML=who+' 좋은 해 두 개가<br>아직 가려져 있어요';h.classList.add('gate-hook-h');}}
+ if(!gate.dataset.hooked&&(root.textContent.indexOf('??월')>-1||root.textContent.indexOf('????년')>-1)){gate.dataset.hooked='1';var h=gate.querySelector('h2');if(h){h.innerHTML=root.textContent.indexOf('??월')>-1?who+' 가까운 좋은 달 세 개가<br>아직 가려져 있어요':who+' 좋은 해 두 개가<br>아직 가려져 있어요';h.classList.add('gate-hook-h');}}
  var show=root.scrollTop>420&&gate.getBoundingClientRect().top>window.innerHeight*0.85;
  if(show&&!bar){bar=document.createElement('div');bar.className='reader-cta';bar.innerHTML='<span><b>'+who+' 나머지 이야기</b><small>'+esc(readerLeftLine(root))+'</small></span><button type="button">전체 보기 '+krwFmt(readerPrice())+'원</button>';root.appendChild(bar);
   bar.querySelector('button').addEventListener('click',function(){var g=root.querySelector('.reader-offer,.story-gate,#ny-offer,.ian-offer');if(g)g.scrollIntoView({behavior:'smooth',block:'start'});});
