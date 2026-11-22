@@ -545,3 +545,4 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .star-gift .btn-primary.star-make-btn{background:transparent!important;color:#2c3248!important;border:1px solid #2c32485c!important;box-shadow:none!important;min-height:46px;font-weight:700}
 .star-gift .btn-primary.star-make-btn:active{background:#2c32480d!important}
 [data-theme="dark"] .star-gift .btn-primary.star-make-btn{color:#ece6d8!important;border-color:#ece6d85c!important}
+.char-card img{filter:saturate(.88) contrast(.96) brightness(1.01)}
