@@ -5177,6 +5177,11 @@ function refreshCompatPersonA(){
          showReveal('궁합을 점치는 중', '두 사람의 기운이 만나는 지점을 짚어보고 있어요', function(){
            renderCompatResult(resA, resB, compat);
            var rw = $('#compat-result'); if (rw) rw.classList.add('reveal-fadeup');
+           if (resA === STATE.mySaju && saveDirectSkyFriend(resB)){
+             var y0 = rw ? rw.getBoundingClientRect().top : 0;
+             renderMyRoom();
+             if (rw) window.scrollBy(0, rw.getBoundingClientRect().top - y0);
+           }
          });
    }catch(err){
          alertInline('입력값을 다시 확인해주세요. ('+err.message+')');
@@ -7565,6 +7570,39 @@ function renderMyRoom(){
   }
 }
 var INVITE_MYROOM_CACHE = null, INVITE_MYROOM_AT = 0, OPEN_INVITER_PAIR = false; /* 초대해서 실제 등록한 사람 목록(서버 응답) 캐시. null=아직 안 불러옴 */
+/* 직접 입력한 친구: 이 기기(localStorage)에만 남긴다. 서버·DB에는 보내지 않는다.
+   예전 버전이 남긴 기록과 섞이지 않게 direct 표시가 있는 것만 쓴다. */
+function directSkyId(input){
+  return 'direct-'+[input.year,input.month,input.day,input.unknownTime?'u':(input.hour+':'+input.minute),input.isLunar?'l':'s',input.isLeapMonth?'1':'0',input.gender,input.name].join('-');
+}
+function saveDirectSkyFriend(resB){
+  var input = resB && resB._input; if (!input) return false;
+  var id = directSkyId(input);
+  try{
+    var list = JSON.parse(localStorage.getItem(MYROOM_KEY)||'[]').filter(function(e){ return e.id !== id; });
+    list.unshift({ id:id, direct:true, nameB:input.name||'상대방', inputB:input, at:Date.now() });
+    localStorage.setItem(MYROOM_KEY, JSON.stringify(list.slice(0,30)));
+    var hidden = getHiddenMyRoomIds();
+    if (hidden.indexOf(id) > -1) localStorage.setItem(MYROOM_HIDDEN_KEY, JSON.stringify(hidden.filter(function(h){ return h !== id; })));
+    return true;
+  }catch(e){ return false; }
+}
+function directSkyEntries(invites){
+  if (!STATE.mySaju) return [];
+  var raw; try{ raw = JSON.parse(localStorage.getItem(MYROOM_KEY)||'[]'); }catch(e){ return []; }
+  return raw.filter(function(e){ return e && e.direct && e.inputB; }).map(function(e){
+    var resB; try{ resB = computeSaju(e.inputB); }catch(err){ return null; }
+    /* 초대로 이미 들어온 같은 사람(이름·일주가 같은)은 한 번만 보여 준다 */
+    if ((invites||[]).some(function(x){ return x.nameB===(resB.name||e.nameB) && x.dayGanB===resB.day.ganKr && x._sajuB && x._sajuB.day.zhi===resB.day.zhi; })) return null;
+    var compat = computeCompat(STATE.mySaju, resB);
+    return {
+      _sajuB:resB, id:e.id, direct:true, nameB:resB.name||e.nameB||'상대방',
+      dayGanWxA:STATE.mySaju.dayGanWx, dayGanWxB:resB.dayGanWx, dayGanB:resB.day.ganKr, cardPolarity:['甲','丙','戊','庚','壬'].indexOf(resB.day.gan)>=0?'yang':'yin',
+      shinsalA:STATE.mySaju.shinsal||[], shinsalB:resB.shinsal||[],
+      zhiRel:compat.zhiRel, ganRel:compat.ganRel, score:compat.scores.total, at:e.at||0
+    };
+  }).filter(Boolean);
+}
 function renderMyRoomLocal(root){
   if (!STATE.mySaju){
     /* 내 사주가 없을 때도 예시 별을 흐리게 깔아, 무엇이 만들어지는지 먼저 보여 준다 */
@@ -7577,9 +7615,10 @@ function renderMyRoomLocal(root){
     fetchInviteMyRoom();
     return;
   }
-  /* 마이룸 = (서버에서 받아온) 실제로 초대해서 등록한 사람 목록을 최신순으로 보여준다. */
+  /* 마이룸 = (서버에서 받아온) 실제로 초대해서 등록한 사람 + 이 기기에서 직접 입력한 사람, 최신순. */
   var hiddenIds = getHiddenMyRoomIds();
-  var list = hiddenIds.length ? INVITE_MYROOM_CACHE.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : INVITE_MYROOM_CACHE;
+  var all = INVITE_MYROOM_CACHE.concat(directSkyEntries(INVITE_MYROOM_CACHE)).sort(function(a,b){ return (b.at||0)-(a.at||0); });
+  var list = hiddenIds.length ? all.filter(function(e){ return hiddenIds.indexOf(e.id)===-1; }) : all;
   if (!list.length && skyIsDemo()) list = SKY_DEMO.map(function(e){ return Object.assign({dayGanWxA:STATE.mySaju.dayGanWx}, e); });
   if (!list.length){
     root.innerHTML =
@@ -7715,14 +7754,17 @@ function readPersonForm(suf){
   var isLeapMonth = isLunar && $('#c-leap-'+suf).checked;
   var gender = segValue($('#c-gender-'+suf));
   var name = $('#c-name-'+suf).value.trim();
-  return computeSaju({
+  var input = {
     year:parts[0], month:parts[1], day:parts[2],
     hour:timeParts[0], minute:timeParts[1],
     isLunar:isLunar, isLeapMonth:isLeapMonth,
     unknownTime:unknownTime, gender:gender, name:name,
     /* 내 사주와 같은 기준(서울 기준 실제 해 위치)으로 본다. 보정 없이 보면 같은 사람도 시주·일주가 달라질 수 있었다. */
     city:'서울', useCorrection:true
-  });
+  };
+  var res = computeSaju(input);
+  res._input = input;
+  return res;
 }
 
 function scoreLabel(key){

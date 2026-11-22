@@ -47,8 +47,9 @@ test('changing the date keeps the chosen 시진 and side of midnight',()=>{
 });
 
 test('compat partner is calculated with the same local-time fix as my own chart',()=>{
-  assert.match(html,/city:'서울', useCorrection:true\n  \}\);\n\}/);
-  assert.ok(!/city:'서울', useCorrection:false\n  \}\);/.test(html));
+  // 상대 입력값(input)을 만든 뒤 그대로 computeSaju에 넘긴다.
+  assert.match(html,/city:'서울', useCorrection:true\n  \};\n  var res = computeSaju\(input\);/);
+  assert.ok(!/city:'서울', useCorrection:false\n  \}\)?;/.test(html));
 });
 
 test('a lunar day missing from the leap month is reported as a missing day, not as a missing leap month',()=>{
