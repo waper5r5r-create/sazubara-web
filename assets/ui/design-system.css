@@ -553,3 +553,11 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .char-me .saju-hero-trust span{margin-top:2px;font-size:.75rem;color:#cfd3e4}
 .sky-stage,.sky-stage.is-focus{container-type:inline-size;background:#030714}
 .sky-stage::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(#030714 calc(50% - 55cqw + 6px),#03071400 calc(50% - 55cqw + 90px),#03071400 calc(50% + 55cqw - 90px),#030714 calc(50% + 55cqw - 6px))}
+.saju-sal ul{margin:12px 0 0;padding:0;list-style:none}
+.saju-sal li{padding:14px 0;border-top:1px solid var(--ds-line)}
+.saju-sal li:first-child{border-top:0;padding-top:4px}
+.saju-sal li p{margin:10px 0 0;font-size:var(--ds-fs-body);line-height:1.75;color:var(--ds-ink);word-break:keep-all}
+.saju-sal li p.sal-good{margin-top:6px;color:var(--ds-ink-2)}
+[data-theme="dark"] .saju-sal .shinsal-badge{background:#ffffff12;color:#f1d08a}
+.saju-sal li::before{content:none!important;display:none!important}
+.saju-sal li,.saju-sal li:first-child{padding-left:0!important}
