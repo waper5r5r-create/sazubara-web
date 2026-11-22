@@ -5177,11 +5177,9 @@ function refreshCompatPersonA(){
          showReveal('궁합을 점치는 중', '두 사람의 기운이 만나는 지점을 짚어보고 있어요', function(){
            renderCompatResult(resA, resB, compat);
            var rw = $('#compat-result'); if (rw) rw.classList.add('reveal-fadeup');
-           if (resA === STATE.mySaju && saveDirectSkyFriend(resB)){
-             var y0 = rw ? rw.getBoundingClientRect().top : 0;
-             renderMyRoom();
-             if (rw) window.scrollBy(0, rw.getBoundingClientRect().top - y0);
-           }
+           if (resA === STATE.mySaju && saveDirectSkyFriend(resB)) renderMyRoom();
+           /* 결과가 폼 아래에 생겨서 화면 밖에 있었다. 결과 첫머리로 내려 준다(상단 바 높이만큼 여유). */
+           if (rw){ var hd = $('.app-header'); window.scrollTo({ top: Math.max(0, rw.getBoundingClientRect().top + window.scrollY - (hd ? hd.offsetHeight : 64) - 8), behavior:'instant' }); }
          });
    }catch(err){
          alertInline('입력값을 다시 확인해주세요. ('+err.message+')');
