@@ -6396,7 +6396,7 @@ function seorimSay(face,html){return '<div class="wolha-say"><img class="wolha-f
 function careerTimelineHtml(rows,labelOf){return '<section class="marriage-timeline"><ol>'+rows.map(function(r,i){return '<li class="'+(r.top?'is-top':'')+'"><div class="marriage-year"><b>'+r.year+'</b><span>'+esc(r.ganKr+r.zhiKr)+'년</span></div><div class="marriage-year-body"><p class="marriage-year-label">'+labelOf(r)+'</p></div></li>';}).join('')+'</ol></section>';}
 /* 직업은 "지도 경로" 형식: 번호 붙은 지점을 따라 내려가며 서림의 메모를 읽는다. 말풍선은 처음과 끝에만. */
 function routeStop(no,place,title,scene,alt,noteHtml,basis){
- return '<li class="route-stop"><span class="route-pin" aria-hidden="true">'+no+'</span><p class="route-place">'+esc(place)+'</p><h3>'+esc(title)+'</h3>'+seorimScene(scene,alt)+'<div class="route-note"><p class="route-note-tag">서림의 메모</p>'+noteHtml+(basis?'<p class="route-basis">근거 · '+esc(basis)+'</p>':'')+'</div></li>';
+ return '<li class="route-stop"><span class="route-pin" aria-hidden="true">'+no+'</span><p class="route-place">'+esc(place)+'</p><h3>'+esc(title)+'</h3>'+(scene?seorimScene(scene,alt):'')+'<div class="route-note"><p class="route-note-tag">서림의 메모</p>'+noteHtml+(basis?'<p class="route-basis">근거 · '+esc(basis)+'</p>':'')+'</div></li>';
 }
 
 var FREE_IM={burnout:'당신은 일이 넓어지는 걸 좋아해서 여러 사람과 일을 동시에 안고 가요. 어디에도 깊이 머물 시간이 없을 때, 의욕은 있는데 머리가 먼저 지쳐요.',conflict:'다툴 때 당신은 말로 풀려고 하는 편이에요. 상대 말도 다 들어 주지만, 정작 내 속마음은 잘 꺼내지 않아요.',makeup:'화해할 땐 넘어가는 농담보다 내 속마음 한 줄이 더 잘 닿아요. "사실 나도 서운했어"라고 먼저 말해 주세요.',marriage:'당신은 다툴 때도 말로 풀려고 하고 상대 말을 끝까지 들어 줘요. 다만 내 속마음은 잘 꺼내지 않아서, 상대는 거리감을 느낄 수 있어요.',talk:['"나 혼자 정한 거 아니야. 네 생각도 듣고 싶어."','"이번 주말엔 어디든 같이 다녀올까?"'],impulse:'"이건 지금 아니면 못 해"에 약해요. 여행, 공연, 처음 해 보는 일처럼 경험에 돈을 쓰고 나서야 잔고를 봐요. 결제 전에 이번 달 남은 돈만 한 번 확인하세요.'};
@@ -6421,7 +6421,7 @@ function careerPreviewHtml(concept,result,rows){
   '<figure class="love-free-card career-free-card">'+careerCardArt(stem)+'<figcaption>당신 일의 지도 · <strong>'+esc(CAREER_TITLE[stem]||'')+'</strong></figcaption></figure>'+
   seorimSay('explain','<p>여기서부터 풀이를 시작할게요. 당신 일하는 스타일을 한 단어로 하면 <strong>「'+esc(CAREER_TITLE[stem]||'')+'」</strong>이에요.</p>')+
   '<ol class="route">'+routeStop(1,'출발점','지금 서 있는 곳','intro','빈 두루마리에 붓으로 첫 선을 그으려는 서림','<p>'+esc(CAREER_FREE[stem]||'')+'</p>','타고난 성향 · 일터 자리')+
-  (first?routeStop(2,'가장 가까운 이정표','길이 열리는 첫 번째 해','listen','작업상 너머로 이야기를 듣는 서림','<p><strong class="wolha-year">'+first.year+'년</strong>, '+esc(first.ganKr+first.zhiKr)+'년의 기운이 일터 자리 '+esc(mz)+'에 닿아요. <strong>'+esc(careerYearLabel(first))+'</strong>'+josaIeyo(careerYearLabel(first))+'. 앞으로 10년 중 특히 좋은 해는 세 번이에요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','해마다 달라지는 기운'):'')+nearTeaseHtml('career',result)+'</ol>'+
+  (first?routeStop(2,'가장 가까운 이정표','길이 열리는 첫 번째 해','','','<p><strong class="wolha-year">'+first.year+'년</strong>, '+esc(first.ganKr+first.zhiKr)+'년의 기운이 일터 자리 '+esc(mz)+'에 닿아요. <strong>'+esc(careerYearLabel(first))+'</strong>'+josaIeyo(careerYearLabel(first))+'. 앞으로 10년 중 특히 좋은 해는 세 번이에요.</p><div class="marriage-locked-years" aria-hidden="true"><span>????년</span><span>????년</span></div>','해마다 달라지는 기운'):'')+nearTeaseHtml('career',result)+'</ol>'+
   lockedPeekHtml('<section class="spouse-card career-card">'+careerCardArt(stem)+'<p class="reader-kicker">일의 지도 카드</p><h2>'+esc(CAREER_TITLE[stem]||'')+'</h2><h3>나는 어떤 일꾼일까</h3><p>'+esc(CAREER_FREE[stem]||'')+'</p></section>'+careerTimelineHtml(rows,function(r){return esc(careerYearLabel(r));}))+
  '</section>';
 }

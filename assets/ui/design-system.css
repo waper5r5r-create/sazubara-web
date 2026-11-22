@@ -546,3 +546,4 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 .star-gift .btn-primary.star-make-btn:active{background:#2c32480d!important}
 [data-theme="dark"] .star-gift .btn-primary.star-make-btn{color:#ece6d8!important;border-color:#ece6d85c!important}
 .char-card img{filter:saturate(.88) contrast(.96) brightness(1.01)}
+.locked-peek .love-card .spouse-card-art,.locked-peek .career-card .spouse-card-art{display:none}
