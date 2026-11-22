@@ -578,3 +578,5 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 [data-theme="dark"] .pw-today{background:#f1d08a;color:#1a1436}
 :root{--pw-good:#9a6b1f;--pw-care:#8a5a6a}
 [data-theme="dark"]{--pw-good:#e7c27a;--pw-care:#d3a7b5}
+.report-page .ny-nav{top:60px;background:#0d1430}
+.report-page .ny-letter,.report-page .ny-offer{scroll-margin-top:124px}
