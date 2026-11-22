@@ -5020,10 +5020,10 @@ function weekFortuneHtml(my){
     var isToday = r.date.toDateString()===todayStr;
     var color = r.score>0 ? 'var(--good)' : (r.score<0 ? 'var(--bad)' : 'var(--fg-muted)');
     var dLabel = (r.date.getMonth()+1)+'월 '+r.date.getDate()+'일 ('+dowKr[i]+')';
-    return '<div class="period-week-row pw-clickable" role="button" tabindex="0" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
+    return '<div class="period-week-row pw-clickable'+(isToday?' is-today':'')+'" role="button" tabindex="0" data-relkey="'+r.relKey+'" data-sskey="'+r.ssKey+'" data-label="'+esc(dLabel)+'" data-zhi="'+r.zhi+'">'+
       '<span class="dow">'+dowKr[i]+'</span>'+
       '<span class="dt">'+(r.date.getMonth()+1)+'/'+r.date.getDate()+'</span>'+
-      '<span class="lbl2">'+r.ganKr+r.zhiKr+'일</span>'+
+      '<span class="lbl2">'+r.ganKr+r.zhiKr+'일'+(isToday?'<em class="pw-today">오늘</em>':'')+'</span>'+
       '<span style="color:'+color+';font-weight:700;font-size:.78rem;">'+FORTUNE_TEXT[r.ssKey].label+'</span>'+
       '<span class="pw-chev">'+uiIcon('arrow')+'</span>'+
     '</div>';

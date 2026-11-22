@@ -571,3 +571,8 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 #worry-chips{display:grid!important;grid-template-columns:repeat(6,1fr);gap:8px}
 #worry-chips .chip-btn{grid-column:span 2;justify-content:center;text-align:center;margin:0}
 #worry-chips .chip-btn:nth-child(n+4){grid-column:span 3}
+.period-week-row.is-today{outline:0!important;background:#f1d08a33!important;box-shadow:inset 0 0 0 1px #c9a04e80}
+.period-week-row.is-today .dow{color:var(--ds-gold-ink)}
+.pw-today{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;background:#2c3248;color:#fff;font-style:normal;font-size:.6875rem;font-weight:700;vertical-align:1px}
+[data-theme="dark"] .period-week-row.is-today{background:#f1d08a1f!important;box-shadow:inset 0 0 0 1px #f1d08a66}
+[data-theme="dark"] .pw-today{background:#f1d08a;color:#1a1436}
