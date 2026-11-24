@@ -6,6 +6,7 @@ const love = require('../_love-content');
 const wealth = require('../_wealth-content');
 const newyear = require('../_newyear-content');
 const ian = require('../_ian-content');
+const yeonseo = require('../_yeonseo-content');
 const { sbFetch, getQuery, checkAdminSecret } = require('../_supabase');
 const { STAGE_PRICE, rowsAt, reportAccess } = require('../_report-access');
 
@@ -37,6 +38,12 @@ module.exports = async (req, res) => {
       if (!story) return res.status(400).json({ok:false, error:'MISSING_SAJU'});
       const access = await reportAccess(q.device_id || '', conceptId);
       return res.status(200).json({ok:true, rows:[], access, preview:!access.story, free:story.free, teasers:story.teasers, paid:access.story ? story.paid : null});
+    }
+    if (conceptId === yeonseo.concept.id) {
+      const facts = yeonseo.parseFacts(q.ys);
+      if (!facts) return res.status(400).json({ok:false, error:'MISSING_SAJU'});
+      const access = await reportAccess(q.device_id || '', conceptId);
+      return res.status(200).json({ok:true, rows:[], access, preview:!access.story, paid:access.story ? yeonseo.compose(facts) : null});
     }
     if (conceptId === career.concept.id) {
       const access = await reportAccess(q.device_id || '', conceptId);

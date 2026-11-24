@@ -9169,6 +9169,13 @@ function init(){
   if (wantsReportAdmin) openReportAdminList();
 }
 
+/* 새 콘텐츠 시제품(연서의 인연 장부)이 쓰는 사주 계산. 화면 코드는 주소에 ?yeonseo=1 이 있을 때만 불러온다. */
+globalThis.YS_ENGINE={computeSaju:computeSaju,zhiRelation:zhiRelation,todayGanZhi:todayGanZhi,SS_KR:SS_KR,device:function(){return DEVICE.shareCode||'';}};
+if (typeof location!=='undefined' && /[?&]yeonseo=1(&|$)/.test(location.search)){
+  var ysCss=document.createElement('link');ysCss.rel='stylesheet';ysCss.href='/assets/yeonseo/yeonseo.css';document.head.appendChild(ysCss);
+  var ysJs=document.createElement('script');ysJs.src='/assets/yeonseo/yeonseo.js';ysJs.defer=true;document.head.appendChild(ysJs);
+}
+
 if (document.readyState==='loading'){
   document.addEventListener('DOMContentLoaded', init);
 } else {

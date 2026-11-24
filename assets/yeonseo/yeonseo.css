@@ -1,0 +1,470 @@
+/* 연서의 인연 장부 — 시제품. 먹색·쪽빛·은백·금박·푸른 여우불. 사이트 다른 화면과 섞이지 않게 .ys 안에서만 쓴다. */
+.ys{--ink:#0d0f14;--indigo:#16213a;--silver:#ece8df;--silver-2:#b9b6ad;--gold:#c9a45c;--fire:#86d8ff;--paper:#f3ecdd;position:fixed;inset:0;z-index:9999;background:var(--ink);color:var(--silver);font-family:'Noto Sans KR',system-ui,sans-serif;letter-spacing:-.01em}
+.ys *{box-sizing:border-box}
+.ys-stage{position:relative;height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden}
+/* 그림 자리: 실제 그림이 오기 전까지 장면 이름표와 분위기 색만 보여 준다 */
+.ys-art{position:absolute;inset:0 0 34% 0;background:radial-gradient(120% 80% at 50% 20%,#24365c 0%,#111a2e 55%,var(--ink) 100%);transition:background .8s}
+.ys-art::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,var(--ink) 100%)}
+.ys-art[data-mood=reveal],.ys-art[data-mood=fire]{background:radial-gradient(90% 60% at 50% 35%,#1f4a6e 0%,#121c33 60%,var(--ink) 100%)}
+.ys-art[data-mood=bitter],.ys-art[data-mood=side]{background:radial-gradient(120% 80% at 30% 20%,#2a2f45 0%,#141826 60%,var(--ink) 100%)}
+.ys-art-label{position:absolute;left:50%;top:36%;transform:translate(-50%,-50%);z-index:1;padding:6px 12px;border:1px dashed #ece8df40;border-radius:8px;font-size:.75rem;color:#ece8df80;letter-spacing:.04em}
+.ys-top{position:relative;z-index:2;display:flex;align-items:center;gap:12px;padding:14px 16px 0}
+.ys-x{width:36px;height:36px;border:0;border-radius:50%;background:#ffffff14;color:var(--silver);font-size:1rem}
+.ys-tails{display:flex;gap:6px;margin-left:auto}
+.ys-tails i{width:14px;height:22px;border-radius:50% 50% 50% 50%/70% 70% 30% 30%;background:#ffffff18;transition:background .4s,box-shadow .4s}
+.ys-tails i.on{background:var(--fire);box-shadow:0 0 10px #86d8ffaa}
+.ys-chat{position:relative;z-index:2;flex:1;overflow-y:auto;padding:40vh 16px 12px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;-webkit-mask-image:linear-gradient(180deg,transparent 30vh,#000 42vh);mask-image:linear-gradient(180deg,transparent 30vh,#000 42vh)}
+.ys-b{position:relative;max-width:82%;padding:10px 14px;border-radius:16px;font-size:.9375rem;line-height:1.6;word-break:keep-all;animation:ysIn .35s ease-out both}
+.ys-b.her{align-self:flex-start;background:#16213ae6;border:1px solid #c9a45c33;border-top-left-radius:4px}
+.ys-b.me{align-self:flex-end;background:var(--paper);color:#1d1a14;border-top-right-radius:4px}
+.ys-b.card{max-width:100%;padding:12px}
+.ys-paw{position:absolute;right:-6px;bottom:-10px;font-size:.875rem}
+.ys-dots{display:inline-flex;gap:4px}.ys-dots i{width:6px;height:6px;border-radius:50%;background:var(--silver-2);animation:ysDot 1s infinite}.ys-dots i:nth-child(2){animation-delay:.15s}.ys-dots i:nth-child(3){animation-delay:.3s}
+@keyframes ysIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes ysDot{0%,100%{opacity:.3}50%{opacity:1}}
+.ys-pillars p{margin:0 0 8px;font-size:.75rem;color:var(--gold);letter-spacing:.06em}
+.ys-pillars>div{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ys-pillars span{display:grid;justify-items:center;gap:2px;padding:8px 0;border-radius:10px;background:#0d0f14b3;border:1px solid #c9a45c40}
+.ys-pillars b{font-family:'Noto Serif KR',serif;font-size:1.375rem;line-height:1.2;color:var(--silver)}
+.ys-pillars small{font-size:.6875rem;color:var(--silver-2)}
+.ys-input{position:relative;z-index:3;padding:10px 16px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,var(--ink) 30%)}
+.ys-input:empty{display:none}
+.ys-row{display:flex;gap:8px}
+.ys-field{flex:1;min-width:0;height:48px;padding:0 14px;border:1px solid #c9a45c55;border-radius:12px;background:#0d0f14;color:var(--silver);font-size:1rem}
+.ys-send{height:48px;padding:0 16px;border:0;border-radius:12px;background:var(--gold);color:#1a1408;font-weight:700}
+.ys-send:disabled{opacity:.4}
+.ys-skip{display:block;margin:10px auto 0;border:0;background:none;color:var(--silver-2);font-size:.8125rem;text-decoration:underline;text-underline-offset:3px}
+.ys-choices{display:grid;gap:8px}.ys-choices.is-row{grid-template-columns:repeat(auto-fit,minmax(0,1fr))}
+.ys-choices button{min-height:48px;padding:0 14px;border:1px solid #ece8df30;border-radius:12px;background:#16213acc;color:var(--silver);font-size:.9375rem;text-align:left}
+.ys-choices.is-row button{text-align:center}
+.ys-choices button:active{background:#86d8ff22;border-color:var(--fire)}
+.ys-letter textarea{width:100%;min-height:96px;margin-bottom:8px;padding:12px 14px;border:1px solid #c9a45c55;border-radius:12px;background:var(--paper);color:#1d1a14;font-size:.9375rem;line-height:1.6;resize:none}
+.ys-letter .ys-row{justify-content:space-between;align-items:center}.ys-letter .ys-skip{margin:0}
+/* 결과 */
+.ys-result{display:grid;gap:14px;margin-top:8px;padding-bottom:24px;animation:ysIn .5s ease-out both}
+.ys-kicker{margin:0;font-size:.75rem;color:var(--gold);letter-spacing:.06em}
+.ys-page{padding:18px 16px;border-radius:16px;background:var(--paper);color:#1d1a14;box-shadow:0 14px 40px #0008}
+.ys-names{display:grid;grid-template-columns:1fr 1.4fr 1fr;align-items:center;text-align:center}
+.ys-names b{display:block;font-family:'Noto Serif KR',serif;font-size:1.125rem}
+.ys-names small{font-size:.75rem;color:#6b6252}
+.ys-line{width:100%;height:auto}.ys-line path{fill:none;stroke:#1d1a14;stroke-width:3;stroke-linecap:round}
+.ys-line.is-unknown path{stroke-dasharray:4 6;opacity:.5}
+.ys-say{margin:14px 0 6px;font-family:'Noto Serif KR',serif;font-size:1rem;line-height:1.7;word-break:keep-all}
+.ys-basis{margin:0;font-size:.75rem;color:#6b6252}
+.ys-gauge p,.ys-cal-h,.ys-locked>p{margin:0 0 8px;font-weight:700;font-size:.9375rem}
+.ys-bar{height:12px;border-radius:99px;background:#ffffff14;overflow:hidden}.ys-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#3c7fa8,var(--fire));box-shadow:0 0 14px #86d8ff88}
+.ys-gauge small,.ys-legend{display:block;margin-top:6px;font-size:.75rem;color:var(--silver-2)}
+.ys-cal-first{margin:0 0 10px;font-size:.875rem;line-height:1.6;color:var(--silver)}
+.ys-cal-first b{color:var(--fire)}
+.ys-month{margin-bottom:12px}.ys-month p{margin:0 0 6px;font-size:.8125rem;color:var(--gold)}
+.ys-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:.75rem}
+.ys-days b{font-weight:500;color:var(--silver-2)}
+.ys-days span{display:grid;place-items:center;aspect-ratio:1;border-radius:8px;color:var(--silver)}
+.ys-days span.out{opacity:.2}
+.ys-days span.fire{background:#86d8ff26;color:var(--fire);font-weight:700;box-shadow:0 0 12px #86d8ff66}
+.ys-days span.hide{filter:blur(1.5px);background:#ece8df18;color:var(--silver-2);box-shadow:none}
+.ys-days span.dark{color:#ffffff40;text-decoration:line-through}
+.ys-legend .fire{color:var(--fire)}.ys-legend .dark{color:#ffffff40;margin-left:8px}
+.ys-locked{padding:16px;border:1px dashed #c9a45c66;border-radius:14px}
+.ys-locked ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.875rem;color:var(--silver-2)}
+.ys-pay button{width:100%;min-height:52px;border:0;border-radius:12px;background:var(--gold);color:#1a1408;font-weight:700;font-size:.9375rem}
+.ys-pay button:disabled{opacity:.7}
+.ys-pay p{margin:8px 0 0;text-align:center;font-size:.75rem;color:var(--silver-2)}
+@media (prefers-reduced-motion:reduce){.ys *{animation:none!important;transition:none!important}}
+/* 기준 그림 한 장으로 먼저 분위기를 본다(장면 그림이 오면 장면마다 바꾼다) */
+.ys-art,.ys-art[data-mood]{inset:0 0 18% 0;background:url(/assets/yeonseo/hero.webp) center 12%/cover no-repeat;transition:filter .8s,transform 1.2s}
+.ys-art::after{background:linear-gradient(180deg,#0d0f1400 40%,#0d0f14cc 72%,var(--ink) 100%)}
+.ys-art-label{display:none}
+.ys-art[data-mood=bitter],.ys-art[data-mood=side]{filter:saturate(.75) brightness(.85)}
+.ys-art[data-mood=fire],.ys-art[data-mood=reveal]{filter:brightness(1.08) saturate(1.1);transform:scale(1.04)}
+.ys-art[data-mood=result]{filter:brightness(.45) blur(2px)}
+.ys-chat{padding-top:52vh;-webkit-mask-image:linear-gradient(180deg,transparent 40vh,#000 54vh);mask-image:linear-gradient(180deg,transparent 40vh,#000 54vh)}
+
+/* ---- 장면 자르기: 기준 그림 한 장을 당겨서 컷마다 다르게 보이게 ---- */
+.ys-art[data-crop=face]{background-size:190%;background-position:50% 22%}
+.ys-art[data-crop=low]{background-size:150%;background-position:50% 55%}
+.ys-art[data-crop=side]{background-size:170%;background-position:20% 25%}
+.ys-art[data-mood=rain]{filter:saturate(.7) brightness(.8)}
+.ys-art[data-mood=rain]::before{content:"";position:absolute;inset:0;z-index:1;background:repeating-linear-gradient(105deg,#ffffff00 0 14px,#ffffff14 14px 15px);background-size:200% 200%;animation:ysRain .6s linear infinite}
+.ys-art[data-mood=wind]{animation:ysSway 4s ease-in-out infinite alternate}
+@keyframes ysRain{to{background-position:-40px 120px}}
+@keyframes ysSway{to{background-position:24% 26%}}
+
+/* ---- 연출 레이어 ---- */
+.ys-layer{position:absolute;inset:0;z-index:5;animation:ysFade .45s ease-out both}
+.ys-layer.out{animation:ysFadeOut .45s ease-in forwards}
+@keyframes ysFade{from{opacity:0}to{opacity:1}}
+@keyframes ysFadeOut{to{opacity:0}}
+.ys-fx{display:grid;place-items:center;background:radial-gradient(80% 60% at 50% 45%,#1a2c4c,#0d0f14 70%);overflow:hidden}
+.ys-go{position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));z-index:6;transform:translate(-50%,10px);min-width:200px;min-height:50px;padding:0 24px;border:1px solid #c9a45c;border-radius:99px;background:#0d0f14cc;color:#f3e3bd;font-weight:700;font-size:.9375rem;opacity:0;transition:opacity .4s,transform .4s}
+.ys-go.in{opacity:1;transform:translate(-50%,0)}
+.ys-sparks i{position:absolute;bottom:-10px;left:var(--x);width:5px;height:5px;border-radius:50%;background:#e9c97f;box-shadow:0 0 8px #e9c97f;opacity:0;animation:ysSpark 3.2s ease-out var(--d) infinite}
+@keyframes ysSpark{0%{opacity:0;transform:translateY(0) scale(var(--s))}15%{opacity:1}100%{opacity:0;transform:translateY(-85vh) scale(var(--s))}}
+/* 표지 */
+.ys-fx-title{background:linear-gradient(180deg,#0d0f1400 35%,#0d0f14 90%),url(/assets/yeonseo/hero.webp) center 12%/cover}
+.ys-title{position:relative;z-index:2;align-self:end;margin-bottom:120px;text-align:center}
+.ys-title p{margin:0;font-size:.8125rem;letter-spacing:.2em;color:#e9c97f}
+.ys-title h1{margin:10px 0;font-family:'Noto Serif KR',serif;font-size:2.75rem;line-height:1.15;color:#f4efe4;text-shadow:0 0 24px #86d8ff88,0 2px 0 #0008;animation:ysGlow 3s ease-in-out infinite alternate}
+.ys-title small{font-size:.875rem;color:#c9cfdd}
+@keyframes ysGlow{to{text-shadow:0 0 40px #86d8ffcc,0 2px 0 #0008}}
+/* 장부 펼침 */
+.ys-book{position:relative;width:240px;height:160px;perspective:800px;transition:transform .6s,opacity .6s}
+.ys-book .pg{position:absolute;top:0;width:50%;height:100%;background:#f3ecdd;box-shadow:inset 0 0 30px #c9b48c;transform-origin:right center;animation:ysOpenL 1s cubic-bezier(.2,.7,.2,1) both}
+.ys-book .pg.l{left:0}
+.ys-book .pg.r{right:0;transform-origin:left center;animation-name:ysOpenR}
+@keyframes ysOpenL{from{transform:rotateY(90deg)}to{transform:rotateY(0)}}
+@keyframes ysOpenR{from{transform:rotateY(-90deg)}to{transform:rotateY(0)}}
+.ys-book .ink{position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:radial-gradient(#0d0f14,#0d0f14cc 40%,#0d0f1400 70%);animation:ysInk 1.2s .9s ease-out both}
+@keyframes ysInk{from{transform:scale(0)}to{transform:scale(9);opacity:.85}}
+.ys-fx-card{position:absolute;left:16px;right:16px;top:50%;transform:translateY(-40%);opacity:0;transition:opacity .6s,transform .6s}
+.ys-fx-ledger.shown .ys-book{opacity:0;transform:scale(1.3)}
+.ys-fx-ledger.shown .ys-fx-card{opacity:1;transform:translateY(-50%)}
+.ys-fx-card .ys-pillars{padding:16px;border:1px solid #c9a45c66;border-radius:16px;background:#16213af2;box-shadow:0 0 40px #86d8ff33}
+/* 먹선 */
+.ys-sheet{width:calc(100% - 32px);padding:22px 16px;border-radius:16px;background:#f3ecdd;color:#1d1a14;box-shadow:0 20px 60px #000a}
+.ys-sheet-say{margin:14px 0 0;font-family:'Noto Serif KR',serif;line-height:1.7;opacity:0;transition:opacity .6s}
+.ys-fx-line.shown .ys-sheet-say{opacity:1}
+.ys-line.draw path{stroke-dasharray:1;stroke-dashoffset:1;animation:ysDraw 1.8s .3s ease-in-out forwards}
+@keyframes ysDraw{to{stroke-dashoffset:0}}
+/* 여우불 */
+.ys-cal-ghost{display:grid;grid-template-columns:repeat(7,30px);gap:8px;opacity:.25}
+.ys-cal-ghost i{height:30px;border:1px solid #ece8df55;border-radius:6px}
+.ys-fx-fire .ff{position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(#e9f8ff,#86d8ff 45%,#86d8ff00 70%);box-shadow:0 0 24px #86d8ff;animation:ysFall 1.6s ease-in both}
+.ys-fx-fire .f1{left:32%;--y:44%;animation-delay:.2s}.ys-fx-fire .f2{left:58%;--y:52%;animation-delay:.7s}.ys-fx-fire .f3{left:44%;--y:62%;animation-delay:1.2s}
+@keyframes ysFall{from{top:-40px;opacity:0}30%{opacity:1}to{top:var(--y);opacity:1}}
+.ys-fx-cap{position:absolute;bottom:120px;margin:0;font-size:.875rem;color:#c9cfdd}
+
+/* ---- 웹툰 컷 ---- */
+.ys-comic{overflow-y:auto;padding:72px 0 40px;background:#0d0f14f2;display:flex;flex-direction:column;gap:22px}
+.ys-pn{position:relative;margin:0 12px;flex:none;opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.ys-pn.seen{opacity:1;transform:none}
+.ys-pn.tilt.seen{transform:rotate(-1.5deg)}
+.ys-pn-art{position:relative;aspect-ratio:var(--ratio);border:2px solid #ece8df;border-radius:4px;background:url(/assets/yeonseo/hero.webp) center 12%/cover;box-shadow:0 10px 30px #0009}
+.ys-pn-art[data-crop=eyes]{background-size:320%;background-position:50% 27%}
+.ys-pn-art[data-crop=face]{background-size:180%;background-position:50% 20%}
+.ys-ph{position:absolute;right:8px;bottom:6px;padding:2px 6px;border-radius:4px;background:#0008;font-size:.6875rem;color:#fff9}
+.ys-bb{position:absolute;z-index:2;max-width:70%;font-size:.9375rem;line-height:1.5;word-break:keep-all}
+.ys-bb.round{padding:12px 18px;border:2px solid #1d1a14;border-radius:50%/42%;background:#fff;color:#1d1a14;text-align:center;font-weight:600}
+.ys-bb.round::after{content:"";position:absolute;bottom:-14px;left:30%;border:8px solid transparent;border-top:12px solid #1d1a14}
+.ys-bb.box{padding:10px 14px;border:2px solid #1d1a14;background:#f3ecdd;color:#1d1a14;font-family:'Noto Serif KR',serif}
+.ys-bb.sfx{font-family:'Noto Serif KR',serif;font-size:1.75rem;font-weight:900;color:#e9c97f;-webkit-text-stroke:1px #1d1a14;transform:rotate(-12deg);text-shadow:0 0 14px #86d8ff}
+.ys-bb.tr{top:10px;right:10px}.ys-bb.tl{top:10px;left:10px}.ys-bb.bl{bottom:12px;left:12px}.ys-bb.br{bottom:12px;right:12px}
+.ys-bb.b{left:12px;right:12px;bottom:-14px;max-width:none}
+.ys-bb.t{position:relative;display:block;margin:0 0 10px;max-width:none}
+.ys-pn.frameless{display:flex;flex-direction:column}
+.ys-pn.frameless .ys-bb.t{order:-1}
+.ys-symbol{position:relative;display:grid;place-items:center;aspect-ratio:1;border:2px solid #c9a45c;border-radius:4px;background:radial-gradient(#2a3d63,#111a2e);color:#f4efe4}
+.ys-symbol b{font-family:'Noto Serif KR',serif;font-size:2rem}
+.ys-symbol span{position:absolute;top:8px;left:10px;font-size:.6875rem;color:#fff8}
+.ys-kicker.dark{margin:0 0 10px;color:#8a6a2c}
+.ys-calwrap{padding:16px;border-radius:14px;background:#16213ae6;border:1px solid #c9a45c33}
+/* 결제 직전: 꼬리가 펼쳐짐 */
+.ys-paywall{position:relative;display:grid;gap:14px}
+.ys-paywall>.ys-pn-art{aspect-ratio:9/12;background-size:150%;background-position:50% 18%}
+.ys-paywall .ys-bb.round.tr{top:14px;right:14px}
+/* 실제 그림이 붙은 컷은 자르지 않고 꽉 채운다 */
+.ys-pn-art[data-img]:not([data-img=""]){background-size:cover!important;background-position:center 20%!important}
+.ys-paywall>.ys-pn-art[data-img]{aspect-ratio:9/14}
+.ys-art{background-position:center top}
+/* 연출 배경에 실제 그림: 먹선은 펼친 장부(F05), 여우불은 달력(T1) */
+.ys-fx-line{background:linear-gradient(#0d0f14b3,#0d0f14e6),url(/assets/yeonseo/F05.webp) center/cover}
+.ys-fx-fire{background:linear-gradient(#0d0f1466,#0d0f14cc),url(/assets/yeonseo/T1.webp) center/cover}
+.ys-fx-fire .ys-cal-ghost{display:none}
+.ys-fx-ledger{background:linear-gradient(#0d0f1499,#0d0f14ee),url(/assets/yeonseo/F03.webp) center/cover}
+.ys-symbol.has-art{background:url(/assets/yeonseo/symbols.webp) 0 0/500% 200% no-repeat;align-items:end}
+.ys-symbol.has-art b{margin-bottom:14px;padding:4px 14px;border-radius:99px;background:#0d0f14b3;font-size:1.25rem}
+
+/* ---- 유료 일곱 장 ---- */
+.ys-chap{display:grid;gap:14px}
+.ys-chap-art{position:relative;aspect-ratio:16/9;border:2px solid #ece8df;border-radius:4px;background:center/cover no-repeat;box-shadow:0 10px 30px #0009;overflow:hidden}
+.ys-chap-art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0d0f14e6 0%,#0d0f1499 45%,#0d0f1400 75%)}
+.ys-chap-art span,.ys-chap-art h2{position:absolute;left:16px;z-index:1;margin:0}
+.ys-chap-art span{bottom:56px;font-size:.75rem;letter-spacing:.16em;color:#e9c97f}
+.ys-chap-art h2{bottom:16px;right:40%;font-family:"Noto Serif KR",serif;font-size:1.25rem;line-height:1.35;color:#f4efe4;word-break:keep-all}
+.ys-bb.in-flow{position:relative;max-width:none;inset:auto}
+.ys-bb.round.in-flow{border-radius:22px;text-align:left;font-weight:500;line-height:1.7}
+.ys-bb.round.in-flow::after{left:28px}
+.ys-bb.box.in-flow{line-height:1.8}
+.ys-note{margin:0;font-size:.8125rem;color:#c9cfdd}
+.ys-letters{display:grid;gap:8px}.ys-letters>p,.ys-signs>p{margin:0;font-size:.8125rem;color:#e9c97f;letter-spacing:.06em}
+.ys-letters .ys-b{max-width:90%}
+.ys-signs ul{margin:6px 0 0;padding-left:18px;display:grid;gap:6px;font-size:.9375rem;line-height:1.6;color:#ece8df}
+.ys-daylist{display:grid;gap:10px}
+.ys-day{padding:14px;border-radius:12px;background:#16213ae6;border:1px solid #86d8ff44}
+.ys-day b{display:block;color:#86d8ff}.ys-day small{color:#b9b6ad}
+.ys-day p{margin:8px 0 0;line-height:1.7;font-size:.9375rem}
+.ys-day.dark{border-color:#ffffff22}.ys-day.dark b{color:#ffffff88}
+.ys-charm{padding:22px 18px;border:2px solid #c9a45c;border-radius:6px;background:#f3ecdd;color:#1d1a14;text-align:center}
+.ys-charm p{margin:0;font-family:"Noto Serif KR",serif;font-size:1.0625rem;line-height:1.8}
+.ys-charm small{display:block;margin-top:10px;color:#6b6252}
+.ys-proto{margin:4px 0 0!important;color:#86d8ff!important}
+
+/* ---- 영상 ---- */
+.ys-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;pointer-events:none;background:transparent}
+.ys-art>.ys-v{z-index:0}
+.ys-layer>.ys-v{z-index:0;transition:filter .8s}
+.ys-layer>.ys-v~*{z-index:1}
+.ys-fx-title>.ys-v{-webkit-mask-image:linear-gradient(#000 45%,#0000 92%);mask-image:linear-gradient(#000 45%,#0000 92%)}
+.ys-fx-ledger>.ys-v{object-position:50% 50%}
+.ys-fx-ledger.shown>.ys-v{filter:brightness(.4) blur(1px)}
+.ys-fx-line>.ys-v{object-position:50% 50%}
+.ys-fx-line>.ys-v~.ys-sheet{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.ys-fx-line.lit>.ys-v{filter:brightness(.4)}
+.ys-fx-line.lit .ys-sheet{opacity:1;transform:none}
+.ys-fx-line:not(.lit) .ys-line.draw path{animation-play-state:paused}
+.ys-fx-fire>.ys-v{object-position:50% 40%}
+.ys-paywall>.ys-pn-art>.ys-v{object-position:50% 18%}
+@media (prefers-reduced-motion:reduce){.ys-v{display:none}}
+.ys-paywall>.ys-pn-art{overflow:hidden}
+
+/* ---- 유료 본문 2부: 소제목 섹션 ---- */
+.ys-sec{padding:18px 16px;border-radius:14px;background:#141b2ef2;border:1px solid #c9a45c33}
+.ys-sec h3{margin:0 0 10px;font-family:"Noto Serif KR",serif;font-size:1.0625rem;color:#e9c97f;letter-spacing:.02em}
+.ys-sec p{margin:0 0 10px;font-size:.9375rem;line-height:1.8;color:#ece8df;word-break:keep-all}
+.ys-sec p:last-child{margin-bottom:0}
+.ys-month-row{padding:12px 0;border-top:1px solid #ffffff14}
+.ys-month-row:first-of-type{border-top:0;padding-top:0}
+.ys-month-row b{display:block;margin-bottom:6px;font-size:.8125rem;color:#86d8ff}
+.ys-steps{margin:0;padding-left:20px;display:grid;gap:10px;font-size:.9375rem;line-height:1.75;color:#ece8df}
+.ys-qa details{border-top:1px solid #ffffff14;padding:10px 0}
+.ys-qa details:first-of-type{border-top:0}
+.ys-qa summary{cursor:pointer;font-weight:600;color:#f4efe4;line-height:1.6}
+.ys-qa details p{margin-top:8px}
+.ys-day p{margin:8px 0 0}
+/* 말풍선 자리 정리 */
+.ys-pn-art:not([data-img=""]) .ys-ph{display:none}
+.ys-bb.round.tl::after{left:auto;right:28%}
+.ys-pn-body .ys-symbol.has-art b{margin-bottom:72px}
+.ys-bb.sfx.br{bottom:22px;right:22px}.ys-bb.sfx.bl{bottom:20px;left:18px}
+.ys-bb.round.b::after{bottom:auto;top:-18px;left:50%;margin-left:-8px;border:8px solid transparent;border-bottom:12px solid #1d1a14}
+/* 레퍼런스 대조 보정 */
+.ys-fx-title{background:#0d0f14}
+.ys-fx-title>.ys-v{-webkit-mask-image:linear-gradient(#000 52%,#0000 88%);mask-image:linear-gradient(#000 52%,#0000 88%)}
+.ys-fx-title::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,#0d0f1400 50%,#0d0f14cc 72%,#0d0f14 92%)}
+.ys-fx-title .ys-title{position:absolute;z-index:2;left:16px;right:16px;bottom:124px;margin:0}
+.ys-title h1{font-weight:700;font-size:3rem;background:linear-gradient(180deg,#fffaf0 30%,#d9c9ff 75%,#e9c97f);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 18px #86d8ff66) drop-shadow(0 2px 0 #0009);animation:none}
+.ys-chat>:first-child{margin-top:auto}
+.ys-calwrap{background:linear-gradient(#101a30e6,#0d0f14f0),url(/assets/yeonseo/T1.webp) center/cover;border-color:#c9a45c55;box-shadow:inset 0 0 40px #0008}
+.ys-days span{aspect-ratio:auto;height:32px}
+.ys-days span.fire{border-radius:50%;width:32px;justify-self:center}
+.ys-month{margin-bottom:16px;padding-top:12px;border-top:1px solid #c9a45c22}
+.ys-month:first-of-type{border-top:0;padding-top:0}
+.ys-title h1:has(.ys-logo){margin:4px 0 6px;background:none;filter:none}
+.ys-logo{display:block;width:min(100%,380px);height:auto;margin:0 auto}
+
+/* ===== 입력 UI 다듬기: 연서 말풍선 · 날짜 칸 · 장부 칩 · 낙관 ===== */
+.ys-b.her{background:linear-gradient(180deg,#f3ecdd,#e6dcc6);color:#1d1a14;border:0;border-top-left-radius:4px;box-shadow:0 6px 18px #0007,inset 0 0 0 1px #c9a45c55;font-family:'Noto Serif KR',serif;font-size:.9375rem}
+.ys-b.her.first{margin-top:22px}
+.ys-who{position:absolute;left:2px;top:-22px;display:flex;align-items:center;gap:6px;font:600 .75rem/1 'Noto Sans KR',sans-serif;color:var(--gold);letter-spacing:.04em}
+.ys-ava{width:18px;height:18px;border-radius:50%;background:url(/assets/yeonseo/hero.webp) 52% 18%/420% auto;box-shadow:0 0 0 1px var(--gold)}
+.ys-b.her .ys-dots i{background:#8a7d63}
+.ys-t.ink{display:block;animation:ysInk .5s ease-out both}
+@keyframes ysInk{from{opacity:0;filter:blur(3px);letter-spacing:.06em}to{opacity:1;filter:none}}
+.ys-b.me{background:#0d0f14d9;color:var(--silver);border:1px solid #c9a45c99;box-shadow:0 0 14px #c9a45c22}
+.ys-input{background:linear-gradient(180deg,transparent,#0d0f14ee 26%,var(--ink))}
+.ys-choices{gap:8px}
+.ys-choices.is-grid2{grid-template-columns:1fr 1fr}
+.ys-choices.is-grid3{grid-template-columns:repeat(3,1fr);gap:6px}
+.ys-choices button{position:relative;overflow:hidden;display:grid;place-content:center;justify-items:center;gap:2px;min-height:52px;padding:8px 10px;border:1px solid #c9a45c55;border-radius:10px;background:linear-gradient(180deg,#f3ecdd14,#f3ecdd08),#141a2acc;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--silver);font-size:.875rem;line-height:1.35;text-align:center;word-break:keep-all;transition:transform .15s,border-color .15s,background .15s}
+.ys-choices.is-grid3 button{min-height:50px;padding:6px 4px;font-size:.8125rem}
+.ys-choices button small{font-size:.6875rem;color:var(--silver-2);letter-spacing:-.01em}
+.ys-choices button:active{transform:scale(.97)}
+.ys-choices button.picked{background:linear-gradient(180deg,#f3ecdd,#e6dcc6);color:#1d1a14;border-color:var(--gold)}
+.ys-choices button.picked small{color:#5c5240}
+.ys-choices.chosen button:not(.picked){opacity:.35;transition:opacity .3s}
+.ys-seal{position:absolute;right:6px;top:50%;width:26px;height:26px;margin-top:-13px;border-radius:6px;display:grid;place-items:center;background:#b3261e;color:#f3ecdd;font:700 .875rem/1 'Noto Serif KR',serif;font-style:normal;box-shadow:inset 0 0 0 2px #f3ecdd55;transform:rotate(-8deg);animation:ysSeal .42s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes ysSeal{from{opacity:0;transform:scale(2.2) rotate(-20deg)}to{opacity:.92;transform:scale(1) rotate(-8deg)}}
+.ys-date-cells{flex:1;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:6px;min-width:0}
+.ys-date-cells label{display:flex;align-items:center;gap:4px;height:48px;padding:0 10px;border:1px solid #c9a45c55;border-radius:12px;background:#0d0f14}
+.ys-date-cells label:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px #c9a45c33}
+.ys-date-cells input{flex:1;min-width:0;width:100%;border:0;background:none;color:var(--silver);font-size:1.0625rem;text-align:right;outline:0}
+.ys-date-cells input::placeholder{color:#ece8df40}
+.ys-date-cells span{font-size:.8125rem;color:var(--silver-2)}
+.ys-date-hint{margin:8px 2px 0;font-size:.8125rem;color:var(--silver-2);min-height:1.2em}
+.ys-date-hint.ok{color:var(--gold)}
+.ys-pillars span.unknown b{color:#ece8df55}
+@media (prefers-reduced-motion:reduce){.ys-t.ink,.ys-seal{animation:none}}
+
+/* ===== 대사창(비주얼 노벨식): 왼쪽 채팅 대신 화면 아래 가운데 큰 창 ===== */
+.ys{--paper-tex:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .16 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");--corner:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none' stroke='%23c9a45c' stroke-width='1.2'%3E%3Cpath d='M2 22V6a4 4 0 0 1 4-4h16'/%3E%3Cpath d='M7 16V9a2 2 0 0 1 2-2h7' opacity='.6'/%3E%3Cpath d='M2 2l6 6' opacity='.7'/%3E%3Ccircle cx='9.5' cy='9.5' r='1.6' fill='%23c9a45c' stroke='none'/%3E%3Cpath d='M22 2c3 0 5 2 5 4M2 22c0 3 2 5 4 5' opacity='.5'/%3E%3C/svg%3E")}
+.ys-chat.ys-vn{position:absolute;left:0;right:0;bottom:0;z-index:3;flex:none;overflow:visible;padding:0 12px calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:stretch;gap:12px;-webkit-mask-image:none;mask-image:none}
+.ys-vn-box{position:relative;min-height:128px;padding:30px 22px 22px;border-radius:14px;background:linear-gradient(180deg,#121a2ef0,#0b0e16f7);border:1px solid #c9a45c66;box-shadow:0 18px 50px #000c,inset 0 0 0 4px #0b0e16,inset 0 0 0 5px #c9a45c2e,inset 0 0 40px #86d8ff10;cursor:pointer;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.ys-vn-box.in{opacity:1;transform:none}
+.ys-vn-box::before,.ys-vn-box::after{content:"";position:absolute;width:30px;height:30px;background:var(--corner) center/contain no-repeat;pointer-events:none}
+.ys-vn-box::before{left:6px;bottom:6px;transform:scaleY(-1)}
+.ys-vn-box::after{right:6px;top:6px;transform:scaleX(-1)}
+.ys-vn-name{position:absolute;left:16px;top:-17px;display:flex;align-items:center;gap:8px;height:34px;padding:0 16px 0 4px;border-radius:17px;background:linear-gradient(180deg,#1f2b48,#141c30);border:1px solid #c9a45c99;box-shadow:0 4px 14px #0009}
+.ys-vn-name b{font:700 .9375rem/1 'Noto Serif KR',serif;color:#f3e3bd;letter-spacing:.12em}
+.ys-vn-name .ys-ava{width:26px;height:26px;border-radius:50%;background:url(/assets/yeonseo/hero.webp) 50% 16%/520% auto;box-shadow:0 0 0 1.5px var(--gold),0 0 10px #86d8ff55}
+.ys-vn-text{min-height:3.4em;font-family:'Noto Serif KR',serif;font-size:1.0625rem;line-height:1.75;color:#f1ece2;word-break:keep-all;white-space:pre-line;text-shadow:0 1px 0 #000}
+.ys-vn-box.typing .ys-vn-text::after{content:"";display:inline-block;width:2px;height:1.05em;margin-left:2px;vertical-align:-.15em;background:var(--fire);box-shadow:0 0 6px var(--fire);animation:ysCaret .7s steps(1) infinite}
+@keyframes ysCaret{50%{opacity:0}}
+.ys-vn-next{position:absolute;right:20px;bottom:12px;width:9px;height:9px;transform:rotate(45deg);background:var(--fire);box-shadow:0 0 10px var(--fire);opacity:0}
+.ys-vn-box.more .ys-vn-next{opacity:1;animation:ysNext 1s ease-in-out infinite}
+@keyframes ysNext{50%{transform:translateY(4px) rotate(45deg)}}
+.ys-vn-echo{align-self:center;margin:0;max-width:86%;padding:7px 16px;border-radius:999px;background:#f3ecddf0 var(--paper-tex);color:#2a2216;font:600 .875rem/1.4 'Noto Serif KR',serif;text-align:center;word-break:keep-all;box-shadow:0 6px 18px #0008,inset 0 0 0 1px #c9a45c88;opacity:0;transform:translateY(8px) scale(.96);pointer-events:none}
+.ys-vn-echo.show{animation:ysEcho 2.6s ease-out both}
+@keyframes ysEcho{0%{opacity:0;transform:translateY(10px) scale(.94)}12%,78%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-10px)}}
+.ys-vn-echo:empty{display:none}
+/* 입력은 대사창 위, 화면 가운데에 장부 쪽지처럼 */
+.ys-vn .ys-input{padding:0;background:none;animation:ysUp .4s ease-out both}
+@keyframes ysUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.ys-vn .ys-input>form,.ys-vn .ys-input>.ys-letter{padding:16px;border-radius:14px;background:#efe6d2 var(--paper-tex);box-shadow:0 14px 40px #000b,inset 0 0 0 1px #c9a45c88,inset 0 0 30px #a88a5a33}
+.ys-vn .ys-field,.ys-vn .ys-date-cells label,.ys-vn .ys-letter textarea{background:#fffaf0aa;border:0;border-bottom:1.5px solid #6b5a3c;border-radius:6px 6px 2px 2px;color:#1d1a14}
+.ys-vn .ys-field{font-family:'Noto Serif KR',serif;font-size:1.0625rem}
+.ys-vn .ys-field::placeholder,.ys-vn .ys-date-cells input::placeholder{color:#6b5a3c80}
+.ys-vn .ys-date-cells label:focus-within,.ys-vn .ys-field:focus{outline:0;border-bottom-color:#b3261e;box-shadow:0 3px 0 -1px #b3261e33}
+.ys-vn .ys-date-cells input{color:#1d1a14;font-family:'Noto Serif KR',serif;font-size:1.125rem}
+.ys-vn .ys-date-cells span{color:#5c4d33}
+.ys-vn .ys-date-hint{color:#6b5a3c}.ys-vn .ys-date-hint.ok{color:#8a1c16;font-weight:600}
+.ys-vn .ys-send{background:#1d1a14;color:#f3e3bd;border:1px solid #c9a45c}
+.ys-vn .ys-send:disabled{opacity:.3}
+.ys-vn .ys-skip{color:var(--silver);text-shadow:0 1px 4px #000}
+.ys-vn .ys-letter textarea{width:100%;min-height:96px;padding:10px;font-family:'Noto Serif KR',serif}
+.ys-vn .ys-choices button{background:#efe6d2 var(--paper-tex);color:#1d1a14;border:0;box-shadow:0 8px 22px #000a,inset 0 0 0 1px #c9a45c99;font-family:'Noto Serif KR',serif;font-weight:600;font-size:.9375rem;-webkit-backdrop-filter:none;backdrop-filter:none}
+.ys-vn .ys-choices.is-grid3 button{font-size:.875rem}
+.ys-vn .ys-choices button small{color:#6b5a3c;font-family:'Noto Sans KR',sans-serif;font-weight:400}
+.ys-vn .ys-choices button.picked{background:#f8f1e1 var(--paper-tex);box-shadow:0 0 0 2px #b3261e,0 8px 22px #000a}
+.ys-vn .ys-choices button:nth-child(odd){transform:rotate(-.4deg)}.ys-vn .ys-choices button:nth-child(even){transform:rotate(.4deg)}
+.ys-vn .ys-choices button:active{transform:scale(.97)}
+@media (min-width:560px){.ys-vn-text{font-size:1.125rem}}
+.ys-choices.odd-last button:last-child{grid-column:1/-1}
+.ys-vn-name .ys-ava{background-position:51% 33%;background-size:365% auto}
+
+/* ===== 연출: 장부 펼침(네 기둥) ===== */
+.ys-fx-card{left:12px;right:12px}
+.ys-led{position:relative;padding:22px 18px 18px;border-radius:6px;background:#efe6d2 var(--paper-tex);color:#1d1a14;box-shadow:0 24px 70px #000d,inset 0 0 0 1px #c9a45c99,inset 0 0 60px #a88a5a44}
+.ys-led::before{content:"";position:absolute;inset:8px;border:1px solid #8a6d3b55;border-radius:3px;pointer-events:none}
+.ys-led-kicker{margin:0 0 14px;text-align:center;font:700 .8125rem/1 'Noto Serif KR',serif;letter-spacing:.3em;color:#6b5a3c}
+.ys-led-cols{display:grid;grid-template-columns:repeat(4,1fr)}
+.ys-led-col{position:relative;display:grid;justify-items:center;gap:4px;padding:6px 0 10px;border-left:1px solid #8a6d3b44}
+.ys-led-col:first-child{border-left:0}
+.ys-led-col small{font-size:.6875rem;color:#6b5a3c;letter-spacing:.1em}
+.ys-led-col b{font:900 2.375rem/1.1 'Noto Serif KR',serif;color:#14110c;opacity:0;-webkit-clip-path:inset(0 0 100% 0);clip-path:inset(0 0 100% 0);filter:blur(2px)}
+.ys-fx-ledger.shown .ys-led-col b{animation:ysBrushIn .7s cubic-bezier(.3,.7,.2,1) forwards;animation-delay:calc((3 - var(--i)) * .38s + .2s)}
+.ys-fx-ledger.shown .ys-led-col b+b{animation-delay:calc((3 - var(--i)) * .38s + .45s)}
+@keyframes ysBrushIn{to{opacity:1;-webkit-clip-path:inset(0 0 0 0);clip-path:inset(0 0 0 0);filter:none}}
+.ys-led-col.is-unknown b{color:#8a7d6388}
+.ys-led-col.is-day{background:radial-gradient(60% 50% at 50% 50%,#c9a45c33,#0000)}
+.ys-led-col.is-day b{color:#000}
+.ys-led-col .ys-seal{top:auto;bottom:-12px;right:50%;margin:0 -13px 0 0;opacity:0;animation:none}
+.ys-fx-ledger.shown .ys-led-col .ys-seal{animation:ysSeal .45s cubic-bezier(.2,1.6,.4,1) 2s both}
+.ys-led-say{margin:20px 0 0;text-align:center;font:500 .9375rem/1.6 'Noto Serif KR',serif;color:#2a2216;opacity:0;transition:opacity .6s 2.4s}
+.ys-led-say b{color:#8a1c16}.ys-led-say small{font-size:.75rem;color:#6b5a3c}
+.ys-fx-ledger.shown .ys-led-say{opacity:1}
+
+/* ===== 연출: 먹선 ===== */
+.ys-fx-line .ys-sheet{width:calc(100% - 24px);padding:30px 18px 24px;border-radius:6px;background:#efe6d2 var(--paper-tex);box-shadow:0 24px 70px #000d,inset 0 0 0 1px #c9a45c99,inset 0 0 60px #a88a5a44}
+.ys-fx-line .ys-names{grid-template-columns:1fr 2fr 1fr}
+.ys-fx-line .ys-names b{font-size:1.375rem;font-weight:700}
+.ys-fx-line .ys-names small{display:block;margin-top:4px;color:#6b5a3c}
+.ys-line path{stroke-width:4.2}
+.ys-line .dot{fill:#1d1a14;opacity:0}
+.ys-fx-line.lit .ys-line .dot{animation:ysDot2 .4s ease-out forwards}.ys-fx-line.lit .ys-line .dot+.dot{animation-delay:1.9s}
+@keyframes ysDot2{from{opacity:0;r:0}to{opacity:1}}
+.ys-line.is-cut path{stroke:#8a1c16}
+.ys-fx-line .ys-sheet-say{margin-top:20px;text-align:center;font-size:1rem}
+.ys-fx-line.shake .ys-sheet{animation:ysShake .45s ease-in-out}
+@keyframes ysShake{20%{transform:translateX(-6px) rotate(-.6deg)}40%{transform:translateX(5px) rotate(.5deg)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+
+/* ===== 연출: 여우불 찾기 ===== */
+.ys-fx-cap{left:16px;right:16px;bottom:auto;top:58%;display:grid;gap:8px;text-align:center;color:#eaf6ff;text-shadow:0 0 18px #86d8ff88,0 2px 6px #000}
+.ys-fx-cap span{font:600 .8125rem/1 'Noto Sans KR',sans-serif;letter-spacing:.3em;color:#a9dcff}
+.ys-fx-cap b{font:700 1.625rem/1.4 'Noto Serif KR',serif;animation:ysInk .6s ease-out both}
+.ys-fx-cap.found b{font-size:2.25rem;color:#fff;animation:ysPop .5s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes ysPop{from{opacity:0;transform:scale(.7);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@media (prefers-reduced-motion:reduce){.ys-led-col b,.ys-led-say{opacity:1;-webkit-clip-path:none;clip-path:none;filter:none;animation:none!important}.ys-fx-line.shake .ys-sheet{animation:none}}
+
+/* ===== 대사: 게임 창 대신 책·자막처럼. 테두리·이름표·깜빡임 없이 가운데 글만 ===== */
+.ys-chat.ys-vn{padding:0 20px calc(26px + env(safe-area-inset-bottom));gap:16px;background:linear-gradient(180deg,#0d0f1400,#0d0f14d9 34%,#0d0f14 70%)}
+.ys-vn-box,.ys-vn-box.in{min-height:0;padding:28px 0 0;border:0;border-radius:0;background:none;box-shadow:none;text-align:center}
+.ys-vn-box::before,.ys-vn-box::after{display:none}
+.ys-vn-box .ys-vn-name{position:static;display:block;height:auto;margin:0 0 12px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;font:600 .6875rem/1 'Noto Sans KR',sans-serif;letter-spacing:.42em;color:#c9a45cbb}
+.ys-vn-box .ys-vn-name::before,.ys-vn-box .ys-vn-name::after{content:"";display:inline-block;width:18px;height:1px;margin:0 10px .25em;vertical-align:middle;background:#c9a45c77}
+.ys-vn-prev{margin:0 auto 8px;max-width:30em;font:400 .875rem/1.6 'Noto Serif KR',serif;color:#ece8df;opacity:0;word-break:keep-all}
+.ys-vn-prev.show{animation:ysPrev .5s ease-out forwards}
+@keyframes ysPrev{from{opacity:.9;transform:translateY(8px)}to{opacity:.38;transform:none}}
+.ys-vn-prev:empty{display:none}
+.ys-vn-box .ys-vn-text{min-height:3.5em;max-width:30em;margin:0 auto;font:500 1.125rem/1.75 'Noto Serif KR',serif;color:#f6f1e7;text-shadow:0 2px 12px #000,0 0 2px #000}
+.ys-vn-box .ys-vn-text.ink{animation:ysInk .7s ease-out both}
+.ys-vn-box.typing .ys-vn-text::after,.ys-vn-next{display:none}
+.ys-vn-echo{padding:0;border-radius:0;background:none;box-shadow:none;font:500 .875rem/1.4 'Noto Serif KR',serif;color:#e7cf98;text-shadow:0 1px 8px #000}
+.ys-vn-echo::before{content:"— ";opacity:.6}
+/* 입력: 종이 카드 대신 얇은 금선의 반투명 칸 */
+.ys-vn .ys-input>form,.ys-vn .ys-input>.ys-letter{padding:0;border-radius:0;background:none;box-shadow:none}
+.ys-vn .ys-field,.ys-vn .ys-date-cells label,.ys-vn .ys-letter textarea{background:#0d0f1499;border:1px solid #c9a45c55;border-radius:10px;color:#f6f1e7;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ys-vn .ys-field::placeholder,.ys-vn .ys-date-cells input::placeholder{color:#ece8df45}
+.ys-vn .ys-date-cells input{color:#f6f1e7}
+.ys-vn .ys-date-cells span{color:#b9b6ad}
+.ys-vn .ys-date-cells label:focus-within,.ys-vn .ys-field:focus{border-color:var(--gold);box-shadow:0 0 0 3px #c9a45c26}
+.ys-vn .ys-date-hint{text-align:center;color:#b9b6ad}.ys-vn .ys-date-hint.ok{color:#e7cf98;font-weight:500}
+.ys-vn .ys-send{background:var(--gold);color:#1a1408;border:0}
+.ys-vn .ys-choices button,.ys-vn .ys-choices button:nth-child(odd),.ys-vn .ys-choices button:nth-child(even){transform:none;background:#0d0f1494;color:#f1ece2;border:1px solid #c9a45c4d;box-shadow:none;font:500 .9375rem/1.35 'Noto Serif KR',serif;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ys-vn .ys-choices button small{color:#b9b6ad}
+.ys-vn .ys-choices button:active{transform:scale(.98)}
+.ys-vn .ys-choices button.picked{background:#c9a45c26;border-color:var(--gold);color:#fff;box-shadow:none}
+.ys-vn .ys-choices button.picked small{color:#e7cf98}
+.ys-vn .ys-seal{width:22px;height:22px;margin-top:-11px;font-size:.75rem}
+
+/* ===== 레퍼런스 결(타이트·청월당): 가운데 따옴표 대사 + "내 ○○은…" 큰 문장 입력 ===== */
+.ys-vn-box .ys-vn-name{display:none}
+.ys-vn-box .ys-vn-text::before{content:"\201C"}.ys-vn-box .ys-vn-text::after{content:"\201D"}
+.ys-vn-box .ys-vn-text:empty::before,.ys-vn-box .ys-vn-text:empty::after{content:none}
+.ys-vn-echo{align-self:flex-end;max-width:80%;padding:8px 14px;border-radius:14px 14px 4px 14px;background:#c9a45c2e;border:1px solid #c9a45c66;color:#f3e3bd;text-align:right;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ys-vn-echo::before{content:none}
+.ys-ask{padding:4px 4px 0}
+.ys-ask-q{margin:0 0 10px;font:700 1.5rem/1.3 'Noto Serif KR',serif;color:#fff;text-shadow:0 2px 14px #000}
+.ys-ask-row{display:flex}
+.ys-vn .ys-ask .ys-field{flex:1;height:52px;padding:0 2px;background:none;border:0;border-bottom:1px solid #ece8df55;border-radius:0;font:500 1.25rem/1 'Noto Serif KR',serif;color:#fff;letter-spacing:.02em;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+.ys-vn .ys-ask .ys-field:focus{border-bottom-color:var(--gold);box-shadow:0 1px 0 0 var(--gold)}
+.ys-vn .ys-ask .ys-field::placeholder{color:#ece8df40}
+.ys-ask-hint{min-height:1.3em;margin:8px 0 0;font-size:.8125rem;color:#b9b6ad}
+.ys-ask-hint.ok{color:#e7cf98}
+.ys-ask-btns{display:flex;gap:8px;margin-top:12px}
+.ys-ask-btns>*{flex:1;height:50px;margin:0;border-radius:99px;font:600 .9375rem/1 'Noto Sans KR',sans-serif;text-decoration:none}
+.ys-vn .ys-ask .ys-skip{display:block;background:#0d0f1499;border:1px solid #ece8df40;color:var(--silver);text-shadow:none;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ys-vn .ys-ask .ys-send{background:linear-gradient(180deg,#e2c27e,#c9a45c);color:#1a1408;border:0}
+.ys-vn .ys-ask .ys-send:disabled{opacity:1;background:#ece8df1f;color:#ece8df66}
+.ys-vn .ys-choices button{min-height:52px;border-radius:99px}
+.ys-vn .ys-choices.is-grid2 button,.ys-vn .ys-choices.is-grid3 button{border-radius:14px}
+/* 대사 → 입력 순서(질문이 위, 답하는 칸이 아래) */
+.ys-chat.ys-vn .ys-vn-echo{order:0}.ys-chat.ys-vn .ys-vn-box{order:1;padding-top:0}.ys-chat.ys-vn .ys-input{order:2}
+.ys-chat.ys-vn .ys-vn-box .ys-vn-text{min-height:0;text-align:left;max-width:none;font-size:1.0625rem}
+.ys-chat.ys-vn .ys-vn-prev{text-align:left;max-width:none;margin:0 0 6px}
+
+/* ===== 결과·유료 화면도 입력 화면과 같은 결로: 따옴표 대사 · 장부 종이 · 금선 제목 세 가지만 ===== */
+/* 그림 컷 위 말풍선 → 그림 아래쪽 자막(따옴표), 효과음 글자는 뺀다 */
+.ys-pn:not(.frameless)>.ys-bb.sfx{display:none}
+.ys-pn:not(.frameless)>.ys-bb.round,.ys-pn:not(.frameless)>.ys-bb.box{top:auto;left:0;right:0;bottom:0;max-width:none;margin:0;padding:44px 18px 16px;border:0;border-radius:0;background:linear-gradient(180deg,#0d0f1400,#0d0f14cc 45%,#0d0f14f2);color:#f6f1e7;text-align:center;font:500 1rem/1.65 'Noto Serif KR',serif;text-shadow:0 2px 10px #000}
+.ys-pn:not(.frameless)>.ys-bb.round::before{content:"\201C"}.ys-pn:not(.frameless)>.ys-bb.round::after{content:"\201D";position:static;border:0;margin:0}
+.ys-pn:not(.frameless){overflow:hidden;border:1px solid #c9a45c4d;border-radius:12px}
+.ys-paywall .ys-bb.round.tr{position:relative;inset:auto;display:block;max-width:none;margin:-48px 0 0;padding:0 16px 4px;border:0;background:none;color:#f6f1e7;text-align:center;font:500 1.0625rem/1.6 'Noto Serif KR',serif;text-shadow:0 2px 10px #000}
+.ys-paywall .ys-bb.round.tr::before{content:"\201C"}.ys-paywall .ys-bb.round.tr::after{content:"\201D";position:static;border:0}
+.ys-paywall .ys-pn-art{border-radius:12px;-webkit-mask-image:linear-gradient(#000 60%,#0000);mask-image:linear-gradient(#000 60%,#0000)}
+/* 흐름 속 연서 말(say) → 따옴표 대사, 금색 세로줄 */
+.ys-bb.round.in-flow{padding:2px 0 2px 16px;border:0;border-left:2px solid #c9a45caa;border-radius:0;background:none;color:#f6f1e7;font:500 1.0625rem/1.8 'Noto Serif KR',serif;text-align:left;box-shadow:none}
+.ys-bb.round.in-flow::after{content:none}
+.ys-bb.round.in-flow::before{content:"연서";display:block;margin-bottom:4px;font:600 .6875rem/1 'Noto Sans KR',sans-serif;letter-spacing:.3em;color:#c9a45c}
+/* 장부에 적힌 글(box) → 종이 */
+.ys-bb.box.in-flow,.ys-page,.ys-charm{border:0;border-radius:6px;background:#efe6d2 var(--paper-tex);color:#1d1a14;box-shadow:0 14px 40px #000a,inset 0 0 0 1px #c9a45c88,inset 0 0 50px #a88a5a33}
+.ys-bb.box.in-flow{padding:18px 18px;font:400 .9688rem/1.85 'Noto Serif KR',serif}
+/* 풀이 칸(sec) → 카드 없이 금선 제목 + 본문 */
+.ys-sec{padding:6px 2px 0;border:0;border-radius:0;background:none}
+.ys-sec h3{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:1.0625rem;color:#e7cf98}
+.ys-sec h3::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,#c9a45c66,#c9a45c00)}
+.ys-sec p{font-size:.9688rem;line-height:1.9;color:#e9e4da}
+.ys-chap{gap:26px}
+.ys-chap-art{border:0;border-radius:12px}
+.ys-day{background:#0d0f1499;border:1px solid #86d8ff33;border-radius:12px}
+.ys-signs ul,.ys-steps{color:#e9e4da;line-height:1.85}
+.ys-letters .ys-b.me{align-self:flex-end;margin-left:auto}
+/* 결제 칸 */
+.ys-locked{border:0;border-top:1px solid #c9a45c4d;border-bottom:1px solid #c9a45c4d;border-radius:0;padding:18px 4px}
+.ys-locked>p{font-family:'Noto Serif KR',serif;color:#e7cf98}
+.ys-locked ul{list-style:none;padding:0}.ys-locked li::before{content:"·  ";color:#c9a45c}
+.ys-pay button{border-radius:99px;background:linear-gradient(180deg,#e2c27e,#c9a45c);min-height:54px;font-size:1rem}
+/* 결제 직전 컷: 영상 대신 천천히 다가오는 그림 + 여우불 불씨 */
+.ys-paywall .ys-pn-art{position:relative;overflow:hidden;background-size:cover;background-position:50% 30%;animation:ysDrift 14s ease-in-out infinite alternate}
+@keyframes ysDrift{from{background-size:100% auto;background-position:50% 30%}to{background-size:112% auto;background-position:50% 24%}}
+.ys-paywall .ys-pn-art .ys-sparks{position:absolute;inset:0}
+@media (prefers-reduced-motion:reduce){.ys-paywall .ys-pn-art{animation:none}}
