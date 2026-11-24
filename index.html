@@ -3817,6 +3817,7 @@ function handleTossPaymentCallback(){
     if(reportId)maybeSaveNudge('paid');
     if(reportId===NEWYEAR_CONCEPT.id){openNewYearViewer(NEWYEAR_CONCEPT);return;}
     if(reportId===IAN_CONCEPT.id){openIanViewer(IAN_CONCEPT,true);return;}
+    if(reportId===YS_CONCEPT.id){location.replace('/?yeonseo=1&resume=1');return;}
     if(reportId){switchTab('reports');return loadReportList(true).then(function(list){var c=list.filter(function(x){return String(x.id)===reportId;})[0];if(c)openReportViewer(c,stage);});}
     switchTab(returnTab);if(STATE.mySaju)renderSajuResult(STATE.mySaju);showToast('구매한 풀이가 열렸어요.');restorePayReturn();maybeSaveNudge('paid');
   }).catch(function(){showToast('구매 내역을 불러오지 못했어요. 잠시 후 다시 열어주세요.');});
@@ -5693,13 +5694,14 @@ function startReportUnlock(concept,stage,method){
     var ctx=values[0],checkout=values[1];
     if(viaTossPay){location.href=checkout.checkoutPage;return;}
     return ctx.TossPayments(ctx.clientKey).requestPayment('카드',{
-      amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+(isNewYear(concept)||isIan(concept)?'':' (이야기+심층 리포트)'),
+      amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+(isNewYear(concept)||isIan(concept)||isYeonseo(concept)?'':' (이야기+심층 리포트)'),
       successUrl:location.origin+'/success.html?type=report&conceptId='+encodeURIComponent(concept.id)+'&stage='+stage+'&quote='+encodeURIComponent(checkout.quote),
       failUrl:location.origin+'/fail.html?report='+encodeURIComponent(concept.id)+'&stage='+stage
     });
   }).catch(function(error){
     if(error&&error.code==='ALREADY_OWNED'&&isNewYear(concept)){openNewYearViewer(concept);return;}
     if(error&&error.code==='ALREADY_OWNED'&&isIan(concept)){openIanViewer(concept);return;}
+    if(error&&error.code==='ALREADY_OWNED'&&isYeonseo(concept)){if(typeof globalThis.YS_ON_OWNED==='function')globalThis.YS_ON_OWNED();return;}
     if(error&&error.code==='ALREADY_OWNED'){return loadReportReader(concept).then(function(data){REPORT_READER.data=data;if(data.access.story)DEVICE.unlocked[reportStageKey(concept,'story')]=true;if(data.access.detail)DEVICE.unlocked[reportStageKey(concept,'detail')]=true;saveDevice();renderReportPanels(concept,data,'story');showToast('보유한 이야기로 다시 열었어요.');}).catch(function(){showToast('보유 내역을 다시 확인하지 못했어요. 잠시 후 이야기를 다시 열어주세요.');});}
     if(error&&error.code==='USER_CANCEL')showToast('결제를 취소했어요. 이어서 둘러보세요.');
     else showToast(error&&error.message||'결제창을 열지 못했어요. 잠시 후 다시 시도해주세요.');
@@ -5769,6 +5771,9 @@ var NY_AREAS=[['love','연애'],['money','돈'],['work','일'],['health','건강
 function isNewYear(concept){return !!concept&&String(concept.id)===NEWYEAR_CONCEPT.id;}
 var IAN_CONCEPT={id:'20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',title:'이안의 비밀',tagline:'누가 나에게 빠지고, 나는 언제 무너질까',category:'연애',cover_img_url:'/assets/ian/bottle.webp',active:true,price_krw:7900};
 function isIan(concept){return !!concept&&String(concept.id)===IAN_CONCEPT.id;}
+/* 여우의 인연 장부: 목록에는 아직 없고 ?yeonseo=1 화면에서만 산다. 값과 본문은 서버(api/_yeonseo-content.js)가 정한다. */
+var YS_CONCEPT={id:'20271201-7a3e-4f1b-9c62-5d8e0b4a1f73',title:'여우의 인연 장부'};
+function isYeonseo(concept){return !!concept&&String(concept.id)===YS_CONCEPT.id;}
 /* 홈·콘텐츠 탭 상단 배너. 넘기기는 브라우저 스크롤에 맡기고, 가만히 두면 5초마다 다음 장으로 넘어간다. */
 /* 콘텐츠를 골랐는데 아직 사주가 없을 때 먼저 보여 주는 첫 장면. 주소 ?c=love 처럼 바로 들어올 수도 있다. */
 var CONTENT_INTRO={};
@@ -9170,7 +9175,7 @@ function init(){
 }
 
 /* 새 콘텐츠 시제품(연서의 인연 장부)이 쓰는 사주 계산. 화면 코드는 주소에 ?yeonseo=1 이 있을 때만 불러온다. */
-globalThis.YS_ENGINE={computeSaju:computeSaju,zhiRelation:zhiRelation,todayGanZhi:todayGanZhi,SS_KR:SS_KR,device:function(){return DEVICE.shareCode||'';}};
+globalThis.YS_ENGINE={computeSaju:computeSaju,zhiRelation:zhiRelation,todayGanZhi:todayGanZhi,SS_KR:SS_KR,device:function(){return DEVICE.shareCode||'';},buy:function(){startReportUnlock(YS_CONCEPT,'story');}};
 if (typeof location!=='undefined' && /[?&]yeonseo=1(&|$)/.test(location.search)){
   var ysCss=document.createElement('link');ysCss.rel='stylesheet';ysCss.href='/assets/yeonseo/yeonseo.css';document.head.appendChild(ysCss);
   var ysJs=document.createElement('script');ysJs.src='/assets/yeonseo/yeonseo.js';ysJs.defer=true;document.head.appendChild(ysJs);

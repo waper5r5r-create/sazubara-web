@@ -150,3 +150,18 @@ test('the list API sends the seven chapters only to a device that bought them',a
  const bad=await call({conceptId:Y.concept.id,device_id:'d1',ys:'{}'},[]);
  assert.equal(bad.status,400);
 });
+
+test('checkout for the ledger is 9,900 won and goes through the existing report unlock',async()=>{
+ process.env.SUPABASE_URL=process.env.SUPABASE_URL||'https://database.invalid';
+ process.env.SUPABASE_SERVICE_ROLE_KEY=process.env.SUPABASE_SERVICE_ROLE_KEY||'test-service-key';
+ process.env.TOSS_SECRET_KEY=process.env.TOSS_SECRET_KEY||'test-secret-key';
+ const unlock=require('../api/reports/unlock');
+ const realFetch=global.fetch;global.fetch=async()=>new Response('[]',{status:200,headers:{'Content-Type':'application/json'}});
+ const body={action:'prepare',deviceId:'dev-ys',conceptId:Y.concept.id,stage:'story'};
+ const out=await new Promise(resolve=>{const res={statusCode:200,setHeader(){},status(c){this.statusCode=c;return this;},json(b){resolve({status:this.statusCode,body:b});}};
+  const req={method:'POST',url:'/api/reports/unlock',headers:{host:'x','content-type':'application/json'},body,
+   on(ev,cb){ if(ev==='data')cb(Buffer.from(JSON.stringify(body))); if(ev==='end')cb(); return this; }};
+  unlock(req,res);});
+ global.fetch=realFetch;
+ assert.equal(out.status,200,JSON.stringify(out.body));assert.equal(out.body.amount,9900);assert.ok(out.body.quote);
+});

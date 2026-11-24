@@ -89,7 +89,7 @@ function josa(w,a,b){ var c=String(w).charCodeAt(String(w).length-1); return (c>
 var reduce = G.matchMedia && G.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var wait = function(ms){ return new Promise(function(r){ setTimeout(r, reduce?0:ms); }); };
 
-var S = { me:null, them:null, name:'', themName:'', answers:{}, tails:0 };
+var S = { me:null, them:null, name:'', themName:'', answers:{}, tails:0, input:{} };
 var root, stage, chat, art, inputBox, tailsEl, vnBox, vnText, vnPrev, vnEcho, vnTap=null, echoTimer=0;
 
 function mount(){
@@ -269,9 +269,32 @@ function comic(panels, endLabel){
 
 /* ---- 흐름 (기획서 3장 콘티 순서) ---- */
 function ymdKr(v){ return (+v.slice(0,4))+'년 '+(+v.slice(4,6))+'월 '+(+v.slice(6,8))+'일'; }
+async function reopen(fromPay){
+  var P=pair(S.me,S.them), D=days(S.me,S.them);
+  scene('T1','result');
+  if (await openPaid(P,D,null)) return true;
+  if (fromPay){ showResult(P,D); }
+  return false;
+}
 async function run(){
   mount(); scene('hero','night');
+  if (/[?&]resume=1(&|$)/.test(location.search)){
+    try { history.replaceState({},'',location.pathname+'?yeonseo=1'); } catch(e){}
+    if (loadResume()){ chat.style.display='none'; await reopen(true); return; }
+  }
   await fxTitle();                                                     /* 1 연출: 표지 */
+  var old=loadResume();
+  if (old){
+    var oP=pair(S.me,S.them), oD=days(S.me,S.them), owned=null;
+    try { owned=await fetchPaid(oP,oD); } catch(e){}
+    if (owned&&owned.ok&&owned.paid){
+      scene('F01','');
+      await say([esc(S.name)+josa(S.name,'이','')+', 다시 왔네.','지난번 장부는 그대로 여기 있어.']);
+      var again=await askChoice(['지난 장부 다시 보기','처음부터 새로 보기']);
+      if (again==='지난 장부 다시 보기'){ chat.style.display='none'; await reopen(false); return; }
+    }
+    S={ me:null, them:null, name:'', themName:'', answers:{}, tails:0, input:{} };
+  }
   scene('F01','');                                                     /* 2 대화: F01 */
   await say(['이 밤에 여기까지 찾아왔네.','나는 연서. 천 년 동안 사람들 인연을 이 장부에 적어 왔어.','이름부터 들어볼까?']);
   scene('F02','');                                                     /* 3 대화: F02 */
@@ -281,7 +304,7 @@ async function run(){
   var bd = await askDate('내 생일은…'); me(ymdKr(bd)+'이야.');
   await say(['참, 너는 어느 쪽이야?']); var g = await askChoice(['여성','남성']); me(g+josa(g,'이야.','야.'));
   await say(['태어난 시간도 알아? 몰라도 괜찮아.']); var bt = await askTime(); me(bt?bt.label:'시간은 잘 몰라.');
-  S.me = chart(bd, g==='남성'?'m':'f', S.name, bt); tail();
+  S.me = chart(bd, g==='남성'?'m':'f', S.name, bt); S.input={bd:bd,g:g,bt:bt}; tail();
   await fxLedger(S.me);                                                /* 5 연출: 장부 펼침 + 원국 */
   await comic([                                                        /* 6~7 웹툰 컷 */
     {ratio:'3/2', img:'F04-a', crop:'eyes', label:'F04-a', bubbles:[{type:'round',text:'찾았다.',pos:'tr'},{type:'sfx',text:'번쩍',pos:'bl'}]},
@@ -293,6 +316,7 @@ async function run(){
   var tg = await askChoice(['남성','여성']); me(tg+josa(tg,'이야.','야.'));
   await say([esc(S.themName)+' 생일은?']);
   var tb = await askDate('그 사람 생일은…','생일을 몰라');
+  S.input.tb=tb||null; S.input.tg=tg;
   if (tb){ me(ymdKr(tb)+'이야.'); S.them=chart(tb, tg==='여성'?'f':'m', S.themName); } else me('생일은 몰라.');
   tail();
   var P = pair(S.me, S.them);
@@ -363,6 +387,21 @@ function showResult(P, D){
   ]).then(function(l){ var btn=l.querySelector('.ys-open-paid'); if(btn) btn.addEventListener('click',function(){ openPaid(P,D,l); }); });
 }
 
+/* ---- 결제하고 돌아오거나(1년간 다시 보기) 다시 들어왔을 때, 같은 장부를 다시 펼치려고 입력값을 이 기기에만 남긴다.
+   못다 한 말(편지)은 남기지 않고, 적었는지만 기억한다. ---- */
+var RESUME_KEY='ys-resume';
+function saveResume(){
+  try { localStorage.setItem(RESUME_KEY, JSON.stringify({name:S.name, themName:S.themName, input:S.input,
+    answers:{kind:S.answers.kind, why:S.answers.why, who:S.answers.who, contact:S.answers.contact, letter:!!S.answers.letter}})); } catch(e){}
+}
+function loadResume(){
+  var r=null; try { r=JSON.parse(localStorage.getItem(RESUME_KEY)||'null'); } catch(e){}
+  if (!r||!r.input||!r.input.bd||!validDate(r.input.bd)) return null;
+  S.name=r.name||''; S.themName=r.themName||''; S.input=r.input; S.answers=r.answers||{};
+  S.me=chart(r.input.bd, r.input.g==='남성'?'m':'f', S.name, r.input.bt||null);
+  S.them=r.input.tb&&validDate(r.input.tb)?chart(r.input.tb, r.input.tg==='여성'?'f':'m', S.themName):null;
+  return r;
+}
 /* ---- 유료 일곱 장: 서버가 결제를 확인한 기기에만 본문을 내려준다 ---- */
 var CONCEPT_ID='20271201-7a3e-4f1b-9c62-5d8e0b4a1f73';
 function fetchPaid(P,D){
@@ -390,13 +429,22 @@ async function openPaid(P,D,prev){
   try { data=await fetchPaid(P,D); } catch(err){ data=null; }
   if (btn) btn.disabled=false;
   var ch=data&&data.ok&&data.paid;
-  if (!ch){ if(msg) msg.textContent=data&&data.ok?'결제 연결을 준비하고 있어요.':'장부를 가져오지 못했어요. 잠시 뒤 다시 눌러 줘.'; return; }
+  if (!ch){
+    if (!prev) return false;
+    if (!(data&&data.ok)){ if(msg) msg.textContent='장부를 가져오지 못했어요. 잠시 뒤 다시 눌러 줘.'; return false; }
+    var e=eng(); if (!e||!e.buy){ if(msg) msg.textContent='결제창을 열지 못했어요. 잠시 뒤 다시 눌러 줘.'; return false; }
+    saveResume(); G.YS_ON_OWNED=function(){ openPaid(P,D,prev); };
+    if (msg) msg.textContent='결제창을 여는 중이에요…';
+    e.buy(); setTimeout(function(){ if(msg&&msg.isConnected) msg.textContent=''; }, 6000);
+    return false;
+  }
+  saveResume();
   if (prev){ prev.classList.add('out'); setTimeout(function(){ prev.remove(); }, reduce?0:450); }
   var panels=[{ratio:'2/3', img:'T3', label:'T3', bubbles:[{type:'round',text:'좋아. 이제 장부 전부 펼쳐 줄게.',pos:'tl'}]}];
   ch.forEach(function(c){
     panels.push({html:'<div class="ys-chap"><div class="ys-chap-art" style="background-image:'+artUrl(c.img)+'"><span>'+(c.no?c.no+'장':'덤')+'</span><h2>'+esc(c.title)+'</h2></div>'+c.blocks.map(blockHtml).join('')+'</div>', frameless:true});
   });
-  comic(panels);
+  comic(panels); return true;
 }
 
 
