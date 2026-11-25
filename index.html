@@ -9202,7 +9202,11 @@ function init(){
 }
 
 /* 새 콘텐츠 시제품(연서의 인연 장부)이 쓰는 사주 계산. 화면 코드는 주소에 ?yeonseo=1 이 있을 때만 불러온다. */
-globalThis.YS_ENGINE={computeSaju:computeSaju,zhiRelation:zhiRelation,todayGanZhi:todayGanZhi,SS_KR:SS_KR,device:function(){return DEVICE.shareCode||'';},buy:function(){startReportUnlock(YS_CONCEPT,'story');}};
+/* 사이트에 저장된 내 사주(양력 날짜로 바꿔서). 장부가 이름·생일을 다시 묻지 않게 쓴다. */
+function ysMine(){var o=STATE&&STATE._mySajuOpts;if(!o||!o.year)return null;var y=o.year,m=o.month,d=o.day;
+ if(o.isLunar){try{var s=Lunar.fromYmd(y,o.isLeapMonth?-m:m,d).getSolar();y=s.getYear();m=s.getMonth();d=s.getDay();}catch(e){return null;}}
+ return {ymd:String(y)+String(m).padStart(2,'0')+String(d).padStart(2,'0'),gender:o.gender==='m'?'m':'f',name:o.name||'',city:o.city||'서울',time:o.unknownTime?null:{hour:+o.hour,minute:+o.minute||0}};}
+globalThis.YS_ENGINE={mine:ysMine,home:function(){try{history.replaceState({},'','/');}catch(e){}switchTab('reports');},computeSaju:computeSaju,zhiRelation:zhiRelation,todayGanZhi:todayGanZhi,SS_KR:SS_KR,device:function(){return DEVICE.shareCode||'';},buy:function(){startReportUnlock(YS_CONCEPT,'story');}};
 if (typeof location!=='undefined' && /[?&]yeonseo=1(&|$)/.test(location.search)){
   var ysCss=document.createElement('link');ysCss.rel='stylesheet';ysCss.href='/assets/yeonseo/yeonseo.css';document.head.appendChild(ysCss);
   var ysJs=document.createElement('script');ysJs.src='/assets/yeonseo/yeonseo.js';ysJs.defer=true;document.head.appendChild(ysJs);

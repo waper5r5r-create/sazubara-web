@@ -95,7 +95,7 @@ var root, stage, chat, art, inputBox, tailsEl, vnBox, vnText, vnPrev, vnEcho, vn
 function mount(){
   root=document.createElement('div'); root.className='ys'; root.setAttribute('role','dialog'); root.setAttribute('aria-label','연서의 인연 장부');
   root.innerHTML='<div class="ys-stage"><div class="ys-art" aria-hidden="true"></div>'+
-    '<header class="ys-top"><button type="button" class="ys-x" aria-label="닫기">✕</button><div class="ys-tails" aria-label="진행"></div></header>'+
+    '<header class="ys-top"><button type="button" class="ys-x ys-back" aria-label="별첩사주 콘텐츠로 돌아가기"><span aria-hidden="true">‹</span> 별첩사주</button><div class="ys-tails" aria-label="진행"></div></header>'+
     '<div class="ys-chat ys-vn"><p class="ys-vn-echo" aria-hidden="true"></p><div class="ys-input"></div>'+
     '<div class="ys-vn-box" role="status" aria-live="polite"><p class="ys-vn-name">연서</p><p class="ys-vn-prev" aria-hidden="true"></p><p class="ys-vn-text"></p></div></div></div>';
   document.body.appendChild(root); document.body.style.overflow='hidden';
@@ -104,7 +104,8 @@ function mount(){
   vnBox=root.querySelector('.ys-vn-box'); vnText=root.querySelector('.ys-vn-text'); vnPrev=root.querySelector('.ys-vn-prev'); vnEcho=root.querySelector('.ys-vn-echo');
   vnBox.addEventListener('click',function(){ if(vnTap) vnTap(); });
   root.addEventListener('ended', onVidEnd, true);
-  root.querySelector('.ys-x').addEventListener('click',function(){ root.remove(); document.body.style.overflow=''; });
+  /* 돌아가기: 장부를 닫고 사이트의 콘텐츠 탭으로 */
+  root.querySelector('.ys-x').addEventListener('click',function(){ root.remove(); document.body.style.overflow=''; var e=eng(); if(e&&e.home) e.home(); });
 }
 /* 장면 바꾸기: crop = 기준 그림을 어디까지 당겨 볼지(full/face/hand/low), mood = 밝기·색 */
 function artUrl(id){ return 'url(/assets/yeonseo/'+id+'.webp), url(/assets/yeonseo/hero.webp)'; }
@@ -191,11 +192,12 @@ function askChoice(list, o){
   });
 }
 /* 생년월일: 년·월·일 세 칸. 한 칸을 채우면 다음 칸으로 넘어간다. 돌려주는 값은 YYYYMMDD */
-function askDate(q, skip){ return askLine({q:q, ph:'1995.05.20', ok:'이 날이야', mode:'date', hint:'양력 생일로 적어 줘.', skip:skip}); }async function askTime(){
+function askDate(q, skip){ return askLine({q:q, ph:'1995.05.20', ok:'이 날이야', mode:'date', hint:'양력 생일로 적어 줘.', skip:skip}); }function timeLabel(h,m){ return (h<12?'오전':'오후')+' '+(h%12||12)+'시'+(m?' '+m+'분':''); }
+async function askTime(){
   var v=await askLine({q:'내가 태어난 시간은…', ph:'13:30', ok:'이 시간이야', mode:'time', skip:'시간을 몰라'});
   if (!v) return null;
-  var h=+v.slice(0,2), m=+v.slice(2), ap=h<12?'오전':'오후', h12=h%12||12;
-  return {hour:h, minute:m, label:ap+' '+h12+'시'+(m?' '+m+'분':'')+'이야.'};
+  var h=+v.slice(0,2), m=+v.slice(2);
+  return {hour:h, minute:m, label:timeLabel(h,m)+'이야.'};
 }function askLetter(){
   return new Promise(function(res){
     inputBox.innerHTML='<div class="ys-letter"><textarea maxlength="300" placeholder="예) 마지막에 내가 너무 차갑게 말한 게 계속 걸려." aria-label="하지 못한 말"></textarea><div class="ys-row"><button type="button" class="ys-skip">건너뛰기</button><button type="button" class="ys-send">장부에 적기</button></div></div>';
@@ -204,7 +206,7 @@ function askDate(q, skip){ return askLine({q:q, ph:'1995.05.20', ok:'이 날이�
     inputBox.querySelector('.ys-skip').addEventListener('click',function(){ clearInput(); res(null); });
   });
 }
-function chart(s, gender, name, t){ var known=!!t; return eng().computeSaju({year:+s.slice(0,4),month:+s.slice(4,6),day:+s.slice(6,8),hour:known?t.hour:12,minute:known?t.minute:0,isLunar:false,isLeapMonth:false,unknownTime:!known,gender:gender,name:name,city:'서울',useCorrection:true}); }
+function chart(s, gender, name, t, city){ var known=!!t; return eng().computeSaju({year:+s.slice(0,4),month:+s.slice(4,6),day:+s.slice(6,8),hour:known?t.hour:12,minute:known?t.minute:0,isLunar:false,isLeapMonth:false,unknownTime:!known,gender:gender,name:name,city:city||'서울',useCorrection:true}); }
 
 /* ---- 연출 모드 ---- */
 function layer(cls, html){ var l=document.createElement('div'); l.className='ys-layer '+cls; l.innerHTML=html; stage.appendChild(l); return l; }
@@ -296,7 +298,23 @@ async function run(){
     S={ me:null, them:null, name:'', themName:'', answers:{}, tails:0, input:{} };
   }
   scene('F01','');                                                     /* 2 대화: F01 */
-  await say(['이 밤에 여기까지 찾아왔네.','나는 연서. 천 년 동안 사람들 인연을 이 장부에 적어 왔어.','이름부터 들어볼까?']);
+  /* 사이트에 내 사주가 저장돼 있으면 그대로 이어받는다. 이름이 없을 때만 이름을 묻는다. */
+  var mine=eng()&&eng().mine?eng().mine():null; if (mine&&!validDate(mine.ymd)) mine=null;
+  if (mine){
+    await say(['이 밤에 여기까지 찾아왔네.','나는 연서. 천 년 동안 사람들 인연을 이 장부에 적어 왔어.',
+      (mine.name?esc(mine.name)+', ':'')+'네 사주는 별첩에 이미 적혀 있더라. '+ymdKr(mine.ymd)+'생, 그걸로 볼까?']);
+    var useMine=await askChoice(['응, 그걸로 봐 줘','다른 사람 사주로 볼래']); me(useMine);
+    if (useMine!=='응, 그걸로 봐 줘') mine=null;
+  }
+  if (mine){
+    S.name=mine.name;
+    if (!S.name){ scene('F02',''); await say(['장부에 적을 이름만 알려 줘.']); S.name=await askText('내 이름은…','이름 또는 별명'); me(S.name+josa(S.name,'이야.','야.')); }
+    var mg=mine.gender==='m'?'남성':'여성', mt=mine.time?timeLabel(mine.time.hour,mine.time.minute):null;
+    S.me = chart(mine.ymd, mine.gender, S.name, mine.time, mine.city); S.input={bd:mine.ymd,g:mg,bt:mine.time?{hour:mine.time.hour,minute:mine.time.minute,label:mt}:null,city:mine.city}; tail(2);
+    scene('F03',''); await say([esc(S.name)+josa(S.name,'이','')+'… 장부에서 찾았어.']);
+  } else {
+  if (eng()&&eng().mine&&eng().mine()) await say(['좋아. 그럼 처음부터 적어 볼게.','이름부터 들어볼까?']);
+  else await say(['이 밤에 여기까지 찾아왔네.','나는 연서. 천 년 동안 사람들 인연을 이 장부에 적어 왔어.','이름부터 들어볼까?']);
   scene('F02','');                                                     /* 3 대화: F02 */
   S.name = await askText('내 이름은…','이름 또는 별명'); me(S.name+josa(S.name,'이야.','야.')); tail();
   scene('F03','');                                                     /* 4 대화: F03 */
@@ -305,6 +323,7 @@ async function run(){
   await say(['참, 너는 어느 쪽이야?']); var g = await askChoice(['여성','남성']); me(g+josa(g,'이야.','야.'));
   await say(['태어난 시간도 알아? 몰라도 괜찮아.']); var bt = await askTime(); me(bt?bt.label:'시간은 잘 몰라.');
   S.me = chart(bd, g==='남성'?'m':'f', S.name, bt); S.input={bd:bd,g:g,bt:bt}; tail();
+  }
   await fxLedger(S.me);                                                /* 5 연출: 장부 펼침 + 원국 */
   await comic([                                                        /* 6~7 웹툰 컷 */
     {ratio:'3/2', img:'F04-a', crop:'eyes', label:'F04-a', bubbles:[{type:'round',text:'찾았다.',pos:'tr'},{type:'sfx',text:'번쩍',pos:'bl'}]},
@@ -398,7 +417,7 @@ function loadResume(){
   var r=null; try { r=JSON.parse(localStorage.getItem(RESUME_KEY)||'null'); } catch(e){}
   if (!r||!r.input||!r.input.bd||!validDate(r.input.bd)) return null;
   S.name=r.name||''; S.themName=r.themName||''; S.input=r.input; S.answers=r.answers||{};
-  S.me=chart(r.input.bd, r.input.g==='남성'?'m':'f', S.name, r.input.bt||null);
+  S.me=chart(r.input.bd, r.input.g==='남성'?'m':'f', S.name, r.input.bt||null, r.input.city);
   S.them=r.input.tb&&validDate(r.input.tb)?chart(r.input.tb, r.input.tg==='여성'?'f':'m', S.themName):null;
   return r;
 }

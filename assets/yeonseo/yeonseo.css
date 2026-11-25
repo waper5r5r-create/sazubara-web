@@ -468,3 +468,7 @@
 @keyframes ysDrift{from{background-size:100% auto;background-position:50% 30%}to{background-size:112% auto;background-position:50% 24%}}
 .ys-paywall .ys-pn-art .ys-sparks{position:absolute;inset:0}
 @media (prefers-reduced-motion:reduce){.ys-paywall .ys-pn-art{animation:none}}
+
+/* 위 띠: 사이트로 돌아가는 버튼 */
+.ys-x.ys-back{width:auto;height:34px;padding:0 14px 0 10px;border-radius:17px;font-size:.82rem;letter-spacing:.02em;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;background:#0b0f2299;backdrop-filter:blur(6px);border:1px solid #ffffff1f}
+.ys-x.ys-back span{font-size:1.15rem;line-height:1;margin-top:-2px}
