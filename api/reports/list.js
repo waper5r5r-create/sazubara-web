@@ -1,12 +1,6 @@
 const { editPanel } = require('../_report-editorial');
 const { presentConcept } = require('../_report-presentation');
-const career = require('../_career-content');
-const marriage = require('../_marriage-content');
-const love = require('../_love-content');
-const wealth = require('../_wealth-content');
-const newyear = require('../_newyear-content');
-const ian = require('../_ian-content');
-const yeonseo = require('../_yeonseo-content');
+const contents = require('../_contents');
 const { sbFetch, getQuery, checkAdminSecret } = require('../_supabase');
 const { STAGE_PRICE, rowsAt, reportAccess } = require('../_report-access');
 
@@ -27,39 +21,12 @@ module.exports = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
   const q = getQuery(req), conceptId = q.conceptId || '';
   try {
-    if (conceptId === newyear.concept.id) {
-      const letters = newyear.compose({gan: q.gan, zhi: q.zhi, weak: q.weak});
-      if (!letters) return res.status(400).json({ok:false, error:'MISSING_SAJU'});
+    // 등록표(api/_contents.js)에 있는 콘텐츠: 내 사주가 맞는지 먼저 보고, 산 기기에만 본문을 내려준다.
+    const registered = contents.byId(conceptId);
+    if (registered) {
+      if (!registered.read(q, { story: false, detail: false })) return res.status(400).json({ok:false, error:'MISSING_SAJU'});
       const access = await reportAccess(q.device_id || '', conceptId);
-      return res.status(200).json({ok:true, rows:[], access, preview:!access.story, free:letters.free, paid:access.story ? letters.paid : null});
-    }
-    if (conceptId === ian.concept.id) {
-      const story = ian.compose(q);
-      if (!story) return res.status(400).json({ok:false, error:'MISSING_SAJU'});
-      const access = await reportAccess(q.device_id || '', conceptId);
-      return res.status(200).json({ok:true, rows:[], access, preview:!access.story, free:story.free, teasers:story.teasers, paid:access.story ? story.paid : null});
-    }
-    if (conceptId === yeonseo.concept.id) {
-      const facts = yeonseo.parseFacts(q.ys);
-      if (!facts) return res.status(400).json({ok:false, error:'MISSING_SAJU'});
-      const access = await reportAccess(q.device_id || '', conceptId);
-      return res.status(200).json({ok:true, rows:[], access, preview:!access.story, paid:access.story ? yeonseo.compose(facts) : null});
-    }
-    if (conceptId === career.concept.id) {
-      const access = await reportAccess(q.device_id || '', conceptId);
-      return res.status(200).json({ok:true, rows:access.story ? [career.story] : [], detailRows:access.detail ? [career.detail] : [], access, preview:!access.story, storyCount:1});
-    }
-    if (conceptId === love.concept.id) {
-      const access = await reportAccess(q.device_id || '', conceptId);
-      return res.status(200).json({ok:true, rows:access.story ? [love.story] : [], detailRows:access.detail ? [love.detail] : [], access, preview:!access.story, storyCount:1});
-    }
-    if (conceptId === wealth.concept.id) {
-      const access = await reportAccess(q.device_id || '', conceptId);
-      return res.status(200).json({ok:true, rows:access.story ? [wealth.story] : [], detailRows:access.detail ? [wealth.detail] : [], access, preview:!access.story, storyCount:1});
-    }
-    if (conceptId === marriage.concept.id) {
-      const access = await reportAccess(q.device_id || '', conceptId);
-      return res.status(200).json({ok:true, rows:access.story ? [marriage.story] : [], detailRows:access.detail ? [marriage.detail] : [], access, preview:!access.story, storyCount:1});
+      return res.status(200).json({ok:true, ...registered.read(q, access)});
     }
     if (conceptId) {
       const concepts = await rowsAt('/report_concepts?id=eq.' + encodeURIComponent(conceptId) + '&select=id,active');
@@ -83,6 +50,6 @@ module.exports = async (req, res) => {
     const r = await sbFetch('/report_concepts?active=eq.true&select=id,title,tagline,cover_img_url,price_krw,category&order=sort_order.asc');
     if (!r.ok) throw new Error('QUERY_FAILED');
     const rows = (await r.json()).map(c => ({ ...presentConcept(c), price_krw: STAGE_PRICE.story }));
-    res.status(200).json({ ok: true, rows: [newyear.concept, ian.concept].concat(rows, [career.concept, marriage.concept]) });
+    res.status(200).json({ ok: true, rows: contents.catalog(rows) });
   } catch (e) { res.status(500).json({ ok: false, error: 'SERVER_ERROR' }); }
 };

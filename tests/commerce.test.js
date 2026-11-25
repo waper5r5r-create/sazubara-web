@@ -77,7 +77,7 @@ test('a signed old detail-stage quote can no longer be approved',async()=>{
   const r=await call(reportUnlock,'POST','/api/reports/unlock',{...fields,paymentKey:'test',quote:signQuote(fields)});assert.equal(r.error,'INVALID_STAGE');assert.equal(confirms,0);
 });
 test('catalogue prices and every category plus today/couple match 990',async()=>{
-  reset();const catalogue=await call(listReports,'GET','/api/reports/list');assert.equal(catalogue.rows[0].price_krw,4900);assert.ok(catalogue.rows.slice(1).every(x=>x.price_krw===7900));assert.equal(catalogue.rows[0].detail_price_krw,undefined);
+  reset();const catalogue=await call(listReports,'GET','/api/reports/list');assert.equal(catalogue.rows[0].price_krw,4900);const ys=require('../api/_yeonseo-content').concept;assert.equal(catalogue.rows.find(x=>x.id===ys.id).price_krw,9900);assert.ok(catalogue.rows.slice(1).filter(x=>x.id!==ys.id).every(x=>x.price_krw===7900));assert.equal(catalogue.rows[0].detail_price_krw,undefined);
   const keys=['연애','직장','재물','건강','인간관계'].map(cat=>'feature-saju-deep:'+cat).concat(['feature-today-premium','compat-test-pair']);
   for(const [i,unlockKey] of keys.entries()) {
     const bad=await call(unlock,'POST','/api/unlock',{paymentKey:'test',orderId:'bad-'+i,amount:2900,deviceId:'test-device',unlockKey});assert.equal(bad.error,'AMOUNT_MISMATCH');

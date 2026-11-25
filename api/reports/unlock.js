@@ -1,9 +1,6 @@
-const career = require('../_career-content');
-const marriage = require('../_marriage-content');
-const newyear = require('../_newyear-content');
-const ian = require('../_ian-content');
-const yeonseo = require('../_yeonseo-content');
-const STATIC_CONCEPTS = {[career.concept.id]: career.concept, [marriage.concept.id]: marriage.concept, [newyear.concept.id]: newyear.concept, [ian.concept.id]: ian.concept, [yeonseo.concept.id]: yeonseo.concept};
+// 결제할 수 있는 고정 콘텐츠와 값은 등록표(api/_contents.js)에서 온다.
+const contents = require('../_contents');
+const STATIC_CONCEPTS = contents.SOLD;
 // Two independent purchases; historic report_unlocks still grants both stages.
 const { ensureDevice, sbFetch, getQuery, readJsonBody } = require('../_supabase');
 const { STAGE_PRICE, STAGES, stageKey, rowsAt, reportAccess } = require('../_report-access');
@@ -11,10 +8,9 @@ const { signQuote, verifyQuote, newOrderId } = require('../_payment-quote');
 const { linkedDeviceIds, deviceFilter } = require('../_account');
 const { createTossPay, finishTossPay, siteOrigin } = require('../_tosspay');
 
-// 신년운세와 여우의 인연 장부는 값이 따로 있다. 나머지 콘텐츠는 모두 같은 값이다.
+// 등록표에서 값이 따로 정해진 콘텐츠(신년운세·여우의 인연 장부)는 그 값, 나머지는 모두 같은 값이다.
 function checkoutPrice(conceptId, stage) {
-  if (conceptId === yeonseo.concept.id) return yeonseo.concept.price_krw;
-  return conceptId === newyear.concept.id ? newyear.concept.price_krw : STAGE_PRICE[stage];
+  return contents.priceOf(conceptId, STAGE_PRICE[stage]);
 }
 
 async function handleGet(req, res) {
