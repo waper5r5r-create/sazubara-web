@@ -1,0 +1,53 @@
+// 콘텐츠 등록표(index.html의 CONTENTS)가 결제 취소 화면, 약관 가격표, 서버 값과 어긋나지 않는지 확인한다.
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const vm=require('node:vm');
+const fs=require('node:fs');
+const path=require('node:path');
+const read=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
+const html=read('index.html'),fail=read('fail.html'),legal=read('legal.html');
+let source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
+source=source.replace(/\}\)\(\);\s*$/,'globalThis.reg={CONTENTS,contentOf,contentPrice,withRegistered,storyCategory,HOME_BANNERS,CONTENT_INTRO};})();');
+const sandbox={document:{readyState:'loading',addEventListener(){}},window:{},localStorage:{getItem(){return null;}},console,setTimeout(){},clearTimeout(){},URLSearchParams,URL,Date,Math,Intl};
+vm.createContext(sandbox);vm.runInContext(source,sandbox);
+const {CONTENTS,contentOf,contentPrice,withRegistered,storyCategory,HOME_BANNERS,CONTENT_INTRO}=sandbox.reg;
+const SERVER={newyear:'_newyear-content',ian:'_ian-content',yeonseo:'_yeonseo-content',love:'_love-content',wealth:'_wealth-content',pocha:'_career-content',marriage:'_marriage-content'};
+
+test('each content is registered once, with its own address',()=>{
+  assert.equal(new Set(CONTENTS.map(e=>e.id)).size,CONTENTS.length);
+  assert.equal(new Set(CONTENTS.map(e=>e.slug)).size,CONTENTS.length);
+  for(const e of CONTENTS){
+    assert.equal(storyCategory({id:e.id}),e.kind,e.slug);
+    assert.ok(['year','story','topic'].includes(e.group),e.slug);
+    assert.equal(CONTENT_INTRO[e.id].slug,e.slug);
+  }
+  assert.equal(HOME_BANNERS.length,CONTENTS.filter(e=>e.banner).length);
+});
+
+test('every registered content matches the server id, title and price',()=>{
+  for(const e of CONTENTS){
+    const c=require('../api/'+SERVER[e.kind]).concept;
+    assert.equal(e.id,c.id,e.slug);
+    if(e.concept){assert.equal(e.concept.title,c.title,e.slug);assert.equal(e.concept.price_krw,c.price_krw,e.slug+' price');}
+    assert.equal(contentPrice({id:e.id}),c.price_krw,e.slug+' shown price');
+  }
+});
+
+test('cancelling a payment can go back to every registered content',()=>{
+  for(const e of CONTENTS)assert.ok(fail.includes("'"+e.id+"':"),e.slug+' missing from fail.html');
+});
+
+test('the terms price table lists every content sold on its own',()=>{
+  for(const e of CONTENTS.filter(x=>x.concept)){
+    const won=e.concept.price_krw.toLocaleString('ko-KR')+'원';
+    assert.ok(legal.includes('<tr><th>'+e.concept.title+'</th><td>'+won+'</td></tr>'),e.concept.title+' '+won);
+  }
+});
+
+test('contents the server list does not have yet are added in registry order',()=>{
+  const ny=CONTENTS[0].id,ian=CONTENTS[1].id,ys=CONTENTS[2].id;
+  const rows=withRegistered([{id:ny},{id:ian},{id:'server-only'}]);
+  assert.deepEqual(rows.map(r=>r.id),[ny,ian,ys,'server-only']);
+  assert.equal(withRegistered(rows).length,rows.length,'nothing is added twice');
+  assert.ok(contentOf(ys).single&&contentOf(ian).single&&!contentOf('운명의-사람은-언제-올까-fyq1z').single);
+});

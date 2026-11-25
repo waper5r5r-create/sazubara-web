@@ -3564,7 +3564,7 @@ function bfAng(min){return ((min-720)/1440)*360;}
 function bfPt(a,r){var rad=(a-90)*Math.PI/180;return [Math.cos(rad)*r,Math.sin(rad)*r];}
 var RETURN_TAB=null;document.addEventListener('click',function(e){var rt=e.target.closest('[data-return-tab]');if(rt&&!STATE.mySaju){e.preventDefault();RETURN_TAB=rt.getAttribute('data-return-tab');openBirthFlow(STATE.lastForm||null);return;}if(e.target.closest('[data-open-birth]')){e.preventDefault();openBirthFlow(STATE.lastForm||null);}});
 /* 홈의 캐릭터 카드: 배너와 같은 방식으로 콘텐츠를 열어요 */
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-char-go]');if(!b)return;var id=b.dataset.charGo;if(id===String(NEWYEAR_CONCEPT.id)){openReportViewer(NEWYEAR_CONCEPT,'story');return;}loadReportList().then(function(list){var c=list.filter(function(x){return String(x.id)===id;})[0];if(c)openReportViewer(c);}).catch(function(){showToast('콘텐츠를 불러오지 못했어요.');});});
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-char-go]');if(!b)return;openContentById(b.dataset.charGo,'story');});
 /* 밝은 모드 · 밤 모드 전환(기본은 밝은 모드, 고른 값은 이 브라우저에 저장) */
 function syncThemeButton(){var b=document.getElementById&&document.getElementById('btn-theme');if(!b)return;var on=document.documentElement.getAttribute('data-theme')==='dark';b.setAttribute('aria-pressed',String(on));b.setAttribute('aria-label',on?'밝은 모드로 바꾸기':'밤 모드로 바꾸기');}
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#btn-theme');if(!b)return;var d=document.documentElement,on=d.getAttribute('data-theme')!=='dark';if(on)d.setAttribute('data-theme','dark');else d.removeAttribute('data-theme');try{localStorage.setItem('byeolcheop_theme',on?'dark':'light');}catch(x){}syncThemeButton();});
@@ -3815,9 +3815,7 @@ function handleTossPaymentCallback(){
   var linkOrder=order&&DEVICE.shareCode&&DEVICE.secret?accountCall({action:'restore',orderId:order}).catch(function(){}):Promise.resolve();
   linkOrder.then(function(){return Promise.all([pullPaidUnlocks(),pullReportUnlocks()]);}).then(function(){
     if(reportId)maybeSaveNudge('paid');
-    if(reportId===NEWYEAR_CONCEPT.id){openNewYearViewer(NEWYEAR_CONCEPT);return;}
-    if(reportId===IAN_CONCEPT.id){openIanViewer(IAN_CONCEPT,true);return;}
-    if(reportId===YS_CONCEPT.id){location.replace('/?yeonseo=1&resume=1');return;}
+    var paidFor=contentOf(reportId);if(paidFor&&paidFor.afterPay){paidFor.afterPay(paidFor.concept);return;}
     if(reportId){switchTab('reports');return loadReportList(true).then(function(list){var c=list.filter(function(x){return String(x.id)===reportId;})[0];if(c)openReportViewer(c,stage);});}
     switchTab(returnTab);if(STATE.mySaju)renderSajuResult(STATE.mySaju);showToast('구매한 풀이가 열렸어요.');restorePayReturn();maybeSaveNudge('paid');
   }).catch(function(){showToast('구매 내역을 불러오지 못했어요. 잠시 후 다시 열어주세요.');});
@@ -4273,11 +4271,11 @@ var INVITE_LANDING=false;
 function starHeroHtml(){
  var inv=INVITE_LANDING&&!(typeof STATE!=='undefined'&&STATE.mySaju);
  var stars=HERO_STARS.map(function(p,i){return '<i class="hero-star" style="left:'+p[0]+'%;top:'+p[1]+'%;--d:'+(0.35+i*0.13).toFixed(2)+'s;--t:'+(2.6+(i%3)*0.7).toFixed(1)+'s"></i>';}).join('');
- var names={};names[String(NEWYEAR_CONCEPT.id)]='다온';names[String(IAN_CONCEPT.id)]='이안';names['운명의-사람은-언제-올까-fyq1z']='해랑';names['타고난-재물복은-얼마나-될까-k7dxw']='금비';names['7c5db9e6-59cb-4a81-8b0a-73da4db7b051']='서림';names['dc6f87f4-86a7-47ce-ae91-3f6715dee2b0']='월하';
+ var names={};CONTENTS.forEach(function(e){if(e.who)names[String(e.id)]=e.who;});
  return '<div class="char-home"><div class="char-me'+(inv?' is-invite':'')+'">'+(inv?'<p class="editorial-tag">친구가 보낸 궁합 초대</p><h1>우리 사이,<br>얼마나 잘 맞을까요?</h1><p class="saju-hero-sub">내 생일만 넣으면 둘이 잘 맞는 점과<br>엇갈리는 점이 바로 나와요.</p>'+
   '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>내 생일 넣고 우리 사이 보기</button><p class="saju-hero-gift">'+uiIcon('spark')+'자세한 궁합 풀이도 둘 다 무료예요</p>':'<p class="editorial-tag">무료 사주풀이</p><h1>내 사주에 적힌<br>사랑과 일의 때</h1><p class="saju-hero-sub">태어난 날의 여덟 글자로 타고난 성향과<br>앞으로 10년의 흐름을 짚어 드려요.</p>'+
   '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p>')+'<ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>바로 시작</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div>'+
-  '<div class="char-list"><h2>오늘은 누구에게 물어볼까요?</h2><p class="char-list-sub">여섯 명의 풀이꾼이 내 사주로 이야기를 들려줘요. 앞부분은 무료예요.</p>'+
+  '<div class="char-list"><h2>오늘은 누구에게 물어볼까요?</h2><p class="char-list-sub">'+(['','한','두','세','네','다섯','여섯','일곱','여덟','아홉','열'][HOME_BANNERS.length]||HOME_BANNERS.length)+' 명의 풀이꾼이 내 사주로 이야기를 들려줘요. 앞부분은 무료예요.</p>'+
   '<div class="char-grid">'+homeCharOrder().map(function(b,i){var nm=names[String(b.id)]||'';return '<button type="button" class="char-card'+(i===0?' is-feat':'')+'" data-char-go="'+esc(String(b.id))+'"><img src="'+b.img+'" alt="" loading="lazy" decoding="async"><span><small>'+(nm?'<b>'+nm+'</b>':'')+esc(b.kicker)+'</small><strong>'+b.title+'</strong>'+(i===0?'<em>무료로 앞부분 읽기</em>':'')+'</span></button>';}).join('')+'</div></div></div>';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
@@ -5579,7 +5577,7 @@ function reportCoverSource(c,result){
 function reportCardHtml(c){
   var unlocked = reportStageOwned(c,'story'),available=storyCategory(c)!=='unsupported';
   var coverSrc=reportCoverSource(c,STATE.mySaju);
-  if(isNewYear(c))coverSrc='/assets/daon/cover-thumb.webp';
+  var reg=contentOf(c);if(reg&&reg.thumb)coverSrc=reg.thumb;
   if(coverSrc==='/assets/career/scenes/cover.webp')coverSrc='/assets/career/scenes/cover-thumb.webp';
   if(coverSrc==='/assets/love/scenes/cover.webp')coverSrc='/assets/love/scenes/cover-thumb.webp';
   if(coverSrc==='/assets/marriage/scenes/cover.webp')coverSrc='/assets/marriage/scenes/cover-thumb.webp';
@@ -5587,7 +5585,7 @@ function reportCardHtml(c){
   var coverInner = coverSrc ? '<img src="'+esc(coverSrc)+'" alt="" loading="lazy" decoding="async">' : '<span class="report-cover-fallback">'+BRAND_MARK_SVG+'</span>';
   return '<button type="button" class="report-card" data-report-id="'+esc(String(c.id))+'" data-cat="'+esc(c.category||'')+'"'+(available?'':' disabled')+'>'+
       '<span class="report-cover">'+coverInner+'</span>'+
-      '<span class="report-text"><span class="report-format">'+esc(c.category||'')+(available?'':' · 준비 중')+'</span><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc((!isIan(c)&&!isYeonseo(c)&&{연애:'나는 어떤 사람에게 끌릴까?',재물:'돈을 모으는 힘과 새는 습관은?',직장:'내게 맞는 일하는 방식은?',결혼:'함께 살 때 중요하게 여기는 것은?'}[c.category])||c.tagline||'')+'</span>'+
+      '<span class="report-text"><span class="report-format">'+esc(c.category||'')+(available?'':' · 준비 중')+'</span><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc((reg?reg.card:{연애:'나는 어떤 사람에게 끌릴까?',재물:'돈을 모으는 힘과 새는 습관은?',직장:'내게 맞는 일하는 방식은?',결혼:'함께 살 때 중요하게 여기는 것은?'}[c.category])||c.tagline||'')+'</span>'+
         '<span class="report-card-footer">'+
         (unlocked?'<span class="report-price">콘텐츠 보유</span>':available?('<span class="report-discover">무료 풀이 읽기 '+uiIcon('arrow')+'</span>'):'')+'</span>'+
       '</span>'+
@@ -5611,13 +5609,13 @@ function wireReportGridClicks(grid, list){
 /* 콘텐츠 탭: 산 것은 맨 위로 모으고, 나머지는 성격별로 묶는다. */
 function reportSectionsFrom(list){
   var owned=[],year=[],story=[],topic=[];
-  list.forEach(function(c){(reportStageOwned(c,'story')?owned:isNewYear(c)?year:isIan(c)||isYeonseo(c)?story:topic).push(c);});
+  list.forEach(function(c){var g=(contentOf(c)||{}).group;(reportStageOwned(c,'story')?owned:g==='year'?year:g==='story'?story:topic).push(c);});
   return [{title:'내가 구매한 콘텐츠',rows:owned},{title:'2027년 준비',rows:year},{title:'이야기로 읽는 사주',rows:story},{title:'주제별로 보기',rows:topic,small:true}].filter(function(g){return g.rows.length;});
 }
 function renderReportGrid(list){
   var root = $('#report-sections');
   if (!root) return;
-  list = withYeonseo(list);
+  list = withRegistered(list);
   root.innerHTML = list.length ? reportSectionsFrom(list).map(function(g){return '<section class="report-group"><h2 class="report-list-title">'+esc(g.title)+'</h2><div class="report-grid'+(g.small?' is-small':'')+'">'+g.rows.map(reportCardHtml).join('')+'</div></section>';}).join('') : '<p class="section-desc">콘텐츠를 준비하고 있어요.</p>';
   $all('.report-grid',root).forEach(function(grid){wireReportGridClicks(grid,list);});
 }
@@ -5662,7 +5660,7 @@ var reportSectionHtml=function(panel,result){
     '<p class="scene-result-bubble">'+esc(bubble)+'</p></div>'+(parts.length?'<div class="webtoon-narration">'+parts.map(function(part){return '<p class="report-caption">'+esc(part)+'</p>';}).join('')+'</div>':'')+'</section>';
 };
 function reportShareBtnHtml(){return '<button type="button" class="share-btn" id="btn-share-report">'+uiIcon('share')+' 이 이야기 공유하기</button>';}
-function storyCategory(c){if(isNewYear(c))return 'newyear';if(isIan(c))return 'ian';if(isYeonseo(c))return 'yeonseo';if(isMarriage(c))return 'marriage';if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
+function storyCategory(c){var reg=contentOf(c);if(reg)return reg.kind;return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
 function prologueDialogue(c,result){
   var v=reportVariables(result),money=storyCategory(c)==='wealth';
   var loveVoice={목:'함께라면, 조금 더 나다운 사람이 될 것 같아.',화:'좋아하는 마음은, 숨기고 싶지 않아.',토:'설렘보다 오래 남는 편안함이 좋아.',금:'쉽게 마음을 주진 않아. 그래서 더 신중해.',수:'생각은 깊은데, 마음은 쉽게 꺼내지 못해.'};
@@ -5695,14 +5693,12 @@ function startReportUnlock(concept,stage,method){
     var ctx=values[0],checkout=values[1];
     if(viaTossPay){location.href=checkout.checkoutPage;return;}
     return ctx.TossPayments(ctx.clientKey).requestPayment('카드',{
-      amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+(isNewYear(concept)||isIan(concept)||isYeonseo(concept)?'':' (이야기+심층 리포트)'),
+      amount:checkout.amount,orderId:checkout.orderId,orderName:'별첩사주 '+concept.title+((contentOf(concept)||{}).single?'':' (이야기+심층 리포트)'),
       successUrl:location.origin+'/success.html?type=report&conceptId='+encodeURIComponent(concept.id)+'&stage='+stage+'&quote='+encodeURIComponent(checkout.quote),
       failUrl:location.origin+'/fail.html?report='+encodeURIComponent(concept.id)+'&stage='+stage
     });
   }).catch(function(error){
-    if(error&&error.code==='ALREADY_OWNED'&&isNewYear(concept)){openNewYearViewer(concept);return;}
-    if(error&&error.code==='ALREADY_OWNED'&&isIan(concept)){openIanViewer(concept);return;}
-    if(error&&error.code==='ALREADY_OWNED'&&isYeonseo(concept)){if(typeof globalThis.YS_ON_OWNED==='function')globalThis.YS_ON_OWNED();return;}
+    var ownedReg=contentOf(concept);if(error&&error.code==='ALREADY_OWNED'&&ownedReg&&ownedReg.onOwned){ownedReg.onOwned(concept);return;}
     if(error&&error.code==='ALREADY_OWNED'){return loadReportReader(concept).then(function(data){REPORT_READER.data=data;if(data.access.story)DEVICE.unlocked[reportStageKey(concept,'story')]=true;if(data.access.detail)DEVICE.unlocked[reportStageKey(concept,'detail')]=true;saveDevice();renderReportPanels(concept,data,'story');showToast('보유한 이야기로 다시 열었어요.');}).catch(function(){showToast('보유 내역을 다시 확인하지 못했어요. 잠시 후 이야기를 다시 열어주세요.');});}
     if(error&&error.code==='USER_CANCEL')showToast('결제를 취소했어요. 이어서 둘러보세요.');
     else showToast(error&&error.message||'결제창을 열지 못했어요. 잠시 후 다시 시도해주세요.');
@@ -5725,11 +5721,10 @@ function readerKeydown(e){
 }
 /* 무료 부분을 읽는 동안, 잠금 화면이 아직 아래에 있으면 화면 아래에 "전체 보기" 버튼을 띄운다. 누르면 잠금 화면으로 내려간다. */
 function readerLeftLine(root){
- var c=REPORT_READER.concept;if(c&&isNewYear(c))return '편지 11통이 더 남았어요';
- if(c&&isIan(c))return '다섯 장이 더 남았어요';
+ var reg=contentOf(REPORT_READER.concept);if(reg&&reg.left)return reg.left;
  var t=root.textContent;return t.indexOf('??월')>-1?'좋은 달 세 개가 가려져 있어요':t.indexOf('????년')>-1?'좋은 해 두 개가 가려져 있어요':'나머지 풀이가 이어져요';
 }
-function readerPrice(){var c=REPORT_READER.concept;return c&&isNewYear(c)?NEWYEAR_CONCEPT.price_krw:c&&isIan(c)?IAN_CONCEPT.price_krw:REPORT_STAGE_PRICE.story;}
+function readerPrice(){return contentPrice(REPORT_READER.concept);}
 /* 읽기 화면 맨 위의 진행 표시 줄 */
 document.addEventListener('scroll',function(e){
  var root=e.target;if(!root||root.id!=='report-page-root')return;
@@ -5772,23 +5767,62 @@ var NY_AREAS=[['love','연애'],['money','돈'],['work','일'],['health','건강
 function isNewYear(concept){return !!concept&&String(concept.id)===NEWYEAR_CONCEPT.id;}
 var IAN_CONCEPT={id:'20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',title:'이안의 비밀',tagline:'누가 나에게 빠지고, 나는 언제 무너질까',category:'연애',cover_img_url:'/assets/ian/bottle.webp',active:true,price_krw:7900};
 function isIan(concept){return !!concept&&String(concept.id)===IAN_CONCEPT.id;}
-/* 여우의 인연 장부: 콘텐츠 탭 카드를 누르면 ?yeonseo=1 화면으로 간다. 값과 본문은 서버(api/_yeonseo-content.js)가 정한다. */
-var YS_CONCEPT={id:'20271201-7a3e-4f1b-9c62-5d8e0b4a1f73',title:'여우의 인연 장부',tagline:'그 사람과 나, 인연의 실은 어디까지 닿을까',category:'연애',cover_img_url:'/assets/yeonseo/cover-thumb.webp',active:true,price_krw:9900};
+var YS_CONCEPT={id:'20271201-7a3e-4f1b-9c62-5d8e0b4a1f73',title:'여우의 인연 장부',tagline:'끊긴 줄, 아직 이어져 있을까',category:'연애',cover_img_url:'/assets/yeonseo/cover-thumb.webp',active:true,price_krw:9900};
 function isYeonseo(concept){return !!concept&&String(concept.id)===YS_CONCEPT.id;}
-/* 장부는 서버 목록에 없으니, 콘텐츠 탭을 그릴 때 이안의 비밀 바로 뒤에 끼워 넣는다. */
-function withYeonseo(rows){
-  if(rows.some(isYeonseo))return rows;
-  var at=rows.findIndex(isIan),out=rows.slice();out.splice(at<0?0:at+1,0,Object.assign({},YS_CONCEPT));return out;
+/* 콘텐츠 등록표. 새 콘텐츠는 여기에 한 칸을 더하면 콘텐츠 탭 카드·묶음, 홈 배너와 풀이꾼, 바로가기 주소(?c=slug),
+   결제 이름, 결제 후 돌아오기, 이미 산 경우 다시 열기가 모두 따라온다. (결제 취소 화면 fail.html, 약관 가격표, 서버 등록표는 테스트가 맞는지 확인한다)
+   kind 화면 종류 · group 콘텐츠 탭 묶음(year 2027년 준비 / story 이야기로 읽는 사주 / topic 주제별) · who 홈 풀이꾼 이름
+   card 카드 한 줄(없으면 tagline) · thumb 카드 표지 · banner 홈·콘텐츠 배너 · intro 바로가기 첫 장면 목록 · left 읽는 중 아래 띠 문구
+   concept 서버 목록 없이도 열 수 있는 콘텐츠(값 price_krw는 화면 표시용, 실제 금액은 서버가 정한다)
+   single 한 번 결제로 전부 여는 콘텐츠 · open/afterPay/onOwned 자기 화면이 따로 있는 콘텐츠만 적는다 */
+var CONTENTS=[
+ {id:NEWYEAR_CONCEPT.id,concept:NEWYEAR_CONCEPT,slug:'2027',kind:'newyear',group:'year',who:'다온',single:true,thumb:'/assets/daon/cover-thumb.webp',
+  banner:{img:'/assets/daon/banner.webp',kicker:'2027 신년운세',title:'2027년이 보낸<br>편지가 도착했어요',note:'한 해 총평과 1월 편지는 무료'},
+  intro:['한 해 총평과 좋은 달·조심할 달','달마다 연애·돈·일·건강 편지','1월 편지까지 무료로 읽어요'],left:'편지 11통이 더 남았어요',
+  open:function(c){openNewYearViewer(c);},afterPay:function(c){openNewYearViewer(c);},onOwned:function(c){openNewYearViewer(c);}},
+ {id:IAN_CONCEPT.id,concept:IAN_CONCEPT,slug:'ian',kind:'ian',group:'story',who:'이안',single:true,
+  banner:{img:'/assets/banners/ian.webp',kicker:'이안의 비밀',title:'누가 나에게 빠지고,<br>나는 언제 무너질까?',note:'향으로 읽는 내 사주 이야기'},
+  intro:['향으로 따라가는 내 연애의 비밀','누가 나에게 빠지고, 나는 언제 무너지는지','7장 중 2장까지 무료예요'],left:'다섯 장이 더 남았어요',
+  open:function(c){openIanViewer(c);},afterPay:function(c){openIanViewer(c,true);},onOwned:function(c){openIanViewer(c);}},
+ {id:YS_CONCEPT.id,concept:YS_CONCEPT,slug:'yeonseo',kind:'yeonseo',group:'story',who:'연서',single:true,
+  banner:{img:'/assets/banners/yeonseo.webp',kicker:'여우의 인연 장부',title:'그 사람과 나,<br>인연은 어디까지 닿을까?',note:'여우 연서가 적어 주는 둘의 장부'},
+  intro:['그 사람과 나 사이의 인연 장부','둘의 사주로 보는 끌림과 엇갈림','첫 장은 무료예요'],
+  open:function(){location.href='/?yeonseo=1';},afterPay:function(){location.replace('/?yeonseo=1&resume=1');},
+  onOwned:function(){if(typeof globalThis.YS_ON_OWNED==='function')globalThis.YS_ON_OWNED();}},
+ {id:'운명의-사람은-언제-올까-fyq1z',slug:'love',kind:'love',group:'topic',who:'해랑',card:'나는 어떤 사람에게 끌릴까?',
+  banner:{img:'/assets/banners/love-v2.webp',kicker:'연애 사주',title:'언제, 어떤 사람과<br>이어질까?',note:'앞으로 10년, 연애운 좋은 해'},
+  intro:['내가 끌리는 사람과 연애하는 방식','앞으로 10년 중 연애운이 좋은 세 해','썸·다툼·재회, 상황별 대응']},
+ {id:'타고난-재물복은-얼마나-될까-k7dxw',slug:'money',kind:'wealth',group:'topic',who:'금비',card:'돈을 모으는 힘과 새는 습관은?',
+  banner:{img:'/assets/banners/wealth-v2.webp',kicker:'재물 사주',title:'내 돈은 어디로<br>새고 있을까?',note:'수입·지출·저축을 점수로 확인'},
+  intro:['돈이 들어오는 힘과 새는 힘 점수','돈 흐름이 좋은 세 해','지출·저축·투자, 나에게 맞는 방법']},
+ {id:'7c5db9e6-59cb-4a81-8b0a-73da4db7b051',slug:'work',kind:'pocha',group:'topic',who:'서림',
+  banner:{img:'/assets/banners/career-v2.webp',kicker:'직업 사주',title:'나에게 맞는 일은<br>따로 있을까?',note:'일하는 스타일과 잘 풀리는 해'},
+  intro:['일하는 스타일과 잘 맞는 일','길이 크게 열리는 세 해','이직·연봉·번아웃, 상황별 대응']},
+ {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',slug:'marriage',kind:'marriage',group:'topic',who:'월하',card:'함께 살 때 중요하게 여기는 것은?',
+  banner:{img:'/assets/banners/marriage-v2.webp',kicker:'결혼 사주',title:'나는 언제쯤<br>결혼하게 될까?',note:'잘 맞는 배우자와 좋은 시기'},
+  intro:['나와 잘 맞는 배우자 유형','결혼운이 좋은 세 해','함께 살 때 다툼·돈·양가 가족']}
+];
+function contentOf(c){var id=String(c&&typeof c==='object'?c.id:c);return CONTENTS.filter(function(e){return String(e.id)===id;})[0]||null;}
+function contentPrice(c){var e=contentOf(c);return e&&e.concept?e.concept.price_krw:REPORT_STAGE_PRICE.story;}
+/* 서버 목록에 아직 없는 등록 콘텐츠는 등록표 순서대로 앞 콘텐츠 바로 뒤에 끼워 넣는다. */
+function withRegistered(rows){
+  var out=rows.slice();
+  CONTENTS.forEach(function(e,i){
+    if(!e.concept||out.some(function(r){return String(r.id)===String(e.id);}))return;
+    var at=-1;for(var j=i-1;j>=0&&at<0;j--){var prev=CONTENTS[j].id;out.forEach(function(r,k){if(String(r.id)===String(prev))at=k;});}
+    out.splice(at+1,0,Object.assign({},e.concept));
+  });
+  return out;
+}
+/* 홈·콘텐츠 탭에서 콘텐츠 하나를 연다. 자기 화면이 있으면 바로, 아니면 서버 목록에서 찾아서. */
+function openContentById(id,stage){
+  var e=contentOf(id);if(e&&e.concept){openReportViewer(e.concept,stage);return;}
+  loadReportList().then(function(list){var c=list.filter(function(x){return String(x.id)===String(id);})[0];if(c)openReportViewer(c,stage);}).catch(function(){showToast('콘텐츠를 불러오지 못했어요.');});
 }
 /* 홈·콘텐츠 탭 상단 배너. 넘기기는 브라우저 스크롤에 맡기고, 가만히 두면 5초마다 다음 장으로 넘어간다. */
 /* 콘텐츠를 골랐는데 아직 사주가 없을 때 먼저 보여 주는 첫 장면. 주소 ?c=love 처럼 바로 들어올 수도 있다. */
 var CONTENT_INTRO={};
-CONTENT_INTRO[NEWYEAR_CONCEPT.id]={slug:'2027',list:['한 해 총평과 좋은 달·조심할 달','달마다 연애·돈·일·건강 편지','1월 편지까지 무료로 읽어요']};
-CONTENT_INTRO[IAN_CONCEPT.id]={slug:'ian',list:['향으로 따라가는 내 연애의 비밀','누가 나에게 빠지고, 나는 언제 무너지는지','7장 중 2장까지 무료예요']};
-CONTENT_INTRO['운명의-사람은-언제-올까-fyq1z']={slug:'love',list:['내가 끌리는 사람과 연애하는 방식','앞으로 10년 중 연애운이 좋은 세 해','썸·다툼·재회, 상황별 대응']};
-CONTENT_INTRO['타고난-재물복은-얼마나-될까-k7dxw']={slug:'money',list:['돈이 들어오는 힘과 새는 힘 점수','돈 흐름이 좋은 세 해','지출·저축·투자, 나에게 맞는 방법']};
-CONTENT_INTRO['7c5db9e6-59cb-4a81-8b0a-73da4db7b051']={slug:'work',list:['일하는 스타일과 잘 맞는 일','길이 크게 열리는 세 해','이직·연봉·번아웃, 상황별 대응']};
-CONTENT_INTRO['dc6f87f4-86a7-47ce-ae91-3f6715dee2b0']={slug:'marriage',list:['나와 잘 맞는 배우자 유형','결혼운이 좋은 세 해','함께 살 때 다툼·돈·양가 가족']};
+CONTENTS.forEach(function(e){if(e.intro)CONTENT_INTRO[String(e.id)]={slug:e.slug,list:e.intro};});
 /* 인스타 등에서 ?c=love 로 바로 들어온 사람에게 보이는 랜딩. 첫 화면에서 바로 생일을 넣고, 풀이꾼이 입력에 맞춰 말을 건다. 사주가 없을 때만 보인다. */
 var CI_MORE={
  love:{toc:'love',who:'해랑',face:'/assets/love/faces/haerang-',f:{hi:'smile',think:'thinking',wow:'surprised',ok:'wink',go:'cheer'},hi:'어서 와요. 생일을 알려 주면 당신의 연애를 꽃으로 읽어 줄게요.'},
@@ -5829,7 +5863,7 @@ function contentIntroMore(m){
 function showContentIntro(concept,next){
  var root=$('#intro-sheet-root'),info=CONTENT_INTRO[String(concept.id)],ban=HOME_BANNERS.filter(function(b){return b.id===String(concept.id);})[0],m=info&&CI_MORE[info.slug];
  if(!root||!info||!ban||!m){next();return;}
- var price=(isNewYear(concept)?NEWYEAR_CONCEPT.price_krw:isIan(concept)?IAN_CONCEPT.price_krw:REPORT_STAGE_PRICE.story).toLocaleString('ko-KR');
+ var price=contentPrice(concept).toLocaleString('ko-KR');
  root.innerHTML='<div class="ci" role="dialog" aria-modal="true" aria-label="'+esc(concept.title)+'"><div class="ci-art"><img src="'+ban.img+'" alt="" decoding="async"></div>'+
   '<button type="button" class="ci-close" data-close aria-label="닫기">'+uiIcon('close')+'</button><div class="ci-body">'+
   '<p class="ci-kicker">'+esc(ban.kicker)+' · 앞부분 무료</p><h2 class="ci-title">'+ban.title+'</h2>'+
@@ -5899,23 +5933,13 @@ function showContentIntro(concept,next){
  $('.ci-close',root).addEventListener('click',function(){close();PENDING_REPORT=null;var n=$('#pending-report-note');if(n)n.remove();});
  root.querySelector('.ci-go-end').addEventListener('click',function(){var f=root.querySelector('.ci-talk');f.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){q(st.gender?'yy':'name').focus({preventScroll:true});},500);});
 }
-/* 주소로 바로 들어오기: /?c=love · money · work · marriage · 2027 · ian */
+/* 주소로 바로 들어오기: /?c=등록표의 slug (love · money · work · marriage · 2027 · ian · yeonseo) */
 function openContentFromUrl(){
  var u=new URL(location.href),slug=u.searchParams.get('c');if(!slug)return;
  u.searchParams.delete('c');try{history.replaceState(history.state,'',u.pathname+u.search+u.hash);}catch(e){}
- var id=Object.keys(CONTENT_INTRO).filter(function(k){return CONTENT_INTRO[k].slug===slug;})[0];if(!id)return;
- if(id===NEWYEAR_CONCEPT.id){openReportViewer(NEWYEAR_CONCEPT);return;}
- if(id===IAN_CONCEPT.id){openReportViewer(IAN_CONCEPT);return;}
- loadReportList().then(function(list){var c=list.filter(function(x){return String(x.id)===id;})[0];if(c)openReportViewer(c);}).catch(function(){});
+ var e=CONTENTS.filter(function(x){return x.slug===slug;})[0];if(e)openContentById(e.id);
 }
-var HOME_BANNERS=[
- {id:NEWYEAR_CONCEPT.id,img:'/assets/daon/banner.webp',kicker:'2027 신년운세',title:'2027년이 보낸<br>편지가 도착했어요',note:'한 해 총평과 1월 편지는 무료'},
- {id:IAN_CONCEPT.id,img:'/assets/banners/ian.webp',kicker:'이안의 비밀',title:'누가 나에게 빠지고,<br>나는 언제 무너질까?',note:'향으로 읽는 내 사주 이야기'},
- {id:'운명의-사람은-언제-올까-fyq1z',img:'/assets/banners/love-v2.webp',kicker:'연애 사주',title:'언제, 어떤 사람과<br>이어질까?',note:'앞으로 10년, 연애운 좋은 해'},
- {id:'타고난-재물복은-얼마나-될까-k7dxw',img:'/assets/banners/wealth-v2.webp',kicker:'재물 사주',title:'내 돈은 어디로<br>새고 있을까?',note:'수입·지출·저축을 점수로 확인'},
- {id:'7c5db9e6-59cb-4a81-8b0a-73da4db7b051',img:'/assets/banners/career-v2.webp',kicker:'직업 사주',title:'나에게 맞는 일은<br>따로 있을까?',note:'일하는 스타일과 잘 풀리는 해'},
- {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',img:'/assets/banners/marriage-v2.webp',kicker:'결혼 사주',title:'나는 언제쯤<br>결혼하게 될까?',note:'잘 맞는 배우자와 좋은 시기'}
-];
+var HOME_BANNERS=CONTENTS.filter(function(e){return e.banner;}).map(function(e){return Object.assign({id:String(e.id)},e.banner);});
 function homeBannerHtml(){
  return '<section class="home-banners" aria-label="추천 콘텐츠"><div class="banner-track" data-banner-track>'+HOME_BANNERS.map(function(b,i){return '<button type="button" class="ny-banner" data-banner-id="'+esc(b.id)+'"><img src="'+b.img+'" alt="" decoding="async"><span><small>'+esc(b.kicker)+'</small><b>'+b.title+'</b><em>'+esc(b.note)+'</em></span></button>';}).join('')+'</div>'+
   '<div class="banner-dots" aria-hidden="true">'+HOME_BANNERS.map(function(b,i){return '<i'+(i?'':' class="on"')+'></i>';}).join('')+'</div></section>';
@@ -5927,9 +5951,7 @@ function wireHomeBanners(scope){
  track.addEventListener('scroll',function(){var at=index();dots.forEach(function(d,i){d.classList.toggle('on',i===at);});},{passive:true});
  ['pointerdown','touchstart'].forEach(function(n){track.addEventListener(n,function(){holdUntil=Date.now()+8000;},{passive:true});});
  $all('[data-banner-id]',track).forEach(function(b){b.addEventListener('click',function(){
-  var id=b.dataset.bannerId;
-  if(id===NEWYEAR_CONCEPT.id){openReportViewer(NEWYEAR_CONCEPT,'story');return;}
-  loadReportList().then(function(list){var c=list.filter(function(x){return String(x.id)===id;})[0];if(c)openReportViewer(c);}).catch(function(){showToast('콘텐츠를 불러오지 못했어요.');});
+  openContentById(b.dataset.bannerId,'story');
  });});
  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
  var timer=setInterval(function(){
@@ -6142,9 +6164,7 @@ function openIanViewer(concept,justPaid){
   });
 }
 function openReportViewer(concept,stage){
-  if(isNewYear(concept)){openNewYearViewer(concept);return;}
-  if(isIan(concept)){openIanViewer(concept);return;}
-  if(isYeonseo(concept)){location.href='/?yeonseo=1';return;}
+  var reg=contentOf(concept);if(reg&&reg.open){reg.open(concept);return;}
   var root=$('#report-sheet-root');if(!root)return;
   if(storyCategory(concept)==='unsupported'){showToast('이 주제의 콘텐츠를 준비하고 있어요.');return;}
   if(!STATE.mySaju){rememberPendingReport(concept,stage);return;}
