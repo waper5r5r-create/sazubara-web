@@ -5587,7 +5587,7 @@ function reportCardHtml(c){
   var coverInner = coverSrc ? '<img src="'+esc(coverSrc)+'" alt="" loading="lazy" decoding="async">' : '<span class="report-cover-fallback">'+BRAND_MARK_SVG+'</span>';
   return '<button type="button" class="report-card" data-report-id="'+esc(String(c.id))+'" data-cat="'+esc(c.category||'')+'"'+(available?'':' disabled')+'>'+
       '<span class="report-cover">'+coverInner+'</span>'+
-      '<span class="report-text"><span class="report-format">'+esc(c.category||'')+(available?'':' · 준비 중')+'</span><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc((!isIan(c)&&{연애:'나는 어떤 사람에게 끌릴까?',재물:'돈을 모으는 힘과 새는 습관은?',직장:'내게 맞는 일하는 방식은?',결혼:'함께 살 때 중요하게 여기는 것은?'}[c.category])||c.tagline||'')+'</span>'+
+      '<span class="report-text"><span class="report-format">'+esc(c.category||'')+(available?'':' · 준비 중')+'</span><span class="nm">'+esc(c.title)+'</span><span class="tagline">'+esc((!isIan(c)&&!isYeonseo(c)&&{연애:'나는 어떤 사람에게 끌릴까?',재물:'돈을 모으는 힘과 새는 습관은?',직장:'내게 맞는 일하는 방식은?',결혼:'함께 살 때 중요하게 여기는 것은?'}[c.category])||c.tagline||'')+'</span>'+
         '<span class="report-card-footer">'+
         (unlocked?'<span class="report-price">콘텐츠 보유</span>':available?('<span class="report-discover">무료 풀이 읽기 '+uiIcon('arrow')+'</span>'):'')+'</span>'+
       '</span>'+
@@ -5611,12 +5611,13 @@ function wireReportGridClicks(grid, list){
 /* 콘텐츠 탭: 산 것은 맨 위로 모으고, 나머지는 성격별로 묶는다. */
 function reportSectionsFrom(list){
   var owned=[],year=[],story=[],topic=[];
-  list.forEach(function(c){(reportStageOwned(c,'story')?owned:isNewYear(c)?year:isIan(c)?story:topic).push(c);});
+  list.forEach(function(c){(reportStageOwned(c,'story')?owned:isNewYear(c)?year:isIan(c)||isYeonseo(c)?story:topic).push(c);});
   return [{title:'내가 구매한 콘텐츠',rows:owned},{title:'2027년 준비',rows:year},{title:'이야기로 읽는 사주',rows:story},{title:'주제별로 보기',rows:topic,small:true}].filter(function(g){return g.rows.length;});
 }
 function renderReportGrid(list){
   var root = $('#report-sections');
   if (!root) return;
+  list = withYeonseo(list);
   root.innerHTML = list.length ? reportSectionsFrom(list).map(function(g){return '<section class="report-group"><h2 class="report-list-title">'+esc(g.title)+'</h2><div class="report-grid'+(g.small?' is-small':'')+'">'+g.rows.map(reportCardHtml).join('')+'</div></section>';}).join('') : '<p class="section-desc">콘텐츠를 준비하고 있어요.</p>';
   $all('.report-grid',root).forEach(function(grid){wireReportGridClicks(grid,list);});
 }
@@ -5661,7 +5662,7 @@ var reportSectionHtml=function(panel,result){
     '<p class="scene-result-bubble">'+esc(bubble)+'</p></div>'+(parts.length?'<div class="webtoon-narration">'+parts.map(function(part){return '<p class="report-caption">'+esc(part)+'</p>';}).join('')+'</div>':'')+'</section>';
 };
 function reportShareBtnHtml(){return '<button type="button" class="share-btn" id="btn-share-report">'+uiIcon('share')+' 이 이야기 공유하기</button>';}
-function storyCategory(c){if(isNewYear(c))return 'newyear';if(isIan(c))return 'ian';if(isMarriage(c))return 'marriage';if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
+function storyCategory(c){if(isNewYear(c))return 'newyear';if(isIan(c))return 'ian';if(isYeonseo(c))return 'yeonseo';if(isMarriage(c))return 'marriage';if(isPocha(c))return 'pocha';return ({재물:'wealth',연애:'love',사랑:'love'})[c.category]||'unsupported';}
 function prologueDialogue(c,result){
   var v=reportVariables(result),money=storyCategory(c)==='wealth';
   var loveVoice={목:'함께라면, 조금 더 나다운 사람이 될 것 같아.',화:'좋아하는 마음은, 숨기고 싶지 않아.',토:'설렘보다 오래 남는 편안함이 좋아.',금:'쉽게 마음을 주진 않아. 그래서 더 신중해.',수:'생각은 깊은데, 마음은 쉽게 꺼내지 못해.'};
@@ -5771,9 +5772,14 @@ var NY_AREAS=[['love','연애'],['money','돈'],['work','일'],['health','건강
 function isNewYear(concept){return !!concept&&String(concept.id)===NEWYEAR_CONCEPT.id;}
 var IAN_CONCEPT={id:'20270102-5c1b-4e8a-a3f7-2b9d6e0c4f18',title:'이안의 비밀',tagline:'누가 나에게 빠지고, 나는 언제 무너질까',category:'연애',cover_img_url:'/assets/ian/bottle.webp',active:true,price_krw:7900};
 function isIan(concept){return !!concept&&String(concept.id)===IAN_CONCEPT.id;}
-/* 여우의 인연 장부: 목록에는 아직 없고 ?yeonseo=1 화면에서만 산다. 값과 본문은 서버(api/_yeonseo-content.js)가 정한다. */
-var YS_CONCEPT={id:'20271201-7a3e-4f1b-9c62-5d8e0b4a1f73',title:'여우의 인연 장부'};
+/* 여우의 인연 장부: 콘텐츠 탭 카드를 누르면 ?yeonseo=1 화면으로 간다. 값과 본문은 서버(api/_yeonseo-content.js)가 정한다. */
+var YS_CONCEPT={id:'20271201-7a3e-4f1b-9c62-5d8e0b4a1f73',title:'여우의 인연 장부',tagline:'그 사람과 나, 인연의 실은 어디까지 닿을까',category:'연애',cover_img_url:'/assets/yeonseo/cover-thumb.webp',active:true,price_krw:9900};
 function isYeonseo(concept){return !!concept&&String(concept.id)===YS_CONCEPT.id;}
+/* 장부는 서버 목록에 없으니, 콘텐츠 탭을 그릴 때 이안의 비밀 바로 뒤에 끼워 넣는다. */
+function withYeonseo(rows){
+  if(rows.some(isYeonseo))return rows;
+  var at=rows.findIndex(isIan),out=rows.slice();out.splice(at<0?0:at+1,0,Object.assign({},YS_CONCEPT));return out;
+}
 /* 홈·콘텐츠 탭 상단 배너. 넘기기는 브라우저 스크롤에 맡기고, 가만히 두면 5초마다 다음 장으로 넘어간다. */
 /* 콘텐츠를 골랐는데 아직 사주가 없을 때 먼저 보여 주는 첫 장면. 주소 ?c=love 처럼 바로 들어올 수도 있다. */
 var CONTENT_INTRO={};
@@ -6138,6 +6144,7 @@ function openIanViewer(concept,justPaid){
 function openReportViewer(concept,stage){
   if(isNewYear(concept)){openNewYearViewer(concept);return;}
   if(isIan(concept)){openIanViewer(concept);return;}
+  if(isYeonseo(concept)){location.href='/?yeonseo=1';return;}
   var root=$('#report-sheet-root');if(!root)return;
   if(storyCategory(concept)==='unsupported'){showToast('이 주제의 콘텐츠를 준비하고 있어요.');return;}
   if(!STATE.mySaju){rememberPendingReport(concept,stage);return;}
