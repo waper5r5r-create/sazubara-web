@@ -1866,7 +1866,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=19">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=20">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -4332,7 +4332,7 @@ function wireStarGift(scope,result){
  var btn=$('[data-star-make]',gift);if(btn)btn.addEventListener('click',function(){playStarReveal(scope,result);});
 }
 /* 콘텐츠 줄: 목록 API에서 자동으로 */
-function reportThumbSource(c){var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
+function reportThumbSource(c){var reg=contentOf(c);if(reg&&reg.thumb)return reg.thumb;var s=reportCoverSource(c,STATE.mySaju)||'';return /\/scenes\/cover\.webp$/.test(s)?s.replace('/scenes/cover.webp','/scenes/cover-thumb.webp'):s;}
 /* 결과 화면의 "미리 본 좋은 해": 유료 콘텐츠가 계산하는 10년 중 좋은 해 세 개 가운데 가장 가까운 해 하나만 보여 주고,
    나머지 두 해는 가린 채 그 콘텐츠로 이어 준다. 콘텐츠 안의 계산(marriageTimeline 등)을 그대로 써서 숫자가 어긋나지 않는다. */
 /* 결과 화면 "먼저 오는 좋은 달": 유료 풀이 맨 앞의 '앞으로 12개월'과 같은 계산으로, 주제마다 가장 가까운 좋은 달 하나만 보여 주고 나머지 둘은 가린다 */
@@ -4370,9 +4370,8 @@ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.c
  navPushTab();switchTab(go);window.scrollTo({top:0,behavior:'instant'});});
 function homeContentsHtml(){return '<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents role="status" aria-label="콘텐츠를 불러오는 중"><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div></div></section>';}
 /* 콘텐츠 카드 한 줄: 연도는 멀게 느껴져서, 그 콘텐츠가 답해 주는 질문을 내 이름으로 던진다 */
-var HOME_PREVIEW_Q={newyear:'의 2027년, 언제 가장 좋을까?',ian:'에게 빠지는 사람은 누구일까?',love:'은 언제, 어떤 사람과 이어질까?',wealth:'의 돈은 어디서 들어오고 어디로 샐까?',career:'에게 맞는 일은 따로 있을까?',marriage:'은 언제쯤 결혼하게 될까?'};
 function homePreviewLine(c,result){
- var cat=isPocha(c)?'career':storyCategory(c),q=HOME_PREVIEW_Q[cat];
+ var reg=contentOf(c),q=reg&&reg.ask;
  if(!q||!result||!result.day)return '';
  return '<em class="home-content-peek">'+uiIcon('spark')+(result.name?esc(result.name)+'님'+q:'나'+q.replace(/^은/,'는'))+'</em>';
 }
@@ -5772,33 +5771,33 @@ function isYeonseo(concept){return !!concept&&String(concept.id)===YS_CONCEPT.id
 /* 콘텐츠 등록표. 새 콘텐츠는 여기에 한 칸을 더하면 콘텐츠 탭 카드·묶음, 홈 배너와 풀이꾼, 바로가기 주소(?c=slug),
    결제 이름, 결제 후 돌아오기, 이미 산 경우 다시 열기가 모두 따라온다. (결제 취소 화면 fail.html, 약관 가격표, 서버 등록표는 테스트가 맞는지 확인한다)
    kind 화면 종류 · group 콘텐츠 탭 묶음(year 2027년 준비 / story 이야기로 읽는 사주 / topic 주제별) · who 홈 풀이꾼 이름
-   card 카드 한 줄(없으면 tagline) · thumb 카드 표지 · banner 홈·콘텐츠 배너 · intro 바로가기 첫 장면 목록 · left 읽는 중 아래 띠 문구
+   card 카드 한 줄(없으면 tagline) · ask 홈 카드 질문(이름 뒤에 붙는다) · thumb 카드 표지 · banner 홈·콘텐츠 배너 · intro 바로가기 첫 장면 목록 · left 읽는 중 아래 띠 문구
    concept 서버 목록 없이도 열 수 있는 콘텐츠(값 price_krw는 화면 표시용, 실제 금액은 서버가 정한다)
    single 한 번 결제로 전부 여는 콘텐츠 · open/afterPay/onOwned 자기 화면이 따로 있는 콘텐츠만 적는다 */
 var CONTENTS=[
- {id:NEWYEAR_CONCEPT.id,concept:NEWYEAR_CONCEPT,slug:'2027',kind:'newyear',group:'year',who:'다온',single:true,thumb:'/assets/daon/cover-thumb.webp',
+ {id:NEWYEAR_CONCEPT.id,concept:NEWYEAR_CONCEPT,slug:'2027',ask:'의 2027년, 언제 가장 좋을까?',kind:'newyear',group:'year',who:'다온',single:true,thumb:'/assets/daon/cover-thumb.webp',
   banner:{img:'/assets/daon/banner.webp',kicker:'2027 신년운세',title:'2027년이 보낸<br>편지가 도착했어요',note:'한 해 총평과 1월 편지는 무료'},
   intro:['한 해 총평과 좋은 달·조심할 달','달마다 연애·돈·일·건강 편지','1월 편지까지 무료로 읽어요'],left:'편지 11통이 더 남았어요',
   open:function(c){openNewYearViewer(c);},afterPay:function(c){openNewYearViewer(c);},onOwned:function(c){openNewYearViewer(c);}},
- {id:IAN_CONCEPT.id,concept:IAN_CONCEPT,slug:'ian',kind:'ian',group:'story',who:'이안',single:true,
+ {id:IAN_CONCEPT.id,concept:IAN_CONCEPT,slug:'ian',ask:'에게 빠지는 사람은 누구일까?',kind:'ian',group:'story',who:'이안',single:true,
   banner:{img:'/assets/banners/ian.webp',kicker:'이안의 비밀',title:'누가 나에게 빠지고,<br>나는 언제 무너질까?',note:'향으로 읽는 내 사주 이야기'},
   intro:['향으로 따라가는 내 연애의 비밀','누가 나에게 빠지고, 나는 언제 무너지는지','7장 중 2장까지 무료예요'],left:'다섯 장이 더 남았어요',
   open:function(c){openIanViewer(c);},afterPay:function(c){openIanViewer(c,true);},onOwned:function(c){openIanViewer(c);}},
- {id:YS_CONCEPT.id,concept:YS_CONCEPT,slug:'yeonseo',kind:'yeonseo',group:'story',who:'연서',single:true,thumb:'/assets/yeonseo/cover-thumb.webp',
+ {id:YS_CONCEPT.id,concept:YS_CONCEPT,slug:'yeonseo',ask:'의 끊긴 인연, 아직 이어져 있을까?',kind:'yeonseo',group:'story',who:'연서',single:true,thumb:'/assets/yeonseo/cover-thumb.webp',
   banner:{img:'/assets/banners/yeonseo.webp',kicker:'여우의 인연 장부',title:'그 사람과 나,<br>인연은 어디까지 닿을까?',note:'여우 연서가 적어 주는 둘의 장부'},
   intro:['그 사람과 나 사이의 인연 장부','둘의 사주로 보는 끌림과 엇갈림','첫 장은 무료예요'],
   open:function(){location.href='/?yeonseo=1';},afterPay:function(){location.replace('/?yeonseo=1&resume=1');},
   onOwned:function(){if(typeof globalThis.YS_ON_OWNED==='function')globalThis.YS_ON_OWNED();}},
- {id:'운명의-사람은-언제-올까-fyq1z',slug:'love',kind:'love',group:'topic',who:'해랑',card:'나는 어떤 사람에게 끌릴까?',
+ {id:'운명의-사람은-언제-올까-fyq1z',slug:'love',ask:'은 언제, 어떤 사람과 이어질까?',kind:'love',group:'topic',who:'해랑',card:'나는 어떤 사람에게 끌릴까?',
   banner:{img:'/assets/banners/love-v2.webp',kicker:'연애 사주',title:'언제, 어떤 사람과<br>이어질까?',note:'앞으로 10년, 연애운 좋은 해'},
   intro:['내가 끌리는 사람과 연애하는 방식','앞으로 10년 중 연애운이 좋은 세 해','썸·다툼·재회, 상황별 대응']},
- {id:'타고난-재물복은-얼마나-될까-k7dxw',slug:'money',kind:'wealth',group:'topic',who:'금비',card:'돈을 모으는 힘과 새는 습관은?',
+ {id:'타고난-재물복은-얼마나-될까-k7dxw',slug:'money',ask:'의 돈은 어디서 들어오고 어디로 샐까?',kind:'wealth',group:'topic',who:'금비',card:'돈을 모으는 힘과 새는 습관은?',
   banner:{img:'/assets/banners/wealth-v2.webp',kicker:'재물 사주',title:'내 돈은 어디로<br>새고 있을까?',note:'수입·지출·저축을 점수로 확인'},
   intro:['돈이 들어오는 힘과 새는 힘 점수','돈 흐름이 좋은 세 해','지출·저축·투자, 나에게 맞는 방법']},
- {id:'7c5db9e6-59cb-4a81-8b0a-73da4db7b051',slug:'work',kind:'pocha',group:'topic',who:'서림',
+ {id:'7c5db9e6-59cb-4a81-8b0a-73da4db7b051',slug:'work',ask:'에게 맞는 일은 따로 있을까?',kind:'pocha',group:'topic',who:'서림',
   banner:{img:'/assets/banners/career-v2.webp',kicker:'직업 사주',title:'나에게 맞는 일은<br>따로 있을까?',note:'일하는 스타일과 잘 풀리는 해'},
   intro:['일하는 스타일과 잘 맞는 일','길이 크게 열리는 세 해','이직·연봉·번아웃, 상황별 대응']},
- {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',slug:'marriage',kind:'marriage',group:'topic',who:'월하',card:'함께 살 때 중요하게 여기는 것은?',
+ {id:'dc6f87f4-86a7-47ce-ae91-3f6715dee2b0',slug:'marriage',ask:'은 언제쯤 결혼하게 될까?',kind:'marriage',group:'topic',who:'월하',card:'함께 살 때 중요하게 여기는 것은?',
   banner:{img:'/assets/banners/marriage-v2.webp',kicker:'결혼 사주',title:'나는 언제쯤<br>결혼하게 될까?',note:'잘 맞는 배우자와 좋은 시기'},
   intro:['나와 잘 맞는 배우자 유형','결혼운이 좋은 세 해','함께 살 때 다툼·돈·양가 가족']}
 ];

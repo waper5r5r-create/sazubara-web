@@ -561,6 +561,9 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 [data-theme="dark"] .saju-sal .shinsal-badge{background:#ffffff12;color:#f1d08a}
 .saju-sal li::before{content:none!important;display:none!important}
 .saju-sal li,.saju-sal li:first-child{padding-left:0!important}
+/* 살 이름표: 위 .saju-hook li span(위 여백 6px·작은 알약)이 이름표와 그 안의 한자에까지 겹쳐 글자가 아래로 밀리던 것을 되돌린다 */
+.saju-sal .shinsal-badge{display:inline-flex;align-items:center;gap:6px;margin:0;padding:7px 13px;line-height:1.3;background:var(--sal-soft,var(--surface-3));color:var(--sal-color,var(--accent))}
+.saju-sal .shinsal-badge .hj{display:inline;margin:0;padding:0;border-radius:0;background:none;color:inherit;line-height:inherit}
 [data-theme="dark"] #compat-result .locked-card{background:#ffffff0d!important;border-color:#ffffff1f!important}
 [data-theme="dark"] #compat-result .locked-card .cost-term,[data-theme="dark"] #compat-result .locked-card .cost-badge{color:#c9cde0!important}
 [data-theme="dark"] #compat-result .locked-card .lock-ic{color:#f1d08a}
@@ -580,3 +583,6 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 [data-theme="dark"]{--pw-good:#e7c27a;--pw-care:#d3a7b5}
 .report-page .ny-nav{top:60px;background:#0d1430}
 .report-page .ny-letter,.report-page .ny-offer{scroll-margin-top:124px}
+
+/* 홈 "주제별로 더 보기": 콘텐츠 수가 홀수면 마지막 카드가 왼쪽에 혼자 남지 않게 가운데로 */
+.home-content-row .home-content-card:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 6px)}
