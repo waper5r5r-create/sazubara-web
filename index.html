@@ -4268,11 +4268,24 @@ function homeCharOrder(){
 var HERO_STARS=[[10,10.8],[21.7,26.5],[33.9,12.5],[42.8,32.3],[57.4,28],[67.6,15.7],[80.2,29.7],[90.9,16]];
 /* 친구가 보낸 초대 링크로 들어왔는지(내 사주를 넣기 전까지 첫 화면을 궁합 초대로 보여 준다) */
 var INVITE_LANDING=false;
+/* 초대 링크를 보낸 사람 이름(/api/invite?action=who). 모르면 빈 값이라 "친구가 보낸"으로 보인다. */
+var INVITE_FROM='';
+function inviteFromTag(){return INVITE_FROM?esc(INVITE_FROM)+'님이 보낸 궁합 초대':'친구가 보낸 궁합 초대';}
+function inviteFromTitle(){return INVITE_FROM?esc(INVITE_FROM)+'님과 나,<br>얼마나 잘 맞을까요?':'우리 사이,<br>얼마나 잘 맞을까요?';}
+/* 초대 링크로 들어오면 보낸 사람 이름을 물어 와서, 이미 그려진 첫 화면의 제목만 바꾼다. 실패하면 그대로 둔다. */
+function loadInviteFrom(code){
+ if(!code)return;
+ fetch('/api/invite?action=who&code='+encodeURIComponent(code)).then(function(r){return r.json();}).then(function(d){
+  if(!d||!d.ok||!d.name)return;INVITE_FROM=d.name;
+  $all('[data-invite-from]').forEach(function(el){el.innerHTML=inviteFromTag();});
+  $all('[data-invite-title]').forEach(function(el){el.innerHTML=inviteFromTitle();});
+ }).catch(function(){});
+}
 function starHeroHtml(){
  var inv=INVITE_LANDING&&!(typeof STATE!=='undefined'&&STATE.mySaju);
  var stars=HERO_STARS.map(function(p,i){return '<i class="hero-star" style="left:'+p[0]+'%;top:'+p[1]+'%;--d:'+(0.35+i*0.13).toFixed(2)+'s;--t:'+(2.6+(i%3)*0.7).toFixed(1)+'s"></i>';}).join('');
  var names={};CONTENTS.forEach(function(e){if(e.who)names[String(e.id)]=e.who;});
- return '<div class="char-home"><div class="char-me'+(inv?' is-invite':'')+'">'+(inv?'<p class="editorial-tag">친구가 보낸 궁합 초대</p><h1>우리 사이,<br>얼마나 잘 맞을까요?</h1><p class="saju-hero-sub">내 생일만 넣으면 둘이 잘 맞는 점과<br>엇갈리는 점이 바로 나와요.</p>'+
+ return '<div class="char-home"><div class="char-me'+(inv?' is-invite':'')+'">'+(inv?'<p class="editorial-tag" data-invite-from>'+inviteFromTag()+'</p><h1 data-invite-title>'+inviteFromTitle()+'</h1><p class="saju-hero-sub">내 생일만 넣으면 둘이 잘 맞는 점과<br>엇갈리는 점을 볼 수 있어요.</p>'+
   '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>내 생일 넣고 우리 사이 보기</button><p class="saju-hero-gift">'+uiIcon('spark')+'자세한 궁합 풀이도 둘 다 무료예요</p>':'<p class="editorial-tag">무료 사주풀이</p><h1>내 사주에 적힌<br>사랑과 일의 때</h1><p class="saju-hero-sub">태어난 날의 여덟 글자로 타고난 성향과<br>앞으로 10년의 흐름을 짚어 드려요.</p>'+
   '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p>')+'<ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>바로 시작</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div>'+
   '<div class="char-list"><h2>오늘은 누구에게 물어볼까요?</h2><p class="char-list-sub">'+(['','한','두','세','네','다섯','여섯','일곱','여덟','아홉','열'][HOME_BANNERS.length]||HOME_BANNERS.length)+' 명의 풀이꾼이 내 사주로 이야기를 들려줘요. 앞부분은 무료예요.</p>'+
@@ -9151,8 +9164,10 @@ function init(){
   if (ti4) ti4.innerHTML = TAB_ICON_REPORTS;
   $('#btn-open-menu').addEventListener('click',openSiteMenu);
   initAuth().catch(function(){/* Other features remain available if the auth SDK cannot load. */});
+  var inviteCode = parseInviteHash(); /* initDevice가 주소에서 초대 코드를 지우기 전에 읽어 둔다 */
   var invited = initDevice();
   INVITE_LANDING = invited;
+  if (invited) loadInviteFrom(inviteCode);
   handleTossPaymentCallback();
   restoreFromUrl();
   pullPaidUnlocks();

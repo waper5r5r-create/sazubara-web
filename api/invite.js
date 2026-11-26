@@ -9,6 +9,8 @@
 //   invite_redemptions에서 내가 invitee인 행을 찾아 inviter_device_id를 모으고,
 //   각 inviter가 /api/device/save-saju 로 올려둔 자신의 사주(devices.saju_opts)를 가져와 합쳐 돌려줍니다.
 //   inviter가 saju_opts를 아직 올리지 않았으면 그 카드는 내려주지 않습니다.
+// GET  /api/invite?action=who&code=...  초대 링크를 연 친구에게 "누가 보냈는지" 이름만 알려 줍니다(2026-11-26).
+//   초대 코드(=보낸 사람 device_id)로 devices.saju_opts.name만 읽고, 생일 등 다른 값은 내려주지 않습니다. 읽기만 합니다.
 // POST /api/invite?action=redeem  body:{code, inviteeDeviceId, inviteeName, sajuOpts}
 //   친구가 초대 링크로 들어와서 "자기 사주를 직접 입력"했을 때 호출됩니다.
 //   - 같은 초대한 사람과 같은 친구 한 쌍은 한 번만 등록됩니다(inviter_device_id+invitee_device_id unique, 2026-11-07).
@@ -187,6 +189,29 @@ async function grantInviteCompat(inviterId, inviteeId) {
   return ok;
 }
 
+// 초대한 사람의 이름만 돌려준다. 이름이 없거나 찾지 못하면 빈 이름(화면은 "친구가 보낸"으로 둔다).
+async function handleWho(req, res) {
+  if (req.method !== 'GET') {
+    res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
+    return;
+  }
+  const code = String(getQuery(req).code || '');
+  if (!/^[A-Za-z0-9_.~-]{4,64}$/.test(code)) {
+    res.status(400).json({ ok: false, error: 'BAD_CODE' });
+    return;
+  }
+  try {
+    const r = await sbFetch('/devices?device_id=eq.' + encodeURIComponent(code) + '&select=saju_opts&limit=1', { method: 'GET' });
+    const rows = r.ok ? await r.json() : [];
+    const opts = (rows[0] && rows[0].saju_opts) || {};
+    const name = String(opts.name || '').replace(/[<>"'&]/g, '').trim().slice(0, 12);
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.status(200).json({ ok: true, name: name });
+  } catch (e) {
+    res.status(200).json({ ok: true, name: '' });
+  }
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   const q = getQuery(req);
@@ -194,5 +219,6 @@ module.exports = async (req, res) => {
   if (action === 'list') return handleList(req, res);
   if (action === 'received') return handleReceived(req, res);
   if (action === 'redeem') return handleRedeem(req, res);
+  if (action === 'who') return handleWho(req, res);
   res.status(400).json({ ok: false, error: 'UNKNOWN_ACTION' });
 };
