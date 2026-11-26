@@ -115,3 +115,20 @@ test('invite links carry the code as ?invite= (messengers can drop #...), old #i
   assert.equal(run('','#invite-old99'),'old99');assert.equal(run('?invite=<x>',''),null);assert.equal(run('',''),null);
   assert.match(html,/_u\.searchParams\.delete\('invite'\)/);
 });
+
+test('compat share links use /compat, which has its own preview and forwards to the invite or the compat tab',()=>{
+  const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+  assert.match(html,/function compatShareUrl\(\)\{ return 'https:\/\/www\.byeolcheop\.com\/compat\?invite=' \+ encodeURIComponent\(DEVICE\.shareCode\); \}/);
+  const page=fs.readFileSync(path.join(__dirname,'../compat.html'),'utf8');
+  assert.ok(page.includes('<meta property="og:image" content="https://www.byeolcheop.com/og-compat-v1.jpg">'));
+  assert.ok(fs.existsSync(path.join(__dirname,'../og-compat-v1.jpg')));
+  const rw=JSON.parse(fs.readFileSync(path.join(__dirname,'../vercel.json'),'utf8')).rewrites||[];
+  assert.ok(rw.some(r=>r.source==='/compat'&&r.destination==='/compat.html'));
+  const script=page.match(/<script>([\s\S]*?)<\/script>/)[1];
+  const go=search=>{let to='';vm.runInNewContext(script,{URLSearchParams,encodeURIComponent,location:{search,replace(u){to=u;}}});return to;};
+  assert.equal(go('?invite=abc123'),'/?invite=abc123');
+  assert.equal(go('?invite=abc123&utm_source=ig'),'/?invite=abc123&utm_source=ig');
+  assert.equal(go(''),'/?compat');
+  assert.equal(go('?utm_source=meta'),'/?compat&utm_source=meta');
+  assert.equal(go('?invite=<x>'),'/?compat');
+});

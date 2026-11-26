@@ -3622,6 +3622,8 @@ function initBackNav(startTab){
 
 /* ---- 공유 / 초대 ---- */
 function shareUrl(){ return 'https://www.byeolcheop.com/?invite=' + encodeURIComponent(DEVICE.shareCode); }
+/* 궁합 공유·초대 링크: /compat 은 카톡·인스타 미리보기가 궁합용이고, 열면 같은 초대 화면(/?invite=)으로 간다. */
+function compatShareUrl(){ return 'https://www.byeolcheop.com/compat?invite=' + encodeURIComponent(DEVICE.shareCode); }
 var KAKAO_JS_KEY = 'bd6e016153561dea8de15e57b4f39b15';
 var _kakaoSdkPromise = null;
 function loadKakaoSdk(){
@@ -3727,7 +3729,7 @@ function doShare(){
          그 친구와의 궁합 카드가 뜨고, 상대방 쪽 마이룸에도 "나를 초대한 상대"로 내가 뜨면서
             궁합이 계산된다 — 그래서 양쪽 다 결과를 볼 수 있다. */
    function doShareCompatInvite(resA){
-        var url = shareUrl();
+        var url = compatShareUrl();
         var myName = (resA && resA.name) || (STATE.mySaju&&STATE.mySaju.name) || '';
         var title = myName ? myName+'님이 우리 사이가 궁금하대요' : '우리 사이, 얼마나 잘 맞을까?';
         var text = '생일만 넣으면 둘이 잘 맞는 점과 엇갈리는 점을 무료로 볼 수 있어요.';
@@ -8762,7 +8764,7 @@ function isKakaoInApp(){
 function compatShareHeadline(resB, total){return cardHeadline({dayGanB:resB.day.ganKr,dayGanWxB:resB.dayGanWx,score:total});}
 function isMetaInApp(){var a=inAppBrowserName();return a==='인스타그램'||a==='페이스북'||a==='스레드';}
 function copyCompatLink(resA, resB){
-  copyToClipboard((resA.name||'나')+' ✕ '+(resB.name||'상대방')+', 우리 사이 얼마나 잘 맞을까?\n'+shareUrl());
+  copyToClipboard((resA.name||'나')+' ✕ '+(resB.name||'상대방')+', 우리 사이 얼마나 잘 맞을까?\n'+compatShareUrl());
   showToast('링크를 복사했어요. DM이나 스토리 링크 스티커에 붙여 넣어 보세요.');
 }
 /* 인스타 스토리 크기(1080×1920) 이미지를 화면에 띄운다. 앱 안 브라우저는 파일 저장이 잘 안 돼서 길게 눌러 저장하게 안내한다. */
@@ -8781,7 +8783,7 @@ function showStoryImage(canvas, resA, resB){
   maybeAwardShareBonus();
 }
 function doShareCompat(resA, resB, total, compat){
-  var url = shareUrl();
+  var url = compatShareUrl();
   var head = compatShareHeadline(resB, total), relTag = relationPhrase(compat.zhiRel, compat.ganRel);
   var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+', '+relTag+' · '+head.heading+' 💫 너랑 나는 어떤 사이일까? 별첩사주에서 확인해 보세요';
   if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '별첩사주 궁합'); return; }
