@@ -265,6 +265,18 @@ body{background:var(--ds-paper)}
 /* 궁합 입력: 빠진 칸 표시, 링크 보내기 전 안내 */
 .field-missing input{border-color:#d9534f!important;box-shadow:0 0 0 3px #d9534f22}
 .compat-need-me{margin:0 0 10px;padding:10px 12px;border-radius:10px;background:var(--ds-card);border:1px dashed var(--ds-line);font-size:.8125rem;color:var(--ds-ink-2)}
+/* 궁합 결과: 관계 꼬리표, 장부로 잇기, 다음 행동 */
+.card-relation-tag{display:inline-block;margin:4px 0 0;padding:3px 10px;border-radius:999px;background:#e0ad5522;color:#9a7330;font-size:.75rem;font-weight:700}
+.compat-ledger{display:flex;gap:14px;align-items:flex-start}
+.compat-ledger img{flex:0 0 84px;width:84px;height:112px;object-fit:cover;border-radius:10px}
+.compat-ledger-kicker{margin:0 0 4px;font-size:.75rem;font-weight:700;color:#9a7330}
+.compat-ledger-title{margin:0 0 6px;font-size:1rem;font-weight:700;color:var(--ds-ink)}
+.compat-ledger-sub{margin:0 0 12px;font-size:.8125rem;line-height:1.6;color:var(--ds-ink-2)}
+.compat-ledger-go{min-height:44px;padding:0 16px;border-radius:12px;border:0;background:#1b2140;color:#f3ead6;font-weight:700}
+.compat-next{text-align:center}
+.compat-next-title{margin:0 0 12px;font-weight:700;color:var(--ds-ink)}
+.compat-next-btn{display:block;width:100%;min-height:48px;margin:0 0 8px;border:0;border-radius:14px;background:linear-gradient(110deg,#f0d38c,#d9a957);color:#2a1f0c;font-weight:700}
+.compat-next-btn.is-sub{margin:0;background:none;border:1px solid var(--ds-line);color:var(--ds-ink)}
 /* 상대 태어난 시간 접기 */
 .birth-time.is-folded .birth-bands,.birth-time.is-folded .birth-shift-note,.birth-time.is-folded .birth-exact-toggle,.birth-time.is-folded .birth-exact{display:none!important}
 .birth-fold{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--ds-line);border-radius:12px;background:var(--ds-card)}

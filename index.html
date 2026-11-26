@@ -1866,7 +1866,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=24">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=25">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -5361,8 +5361,14 @@ var CARD_RELATION_QUOTES={
  'water-yin':'말하지 못한 마음까지 조용히 들어 주는 사람이에요.'
 };
 /* 궁합 관계 한 줄: 화면의 '너에게, 이런 존재'와 공유 이미지가 같은 제목·인용을 쓴다. */
+/* 관계 꼬리표: 띠 사이 관계가 있으면 그것으로, 없으면 두 사람 태어난 날 기운의 관계로 고른다. */
+var GAN_REL_PHRASE = {sheng:'내가 힘을 보태 주는 인연', shengBack:'곁에서 힘을 얻는 인연', ke:'내가 이끌어 가는 인연', keBack:'나를 단단히 잡아 주는 인연', same:'서로 닮은 결의 인연'};
+function relationPhrase(zhiRel, ganRel){
+  if (zhiRel && zhiRel !== 'none' && typeof ZHI_REL_SHORT !== 'undefined' && ZHI_REL_SHORT[zhiRel]) return ZHI_REL_SHORT[zhiRel].phrase;
+  return GAN_REL_PHRASE[ganRel] || (zhiRel ? '무던하게 흘러가는 인연' : '');
+}
 function cardHeadline(entry){var type=cardTypeOf(entry),key=myroomTier(entry.score).key;return {heading:{s:'마음이 먼저 닿는 사이',a:'서로를 채워주는 사이',b:'천천히 단단해지는 사이',c:'다른 결로 만나는 사이'}[key],quote:type?CARD_RELATION_QUOTES[type.id]:'네 하루에 아직 펼쳐지지 않은 이야기를 가져올 존재.'};}
-function cardMeaningHtml(entry){var type=cardTypeOf(entry),tier=myroomTier(entry.score);var endings={s:'말보다 마음이 먼저 닿는, 자연스럽게 가까워지는 인연.',a:'서로의 빈자리를 채우며, 함께일 때 더 빛나는 인연.',b:'처음엔 조금 달라도, 알아갈수록 편안해지는 인연.',c:'걸음의 속도는 달라도, 서로의 길을 넓혀줄 수 있는 인연.'};var headings={s:'마음이 먼저 닿는 사이',a:'서로를 채워주는 사이',b:'천천히 단단해지는 사이',c:'다른 결로 만나는 사이'};return '<section class="card-meaning"><p class="reader-kicker">너에게, 이런 존재</p><h3>'+headings[tier.key]+'</h3><p class="card-relation-quote">'+(type?CARD_RELATION_QUOTES[type.id]:'네 하루에 아직 펼쳐지지 않은 이야기를 가져올 존재.')+'</p><p class="card-relation-ending">'+endings[tier.key]+'</p></section>';}
+function cardMeaningHtml(entry){var type=cardTypeOf(entry),tier=myroomTier(entry.score);var endings={s:'말보다 마음이 먼저 닿는, 자연스럽게 가까워지는 인연.',a:'서로의 빈자리를 채우며, 함께일 때 더 빛나는 인연.',b:'처음엔 조금 달라도, 알아갈수록 편안해지는 인연.',c:'걸음의 속도는 달라도, 서로의 길을 넓혀줄 수 있는 인연.'};var headings={s:'마음이 먼저 닿는 사이',a:'서로를 채워주는 사이',b:'천천히 단단해지는 사이',c:'다른 결로 만나는 사이'};var relTag=relationPhrase(entry.zhiRel,entry.ganRel);return '<section class="card-meaning"><p class="reader-kicker">너에게, 이런 존재</p>'+(relTag?'<p class="card-relation-tag">'+relTag+'</p>':'')+'<h3>'+headings[tier.key]+'</h3><p class="card-relation-quote">'+(type?CARD_RELATION_QUOTES[type.id]:'네 하루에 아직 펼쳐지지 않은 이야기를 가져올 존재.')+'</p><p class="card-relation-ending">'+endings[tier.key]+'</p></section>';}
 function myroomCardHtml(entry,rank){return collectibleCardHtml(entry,false);}
 function cardAlbumIntro(list){return '';}
 function cardSymbolGuideHtml(){return '';}
@@ -7882,6 +7888,37 @@ function shinsalCompatHtml(resA, resB){
 }
 /* 직접 입력한 궁합도 별자리에서 친구를 열었을 때와 같은 순서로 보여 준다:
    궁합 카드 → 이런 존재 → 우리 사이 리포트(990원) → 오늘의 케미 → 공유. 결제 키와 결제 흐름은 그대로다. */
+/* 결과 끝 '다른 사람과 궁합 보기': 상대 칸만 비우고 그 칸으로 올린다. */
+function compatAgain(){
+  var form = $('#compat-form'); if (!form) return;
+  if (form.hidden){ var add = $('#album-add'); if (add) add.click(); }
+  var manual = $('#c-b-mode button[data-val="manual"]'); if (manual && !manual.classList.contains('active')) manual.click();
+  ['#c-name-b','#c-date-b'].forEach(function(id){ var el = $(id); if (el){ el.value=''; el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true})); } });
+  var box = $('#c-name-b'); var field = box && (box.closest('.field') || box);
+  if (field){ field.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(function(){ try{ box.focus({preventScroll:true}); }catch(e){} }, 400); }
+}
+/* 멀어진 사이라면: 여우의 인연 장부(이미 있는 유료 콘텐츠)로 이어 준다. 상대 이름·생일·성별은 이 탭에서만 잠깐 넘긴다. */
+function ledgerThemFrom(resB){
+  var o = resB && resB._input; if (!o || !o.year) return null;
+  var y=o.year, m=o.month, d=o.day;
+  if (o.isLunar){ try{ var s=Lunar.fromYmd(y,o.isLeapMonth?-m:m,d).getSolar(); y=s.getYear(); m=s.getMonth(); d=s.getDay(); }catch(e){ return null; } }
+  if (y < 1930 || y > 2015) return null;
+  return {ymd:String(y)+String(m).padStart(2,'0')+String(d).padStart(2,'0'), gender:o.gender==='m'?'m':'f', name:o.name||''};
+}
+function compatLedgerHtml(resB){
+  if (!ledgerThemFrom(resB) || typeof YS_CONCEPT === 'undefined') return '';
+  var nm = esc(resB.name || '그 사람');
+  return '<div class="card compat-ledger"><img src="/assets/yeonseo/cover-thumb.webp" alt="" loading="lazy" decoding="async">'+
+    '<div><p class="compat-ledger-kicker">여우의 인연 장부 · '+krwFmt(YS_CONCEPT.price_krw)+'원</p>'+
+    '<p class="compat-ledger-title">'+nm+'님과 멀어진 사이라면</p>'+
+    '<p class="compat-ledger-sub">끊긴 인연이 아직 이어져 있는지, 연서가 둘의 사주로 장부를 적어 줘요. 첫 장은 무료예요.</p>'+
+    '<button type="button" class="compat-ledger-go" id="btn-compat-ledger">'+nm+'님과의 장부 열기</button></div></div>';
+}
+function openLedgerWith(resB){
+  var them = ledgerThemFrom(resB);
+  try{ if (them) sessionStorage.setItem('ys-them', JSON.stringify(them)); }catch(e){}
+  location.href = '/?yeonseo=1';
+}
 function renderCompatResult(resA, resB, compat){
   var wrap = $('#compat-result');
   var total = compat.scores.total;
@@ -7900,11 +7937,19 @@ function renderCompatResult(resA, resB, compat){
       '</div>'+
     '</div>'+
     '<div class="card" id="compat-detail-card"></div>'+
-    '<div class="card" id="couple-today-card"></div>';
+    '<div class="card" id="couple-today-card"></div>'+
+    compatLedgerHtml(resB)+
+    '<div class="card compat-next"><p class="compat-next-title">다른 사람과도 볼까요?</p>'+
+      '<button type="button" class="compat-next-btn" id="btn-compat-again">다른 사람과 궁합 보기</button>'+
+      '<button type="button" class="compat-next-btn is-sub" id="btn-compat-invite-more">친구에게 링크 보내기</button>'+
+    '</div>';
   wrap.hidden = false;
 
   $('#btn-share-compat').addEventListener('click', function(){ doShareCompat(resA, resB, total, compat); });
   $('#btn-copy-compat').addEventListener('click', function(){ copyCompatLink(resA, resB); });
+  $('#btn-compat-again').addEventListener('click', compatAgain);
+  $('#btn-compat-invite-more').addEventListener('click', function(){ doShareCompatInvite(resA); });
+  var ledgerGo = $('#btn-compat-ledger'); if (ledgerGo) ledgerGo.addEventListener('click', function(){ openLedgerWith(resB); });
 
   renderCoupleTodayCard(resA, resB);
   renderCompatDetailSection(resA, resB, compat, entry.id);
@@ -8327,6 +8372,7 @@ function buildCompatShareCard(resA, resB, compat, total, opts){
     subKeys.forEach(function(k){ if (compat.scores[k] > compat.scores[bestKey]) bestKey = k; });
     var bestVal = compat.scores[bestKey];
 
+    if (opts.relation){ ctx.fillStyle='#c9b98a'; ctx.font='400 26px "Noto Sans KR", sans-serif'; ctx.fillText(opts.relation, ringCx, ringCy+ringR+46); }
     ctx.fillStyle='#e0ad55'; ctx.font='700 40px "Noto Serif KR", serif';
     ctx.fillText(opts.headline || (rel.tag+' 궁합 · '+rel.phrase), ringCx, ringCy+ringR+92);
 
@@ -8637,15 +8683,15 @@ function showStoryImage(canvas, resA, resB){
 }
 function doShareCompat(resA, resB, total, compat){
   var url = shareUrl();
-  var head = compatShareHeadline(resB, total);
-  var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+', '+head.heading+' 💫 너랑 나는 어떤 사이일까? 별첩사주에서 확인해 보세요';
+  var head = compatShareHeadline(resB, total), relTag = relationPhrase(compat.zhiRel, compat.ganRel);
+  var text = (resA.name||'나')+' ✕ '+(resB.name||'상대방')+', '+relTag+' · '+head.heading+' 💫 너랑 나는 어떤 사이일까? 별첩사주에서 확인해 보세요';
   if (!document.createElement('canvas').getContext){ fallbackTextShare(text, url, '별첩사주 궁합'); return; }
   if (isMetaInApp()){
-    buildCompatShareCard(resA, resB, compat, total, {story:true, headline:head.heading, quote:head.quote}).then(function(canvas){ showStoryImage(canvas, resA, resB); })
+    buildCompatShareCard(resA, resB, compat, total, {story:true, headline:head.heading, quote:head.quote, relation:relTag}).then(function(canvas){ showStoryImage(canvas, resA, resB); })
       .catch(function(){ copyCompatLink(resA, resB); });
     return;
   }
-  buildCompatShareCard(resA, resB, compat, total, {headline:head.heading, quote:head.quote}).then(function(canvas){
+  buildCompatShareCard(resA, resB, compat, total, {headline:head.heading, quote:head.quote, relation:relTag}).then(function(canvas){
     canvas.toBlob(function(blob){
       if (!blob){ fallbackTextShare(text, url, '별첩사주 궁합'); return; }
       shareImageBlob(canvas, blob, text, url, 'byeolcheop-compat.png', '별첩사주 궁합', '우리 궁합 확인하기');
@@ -9326,10 +9372,11 @@ function init(){
 function ysMine(){var o=STATE&&STATE._mySajuOpts;if(!o||!o.year)return null;var y=o.year,m=o.month,d=o.day;
  if(o.isLunar){try{var s=Lunar.fromYmd(y,o.isLeapMonth?-m:m,d).getSolar();y=s.getYear();m=s.getMonth();d=s.getDay();}catch(e){return null;}}
  return {ymd:String(y)+String(m).padStart(2,'0')+String(d).padStart(2,'0'),gender:o.gender==='m'?'m':'f',name:o.name||'',city:o.city||'서울',time:o.unknownTime?null:{hour:+o.hour,minute:+o.minute||0}};}
-globalThis.YS_ENGINE={mine:ysMine,home:function(){try{history.replaceState({},'','/');}catch(e){}switchTab('reports');},computeSaju:computeSaju,zhiRelation:zhiRelation,todayGanZhi:todayGanZhi,SS_KR:SS_KR,device:function(){return DEVICE.shareCode||'';},buy:function(){startReportUnlock(YS_CONCEPT,'story');}};
+function ysThem(){try{var r=sessionStorage.getItem('ys-them');if(!r)return null;sessionStorage.removeItem('ys-them');var t=JSON.parse(r);return t&&/^\d{8}$/.test(t.ymd)?t:null;}catch(e){return null;}}
+globalThis.YS_ENGINE={mine:ysMine,them:ysThem,home:function(){try{history.replaceState({},'','/');}catch(e){}switchTab('reports');},computeSaju:computeSaju,zhiRelation:zhiRelation,todayGanZhi:todayGanZhi,SS_KR:SS_KR,device:function(){return DEVICE.shareCode||'';},buy:function(){startReportUnlock(YS_CONCEPT,'story');}};
 if (typeof location!=='undefined' && /[?&]yeonseo=1(&|$)/.test(location.search)){
   var ysCss=document.createElement('link');ysCss.rel='stylesheet';ysCss.href='/assets/yeonseo/yeonseo.css';document.head.appendChild(ysCss);
-  var ysJs=document.createElement('script');ysJs.src='/assets/yeonseo/yeonseo.js';ysJs.defer=true;document.head.appendChild(ysJs);
+  var ysJs=document.createElement('script');ysJs.src='/assets/yeonseo/yeonseo.js?v=2';ysJs.defer=true;document.head.appendChild(ysJs);
 }
 
 if (document.readyState==='loading'){

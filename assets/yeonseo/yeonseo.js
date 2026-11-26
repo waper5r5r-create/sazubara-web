@@ -331,12 +331,25 @@ async function run(){
   ],'그 사람 이야기로');
   scene('F04','ears');                                                 /* 8 대화: F04 */
   await say(['이제, 그 사람.','이름이랑 생일을 알면 둘 사이 줄 모양까지 볼 수 있어. 모르면 넘어가도 돼.']);
+  /* 궁합 탭에서 넘어왔으면 그때 넣은 상대를 그대로 쓸지 먼저 묻는다. */
+  var pre=eng()&&eng().them?eng().them():null; if (pre&&!validDate(pre.ymd)) pre=null;
+  var tg, tb;
+  if (pre){
+    var pn=pre.name||'그 사람';
+    await say(['궁합에서 본 '+esc(pn)+', '+ymdKr(pre.ymd)+'생. 그 사람 맞지?']);
+    var same=await askChoice(['응, '+pn+josa(pn,'이야','야'),'다른 사람이야']); me(same);
+    if (same==='다른 사람이야') pre=null;
+  }
+  if (pre){
+    S.themName=pre.name||'그 사람'; tg=pre.gender==='m'?'남성':'여성'; tb=pre.ymd;
+  } else {
   S.themName = await askText('그 사람 이름은…','이름 또는 별명'); me(S.themName+josa(S.themName,'이야.','야.'));
-  var tg = await askChoice(['남성','여성']); me(tg+josa(tg,'이야.','야.'));
+  tg = await askChoice(['남성','여성']); me(tg+josa(tg,'이야.','야.'));
   await say([esc(S.themName)+' 생일은?']);
-  var tb = await askDate('그 사람 생일은…','생일을 몰라');
+  tb = await askDate('그 사람 생일은…','생일을 몰라');
+  }
   S.input.tb=tb||null; S.input.tg=tg;
-  if (tb){ me(ymdKr(tb)+'이야.'); S.them=chart(tb, tg==='여성'?'f':'m', S.themName); } else me('생일은 몰라.');
+  if (tb){ if (!pre) me(ymdKr(tb)+'이야.'); S.them=chart(tb, tg==='여성'?'f':'m', S.themName); } else me('생일은 몰라.');
   tail();
   var P = pair(S.me, S.them);
   if (S.them) await fxLine(P);                                         /* 9 연출: 먹선 */
