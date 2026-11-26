@@ -5936,8 +5936,18 @@ function showContentIntro(concept,next){
 function openContentFromUrl(){
  var u=new URL(location.href),slug=u.searchParams.get('c');if(!slug)return;
  u.searchParams.delete('c');try{history.replaceState(history.state,'',u.pathname+u.search+u.hash);}catch(e){}
- var e=CONTENTS.filter(function(x){return x.slug===slug;})[0];if(e)openContentById(e.id);
+ var e=CONTENTS.filter(function(x){return x.slug===slug;})[0];if(e){openContentById(e.id);contentHead(e);}
 }
+/* ?c=love 처럼 콘텐츠 주소로 들어오면 검색에 그 콘텐츠 이름과 소개가 잡히게 제목·설명·대표 주소를 바꾼다. 아래 탭을 누르면 원래대로 돌린다. */
+var HOME_HEAD=null;
+function headTags(){return {d:document.querySelector('meta[name="description"]'),c:document.querySelector('link[rel="canonical"]')};}
+function contentHead(e){var t=headTags(),b=e.banner||{};if(!b.kicker)return;
+ if(!HOME_HEAD)HOME_HEAD={title:document.title,d:t.d&&t.d.content,c:t.c&&t.c.href};
+ document.title=b.kicker+' — 별첩사주';
+ if(t.d)t.d.content=String(b.title||'').replace(/<br>/g,' ')+' '+(e.intro||[]).join(' · ');
+ if(t.c)t.c.href='https://www.byeolcheop.com/?c='+e.slug;
+}
+function homeHead(){if(!HOME_HEAD)return;var t=headTags();document.title=HOME_HEAD.title;if(t.d)t.d.content=HOME_HEAD.d;if(t.c)t.c.href=HOME_HEAD.c;HOME_HEAD=null;}
 var HOME_BANNERS=CONTENTS.filter(function(e){return e.banner;}).map(function(e){return Object.assign({id:String(e.id)},e.banner);});
 function homeBannerHtml(){
  return '<section class="home-banners" aria-label="추천 콘텐츠"><div class="banner-track" data-banner-track>'+HOME_BANNERS.map(function(b,i){return '<button type="button" class="ny-banner" data-banner-id="'+esc(b.id)+'"><img src="'+b.img+'" alt="" decoding="async"><span><small>'+esc(b.kicker)+'</small><b>'+b.title+'</b><em>'+esc(b.note)+'</em></span></button>';}).join('')+'</div>'+
@@ -9178,7 +9188,7 @@ function init(){
   maybeSaveNudge('inapp');
 
   $all('.tab-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){ var cur=$('.tab-btn.active');var from=cur&&cur.dataset.tab;if(from&&from!==btn.dataset.tab)navPushTab();switchTab(btn.dataset.tab);window.scrollTo({top:0,behavior:'instant'}); });
+    btn.addEventListener('click', function(){ homeHead(); var cur=$('.tab-btn.active');var from=cur&&cur.dataset.tab;if(from&&from!==btn.dataset.tab)navPushTab();switchTab(btn.dataset.tab);window.scrollTo({top:0,behavior:'instant'}); });
   });
 
   /* 이미 사주를 넣어 둔 사람이 초대 링크를 열면 다시 입력하지 않으니, 저장된 사주로 바로 등록해요 */
