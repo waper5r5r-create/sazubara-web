@@ -1866,7 +1866,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=23">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=24">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -5153,6 +5153,7 @@ function refreshCompatPersonA(){
          '</div>'+
          '<div id="c-b-kakao-pane">'+
            '<p class="section-desc">상대의 생년월일을 몰라도 괜찮아요. 링크를 보내면 상대가 직접 입력하고, 둘의 궁합을 함께 볼 수 있어요.</p><p class="invite-gift">친구가 처음 들어와 사주를 넣으면 두 사람 모두 궁합 상세(990원)를 무료로 볼 수 있어요.</p>'+
+           '<p class="compat-need-me" data-need-me>위에 내 이름과 생년월일을 넣으면 링크를 보낼 수 있어요.</p>'+
            '<button type="button" class="btn-primary" id="btn-compat-kakao-invite">궁합 링크 보내기</button>'+
          '</div>'+
          '<div id="c-b-manual-pane" hidden>'+
@@ -5185,7 +5186,7 @@ function refreshCompatPersonA(){
      $all('button',$('#c-gender-b')).forEach(function(b){ b.addEventListener('click', function(){ PARTNER_GENDER_TOUCHED = true; }); });
      $all('button',$('#c-gender-a')).forEach(function(b){ b.addEventListener('click', syncPartnerGender); });
      var useMyBox = $('#c-use-my-saju');
-     var toggleA = function(){ $('#person-a-wrap').hidden = (!$('#c-use-my-saju-row').hidden && useMyBox.checked); syncPartnerGender(); };
+     var toggleA = function(){ $('#person-a-wrap').hidden = (!$('#c-use-my-saju-row').hidden && useMyBox.checked); var need = $('[data-need-me]'); if (need) need.hidden = $('#person-a-wrap').hidden; syncPartnerGender(); };
      useMyBox.addEventListener('change', toggleA);
      window._compatToggleA = toggleA;
      refreshCompatPersonA();
@@ -5196,7 +5197,7 @@ function refreshCompatPersonA(){
          resA = (STATE.mySaju && $('#c-use-my-saju') && $('#c-use-my-saju').checked) ?
            STATE.mySaju : readPersonForm('a');
        }catch(err){
-         alertInline('내 정보를 먼저 입력해주세요. ('+err.message+')');
+         compatFieldAlert(err);
          return;
        }
        doShareCompatInvite(resA);
@@ -5218,7 +5219,7 @@ function refreshCompatPersonA(){
            if (rw){ var hd = $('.app-header'); window.scrollTo({ top: Math.max(0, rw.getBoundingClientRect().top + window.scrollY - (hd ? hd.offsetHeight : 64) - 8), behavior:'instant' }); }
          });
    }catch(err){
-         alertInline('입력값을 다시 확인해주세요. ('+err.message+')');
+         compatFieldAlert(err);
        }
      });
 
@@ -5419,6 +5420,7 @@ function openMyroomDetail(entry){
           '<button type="button" class="sheet-close" id="myroom-detail-close">'+uiIcon('close')+'</button>'+
         '</div>'+
         cardMeaningHtml(entry)+collectibleCardHtml(entry,true)+
+        ((STATE.mySaju && entry._sajuB) ? '<div class="compat-share-row"><button type="button" class="share-btn" id="btn-share-sheet">'+uiIcon('share')+' 우리 궁합 공유하기</button><button type="button" class="compat-copy-link" id="btn-copy-sheet">링크 복사</button></div>' : '')+
         '<section class="sky-premium" data-myroom-premium></section>'+
         (chemi ?
           '<div class="detail-block"><p class="ttl">오늘의 케미</p>'+
@@ -5434,6 +5436,10 @@ function openMyroomDetail(entry){
     '</div>';
   $('#myroom-detail-backdrop').addEventListener('click', closeMyroomDetail);
   $('#myroom-detail-close').addEventListener('click', closeMyroomDetail);
+  if ($('#btn-share-sheet')){
+    $('#btn-share-sheet').addEventListener('click', function(){ var c = computeCompat(STATE.mySaju, entry._sajuB); doShareCompat(STATE.mySaju, entry._sajuB, c.scores.total, c); });
+    $('#btn-copy-sheet').addEventListener('click', function(){ copyCompatLink(STATE.mySaju, entry._sajuB); });
+  }
   renderSkyPremium(entry,$('[data-myroom-premium]',root));
   wireMyroomDeleteBtn(entry);
   if (chemi && isUnlocked('feature-today-premium')) renderChemiDetailSlot(entry, chemi);
@@ -7822,10 +7828,12 @@ function segValue(segEl){
   return active ? active.dataset.val : null;
 }
 
+function fieldError(msg, id){ var e = new Error(msg); e.field = id; return e; }
 function readPersonForm(suf){
-  if (!$('#c-name-'+suf).value.trim()) throw new Error((suf==='a'?'내':'상대방')+' 이름을 입력해주세요');
+  if (!$('#c-name-'+suf).value.trim()) throw fieldError((suf==='a'?'내':'상대방')+' 이름을 넣어 주세요', 'c-name-'+suf);
+  var who = suf==='a' ? '내' : '상대방';
   var dateStr = $('#c-date-'+suf).value;
-  if (!dateStr) throw new Error('생년월일을 입력해주세요');
+  if (!dateStr) throw fieldError(who+' 생년월일을 넣어 주세요', 'c-date-'+suf);
   var parts = dateStr.split('-').map(Number);
   var timeStr = $('#c-time-'+suf).value || '12:00';
   var timeParts = timeStr.split(':').map(Number);
@@ -8742,6 +8750,16 @@ function saveMyRoomEntry(resA, resB, compat, total, extra){
   }
 }
 
+/* 궁합 입력에서 빠진 칸: 알림을 띄우고 그 칸으로 화면을 옮겨 커서를 놓는다(예전엔 탭 맨 위에 떠서 보이지 않았다). */
+function compatFieldAlert(err){
+  showToast(err && err.message ? err.message : '입력한 내용을 다시 확인해 주세요');
+  var el = err && err.field && document.getElementById(err.field); if (!el) return;
+  var box = el.closest('.field') || el;
+  box.scrollIntoView({behavior:'smooth', block:'center'});
+  box.classList.add('field-missing'); setTimeout(function(){ box.classList.remove('field-missing'); }, 2600);
+  var input = $all('input', box).filter(function(i){ return i.type!=='hidden' && i.offsetParent!==null; })[0];
+  if (input) setTimeout(function(){ try{ input.focus({preventScroll:true}); }catch(e){ input.focus(); } }, 400);
+}
 function alertInline(msg){
   var el = document.createElement('div');
   el.className='card'; el.style.color='var(--bad)'; el.textContent = msg;

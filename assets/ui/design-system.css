@@ -262,6 +262,9 @@ body{background:var(--ds-paper)}
 .compat-hero-sub{margin:0 0 22px;font-size:.9375rem;line-height:1.6;color:#d8d2c2}
 .compat-hero-cta{display:block;width:100%;min-height:52px;border:0;border-radius:14px;background:linear-gradient(110deg,#f0d38c,#d9a957);color:#2a1f0c;font-size:1rem;font-weight:700}
 .compat-hero-note{margin:12px 0 0;font-size:.8125rem;text-align:center;color:#b9b3a4}
+/* 궁합 입력: 빠진 칸 표시, 링크 보내기 전 안내 */
+.field-missing input{border-color:#d9534f!important;box-shadow:0 0 0 3px #d9534f22}
+.compat-need-me{margin:0 0 10px;padding:10px 12px;border-radius:10px;background:var(--ds-card);border:1px dashed var(--ds-line);font-size:.8125rem;color:var(--ds-ink-2)}
 /* 상대 태어난 시간 접기 */
 .birth-time.is-folded .birth-bands,.birth-time.is-folded .birth-shift-note,.birth-time.is-folded .birth-exact-toggle,.birth-time.is-folded .birth-exact{display:none!important}
 .birth-fold{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--ds-line);border-radius:12px;background:var(--ds-card)}
