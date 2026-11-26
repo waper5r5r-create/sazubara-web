@@ -639,3 +639,6 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 
 /* 홈 "주제별로 더 보기": 콘텐츠 수가 홀수면 마지막 카드가 왼쪽에 혼자 남지 않게 가운데로 */
 .home-content-row .home-content-card:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 6px)}
+/* 결제 칸 아래 안내(제공·이용 기간, 환불 제한): 작고 흐리게, 줄 간격은 조금 넓게 */
+html body .reader-price-note,html body .report-page .reader-price-note,html body .story-gate .reader-price-note{font-size:11px;line-height:2;opacity:.7}
+html body .cost-term,html body .cost-note{margin-top:8px;font-size:11px;line-height:1.9;opacity:.72}
