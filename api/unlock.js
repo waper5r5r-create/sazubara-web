@@ -4,7 +4,7 @@
 // 다루는 unlock_key 종류:
 // - feature-saju-deep     : 고민상담 전체 카테고리 (4,900원, 기기당 1회, 이용 기간 1년)
 // - feature-today-premium : 월간 프리미엄 + 오늘의 케미 상세 (990원, 기기당 1회, 이용 기간 1년)
-// - compat-<pairKey>      : 궁합 상세 리포트 (990원, 기기+조합 쌍마다 1회)
+// - compat-<pairKey>      : 궁합 깊이 보기 (2,900원, 기기+조합 쌍마다 1회. 2026-11-26 전에는 990원 상세 리포트)
 //
 // 지급 금액은 클라이언트가 보낸 값이 아니라, 토스가 실제로 승인한 결제금액(KRW)을 서버가 직접
 // PAID_UNLOCK_PRICE_BY_KEY(또는 compat- 접두사는 고정가)에 대조해서 검증합니다.
@@ -38,7 +38,7 @@ const PAID_UNLOCK_PRICE_BY_KEY = {
   'feature-saju-deep': 4900,
   'feature-today-premium': 990
 };
-const COMPAT_DETAIL_PRICE = 990;
+const COMPAT_DETAIL_PRICE = 2900;
 
 function priceForUnlockKey(key) {
   if (typeof key !== 'string' || !key) return null;

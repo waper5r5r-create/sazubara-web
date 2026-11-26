@@ -17,8 +17,8 @@
 //     같은 링크를 두 번 눌러도 이름이 두 번 뜨지 않고, 다른 사람의 초대로는 또 이어질 수 있어요.
 //     (예전에는 invitee_device_id 하나만 unique여서 한 사람이 평생 한 번만 초대받을 수 있었어요.)
 //   - 자기 자신의 초대코드로는 등록되지 않습니다(자기 초대 방지).
-//   - 처음 등록될 때 두 사람 모두에게 "서로의 궁합 상세 리포트"(990원)를 무료로 열어 줍니다.
-//     paid_unlocks에 amount 0, unlock_key 'invite-compat-<상대 device_id>'로 한 줄씩 넣습니다.
+//   - 2026-11-26부터 초대로 궁합 상세를 무료로 열어 주지 않습니다(기본 궁합이 누구나 무료가 됨).
+//     예전에 받은 'invite-compat-<상대 device_id>' (amount 0) 기록은 그대로 두고, 화면도 계속 열어 줍니다.
 //
 // 로그인으로 같은 계정에 묶인 기기들(account_devices)은 별첩을 함께 씁니다(2026-11-08).
 //   - list/received는 묶인 기기 전체의 초대 기록을 모아, 같은 친구는 한 번만(가장 최근 것) 돌려줍니다.
@@ -166,8 +166,7 @@ async function handleRedeem(req, res) {
       return;
     }
 
-    const gifted = await grantInviteCompat(code, inviteeDeviceId);
-    res.status(200).json({ ok: true, registered: true, gifted: gifted });
+    res.status(200).json({ ok: true, registered: true, gifted: false });
   } catch (e) {
     res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: String((e && e.message) || e) });
   }

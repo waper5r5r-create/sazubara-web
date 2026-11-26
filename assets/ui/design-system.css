@@ -277,6 +277,16 @@ body{background:var(--ds-paper)}
 .compat-next-title{margin:0 0 12px;font-weight:700;color:var(--ds-ink)}
 .compat-next-btn{display:block;width:100%;min-height:48px;margin:0 0 8px;border:0;border-radius:14px;background:linear-gradient(110deg,#f0d38c,#d9a957);color:#2a1f0c;font-weight:700}
 .compat-next-btn.is-sub{margin:0;background:none;border:1px solid var(--ds-line);color:var(--ds-ink)}
+/* 궁합 리포트: 깊이 보기 미리보기, 결과 이름 */
+.cr-badge{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#e0ad5518;font-size:.875rem;line-height:1.5;color:var(--ds-ink)}
+.cr-badge b{color:#9a7330}
+.cr-more{margin:18px 0 0;padding:16px;border:1px dashed #e0ad5577;border-radius:14px;background:#e0ad550d}
+.cr-more-title{margin:0 0 10px;font-size:.8125rem;font-weight:700;color:#9a7330}
+.cr-more ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.cr-more li{display:grid;gap:2px}
+.cr-more li b{font-size:.875rem;color:var(--ds-ink)}
+.cr-more li span{font-size:.8125rem;line-height:1.5;color:var(--ds-ink-2)}
+.cr-year.is-avoid b{color:#b5524a}
 /* 상대 태어난 시간 접기 */
 .birth-time.is-folded .birth-bands,.birth-time.is-folded .birth-shift-note,.birth-time.is-folded .birth-exact-toggle,.birth-time.is-folded .birth-exact{display:none!important}
 .birth-fold{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--ds-line);border-radius:12px;background:var(--ds-card)}
