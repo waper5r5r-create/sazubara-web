@@ -1881,7 +1881,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=29">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=30">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -4325,7 +4325,7 @@ function sajuBoardHtml(result){
 }
 function starGiftHtml(result){
  var t=myStarType(result);if(!t)return '';
- return '<section class="star-gift" data-star-gift><p class="editorial-tag">선물</p><h2>나의 별 카드</h2><p class="star-gift-sub">내 사주를 닮은 동물 카드를 받아보세요.</p>'+
+ return '<section class="star-gift" data-star-gift><p class="editorial-tag">선물</p><h2>'+secIc('star-card')+'나의 별 카드</h2><p class="star-gift-sub">내 사주를 닮은 동물 카드를 받아보세요.</p>'+
   '<button type="button" class="btn-primary star-make-btn" data-star-make>내 별 카드 받기</button><div class="star-stage" data-star-stage hidden></div></section>';
 }
 function starRevealKey(result){return 'byeolcheop_star_'+(result.day?result.day.gan+result.day.zhi:'')+(result.year?result.year.gan+result.year.zhi:'');}
@@ -4386,19 +4386,21 @@ function yearPeekHtml(result){
  var who=result.name?esc(result.name)+'님':'나',ms0=picks[0].ms,from=ms0[0],to=ms0[ms0.length-1];
  var h2=who+'에게 '+(same?f0.month+'월은<br>세 가지가 함께 열리는 달':'먼저 오는<br>좋은 달');
  var sub=(same?'결혼·연애·재물의 좋은 달이 '+f0.month+'월에 겹쳐요. ':'')+from.year+'년 '+from.month+'월부터 '+to.year+'년 '+to.month+'월까지, 주제마다 좋은 달이 세 번 있어요. 가장 가까운 달만 먼저 보여 드려요.';
- return '<section class="year-peek'+(same?' is-same':'')+'" aria-label="내 사주로 미리 본 좋은 달"><p class="yp-k">앞으로 12개월 · 내 사주로 미리 본 좋은 달</p><h2>'+h2+'</h2><p class="yp-sub">'+sub+'</p>'+items+'<p class="yp-foot">나머지 두 달과 그달에 해볼 일은 각 이야기에서 이어져요 · 앞부분 무료</p></section>';
+ return '<section class="year-peek'+(same?' is-same':'')+'" aria-label="내 사주로 미리 본 좋은 달"><p class="yp-k">앞으로 12개월 · 내 사주로 미리 본 좋은 달</p><h2>'+secIc('good-month')+h2+'</h2><p class="yp-sub">'+sub+'</p>'+items+'<p class="yp-foot">나머지 두 달과 그달에 해볼 일은 각 이야기에서 이어져요 · 앞부분 무료</p></section>';
 }
 /* 사주 결과를 본 다음 어디로 가면 되는지 세 갈래로 알려 준다 */
 function nextStepsHtml(result){
  /* 주제별 콘텐츠는 바로 위 '좋은 해' 카드와 콘텐츠 줄에서 이미 보여 주므로, 여기서는 무료로 더 볼 것만 남긴다 */
  var rows=[['today','compass','오늘 운세 보기','오늘·이번 주·이번 달 흐름 · 무료'],['compat','people','친구와 궁합 보기','링크를 보내면 친구가 생일을 넣어요']];
- return '<section class="next-steps" aria-label="다음으로 볼 것"><p class="next-steps-k">다음으로 볼 것</p><h2>'+(result.name?esc(result.name)+'님, ':'')+'이제 이렇게 보세요</h2>'+
+ return '<section class="next-steps" aria-label="다음으로 볼 것"><p class="next-steps-k">다음으로 볼 것</p><h2>'+secIc('guide')+(result.name?esc(result.name)+'님, ':'')+'이제 이렇게 보세요</h2>'+
   rows.map(function(r,i){return '<button type="button" class="next-step" data-next-go="'+r[0]+'"><i>'+uiIcon(r[1])+'</i><span><b>'+r[2]+'</b><small>'+r[3]+'</small></span><em>'+uiIcon('arrow')+'</em></button>';}).join('')+'</section>';
 }
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-next-go]');if(!b)return;var go=b.dataset.nextGo;
  if(go==='contents'){var sec=$('section.home-contents');if(sec)sec.scrollIntoView({behavior:'smooth',block:'start'});return;}
  navPushTab();switchTab(go);window.scrollTo({top:0,behavior:'instant'});});
-function homeContentsHtml(){return '<section class="home-contents"><h2>주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents role="status" aria-label="콘텐츠를 불러오는 중"><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div></div></section>';}
+/* 섹션 제목 앞 메달 아이콘 (assets/icons/sec-*.webp, 제미나이로 만든 그림) */
+function secIc(n){return '<img class="sec-ic" src="/assets/icons/sec-'+n+'.webp" alt="" width="28" height="28" loading="lazy" decoding="async">';}
+function homeContentsHtml(){return '<section class="home-contents"><h2>'+secIc('topics')+'주제별로 더 보기</h2><p class="hint">내 사주로 답을 찾아보세요. 앞부분은 무료예요.</p><div class="home-content-row" data-home-contents role="status" aria-label="콘텐츠를 불러오는 중"><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div><div class="skel skel-card" aria-hidden="true"></div></div></section>';}
 /* 콘텐츠 카드 한 줄: 연도는 멀게 느껴져서, 그 콘텐츠가 답해 주는 질문을 내 이름으로 던진다 */
 function homePreviewLine(c,result){
  var reg=contentOf(c),q=reg&&reg.ask;
@@ -4759,7 +4761,7 @@ function renderSajuResult(result){
 
     '<div class="card">'+
       '<p class="eyebrow">고민 상담</p>'+
-      '<p class="section-title" style="font-size:.98rem;">짧은 질문 상담</p><p class="section-desc">한 가지 고민에 집중해 읽는 풀이예요. 위 주제별 콘텐츠에서는 성향과 장기 흐름을 함께 살펴봐요.</p>'+
+      '<p class="section-title" style="font-size:.98rem;">'+secIc('ask')+'짧은 질문 상담</p><p class="section-desc">한 가지 고민에 집중해 읽는 풀이예요. 위 주제별 콘텐츠에서는 성향과 장기 흐름을 함께 살펴봐요.</p>'+
       '<div class="chip-row" id="worry-chips">'+
         WORRY_CATEGORIES.map(function(cat){
           return '<button type="button" class="chip-btn'+(isWorryUnlocked(cat)?' unlocked':'')+'" data-cat="'+cat+'">'+WORRY_ICON[cat]+' '+cat+'</button>';
@@ -4907,7 +4909,7 @@ function renderTimeBlockContent(my, body){
   var today = todayGanZhi();
   var relKey = dailyFortuneRelation(my.dayGanWx, today.wxGan);
   var tb = dailyShishenKey(my.day.gan, my.dayGanWx, today.gan, today.wxGan)==='정재' ? TIME_BLOCK_JEONGJAE : TIME_BLOCK_TEXT[relKey];
-  body.innerHTML = '<p class="section-title" style="font-size:.98rem;">시간대별 운세</p>'+
+  body.innerHTML = '<p class="section-title" style="font-size:.98rem;">'+secIc('hours')+'시간대별 운세</p>'+
     personaWrap('today',
       '<div class="detail-block"><p class="ttl">'+ICO_SUNRISE+' 아침</p>'+autoParas(tb.morning)+'</div>'+
       '<hr class="sep">'+
@@ -4950,7 +4952,7 @@ function dayFortuneHtml(my){
       personaWrap('today', autoParas(ft.total))+
     '</div>'+
     '<div class="card">'+
-      '<p class="section-title" style="font-size:.98rem;">영역별 운세</p>'+
+      '<p class="section-title" style="font-size:.98rem;">'+secIc('areas')+'영역별 운세</p>'+
       '<div class="fortune-grid">'+
         '<div class="fortune-tile" style="--tile-color:var(--gold)"><p class="ttl">'+ICO_COIN+' 재물운</p><p class="body">'+ft.money+'</p><button type="button" class="tile-go" data-char-go="타고난-재물복은-얼마나-될까-k7dxw">앞으로 12개월 돈 흐름 · 재물 사주'+uiIcon('arrow')+'</button></div>'+
         '<div class="fortune-tile" style="--tile-color:#ff6f91"><p class="ttl">'+ICO_HEART2+' 애정운</p><p class="body">'+ft.love+'</p><button type="button" class="tile-go" data-char-go="운명의-사람은-언제-올까-fyq1z">앞으로 12개월 인연 흐름 · 연애 사주'+uiIcon('arrow')+'</button></div>'+
@@ -4959,7 +4961,7 @@ function dayFortuneHtml(my){
       '</div>'+
     '</div>'+
     '<div class="card">'+
-      '<p class="section-title" style="font-size:.98rem;">오늘의 행운</p>'+
+      '<p class="section-title" style="font-size:.98rem;">'+secIc('luck')+'오늘의 행운</p>'+
       '<div class="lucky-row">'+
         '<div class="lucky-chip"><span class="ic">'+uiIcon('palette')+'</span><p class="k">행운의 색</p><p class="v">'+luckyInfo.color+'</p></div>'+
         '<div class="lucky-chip"><span class="ic">'+uiIcon('compass')+'</span><p class="k">행운의 방향</p><p class="v">'+luckyInfo.dir+'</p></div>'+
@@ -8006,7 +8008,7 @@ function renderCompatResult(resA, resB, compat){
   };
   wrap.innerHTML =
     '<div class="card compat-sheetlike">'+
-      '<p class="section-title compat-sheet-title">'+esc(entry.nameB)+'님과의 궁합</p>'+
+      '<p class="section-title compat-sheet-title">'+secIc('compat')+esc(entry.nameB)+'님과의 궁합</p>'+
       '<p class="compat-score-big"><b>'+total+'</b><span>점</span></p>'+
       cardMeaningHtml(entry)+collectibleCardHtml(entry,true)+
       '<div class="compat-share-row">'+
