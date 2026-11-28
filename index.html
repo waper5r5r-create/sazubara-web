@@ -1881,7 +1881,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=30">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=31">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -3135,7 +3135,7 @@ function lockedCardHtml(priceKrw, title, desc, btnLabel){
     '<button type="button" class="unlock-btn" data-price="'+priceKrw+'">'+esc(btnLabel)+'</button>'+
     '<span class="cost-badge">'+krwFmt(priceKrw)+'원 · 1회 결제</span>'+
     '<span class="cost-term">제공 기간: 결제 즉시 제공<br>이용 기간: 결제일로부터 1년간 다시 보기</span>'+
-    '<span class="cost-note">결제 후 바로 열리는 디지털 콘텐츠라, 결제가 끝나면 환불이 제한돼요(오류·중복 결제 제외).</span>'+
+    '<span class="cost-note">결제가 끝나면 열리는 디지털 콘텐츠라 환불이 제한돼요(오류·중복 결제 제외).</span>'+
   '</div>';
 }
 
@@ -4304,9 +4304,9 @@ function starHeroHtml(){
  var names={};CONTENTS.forEach(function(e){if(e.who)names[String(e.id)]=e.who;});
  return '<div class="char-home"><div class="char-me'+(inv?' is-invite':'')+'">'+(inv?'<p class="editorial-tag" data-invite-from>'+inviteFromTag()+'</p><h1 data-invite-title>'+inviteFromTitle()+'</h1><p class="saju-hero-sub">내 생일만 넣으면 둘이 잘 맞는 점과<br>엇갈리는 점을 볼 수 있어요.</p>'+
   '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>내 생일 넣고 우리 사이 보기</button><p class="saju-hero-gift">'+uiIcon('spark')+'두 사람 궁합은 무료로 볼 수 있어요</p>':'<p class="editorial-tag">무료 사주풀이</p><h1>내 사주에 적힌<br>사랑과 일의 때</h1><p class="saju-hero-sub">태어난 날의 여덟 글자로 타고난 성향과<br>앞으로 10년의 흐름을 짚어 드려요.</p>'+
-  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p>')+'<ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>바로 시작</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div>'+
+  '<button type="button" class="btn-primary saju-hero-cta" data-open-birth>생년월일 넣고 시작하기</button><p class="saju-hero-gift">'+uiIcon('spark')+'풀이가 끝나면 나만의 별 카드를 드려요</p>')+(inv?'<ul class="saju-hero-trust"><li><b>무료</b><span>두 사람 궁합</span></li><li><b>가입 없이</b><span>생일만 넣고</span></li><li><b>시간 몰라도</b><span>볼 수 있어요</span></li></ul></div></div>':'<ul class="saju-hero-trust"><li><b>무료</b><span>사주풀이와 운세</span></li><li><b>가입 없이</b><span>로그인 없이</span></li><li><b>시간 몰라도</b><span>생년월일만으로</span></li></ul></div>'+
   '<div class="char-list"><h2>오늘은 누구에게 물어볼까요?</h2><p class="char-list-sub">'+(['','한','두','세','네','다섯','여섯','일곱','여덟','아홉','열'][HOME_BANNERS.length]||HOME_BANNERS.length)+' 명의 풀이꾼이 내 사주로 이야기를 들려줘요. 앞부분은 무료예요.</p>'+
-  '<div class="char-grid">'+homeCharOrder().map(function(b,i){var nm=names[String(b.id)]||'';return '<button type="button" class="char-card'+(i===0?' is-feat':'')+'" data-char-go="'+esc(String(b.id))+'"><img src="'+b.img+'" alt="" loading="lazy" decoding="async"><span><small>'+(nm?'<b>'+nm+'</b>':'')+esc(b.kicker)+'</small><strong>'+b.title+'</strong>'+(i===0?'<em>무료로 앞부분 읽기</em>':'')+'</span></button>';}).join('')+'</div></div></div>';
+  '<div class="char-grid">'+homeCharOrder().map(function(b,i){var nm=names[String(b.id)]||'';return '<button type="button" class="char-card'+(i===0?' is-feat':'')+'" data-char-go="'+esc(String(b.id))+'"><img src="'+b.img+'" alt="" loading="lazy" decoding="async"><span><small>'+(nm?'<b>'+nm+'</b>':'')+esc(b.kicker)+'</small><strong>'+b.title+'</strong>'+(i===0?'<em>무료로 앞부분 읽기</em>':'')+'</span></button>';}).join('')+'</div></div></div>')+'';
 }
 /* 결과 화면 맨 위: 원국표 → 세 줄 요약 → 특징 → 별 카드 선물 → 콘텐츠 */
 /* 결과 맨 위: 내 여덟 글자를 남색 판에 크게. 일간(태어난 날의 위 글자)이 "나"를 나타내서 금색으로 둘러요 */
@@ -5138,6 +5138,13 @@ function syncPartnerGender(){
 /* 상대 태어난 시간은 모르는 경우가 많아서, 처음에는 '몰라요'로 두고 시간 고르는 칸을 접어 둔다. */
 function foldPartnerTime(){
   var t = $('#c-time-b'), box = t && t.closest('#c-b-manual-pane') && $('#c-b-manual-pane .birth-time');
+  foldTimeBox(box);
+  /* 내 시간도 같은 방식으로 접는다. 시간을 알면 '시간 고르기'로 연다. */
+  var ta = $('#c-time-a'), wa = ta && (ta.closest('.two-col') || ta.closest('.field')), boxA = wa && wa.previousElementSibling;
+  if (boxA && !boxA.classList.contains('birth-time')) boxA = null;
+  foldTimeBox(boxA);
+}
+function foldTimeBox(box){
   if (!box || box.classList.contains('is-folded') || box._folded) return;
   box._folded = true;
   var unknownBand = box.querySelector('[data-band="unknown"]'); if (unknownBand) unknownBand.click();
@@ -8096,6 +8103,9 @@ function renderCompatDetailSection(resA, resB, compat, detailKey, container){
     body.innerHTML =
       compatLongReportHtml(resA, resB, compat, true)+
       lockedCardHtml(COMPAT_DETAIL_PRICE, '우리 사이 깊이 보기', '그 사람 속마음, 가까워지는 날 3일, 결혼하면 어떤 모습일지까지. 두 사람의 사주 전체로 끝까지 풀어 드려요.', krwFmt(COMPAT_DETAIL_PRICE)+'원으로 깊이 보기');
+    /* '깊이 보기에서 열리는 것' 목록을 잠금 카드 안으로 옮겨, 같은 설명이 두 번 나오지 않게 한다 */
+    var lockCard = $('.locked-card', body), moreList = $('.cr-more', body);
+    if (lockCard && moreList){ var lockDesc = $('.section-desc', lockCard); if (lockDesc) lockDesc.replaceWith(moreList); moreList.classList.add('in-lock'); }
     $('.unlock-btn', body).addEventListener('click', function(){
       PAY_RETURN={type:'compat',a:resA,b:resB,compat:compat};
       tryUnlock(detailKey, COMPAT_DETAIL_PRICE, '궁합 깊이 보기', function(){
@@ -8131,7 +8141,9 @@ var CR_YEAR={sanhe:'일이 잘 맞물려 풀리는 해',liuhe:'도움과 인연�
 var CR_YEAR_GOOD={sanhe:1,liuhe:1,same:1,none:1};
 function crJo(w,a,b){if(w==='나'&&a==='이')return '내가';return w+(hasBatchim(String(w).slice(-1))?a:b);}
 function crName(r,fallback){return r&&r.name?r.name+'님':fallback;}
-function crSec(n,title,body){return '<section class="cr-sec"><p class="cr-no">'+(n<10?'0':'')+n+'</p><h4>'+title+'</h4>'+body+'</section>';}
+var CR_IC=[["한눈에 보는 우리","glance"],["두 사람은 이런 사람","faces"],["서로 채워 주는 기운","fill"],["대화할 때","talk"],["그 사람 속마음","heart"],["우리가 가까워지는 날","days"],["우리, 결혼하면","marry"],["두 사람의 관계","bond"],["부딪힐 때","clash"],["같이 하면 좋은 것","together"],["앞으로 12달","months"],["올해와 내년의 우리","years"],["서로에게 힘이 되는 말","words"],["오늘의 우리","today"]];
+function crIc(title){var t=String(title);for(var i=0;i<CR_IC.length;i++)if(t.indexOf(CR_IC[i][0])===0)return '<img class="cr-ic" src="/assets/icons/cr-'+CR_IC[i][1]+'.webp" alt="" width="40" height="40" loading="lazy" decoding="async">';return '';}
+function crSec(n,title,body){return '<section class="cr-sec">'+crIc(title)+'<p class="cr-no">'+(n<10?'0':'')+n+'</p><h4>'+title+'</h4>'+body+'</section>';}
 function crP(t){return '<p class="section-desc">'+esc(t)+'</p>';}
 
 /* ---- 깊이 보기에서 새로 열리는 장: 그 사람 속마음 · 우리가 가까워지는 날 · 우리, 결혼하면 ----
