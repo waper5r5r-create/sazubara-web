@@ -4268,7 +4268,7 @@ function myStarCardHtml(result){
  var t=myStarType(result);if(!t)return '';
  var who=result.name?esc(result.name)+'님':'나';
  return '<section class="my-star-card"><p class="editorial-tag">'+who+'의 별 카드</p>'+
-  '<div class="my-star-body"><figure class="my-star-art"><img src="/assets/guardians/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" decoding="async"></figure>'+
+  '<div class="my-star-body"><figure class="my-star-art"><img src="/assets/guardians/'+t.asset+'.webp?v=2" alt="'+esc(t.title)+' 카드" decoding="async"></figure>'+
   '<div class="my-star-copy"><h2>'+esc(t.title)+'</h2><p class="my-star-tags">일간 '+esc(t.stem+'('+result.day.gan+')')+' · '+esc(t.wx)+' · '+(t.polarity==='yang'?'양':'음')+'</p><p>'+esc(STAR_SELF[t.id]||'')+'</p></div></div>'+
   '<div class="my-star-actions"><button type="button" class="btn-primary" data-star-share>내 별 카드 저장·공유</button><button type="button" class="share-btn" data-star-album>내 별자리 보기</button></div>'+
   '<p class="hint">친구를 초대하면 내 별자리에 친구 별이 생겨요.</p></section>';
@@ -4344,7 +4344,7 @@ function playStarReveal(scope,result){
  stage.innerHTML='<img class="rv-sky" src="/assets/album/deep-space-v3.webp" alt="" decoding="async">'+
   '<div class="rv-ring">'+glyphs.map(function(g,i){return '<span style="--a:'+(i*(360/glyphs.length)-90)+'deg;--d:'+(i*0.1).toFixed(2)+'s">'+esc(g)+'</span>';}).join('')+'</div>'+
   '<i class="rv-core"></i><i class="rv-rays"></i>'+
-  '<div class="rv-card"><div class="rv-card-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img src="/assets/guardians/'+t.asset+'.webp" alt="" decoding="async"></div></div></div>'+
+  '<div class="rv-card"><div class="rv-card-inner"><div class="rv-face rv-back"><img src="/assets/guardians/back.webp" alt="" decoding="async"></div><div class="rv-face rv-front"><img src="/assets/guardians/'+t.asset+'.webp?v=2" alt="" decoding="async"></div></div></div>'+
   '<div class="rv-sparks" aria-hidden="true">'+Array.apply(null,{length:14}).map(function(_,i){return '<i style="--r:'+(i*360/14)+'deg;--l:'+(90+(i%3)*28)+'px"></i>';}).join('')+'</div>'+
   '<div class="rv-caption"><p class="rv-step" aria-live="polite">'+who+'의 여덟 글자</p><h3 class="rv-title">'+esc(t.title)+'</h3><p class="rv-tags">일간 '+esc(t.stem+'('+result.day.gan+')')+' · '+esc(t.wx)+' · '+(t.polarity==='yang'?'양':'음')+'</p></div>'+
   '<button type="button" class="rv-skip">건너뛰기</button>';
@@ -4426,7 +4426,7 @@ function wireStarCard(scope){
 function buildStarShareCard(result){
  var t=myStarType(result),W=1080,H=1350,canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;var ctx=canvas.getContext('2d');
  var fontsReady=(document.fonts&&document.fonts.load)?Promise.all([document.fonts.load('700 64px "Noto Serif KR"'),document.fonts.load('500 34px "Noto Sans KR"')]).catch(function(){}):Promise.resolve();
- return fontsReady.then(function(){return loadImageAsync('/assets/guardians/'+t.asset+'.webp');}).then(function(img){
+ return fontsReady.then(function(){return loadImageAsync('/assets/guardians/'+t.asset+'.webp?v=2');}).then(function(img){
   var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0b1024');g.addColorStop(.6,'#141c40');g.addColorStop(1,'#1f2a5c');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   var seed=11;ctx.fillStyle='#fff3d6';for(var i=0;i<70;i++){seed=(seed*9301+49297)%233280;var sx=seed/233280*W;seed=(seed*9301+49297)%233280;var sy=seed/233280*H;seed=(seed*9301+49297)%233280;ctx.globalAlpha=.25+seed/233280*.5;ctx.beginPath();ctx.arc(sx,sy,seed/233280<.15?2.2:1.2,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;
   ctx.strokeStyle='#c9a24e66';ctx.lineWidth=2;ctx.strokeRect(36,36,W-72,H-72);
@@ -4474,7 +4474,7 @@ function wireAlbumChapters(scope,list){
 }
 function albumFirstPageHtml(result,list){
  var t=myStarType(result);list=list||[];
- return '<div class="album-first"><div class="album-cover"><img src="/assets/album/cover.webp" alt="" loading="lazy" decoding="async"><span>별첩</span></div>'+(t?'<div class="album-mine"><img src="/assets/guardians/'+t.asset+'.webp" alt="'+esc(t.title)+' 카드" loading="lazy" decoding="async"><div><small>첫 장 · 내 카드</small><b>'+esc(t.title)+'</b><span>'+(list.length?'지금까지 '+list.length+'명의 인연이 별첩에 모였어요.':'친구를 초대하면 둘의 궁합 카드가 오행별 장에 모여요.')+'</span></div></div>':'')+
+ return '<div class="album-first"><div class="album-cover"><img src="/assets/album/cover.webp" alt="" loading="lazy" decoding="async"><span>별첩</span></div>'+(t?'<div class="album-mine"><img src="/assets/guardians/'+t.asset+'.webp?v=2" alt="'+esc(t.title)+' 카드" loading="lazy" decoding="async"><div><small>첫 장 · 내 카드</small><b>'+esc(t.title)+'</b><span>'+(list.length?'지금까지 '+list.length+'명의 인연이 별첩에 모였어요.':'친구를 초대하면 둘의 궁합 카드가 오행별 장에 모여요.')+'</span></div></div>':'')+
   '<button type="button" class="btn-primary album-invite-btn" data-album-invite>친구에게 궁합 링크 보내기</button>'+
   albumChaptersHtml(list,result&&result.dayGanWx)+'</div>';
 }
@@ -4557,10 +4557,10 @@ function skyHtml(result,list,note){
  var lines=best.map(function(i,k){return '<line pathLength="1" x1="180" y1="240" x2="'+pos[i].x+'" y2="'+pos[i].y+'" class="sky-line is-near" style="--d:'+(0.35+k*0.16).toFixed(2)+'s"/>';}).join('')+skyCurves(list,pos);
  var stars=list.map(function(e,i){var p=pos[i],type=cardTypeOf(e),sz=p.size,col=SKY_STAR_COLOR[e.dayGanWxB]||SKY_STAR_COLOR['토'],yin=type?type.polarity==='yin':e.cardPolarity==='yin',beat=(2.6+((i*37)%17)/10).toFixed(1),score=Number(e.score)||0;return '<g class="sky-star sky-'+col[0]+'" data-sky-star="'+i+'" tabindex="0" role="button" aria-label="'+esc((e.nameB||'상대방')+' · '+(type?type.title:'')+' · '+skyWord(e))+'" transform="translate('+p.x+' '+p.y+')" style="--glow:'+p.glow+';--d:'+(0.5+i*0.16).toFixed(2)+'s;--sc:'+col[1]+';--beat:'+beat+'s;--tilt:'+((skyHash(e.id||i)%31)-15)+'deg">'+skyCluster(e,i,sz,score)+'<g class="sky-star-in"><circle class="sky-hit" r="22"/><circle class="sky-halo" r="'+(sz*4.2).toFixed(1)+'" style="fill:url(#sky-glow-'+col[0]+')"/><circle class="sky-burst" r="'+(sz*1.6).toFixed(1)+'"/><path class="sky-spark'+(yin?' is-yin':'')+'" d="'+skyStarShape(sz,yin)+'" style="fill:url(#sky-ray-'+col[0]+')"/><circle class="sky-core" r="'+(sz*.5).toFixed(1)+'"/></g><text class="sky-name" y="'+(sz+15).toFixed(0)+'">'+esc(e.nameB||'상대방')+'</text></g>';}).join('');
  var empty=!sample&&list.length<3?[[96,128],[272,150],[250,372]].slice(0,3-list.length).map(function(p){return '<g class="sky-empty" data-album-invite role="button" tabindex="0" aria-label="친구 초대하기" transform="translate('+p[0]+' '+p[1]+')"><circle r="16" class="sky-empty-hit"/><circle r="9"/><text class="sky-empty-plus" y="3.5">+</text><text y="26">친구 자리</text></g>';}).join(''):'';
- var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
+ var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp?v=2" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
   '<div class="sky-head"><p class="eyebrow">궁합</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(!result?'생일을 넣으면 나의 별자리가 만들어지고, 친구가 별로 떠요.':skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':!sample?'친구 '+list.length+'명이 내 별자리에 있어요. 이름을 누르면 궁합이 열려요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
-  (!sample?'<ul class="sky-list is-cards">'+list.map(function(e,i){var type=cardTypeOf(e),sc=Math.round(Number(e.score)||0);return '<li><button type="button" data-sky-open="'+i+'">'+(type?'<img class="sky-thumb" src="/assets/guardians/'+type.asset+'.webp" alt="" width="44" height="58" loading="lazy" decoding="async">':'<i class="sky-thumb"></i>')+'<span class="sky-who"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></span>'+(sc?'<em class="sky-score">'+sc+'<small>점</small></em>':'')+'<i class="sky-go" aria-hidden="true">›</i></button></li>';}).join('')+'</ul>'+'<div class="sky-actions"><button type="button" class="btn-primary album-invite-btn" data-album-invite>'+(skyIsDemo()?'친구 초대하기':'친구 더 초대하기')+'</button><button type="button" class="sky-direct-btn" data-album-direct>생일 직접 넣기</button></div>':'')+
+  (!sample?'<ul class="sky-list is-cards">'+list.map(function(e,i){var type=cardTypeOf(e),sc=Math.round(Number(e.score)||0);return '<li><button type="button" data-sky-open="'+i+'">'+(type?'<img class="sky-thumb" src="/assets/guardians/'+type.asset+'.webp?v=2" alt="" width="44" height="58" loading="lazy" decoding="async">':'<i class="sky-thumb"></i>')+'<span class="sky-who"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></span>'+(sc?'<em class="sky-score">'+sc+'<small>점</small></em>':'')+'<i class="sky-go" aria-hidden="true">›</i></button></li>';}).join('')+'</ul>'+'<div class="sky-actions"><button type="button" class="btn-primary album-invite-btn" data-album-invite>'+(skyIsDemo()?'친구 초대하기':'친구 더 초대하기')+'</button><button type="button" class="sky-direct-btn" data-album-direct>생일 직접 넣기</button></div>':'')+
   '<div class="sky-stage is-open'+(sample?' is-sample':'')+(!sample&&list.length<3?' is-few':'')+'" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
    '<div class="sky-depth" data-sky-depth aria-hidden="true"></div><div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
    '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs>'+skyGlowDefs()+'<radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
@@ -4612,7 +4612,7 @@ function wireSky(scope,list){
   focus.scrollTop=0;var back=$('[data-sky-close]',focus);if(back){back.textContent='별자리로 돌아가기';back.focus({preventScroll:true});}
  }
  function showCard(i){
-  var e=list[i],type=cardTypeOf(e);fimg.src=type?'/assets/guardians/'+type.asset+'.webp':'/assets/guardians/back.webp';
+  var e=list[i],type=cardTypeOf(e);fimg.src=type?'/assets/guardians/'+type.asset+'.webp?v=2':'/assets/guardians/back.webp';
   panel.innerHTML=skyPanelHtml(e,i,list.length);if(typeof renderSkyPremium==='function')renderSkyPremium(e,$('[data-sky-premium]',panel));focus.hidden=false;expandDetail();if(typeof document!=='undefined')focus.setAttribute('aria-label',(e.nameB||'상대방')+'님과 나의 궁합');var nb=$('[data-sky-next]',panel);if(nb)nb.textContent=(list[(i+1)%list.length].nameB||'다음')+' →';
   focus.hidden=false;focus.classList.remove('in');void focus.offsetWidth;focus.classList.add('in');focus.classList.toggle('is-repeat',!!seenCards[i]);seenCards[i]=true;
   setTimeout(function(){try{soundReveal();}catch(x){}try{hapticPulse([10,30,14]);}catch(x){}},reduce?0:1100);
@@ -4651,7 +4651,7 @@ function wireSky(scope,list){
 }
 function skyPageHtml(e){
  var type=cardTypeOf(e),name=esc(e.nameB||'상대방');
- return '<article class="sky-page sky-page-left">'+(type?'<img src="/assets/guardians/'+type.asset+'.webp" alt="'+esc(type.title)+'" decoding="async">':'')+
+ return '<article class="sky-page sky-page-left">'+(type?'<img src="/assets/guardians/'+type.asset+'.webp?v=2" alt="'+esc(type.title)+'" decoding="async">':'')+
   '<p class="sky-page-kicker">'+name+'님의 별</p><h3>'+esc(type?type.title:'아직 드러나지 않은 별')+'</h3><p class="sky-page-tag">'+esc(type?'일간 '+type.stem+' · '+type.wx+' · '+(type.polarity==='yang'?'양':'음'):'')+'</p>'+
   '<p class="sky-page-quote">'+esc(type?CARD_RELATION_QUOTES[type.id]||'':'')+'</p></article>'+
   '<article class="sky-page sky-page-right"><p class="sky-page-kicker">'+name+'님과 나</p><h3>'+skyWord(e)+'</h3>'+
@@ -5373,7 +5373,7 @@ function collectibleCardHtml(entry,preview){
  var emblem={s:'✦',a:'✧',b:'❧',c:''}[tier.key];
  var gan=entry.dayGanB||'',polarity=entry.cardPolarity==='yang'?'양의 기운':entry.cardPolarity==='yin'?'음의 기운':'일간의 기운';
  return '<div class="myroom-card destiny-card destiny-v2'+(preview?' is-preview':'')+' tier-'+tier.key+'" '+(preview?'':'tabindex="0" role="button"')+' data-grade="'+tier.grade+'" data-polarity="'+esc(type?type.polarity:(entry.cardPolarity||'unknown'))+'" data-element="'+spirit.key+'"'+(frame?' data-frame="'+esc(frame)+'"':'')+' aria-label="'+esc(entry.nameB||'상대방')+' · '+tier.grade+'등급 궁합 카드 · '+artTitle+'" style="--card-strength:'+(score/100).toFixed(2)+';--tier-color:'+tier.color+';--tier-soft:'+tier.soft+';'+frameStyleVars(frame)+'">'+
- '<div class="destiny-art">'+(spirit.key?'<img src="/assets/guardians/'+asset+'.webp" alt="'+artTitle+' · '+spirit.tag+'" loading="lazy" decoding="async">':'')+'</div><img class="destiny-frame-art" src="/assets/guardians/frames/'+tier.key+'.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><div class="destiny-foil"></div><span class="destiny-corner tl"></span><span class="destiny-corner tr"></span><span class="destiny-corner bl"></span><span class="destiny-corner br"></span>'+
+ '<div class="destiny-art">'+(spirit.key?'<img src="/assets/guardians/'+asset+'.webp?v=2" alt="'+artTitle+' · '+spirit.tag+'" loading="lazy" decoding="async">':'')+'</div><img class="destiny-frame-art" src="/assets/guardians/frames/'+tier.key+'.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><div class="destiny-foil"></div><span class="destiny-corner tl"></span><span class="destiny-corner tr"></span><span class="destiny-corner bl"></span><span class="destiny-corner br"></span>'+
  '<span class="card-tier-ribbon"></span><span class="card-tier-emblems" aria-hidden="true"><i>'+emblem+'</i><i>'+emblem+'</i></span><div class="destiny-top"><span class="destiny-grade">'+tier.grade+'</span><span class="destiny-element">'+spirit.symbol+'</span></div><span class="destiny-seal" aria-label="'+sealName+'">'+seal+'</span>'+
  '<div class="destiny-copy"><span class="destiny-title">'+artTitle+'</span><span class="nm">'+esc(entry.nameB||'상대방')+'</span><div class="destiny-stats"><span>나와의 궁합 <b>'+Math.max(0,Math.min(100,Number(entry.score)||0))+'</b></span><span>'+esc(gan||spirit.symbol)+' · '+polarity+'</span></div><span class="destiny-caption">'+tier.label+' · '+spirit.tag+'</span></div></div>';
 }
@@ -8011,7 +8011,7 @@ function openLedgerWith(resB){
 function compatPairHeroHtml(resA, resB, entry){
   var tA = shareCardType(resA), tB = shareCardType(resB), tier = myroomTier(entry.score);
   var heads = {s:'마음이 먼저 닿는 사이',a:'서로를 채워주는 사이',b:'천천히 단단해지는 사이',c:'다른 결로 만나는 사이'};
-  var av = function(t, name){ return '<div class="cp-p">'+(t?'<img src="/assets/guardians/'+t.asset+'.webp" alt="" width="80" height="80" decoding="async">':'<i></i>')+'<b>'+esc(name)+'</b><span>'+(t?esc(t.title):'&nbsp;')+'</span></div>'; };
+  var av = function(t, name){ return '<div class="cp-p">'+(t?'<img src="/assets/guardians/'+t.asset+'.webp?v=2" alt="" width="80" height="80" decoding="async">':'<i></i>')+'<b>'+esc(name)+'</b><span>'+(t?esc(t.title):'&nbsp;')+'</span></div>'; };
   var rel = skyWord(entry);
   return '<div class="cp-hero">'+
     '<p class="cp-kicker">우리 궁합</p>'+
@@ -8533,7 +8533,7 @@ function buildCompatShareCard(resA, resB, compat, total, opts){
     ]).catch(function(){}) : Promise.resolve();
   return fontsReady.then(function(){
     var cardA = shareCardType(resA), cardB = shareCardType(resB);
-    return Promise.all([loadImageAsync(cardA?'/assets/guardians/'+cardA.asset+'.webp':CHAR_AVATAR[resA.gender]), loadImageAsync(cardB?'/assets/guardians/'+cardB.asset+'.webp':CHAR_AVATAR[resB.gender])]);
+    return Promise.all([loadImageAsync(cardA?'/assets/guardians/'+cardA.asset+'.webp?v=2':CHAR_AVATAR[resA.gender]), loadImageAsync(cardB?'/assets/guardians/'+cardB.asset+'.webp?v=2':CHAR_AVATAR[resB.gender])]);
   }).then(function(imgs){
     var avA = imgs[0], avB = imgs[1], cardA = shareCardType(resA), cardB = shareCardType(resB);
     var rel = ZHI_REL_SHORT[compat.zhiRel] || {tag:'인연', phrase:'서로를 알아가는 사이'};
