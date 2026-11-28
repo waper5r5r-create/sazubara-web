@@ -675,3 +675,34 @@ h2 .sec-ic{width:30px;height:30px;vertical-align:-6px}
 .cr-more.in-lock{margin:12px 0 16px;padding:14px 14px 12px;text-align:left;border:0;border-radius:12px;background:#ffffffb3}
 .cr-more.in-lock .cr-more-title{display:none}
 html[data-theme="dark"] .cr-more.in-lock{background:#ffffff0d}
+
+/* 12달 칸: 사이트 색(금색) 두 단계 + 쉬어 갈 달, 아래에 범례 */
+html body .cr-months .is-best{background:linear-gradient(110deg,#f0d38c,#d9a957);color:#2a1f0c;font-weight:700}
+html body .cr-months .is-good{background:#e0ad5526;color:#8a6420;box-shadow:inset 0 0 0 1px #e0ad5566}
+html body .cr-months .is-bad{background:#5b647a1f;color:#7a8196}
+html[data-theme="dark"] body .cr-months .is-good{color:#e7c27a}
+.cr-months-key{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:-4px 0 12px;font-size:.75rem;color:var(--ds-ink-2)}
+.cr-months-key span{display:inline-block;width:10px;height:10px;margin-right:-8px;border-radius:3px}
+.cr-months-key .is-best{background:#d9a957}.cr-months-key .is-good{background:#e0ad5540;box-shadow:inset 0 0 0 1px #e0ad5588}.cr-months-key .is-bad{background:#5b647a33}
+/* 장 제목: 아이콘 · 번호 · 제목을 한 줄로, 본문과 왼쪽 줄 맞춤 */
+.cr-head{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.cr-head>.cr-ic{position:static;flex:none;width:36px;height:36px;border-radius:50%;box-shadow:0 2px 6px #0b102433}
+.cr-head .cr-no{margin:0;padding:0}
+.cr-head h4{margin:0;padding:0}
+
+/* 나의 별자리 친구 목록: 카드처럼 */
+html body .sky-list.is-cards{gap:8px}
+html body .sky-list.is-cards li button{display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:10px 12px;border:1px solid #e0ad5533;border-radius:14px;background:var(--ds-card,#fff);box-shadow:0 2px 10px #0b10240f}
+.sky-list.is-cards .sky-thumb{flex:none;width:44px;height:58px;border-radius:8px;object-fit:cover;object-position:50% 20%;background:#141b38;box-shadow:0 0 0 1px #e0ad5555}
+.sky-list.is-cards .sky-who{display:grid;gap:2px;min-width:0;flex:1}
+.sky-list.is-cards .sky-who b{font-size:.9375rem;color:var(--ds-ink)}
+html body .sky-list.is-cards .sky-who span{font-size:.78rem;line-height:1.45;color:var(--ds-ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sky-list.is-cards .sky-score{flex:none;font-style:normal;font-family:"Noto Serif KR",serif;font-size:1.25rem;font-weight:700;color:#a3721f}
+.sky-list.is-cards .sky-score small{font-size:.7rem;margin-left:1px}
+.sky-list.is-cards .sky-go{flex:none;font-style:normal;font-size:1.25rem;color:#b8ad96}
+html[data-theme="dark"] .sky-list.is-cards .sky-score{color:#e7c27a}
+/* 초대 / 직접 입력 버튼 나란히 */
+.sky-actions{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;margin:12px 0 18px}
+html body .sky-actions .album-invite-btn{margin:0}
+.sky-direct-btn{min-height:48px;border:1px solid #e0ad5588;border-radius:14px;background:transparent;color:var(--ds-ink);font-weight:700;font-size:.9375rem}
+#view-compat:has(.sky-actions) #album-add{display:none}

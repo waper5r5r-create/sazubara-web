@@ -1881,7 +1881,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=31">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=32">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -4560,7 +4560,7 @@ function skyHtml(result,list,note){
  var me='<g class="sky-me" transform="translate(180 240)"><circle class="sky-halo" r="38"/><clipPath id="sky-me-clip"><circle r="20"/></clipPath>'+(t?'<image href="/assets/guardians/'+t.asset+'.webp" x="-20" y="-20" width="40" height="53" clip-path="url(#sky-me-clip)" preserveAspectRatio="xMidYMin slice"/>':'')+'<circle class="sky-me-ring" r="20"/><text class="sky-name" y="38">나</text></g>';
  return '<section class="sky" aria-label="나의 별첩">'+
   '<div class="sky-head"><p class="eyebrow">궁합</p><h2 class="album-heading">나의 별자리</h2><p class="sky-sub">'+(!result?'생일을 넣으면 나의 별자리가 만들어지고, 친구가 별로 떠요.':skyIsDemo()?'예시 별자리예요. 친구를 초대하면 이렇게 채워져요.':!sample?'친구 '+list.length+'명이 내 별자리에 있어요. 이름을 누르면 궁합이 열려요.':'친구를 초대하면 내 별자리에 별이 하나씩 생겨요.')+'</p></div>'+
-  (!sample?'<ul class="sky-list">'+list.map(function(e,i){var type=cardTypeOf(e);return '<li><button type="button" data-sky-open="'+i+'"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></button></li>';}).join('')+'</ul>'+'<button type="button" class="btn-primary album-invite-btn" data-album-invite>'+(skyIsDemo()?'친구 초대하기':'친구 더 초대하기')+'</button>':'')+
+  (!sample?'<ul class="sky-list is-cards">'+list.map(function(e,i){var type=cardTypeOf(e),sc=Math.round(Number(e.score)||0);return '<li><button type="button" data-sky-open="'+i+'">'+(type?'<img class="sky-thumb" src="/assets/guardians/'+type.asset+'.webp" alt="" width="44" height="58" loading="lazy" decoding="async">':'<i class="sky-thumb"></i>')+'<span class="sky-who"><b>'+esc(e.nameB||'상대방')+'</b><span>'+esc((e.fromInviter?'나를 초대한 친구 · ':'')+(type?type.title+' · ':'')+skyWord(e))+'</span></span>'+(sc?'<em class="sky-score">'+sc+'<small>점</small></em>':'')+'<i class="sky-go" aria-hidden="true">›</i></button></li>';}).join('')+'</ul>'+'<div class="sky-actions"><button type="button" class="btn-primary album-invite-btn" data-album-invite>'+(skyIsDemo()?'친구 초대하기':'친구 더 초대하기')+'</button><button type="button" class="sky-direct-btn" data-album-direct>생일 직접 넣기</button></div>':'')+
   '<div class="sky-stage is-open'+(sample?' is-sample':'')+'" data-sky style="--neb:'+SKY_TINT[dom]+'">'+
    '<div class="sky-depth" data-sky-depth aria-hidden="true"></div><div class="sky-cam" data-sky-cam>'+(NEBULA_ART?'<img class="sky-nebula-art" src="'+NEBULA_ART+'" alt="" decoding="async"><div class="sky-tint" aria-hidden="true"></div>':'<div class="sky-nebula" aria-hidden="true"></div>')+
    '<svg class="sky-map" viewBox="0 0 360 480" aria-hidden="false"><defs>'+skyGlowDefs()+'<radialGradient id="sky-glow"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset=".35" stop-color="#ffe2a0" stop-opacity=".3"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient></defs>'+skyDust()+lines+empty+stars+me+'</svg></div>'+
@@ -4677,6 +4677,8 @@ function openSkyBook(list,i){
  $('[data-sky-backdrop]',root).addEventListener('click',function(e){if(e.target===e.currentTarget)closeMyroomDex();});
  $('[data-sky-close]',root).focus();
 }
+/* 별자리 아래 '생일 직접 넣기': 기존 직접 입력 버튼(#album-add)을 대신 눌러 폼을 연다 */
+document.addEventListener('click',function(e){if(!e.target.closest('[data-album-direct]'))return;var add=$('#album-add'),form=$('#compat-form');if(form&&form.hidden&&add)add.click();else if(form)form.scrollIntoView({behavior:'smooth',block:'start'});});
 function wireAlbumInvite(scope){$all('[data-album-invite]',scope).forEach(function(b){b.addEventListener('click',function(){if(STATE.mySaju)doShareCompatInvite(STATE.mySaju);else{switchTab('saju');showToast('내 사주를 먼저 입력해주세요.');}});});}
 function renderSajuResult(result){
   var wrap = $('#saju-result');
@@ -8143,7 +8145,7 @@ function crJo(w,a,b){if(w==='나'&&a==='이')return '내가';return w+(hasBatchi
 function crName(r,fallback){return r&&r.name?r.name+'님':fallback;}
 var CR_IC=[["한눈에 보는 우리","glance"],["두 사람은 이런 사람","faces"],["서로 채워 주는 기운","fill"],["대화할 때","talk"],["그 사람 속마음","heart"],["우리가 가까워지는 날","days"],["우리, 결혼하면","marry"],["두 사람의 관계","bond"],["부딪힐 때","clash"],["같이 하면 좋은 것","together"],["앞으로 12달","months"],["올해와 내년의 우리","years"],["서로에게 힘이 되는 말","words"],["오늘의 우리","today"]];
 function crIc(title){var t=String(title);for(var i=0;i<CR_IC.length;i++)if(t.indexOf(CR_IC[i][0])===0)return '<img class="cr-ic" src="/assets/icons/cr-'+CR_IC[i][1]+'.webp" alt="" width="40" height="40" loading="lazy" decoding="async">';return '';}
-function crSec(n,title,body){return '<section class="cr-sec">'+crIc(title)+'<p class="cr-no">'+(n<10?'0':'')+n+'</p><h4>'+title+'</h4>'+body+'</section>';}
+function crSec(n,title,body){return '<section class="cr-sec"><div class="cr-head">'+crIc(title)+'<div><p class="cr-no">'+(n<10?'0':'')+n+'</p><h4>'+title+'</h4></div></div>'+body+'</section>';}
 function crP(t){return '<p class="section-desc">'+esc(t)+'</p>';}
 
 /* ---- 깊이 보기에서 새로 열리는 장: 그 사람 속마음 · 우리가 가까워지는 날 · 우리, 결혼하면 ----
@@ -8279,7 +8281,8 @@ function compatLongReportHtml(a,b,compat,previewOnly){
  var good=months.slice().sort(function(x,y){return y.score-x.score;}).slice(0,3).sort(function(x,y){return (x.y*12+x.m)-(y.y*12+y.m);}),bad=months.filter(function(x){return x.score<0;}).sort(function(x,y){return x.score-y.score;}).slice(0,2).sort(function(x,y){return (x.y*12+x.m)-(y.y*12+y.m);});
  var ml=function(x){return x.m+'월';};
  secs.push(crSec(secs.length+1,'앞으로 12달',
-  '<div class="cr-months">'+months.map(function(x){var c=x.score>0.5?'is-good':x.score<-0.5?'is-bad':'';return '<span class="'+c+'">'+x.m+'월</span>';}).join('')+'</div>'+
+  '<div class="cr-months">'+months.map(function(x){var c=good.indexOf(x)>=0?'is-best':x.score>0.5?'is-good':bad.indexOf(x)>=0?'is-bad':'';return '<span class="'+c+'">'+x.m+'월</span>';}).join('')+'</div>'+
+  '<p class="cr-months-key"><span class="is-best"></span>가장 좋은 달<span class="is-good"></span>좋은 달<span class="is-bad"></span>쉬어 갈 달</p>'+
   crP('함께하기 좋은 달은 '+good.map(ml).join(', ')+'이에요. 여행, 중요한 대화, 새로 시작하는 일은 이때로 잡아 보세요.')+
   (bad.length?crP(bad.map(ml).join(', ')+'은 둘 다 지치기 쉬운 달이에요. 큰 결정은 피하고 서로 쉬는 시간을 지켜 주세요.'):crP('특별히 조심할 달은 없어요. 평소처럼 지내면 돼요.'))));
  // 올해와 내년
@@ -8412,7 +8415,7 @@ function drawShareAvatar(ctx, img, cx, cy, r, letter){
   ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.closePath();
   ctx.fillStyle = '#1e2438'; ctx.fill();
   ctx.clip();
-  if (img) ctx.drawImage(img, cx-r, cy-r, r*2, r*2);
+  if (img){ var iw=img.naturalWidth||img.width, ih=img.naturalHeight||img.height, sz=Math.min(iw,ih), sx=(iw-sz)/2, sy=ih>iw?(ih-sz)*0.28:0; ctx.drawImage(img, sx, sy, sz, sz, cx-r, cy-r, r*2, r*2); }
   else {
     ctx.fillStyle = '#e0ad55';
     ctx.font = '700 '+Math.round(r*0.7)+'px "Noto Serif KR", serif';
@@ -8491,6 +8494,8 @@ function shareCardFooter(ctx, W, dividerY, hookLine){
   ctx.fillStyle='#767e94'; ctx.font='400 19px "Noto Sans KR", sans-serif';
   ctx.fillText(location.host, W/2, dividerY+146);
 }
+/* 공유 이미지용: 그 사람의 동물 카드(태어난 날 위 글자 기준) */
+function shareCardType(res){var g=res&&res.day&&res.day.ganKr;return g?CARD_TYPES.find(function(t){return t.stem===g;})||null:null;}
 function buildCompatShareCard(resA, resB, compat, total, opts){
   opts = opts || {};
   var W=1080, H=opts.story?1920:1650;
@@ -8505,9 +8510,10 @@ function buildCompatShareCard(resA, resB, compat, total, opts){
       document.fonts.load('400 26px "Noto Sans KR"')
     ]).catch(function(){}) : Promise.resolve();
   return fontsReady.then(function(){
-    return Promise.all([loadImageAsync(CHAR_AVATAR[resA.gender]), loadImageAsync(CHAR_AVATAR[resB.gender])]);
+    var cardA = shareCardType(resA), cardB = shareCardType(resB);
+    return Promise.all([loadImageAsync(cardA?'/assets/guardians/'+cardA.asset+'.webp':CHAR_AVATAR[resA.gender]), loadImageAsync(cardB?'/assets/guardians/'+cardB.asset+'.webp':CHAR_AVATAR[resB.gender])]);
   }).then(function(imgs){
-    var avA = imgs[0], avB = imgs[1];
+    var avA = imgs[0], avB = imgs[1], cardA = shareCardType(resA), cardB = shareCardType(resB);
     var rel = ZHI_REL_SHORT[compat.zhiRel] || {tag:'인연', phrase:'서로를 알아가는 사이'};
 
     var seed = (total*97 + (resA.name||'A').length*13 + (resB.name||'B').length*7) % 997;
@@ -8535,8 +8541,9 @@ function buildCompatShareCard(resA, resB, compat, total, opts){
     ctx.fillText(resA.name||'나', W/2-gap, avY+avR+62);
     ctx.fillText(resB.name||'상대방', W/2+gap, avY+avR+62);
 
-    drawElementChip(ctx, W/2-gap, avY+avR+108, resA.dayGanWx, '일간');
-    drawElementChip(ctx, W/2+gap, avY+avR+108, resB.dayGanWx, '일간');
+    ctx.fillStyle='#e0ad55'; ctx.font='400 26px "Noto Sans KR", sans-serif';
+    if (cardA) ctx.fillText(cardA.title, W/2-gap, avY+avR+104);
+    if (cardB) ctx.fillText(cardB.title, W/2+gap, avY+avR+104);
 
     var ringCx=W/2, ringCy=816, ringR=172, ringW=26;
     for (var g=3; g>=1; g--){
