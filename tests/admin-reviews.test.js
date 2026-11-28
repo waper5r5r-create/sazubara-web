@@ -3,7 +3,7 @@ const test = require('node:test'), assert = require('node:assert/strict'), fs = 
 const ID = '0f8fad5b-d9cb-469f-a165-70867728950e';
 function harness({ authorized = true, exists = true } = {}) {
   const calls = [], module = { exports: {} };
-  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../api/admin/reviews.js'), 'utf8'), {
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../api/admin/_reviews.js'), 'utf8'), {
     module, encodeURIComponent, Date,
     require(name) {
       if (name === '../_supabase') return {
@@ -29,7 +29,7 @@ test('admin endpoint needs the admin secret', async () => {
 });
 
 test('admin cannot edit review text or create reviews', async () => {
-  const src = fs.readFileSync(path.join(__dirname, '../api/admin/reviews.js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '../api/admin/_reviews.js'), 'utf8');
   for (const action of ['edit', 'create', 'update', 'save']) {
     const h = harness();
     assert.equal((await h.call({ action, id: ID, text: '바꾼 글입니다 바꾼 글입니다' })).code, 400);

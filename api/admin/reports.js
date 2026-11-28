@@ -36,7 +36,11 @@ async function uploadIfProvided(bucket, idForPath, body) {
   return uploadStorageImage(bucket, storagePathSafe(idForPath) + '-' + Date.now() + '.' + ext, buffer, mime);
 }
 
+const reviewsAdmin = require('./_reviews');
+
 module.exports = async (req, res) => {
+  // 후기 관리(api/admin/_reviews.js)도 여기로 들어온다 — Vercel 무료 요금제 함수 개수 제한 때문.
+  if (/[?&]scope=reviews(&|$)/.test(req.url || '')) return reviewsAdmin(req, res);
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
   if (req.method !== 'POST') {

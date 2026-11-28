@@ -1,4 +1,5 @@
 // 후기 관리 (관리자 전용, x-admin-secret = Vercel 환경변수 ADMIN_SECRET).
+// Vercel 무료 요금제의 함수 개수(12개) 제한 때문에 따로 함수를 만들지 않고 /api/admin/reports?scope=reviews 로 들어온다.
 // body.action:
 //   'list'    { conceptId?, status? }   전체 후기(숨긴 것 포함)와 상품 목록
 //   'hide'    { id, reason }            숨기기 — 사유 필수

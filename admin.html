@@ -70,7 +70,7 @@ button.danger{color:var(--red);border-color:#5a3434}
   function day(s){var d=new Date(s);return d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
 
   async function call(body){
-    var r=await fetch('/api/admin/reviews',{method:'POST',headers:{'Content-Type':'application/json','x-admin-secret':secret},body:JSON.stringify(body)});
+    var r=await fetch('/api/admin/reports?scope=reviews',{method:'POST',headers:{'Content-Type':'application/json','x-admin-secret':secret},body:JSON.stringify(body)});
     var j=await r.json().catch(function(){return {ok:false};});
     if(r.status===401){logout('비밀번호가 맞지 않아요.');throw new Error('401');}
     if(!j.ok){alert('처리하지 못했어요. ('+(j.error||r.status)+')');throw new Error('fail');}
