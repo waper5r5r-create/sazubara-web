@@ -378,7 +378,9 @@ var MONTHS_KR=['1월','2월','3월','4월','5월','6월','7월','8월','9월','1
 function calendarHtml(D){
   var lightKeys={}, darkKeys={};
   D.lights.forEach(function(r,i){ lightKeys[r.key]=i; }); D.darks.forEach(function(r){ darkKeys[r.key]=1; });
-  var start=D.rows[0].date, end=D.rows[D.rows.length-1].date, html='', y=start.getFullYear(), m=start.getMonth();
+  var start=D.rows[0].date, end=D.rows[D.rows.length-1].date, html='', rest='', restHidden=0, y=start.getFullYear(), m=start.getMonth();
+  /* 가장 가까운 여우불이 있는 달만 펼쳐 두고, 나머지 달은 접는다(90일 달력이 너무 길어서). */
+  var openKey=D.lights.length?D.lights[0].date.getFullYear()+'-'+D.lights[0].date.getMonth():start.getFullYear()+'-'+start.getMonth();
   var s0=new Date(start.getFullYear(),start.getMonth(),start.getDate());
   while (y<end.getFullYear() || (y===end.getFullYear() && m<=end.getMonth())){
     var first=new Date(y,m,1), last=new Date(y,m+1,0).getDate(), cells='';
@@ -388,9 +390,11 @@ function calendarHtml(D){
       var cls=!inRange?'out':(k in lightKeys?(lightKeys[k]===0?'fire':'fire hide'):(darkKeys[k]?'dark':''));
       cells+='<span class="'+cls+'">'+(cls==='fire hide'?'?':d)+'</span>';
     }
-    html+='<div class="ys-month"><p>'+y+'년 '+MONTHS_KR[m]+'</p><div class="ys-days"><b>일</b><b>월</b><b>화</b><b>수</b><b>목</b><b>금</b><b>토</b>'+cells+'</div></div>';
+    var month='<div class="ys-month"><p>'+y+'년 '+MONTHS_KR[m]+'</p><div class="ys-days"><b>일</b><b>월</b><b>화</b><b>수</b><b>목</b><b>금</b><b>토</b>'+cells+'</div></div>';
+    if (y+'-'+m===openKey) html+=month; else { rest+=month; restHidden+=(cells.match(/fire hide/g)||[]).length; }
     m++; if (m>11){ m=0; y++; }
   }
+  if (rest) html+='<details class="ys-more-months"><summary>다른 달도 보기'+(restHidden?' · 연기에 가린 날 '+restHidden+'개':'')+'</summary>'+rest+'</details>';
   return html;
 }
 /* 일간 상징: symbols.webp(5칸×2줄)에서 내 칸만 잘라 보여 준다 */
@@ -409,7 +413,7 @@ function showResult(P, D){
   var pay='<div class="ys-paywall"><div class="ys-pn-art" data-img="T2" style="background-image:'+artUrl('T2')+'">'+sparks(10)+'</div>'+
     '<div class="ys-bb round tr">나머지 일곱 장은 봉인해 뒀어. 풀어 볼래?</div>'+
     '<div class="ys-locked"><p>장부의 나머지 일곱 장</p><ul><li>그 사람의 지금 마음</li><li>연락해도 되는 날 3개와 그날의 첫 문장</li><li>줄이 끊긴 진짜 이유</li><li>같은 이유로 끝나지 않으려면</li><li>먹을 씻어낼 때, 그리고 다음 이름</li></ul></div>'+
-    '<div class="ys-pay"><button type="button" class="ys-open-paid">장부 전체 보기 · 9,900원</button><p>결제 즉시 제공 · 결제일로부터 1년간 다시 보기</p><p class="ys-proto" role="status"></p></div></div>';
+    '<div class="ys-pay"><button type="button" class="ys-open-paid">장부 전체 보기 · 9,900원</button><p>결제 즉시 제공 · 결제일로부터 1년간 다시 보기</p><p class="ys-refund">결제가 끝나면 환불이 제한돼요(오류·중복 결제 제외).</p><p class="ys-proto" role="status"></p></div></div>';
   comic([
     {ratio:'2/3', img:'T3', crop:'face', label:'T3', bubbles:[{type:'round',text:'자, 네 장부 한 페이지.',pos:'tl'},{type:'sfx',text:'펄럭',pos:'br'}]},
     {html:page, frameless:true},

@@ -1881,7 +1881,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=27">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=28">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -8007,14 +8007,15 @@ function renderCompatResult(resA, resB, compat){
   wrap.innerHTML =
     '<div class="card compat-sheetlike">'+
       '<p class="section-title compat-sheet-title">'+esc(entry.nameB)+'님과의 궁합</p>'+
+      '<p class="compat-score-big"><b>'+total+'</b><span>점</span></p>'+
       cardMeaningHtml(entry)+collectibleCardHtml(entry,true)+
       '<div class="compat-share-row">'+
         '<button type="button" class="share-btn" id="btn-share-compat">'+uiIcon('share')+' 우리 궁합 공유하기</button>'+
         '<button type="button" class="compat-copy-link" id="btn-copy-compat">링크 복사</button>'+
       '</div>'+
     '</div>'+
-    '<div class="card" id="compat-detail-card"></div>'+
     '<div class="card" id="couple-today-card"></div>'+
+    '<div class="card" id="compat-detail-card"></div>'+
     compatLedgerHtml(resB)+
     '<div class="card compat-next"><p class="compat-next-title">다른 사람과도 볼까요?</p>'+
       '<button type="button" class="compat-next-btn" id="btn-compat-again">다른 사람과 궁합 보기</button>'+
@@ -9024,6 +9025,8 @@ function compatHeroHtml(){
 }
 function updateCompatHero(){
  var h=$('#compat-hero');if(!h)return;var on=compatFirstTime();h.hidden=!on;if(on)h.innerHTML=compatHeroHtml();
+ /* 처음 온 사람에게는 빈 별자리를 숨겨 첫 화면에만 집중하게 한다. 궁합을 한 번 보면 다시 나온다. */
+ var v=$('#view-compat');if(v)v.classList.toggle('compat-first',on);
 }
 function setupAlbumEntry(){
  var view=$('#view-compat'),form=$('#compat-form'),album=$('#myroom-card-wrap');if(!view||!form||!album)return;
@@ -9551,8 +9554,8 @@ function ysMine(){var o=STATE&&STATE._mySajuOpts;if(!o||!o.year)return null;var 
 function ysThem(){try{var r=sessionStorage.getItem('ys-them');if(!r)return null;sessionStorage.removeItem('ys-them');var t=JSON.parse(r);return t&&/^\d{8}$/.test(t.ymd)?t:null;}catch(e){return null;}}
 globalThis.YS_ENGINE={mine:ysMine,them:ysThem,home:function(){try{history.replaceState({},'','/');}catch(e){}switchTab('reports');},computeSaju:computeSaju,zhiRelation:zhiRelation,todayGanZhi:todayGanZhi,SS_KR:SS_KR,device:function(){return DEVICE.shareCode||'';},buy:function(){startReportUnlock(YS_CONCEPT,'story');}};
 if (typeof location!=='undefined' && /[?&]yeonseo=1(&|$)/.test(location.search)){
-  var ysCss=document.createElement('link');ysCss.rel='stylesheet';ysCss.href='/assets/yeonseo/yeonseo.css';document.head.appendChild(ysCss);
-  var ysJs=document.createElement('script');ysJs.src='/assets/yeonseo/yeonseo.js?v=2';ysJs.defer=true;document.head.appendChild(ysJs);
+  var ysCss=document.createElement('link');ysCss.rel='stylesheet';ysCss.href='/assets/yeonseo/yeonseo.css?v=2';document.head.appendChild(ysCss);
+  var ysJs=document.createElement('script');ysJs.src='/assets/yeonseo/yeonseo.js?v=3';ysJs.defer=true;document.head.appendChild(ysJs);
 }
 
 if (document.readyState==='loading'){

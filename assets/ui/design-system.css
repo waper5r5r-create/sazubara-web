@@ -642,3 +642,10 @@ html:not([data-theme="dark"]) .site-menu .sheet-close,html:not([data-theme="dark
 /* 결제 칸 아래 안내(제공·이용 기간, 환불 제한): 작고 흐리게, 줄 간격은 조금 넓게 */
 html body .reader-price-note,html body .report-page .reader-price-note,html body .story-gate .reader-price-note{font-size:11px;line-height:2;opacity:.7}
 html body .cost-term,html body .cost-note{margin-top:8px;font-size:11px;line-height:1.9;opacity:.72}
+
+/* 궁합 결과: 점수 크게, 처음 온 사람은 빈 별자리 숨김, 깊이 보기 버튼은 넓은 금색 */
+.compat-score-big{margin:-6px 0 12px;display:flex;align-items:baseline;gap:4px;font-family:'Noto Serif KR',serif;color:#a3721f}
+.compat-score-big b{font-size:3rem;line-height:1;font-weight:700}
+.compat-score-big span{font-size:1.0625rem;font-weight:600}
+#view-compat.compat-first #myroom-card-wrap,#view-compat.compat-first #album-add{display:none}
+#compat-detail-card .unlock-btn{display:block;width:100%;min-height:52px;border:0;border-radius:14px;background:linear-gradient(110deg,#f0d38c,#d9a957)!important;color:#2a1f0c!important;font-weight:700;font-size:.9375rem;box-shadow:none}

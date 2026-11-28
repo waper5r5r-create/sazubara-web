@@ -70,6 +70,11 @@
 .ys-pay button{width:100%;min-height:52px;border:0;border-radius:12px;background:var(--gold);color:#1a1408;font-weight:700;font-size:.9375rem}
 .ys-pay button:disabled{opacity:.7}
 .ys-pay p{margin:8px 0 0;text-align:center;font-size:.75rem;color:var(--silver-2)}
+.ys-pay p.ys-refund{margin-top:4px;font-size:11px;line-height:1.9;opacity:.7}
+.ys-more-months{margin-bottom:12px}
+.ys-more-months>summary{list-style:none;cursor:pointer;padding:10px 12px;border:1px solid #c9a45c44;border-radius:10px;text-align:center;font-size:.8125rem;color:var(--gold)}
+.ys-more-months>summary::-webkit-details-marker{display:none}
+.ys-more-months[open]>summary{margin-bottom:12px}
 @media (prefers-reduced-motion:reduce){.ys *{animation:none!important;transition:none!important}}
 /* 기준 그림 한 장으로 먼저 분위기를 본다(장면 그림이 오면 장면마다 바꾼다) */
 .ys-art,.ys-art[data-mood]{inset:0 0 18% 0;background:url(/assets/yeonseo/hero.webp) center 12%/cover no-repeat;transition:filter .8s,transform 1.2s}
@@ -164,7 +169,7 @@
 .ys-paywall .ys-bb.round.tr{top:14px;right:14px}
 /* 실제 그림이 붙은 컷은 자르지 않고 꽉 채운다 */
 .ys-pn-art[data-img]:not([data-img=""]){background-size:cover!important;background-position:center 20%!important}
-.ys-paywall>.ys-pn-art[data-img]{aspect-ratio:9/14}
+.ys-paywall>.ys-pn-art[data-img]{aspect-ratio:4/5}
 .ys-art{background-position:center top}
 /* 연출 배경에 실제 그림: 먹선은 펼친 장부(F05), 여우불은 달력(T1) */
 .ys-fx-line{background:linear-gradient(#0d0f14b3,#0d0f14e6),url(/assets/yeonseo/F05.webp) center/cover}
