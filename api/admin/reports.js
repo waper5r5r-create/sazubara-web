@@ -37,11 +37,15 @@ async function uploadIfProvided(bucket, idForPath, body) {
 }
 
 const reviewsAdmin = require('./_reviews');
+const { adminGate } = require('./_gate');
 
 module.exports = async (req, res) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
+  // 비밀번호를 계속 넣어 보는 것을 막는다(api/admin/_gate.js). 이야기 관리와 후기 관리 모두 여기를 지난다.
+  if (req.method === 'POST' && !(await adminGate(req, res))) return;
   // 후기 관리(api/admin/_reviews.js)도 여기로 들어온다 — Vercel 무료 요금제 함수 개수 제한 때문.
   if (/[?&]scope=reviews(&|$)/.test(req.url || '')) return reviewsAdmin(req, res);
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
   if (req.method !== 'POST') {
     res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });

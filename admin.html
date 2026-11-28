@@ -75,7 +75,8 @@ button.danger{color:var(--red);border-color:#5a3434}
   async function call(body){
     var r=await fetch('/api/admin/reports?scope=reviews',{method:'POST',headers:{'Content-Type':'application/json','x-admin-secret':secret},body:JSON.stringify(body)});
     var j=await r.json().catch(function(){return {ok:false};});
-    if(r.status===401){logout('비밀번호가 맞지 않아요.');throw new Error('401');}
+    if(r.status===401){logout('비밀번호가 맞지 않아요.'+(j.left!=null?' (남은 기회 '+j.left+'번)':''));throw new Error('401');}
+    if(r.status===429){logout(j.message||'잠시 뒤 다시 시도해 주세요.');throw new Error('429');}
     if(!j.ok){alert('처리하지 못했어요. ('+(j.error||r.status)+')');throw new Error('fail');}
     return j;
   }
