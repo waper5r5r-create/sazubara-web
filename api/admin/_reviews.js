@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
-  if (!checkAdminSecret(req)) return res.status(401).json({ ok: false, error: 'UNAUTHORIZED' });
+  if (!req.adminOk && !checkAdminSecret(req)) return res.status(401).json({ ok: false, error: 'UNAUTHORIZED' });
   const body = (await readJsonBody(req)) || {};
   const action = body.action;
   try {

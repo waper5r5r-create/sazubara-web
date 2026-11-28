@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
     res.status(405).json({ ok: false, error: 'METHOD_NOT_ALLOWED' });
     return;
   }
-  if (!checkAdminSecret(req)) {
+  if (!req.adminOk && !checkAdminSecret(req)) {
     res.status(401).json({ ok: false, error: 'UNAUTHORIZED' });
     return;
   }
