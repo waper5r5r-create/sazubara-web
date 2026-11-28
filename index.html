@@ -1881,7 +1881,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=41">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=42">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -2908,16 +2908,35 @@ function personAvatarHtml(res, fallbackLetter){
   var src = CHAR_AVATAR[res && res.gender];
   return src ? '<img src="'+src+'" alt="">' : esc(fallbackLetter);
 }
+/* 두 사람의 관계: 상대 정보에 고른 값이 있으면 그것, 없으면 성별로(동성 → 친구, 그 밖 → 연인) */
+var COMPAT_RELS = [['lover','연인'],['some','썸'],['friend','친구'],['family','가족'],['work','동료']];
+function compatRelOf(a, b){
+  var r = b && (b.rel || (b._input && b._input.rel));
+  if (r && COMPAT_RELS.some(function(x){ return x[0]===r; })) return r;
+  var ga = a && a.gender, gb = b && b.gender;
+  return ga && gb && ga === gb ? 'friend' : 'lover';
+}
+function compatRelIsLove(rel){ return rel === 'lover' || rel === 'some'; }
+/* 배우자 별: 여성은 나를 다스리는 기운(관성), 남성은 내가 다스리는 기운(재성)이 배우자 자리 */
+function compatSpouse(a, b, ganRel){
+  return {
+    aSeesB: (a.gender==='m' && ganRel==='ke') || (a.gender==='f' && ganRel==='keBack'),
+    bSeesA: (b.gender==='m' && ganRel==='keBack') || (b.gender==='f' && ganRel==='ke')
+  };
+}
 function computeCompat(resA, resB){
   var zhiRel = zhiRelation(resA.day.zhi, resB.day.zhi);
   var ganRel = wuxingRelation(KR_TO_ZH[resA.dayGanWx], KR_TO_ZH[resB.dayGanWx]);
+  var rel = compatRelOf(resA, resB), sp = compatSpouse(resA, resB, ganRel);
+  var both = sp.aSeesB && sp.bSeesA, one = sp.aSeesB || sp.bSeesA, love = compatRelIsLove(rel);
   var scores = {};
   Object.keys(SUB_WEIGHTS).forEach(function(key){
     var w = SUB_WEIGHTS[key];
     var s = w.base + w.zhi*ZHI_SCORE[zhiRel] + w.gan*GAN_SCORE[ganRel];
+    if (love && one) s += key === 'love' ? (both ? 6 : 3) : key === 'total' ? (both ? 3 : 1) : 0;
     scores[key] = Math.round(clamp(s,5,97));
   });
-  return { zhiRel:zhiRel, ganRel:ganRel, scores:scores };
+  return { zhiRel:zhiRel, ganRel:ganRel, scores:scores, rel:rel, spouse:sp };
 }
 
 /* ============================================================
@@ -5132,6 +5151,14 @@ function personFieldsHtml(suffix, titleLabel){
 
 /* 상대 성별은 내 성별의 반대를 먼저 골라 둔다(직접 바꾸면 그 뒤로는 건드리지 않는다). */
 var PARTNER_GENDER_TOUCHED = false;
+/* 관계도 성별로 먼저 골라 둔다(이성 → 연인, 동성 → 친구). 직접 고르면 그 뒤로는 그대로 둔다. */
+var REL_TOUCHED = false;
+function syncRelDefault(){
+  var seg = $('#c-rel'); if (!seg || REL_TOUCHED) return;
+  var useMy = STATE.mySaju && $('#c-use-my-saju') && $('#c-use-my-saju').checked && !$('#c-use-my-saju-row').hidden;
+  var ga = useMy ? STATE.mySaju.gender : segValue($('#c-gender-a')), gb = segValue($('#c-gender-b'));
+  setSegSelection(seg, ga && gb && ga === gb ? 'friend' : 'lover');
+}
 function syncPartnerGender(){
   var segB = $('#c-gender-b'); if (!segB || PARTNER_GENDER_TOUCHED) return;
   var useMy = STATE.mySaju && $('#c-use-my-saju') && $('#c-use-my-saju').checked && !$('#c-use-my-saju-row').hidden;
@@ -5186,6 +5213,7 @@ function refreshCompatPersonA(){
            '<button type="button" class="btn-primary" id="btn-compat-kakao-invite">궁합 링크 보내기</button>'+
          '</div>'+
          '<div id="c-b-manual-pane" hidden>'+
+           '<div class="field"><label>어떤 사이예요?</label><div class="seg seg-rel" id="c-rel">'+COMPAT_RELS.map(function(x,i){ return '<button type="button" data-val="'+x[0]+'"'+(i?'':' class="active"')+'>'+x[1]+'</button>'; }).join('')+'</div></div>'+
            personFieldsHtml('b','상대방')+
            '<button type="submit" class="btn-primary">궁합 확인하기</button>'+
          '</div>'+
@@ -5212,10 +5240,12 @@ function refreshCompatPersonA(){
    });
 
      foldPartnerTime();
-     $all('button',$('#c-gender-b')).forEach(function(b){ b.addEventListener('click', function(){ PARTNER_GENDER_TOUCHED = true; }); });
-     $all('button',$('#c-gender-a')).forEach(function(b){ b.addEventListener('click', syncPartnerGender); });
+     wireSeg($('#c-rel'));
+     $all('button',$('#c-rel')).forEach(function(b){ b.addEventListener('click', function(){ REL_TOUCHED = true; }); });
+     $all('button',$('#c-gender-b')).forEach(function(b){ b.addEventListener('click', function(){ PARTNER_GENDER_TOUCHED = true; setTimeout(syncRelDefault, 0); }); });
+     $all('button',$('#c-gender-a')).forEach(function(b){ b.addEventListener('click', function(){ syncPartnerGender(); setTimeout(syncRelDefault, 0); }); });
      var useMyBox = $('#c-use-my-saju');
-     var toggleA = function(){ $('#person-a-wrap').hidden = (!$('#c-use-my-saju-row').hidden && useMyBox.checked); var need = $('[data-need-me]'); if (need) need.hidden = $('#person-a-wrap').hidden; syncPartnerGender(); };
+     var toggleA = function(){ $('#person-a-wrap').hidden = (!$('#c-use-my-saju-row').hidden && useMyBox.checked); var need = $('[data-need-me]'); if (need) need.hidden = $('#person-a-wrap').hidden; syncPartnerGender(); syncRelDefault(); };
      useMyBox.addEventListener('change', toggleA);
      window._compatToggleA = toggleA;
      refreshCompatPersonA();
@@ -5239,6 +5269,7 @@ function refreshCompatPersonA(){
          var resA = (STATE.mySaju && $('#c-use-my-saju') && $('#c-use-my-saju').checked) ?
            STATE.mySaju : readPersonForm('a');
          var resB = readPersonForm('b');
+         var rel = segValue($('#c-rel')) || 'lover'; resB.rel = rel; if (resB._input) resB._input.rel = rel;
          var compat = computeCompat(resA, resB);
          showReveal('궁합을 점치는 중', '두 사람의 기운이 만나는 지점을 짚어보고 있어요', function(){
            renderCompatResult(resA, resB, compat);
@@ -8012,9 +8043,11 @@ function compatPairHeroHtml(resA, resB, entry){
   var tA = shareCardType(resA), tB = shareCardType(resB), tier = myroomTier(entry.score);
   var heads = {s:'마음이 먼저 닿는 사이',a:'서로를 채워주는 사이',b:'천천히 단단해지는 사이',c:'다른 결로 만나는 사이'};
   var av = function(t, name){ return '<div class="cp-p">'+(t?'<img src="/assets/guardians/'+t.asset+'.webp?v=2" alt="" width="80" height="80" decoding="async">':'<i></i>')+'<b>'+esc(name)+'</b><span>'+(t?esc(t.title):'&nbsp;')+'</span></div>'; };
-  var rel = skyWord(entry);
+  var rel = skyWord(entry), kind = compatRelOf(resA, resB), cc = (resA && resA.day && resB && resB.day) ? computeCompat(resA, resB) : null;
+  var kindName = {lover:'연인 궁합',some:'썸 궁합',friend:'친구 궁합',family:'가족 궁합',work:'동료 궁합'}[kind] || '우리 궁합';
+  var spouseNote = cc && compatRelIsLove(kind) && cc.spouse ? (cc.spouse.aSeesB && cc.spouse.bSeesA ? '서로의 배우자 자리에 꼭 맞는 사이' : (cc.spouse.aSeesB || cc.spouse.bSeesA) ? '한쪽 사주의 배우자 자리에 들어오는 사이' : '') : '';
   return '<div class="cp-hero">'+
-    '<p class="cp-kicker">우리 궁합</p>'+
+    '<p class="cp-kicker">'+kindName+'</p>'+
     '<div class="cp-pair">'+
       '<svg class="cp-thread" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M17 50 C 30 98, 70 98, 83 50" vector-effect="non-scaling-stroke"/></svg>'+
       av(tA, resA.name || '나')+
@@ -8023,6 +8056,7 @@ function compatPairHeroHtml(resA, resB, entry){
     '</div>'+
     (rel ? '<p class="cp-rel">'+rel+'</p>' : '')+
     '<h2 class="cp-head">'+heads[tier.key]+'</h2>'+
+    (spouseNote ? '<p class="cp-spouse">'+spouseNote+'</p>' : '')+
   '</div>';
 }
 function renderCompatResult(resA, resB, compat){
@@ -8165,7 +8199,7 @@ var CR_YEAR={sanhe:'일이 잘 맞물려 풀리는 해',liuhe:'도움과 인연�
 var CR_YEAR_GOOD={sanhe:1,liuhe:1,same:1,none:1};
 function crJo(w,a,b){if(w==='나'&&a==='이')return '내가';return w+(hasBatchim(String(w).slice(-1))?a:b);}
 function crName(r,fallback){return r&&r.name?r.name+'님':fallback;}
-var CR_IC=[["한눈에 보는 우리","glance"],["두 사람은 이런 사람","faces"],["서로 채워 주는 기운","fill"],["대화할 때","talk"],["그 사람 속마음","heart"],["우리가 가까워지는 날","days"],["우리, 결혼하면","marry"],["두 사람의 관계","bond"],["부딪힐 때","clash"],["같이 하면 좋은 것","together"],["앞으로 12달","months"],["올해와 내년의 우리","years"],["서로에게 힘이 되는 말","words"],["오늘의 우리","today"]];
+var CR_IC=[["한눈에 보는 우리","glance"],["두 사람은 이런 사람","faces"],["서로 채워 주는 기운","fill"],["대화할 때","talk"],["그 사람 속마음","heart"],["우리가 가까워지는 날","days"],["우리, 오래 함께하면","together"],["우리, 결혼하면","marry"],["두 사람의 관계","bond"],["부딪힐 때","clash"],["같이 하면 좋은 것","together"],["앞으로 12달","months"],["올해와 내년의 우리","years"],["서로에게 힘이 되는 말","words"],["오늘의 우리","today"]];
 function crIc(title){var t=String(title);for(var i=0;i<CR_IC.length;i++)if(t.indexOf(CR_IC[i][0])===0)return '<img class="cr-ic" src="/assets/icons/cr-'+CR_IC[i][1]+'.webp" alt="" width="40" height="40" loading="lazy" decoding="async">';return '';}
 function crSec(n,title,body){return '<section class="cr-sec"><div class="cr-head">'+crIc(title)+'<div><p class="cr-no">'+(n<10?'0':'')+n+'</p><h4>'+title+'</h4></div></div>'+body+'</section>';}
 function crP(t){return '<p class="section-desc">'+esc(t)+'</p>';}
@@ -8248,7 +8282,10 @@ var CR_SCENE={
  same:{s:function(){return '둘 다 자기 방식이 맞다고 버티는 장면';},f:function(){return '이번 결정은 누가 할지 미리 번갈아 정해 둬요.';}}
 };
 function crHouseOf(a,b){var z=zhiRelation(a.day.zhi,b.day.zhi);return CR_HOUSE[z]||CR_HOUSE.none;}
-function crMarrySec(n,a,b,A,B,gr){
+function crMarrySec(n,a,b,A,B,gr,isLove){
+ if(isLove===false){var h0=crHouseOf(a,b),sc0=CR_SCENE[gr]||CR_SCENE.same;
+  return crSec(n,'우리, 오래 함께하면',
+   '<div class="cr-who"><b>자주 부딪힐 장면</b>'+crP(sc0.s(A,B)+'이 자주 나와요.')+crP(sc0.f(A,B))+'</div>');}
  var h=crHouseOf(a,b),mA=(a.wxCount&&a.wxCount[CR_WEALTH_OF[a.dayGanWx]])||0,mB=(b.wxCount&&b.wxCount[CR_WEALTH_OF[b.dayGanWx]])||0;
  var money=mA>mB?crJo(A,'이','가')+' 돈 흐름을 읽는 감각이 더 있어요. 큰 지출과 저축 계획은 '+crJo(A,'이','가')+' 잡고, '+crJo(B,'은','는')+' 매달 나가는 생활비를 맡으면 좋아요.':
   mB>mA?crJo(B,'이','가')+' 돈 흐름을 읽는 감각이 더 있어요. 큰 지출과 저축 계획은 '+crJo(B,'이','가')+' 잡고, '+crJo(A,'은','는')+' 매달 나가는 생활비를 맡으면 좋아요.':
@@ -8260,22 +8297,30 @@ function crMarrySec(n,a,b,A,B,gr){
   '<div class="cr-who"><b>자주 부딪힐 장면</b>'+crP(sc.s(A,B)+'이 자주 나와요.')+crP(sc.f(A,B))+'</div>');
 }
 /* 무료 화면에서 깊이 보기에 무엇이 있는지 이름 한 줄씩 미리 보여 준다. */
-function crMoreHtml(a,b,A,B){
+function crMoreHtml(a,b,A,B,isLove){
  var h=crHeartOf(a,b),house=crHouseOf(a,b);
  return '<div class="cr-more"><p class="cr-more-title">깊이 보기에서 열리는 것</p><ul>'+
   (h?'<li><img class="cr-more-ic" src="/assets/icons/cr-heart.webp" alt="" width="34" height="34" loading="lazy" decoding="async"><b>그 사람 속마음</b><span>'+esc(B)+' 눈에 '+esc(crJo(A,'은','는'))+' ‘'+esc(h.name)+'’</span></li>':'')+
   '<li><img class="cr-more-ic" src="/assets/icons/cr-days.webp" alt="" width="34" height="34" loading="lazy" decoding="async"><b>우리가 가까워지는 날</b><span>앞으로 석 달 안에 둘에게 좋은 날 3일</span></li>'+
-  '<li><img class="cr-more-ic" src="/assets/icons/cr-marry.webp" alt="" width="34" height="34" loading="lazy" decoding="async"><b>우리, 결혼하면</b><span>같이 살면 ‘'+esc(house.name)+'’</span></li>'+
+  '<li><img class="cr-more-ic" src="/assets/icons/cr-marry.webp" alt="" width="34" height="34" loading="lazy" decoding="async"><b>'+(isLove===false?'우리, 오래 함께하면':'우리, 결혼하면')+'</b><span>'+(isLove===false?'자주 부딪힐 장면과 푸는 법':'같이 살면 ‘'+esc(house.name)+'’')+'</span></li>'+
   '<li><img class="cr-more-ic" src="/assets/icons/cr-bond.webp" alt="" width="34" height="34" loading="lazy" decoding="async"><b>그리고</b><span>두 사람의 관계 · 부딪힐 때 푸는 법 · 앞으로 12달 · 올해와 내년 · 힘이 되는 말</span></li></ul></div>';
 }
+/* 배우자 별 한 단락: 연인·썸일 때만, 성별로 배우자 자리가 다르다 */
+function crSpouseHtml(a,b,A,B,cc,isLove){
+ if(!isLove||!cc||!cc.spouse)return '';
+ var sp=cc.spouse,line=function(me,them,r){return r.gender==='f'?crJo(me+' 사주에서 '+them,'은','는')+' 배우자 자리(관성)에 들어오는 사람이에요. 곁에 있으면 마음이 단단히 잡히는 상대예요.':crJo(me+' 사주에서 '+them,'은','는')+' 배우자 자리(재성)에 들어오는 사람이에요. 아끼고 챙겨 주고 싶어지는 상대예요.';};
+ var out=[];if(sp.aSeesB)out.push(line(A,B,a));if(sp.bSeesA)out.push(line(B,A,b));
+ if(!out.length)return '';
+ return '<div class="cr-who cr-spouse"><b>'+(out.length>1?'서로의 배우자 자리에 꼭 맞아요':'배우자 자리')+'</b>'+out.map(crP).join('')+'</div>';
+}
 function compatLongReportHtml(a,b,compat,previewOnly){
- var A=crName(a,'나'),B=crName(b,'상대'),cc=computeCompat(a,b),sc=cc.scores,zr=cc.zhiRel,gr=cc.ganRel,secs=[];
+ var A=crName(a,'나'),B=crName(b,'상대'),cc=computeCompat(a,b),sc=cc.scores,zr=cc.zhiRel,gr=cc.ganRel,secs=[],relKind=cc.rel,isLove=compatRelIsLove(relKind);
  var short=ZHI_REL_SHORT[zr]||{},bars=[['성격',sc.personality],['친밀감',sc.love],['가치관',sc.values],['금전 감각',sc.money]];
  var top=bars.slice().sort(function(x,y){return y[1]-x[1];})[0],low=bars.slice().sort(function(x,y){return x[1]-y[1];})[0];
  secs.push(crSec(1,'한눈에 보는 우리',
   '<div class="cr-score"><b>'+sc.total+'</b><span>점</span><em>'+esc(skyWord({zhiRel:zr,ganRel:gr,score:sc.total}))+'</em></div>'+
   '<div class="cr-bars">'+bars.map(function(x){return '<div class="cr-bar"><span>'+x[0]+'</span><i><s style="width:'+x[1]+'%"></s></i><b>'+x[1]+'</b></div>';}).join('')+'</div>'+
-  crP(crJo(top[0],'이','가')+' 가장 잘 맞고, '+crJo(low[0],'은','는')+' 서로 맞춰 가야 하는 부분이에요.')));
+  crP(crJo(top[0],'이','가')+' 가장 잘 맞고, '+crJo(low[0],'은','는')+' 서로 맞춰 가야 하는 부분이에요.')+crSpouseHtml(a,b,A,B,cc,isLove)));
  var hasA=a.day&&a.day.ganKr&&HOOK_SELF.stem[a.day.ganKr],hasB=b.day&&b.day.ganKr&&HOOK_SELF.stem[b.day.ganKr];
  secs.push(crSec(2,'두 사람은 이런 사람',
   (hasA?'<div class="cr-who"><b>'+esc(A)+'</b>'+crP(HOOK_SELF.stem[a.day.ganKr])+'</div>':'')+
@@ -8290,7 +8335,7 @@ function compatLongReportHtml(a,b,compat,previewOnly){
   secs.push(crSec(3,'서로 채워 주는 기운',lines.map(crP).join('')));
  }
  secs.push(crSec(secs.length+1,'대화할 때',autoParas(GAN_REL_TALK_TEXT[gr]||'')));
- if(previewOnly)return '<div class="cr-report is-preview"><p class="cr-kicker">우리 사이 리포트</p><h3>'+esc(crJo(A,'과','와'))+' '+esc(B)+'</h3>'+secs.join('')+crMoreHtml(a,b,A,B)+'</div>';
+ if(previewOnly)return '<div class="cr-report is-preview"><p class="cr-kicker">우리 사이 리포트</p><h3>'+esc(crJo(A,'과','와'))+' '+esc(B)+'</h3>'+secs.join('')+crMoreHtml(a,b,A,B,isLove)+'</div>';
  var heartSec=crHeartSec(secs.length+1,a,b,A,B);if(heartSec)secs.push(heartSec);
  secs.push(crSec(secs.length+1,'두 사람의 관계',crP(ZHI_REL_TEXT[zr]||'')+autoParas(ZHI_REL_MARRIAGE_TEXT[zr]||'')));
  var lv=CONFLICT_LEVEL[zr];
@@ -8313,7 +8358,7 @@ function compatLongReportHtml(a,b,compat,previewOnly){
   var ra=zhiRelation(a.day.zhi,yz(y)),rb=zhiRelation(b.day.zhi,yz(y)),ga=!!CR_YEAR_GOOD[ra],gb=!!CR_YEAR_GOOD[rb];
   var tail=ga&&gb?'둘 다 순한 해라 함께 일을 벌이기 좋아요.':ga?crJo(B,'이','가')+' 흔들리기 쉬운 해예요. '+crJo(A,'이','가')+' 받쳐 주세요.':gb?crJo(A,'이','가')+' 흔들리기 쉬운 해예요. '+B+'에게 기대도 괜찮아요.':'둘 다 마음이 바쁜 해예요. 서로에게 바라는 걸 줄이고 쉬는 시간을 같이 가져요.';
   return '<div class="cr-year"><b>'+y+'년</b>'+crP(A+': '+CR_YEAR[ra]+' · '+B+': '+CR_YEAR[rb])+crP(tail)+'</div>';}).join('')));
- secs.push(crMarrySec(secs.length+1,a,b,A,B,gr));
+ secs.push(crMarrySec(secs.length+1,a,b,A,B,gr,isLove));
  // 서로에게 힘이 되는 말
  var wa=CR_WORDS[gr]||[],wb=CR_WORDS[CR_REVERSE[gr]]||[];
  secs.push(crSec(secs.length+1,'서로에게 힘이 되는 말','<div class="cr-words"><p><b>'+esc(A)+' → '+esc(B)+'</b>'+wa.map(esc).join('<br>')+'</p><p><b>'+esc(B)+' → '+esc(A)+'</b>'+wb.map(esc).join('<br>')+'</p></div>'));
