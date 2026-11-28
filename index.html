@@ -1858,6 +1858,21 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 @keyframes skyCardFlip{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
 @keyframes skyPanelIn{to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.sky-nebula-art,.sky-dust,.sky-shoot,.sky-star-in{animation:none!important}.sky-focus.in .sky-fcard,.sky-focus.in .sky-fcard-inner,.sky-focus.in .sky-panel{animation-duration:.01s!important;animation-delay:0s!important}}
+/* 구매자 후기 */
+.pr-reviews{margin:40px 0 24px;padding:20px 18px;border:1px solid rgba(150,150,160,.28);border-radius:16px;background:rgba(150,150,160,.07);text-align:left;word-break:keep-all}
+.pr-title{font-size:1rem;font-weight:600;margin:0 0 14px;display:flex;align-items:baseline;gap:6px}.pr-title small{font-size:.75rem;opacity:.7;font-weight:400}.pr-avg{color:#e0ad55}
+.pr-list{list-style:none;margin:0;padding:0}.pr-list li{padding:14px 0;border-top:1px solid rgba(150,150,160,.22)}
+.pr-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 6px;font-size:.75rem;opacity:.8}.pr-stars{color:#e0ad55;letter-spacing:1px}
+.pr-text{margin:0;font-size:.875rem;line-height:1.8;white-space:pre-wrap}
+.pr-reply{margin:10px 0 0;padding:8px 12px;border-left:3px solid #e0ad55;font-size:.8125rem;line-height:1.7;opacity:.9;white-space:pre-wrap}.pr-reply b{display:block;font-size:.75rem}
+.pr-more summary{cursor:pointer;padding:12px 0;font-size:.8125rem;opacity:.8;min-height:44px;display:flex;align-items:center}
+.pr-note{margin:12px 0 0;font-size:.6875rem;opacity:.6}
+.pr-form{display:grid;gap:10px;margin:0 0 8px;padding:0 0 16px}.pr-form-title{margin:0;font-size:.875rem}
+.pr-pick{display:flex;gap:2px}.pr-pick button{background:none;border:0;color:#e0ad55;font-size:1.6rem;line-height:1;min-width:44px;min-height:44px;cursor:pointer;padding:0}
+.pr-form textarea{width:100%;min-height:90px;padding:12px;border-radius:12px;border:1px solid rgba(150,150,160,.35);background:rgba(150,150,160,.06);color:inherit;font:inherit;font-size:.875rem;resize:vertical;box-sizing:border-box}
+.pr-consent{display:flex;gap:8px;align-items:flex-start;font-size:.75rem;line-height:1.6;opacity:.85;min-height:44px;padding-top:4px}.pr-consent input{margin-top:3px}
+.pr-submit{min-height:46px;border:0;border-radius:12px;background:#e0ad55;color:#20180e;font:inherit;font-weight:600;cursor:pointer}.pr-submit:disabled{opacity:.5}
+.pr-status{margin:0;font-size:.75rem;min-height:1.2em;color:#e0896d}.pr-thanks{margin:0 0 12px;font-size:.875rem;color:#e0ad55}
 </style>
 <link rel="stylesheet" href="/assets/ui/celestial.css?v=6">
 <link rel="stylesheet" href="/assets/ui/night.css?v=3">
@@ -5001,7 +5016,7 @@ function premiumPeriodUnlockedHtml(my, period){
         '<div class="lucky-chip"><span class="ic">'+uiIcon('spark')+'</span><p class="k">행운의 아이템</p><p class="v">'+lucky.item+'</p></div>'+
       '</div>'+
       '<p class="disclaimer">내 일간과 실제 '+pillarLabel+'('+pillar.ganKr+pillar.zhiKr+')의 십성 관계를 바탕으로 한 참고용 콘텐츠예요.</p>'+
-    '</div>';
+    '</div>'+reviewSlot('today-premium');
 }
 function premiumPeriodHtml(my, period){
   var unlockKey = premiumPeriodKey(period);
@@ -6079,7 +6094,7 @@ function openNewYearViewer(concept){
    if(!data.ok||!data.free)throw new Error('READER_FAILED');
    REPORT_READER.data=data;
    if(data.access&&data.access.story){DEVICE.unlocked[reportStageKey(concept,'story')]=true;saveDevice();}
-   list.innerHTML=newYearPageHtml(my,data);wireNewYear(list,concept);
+   list.innerHTML=newYearPageHtml(my,data)+reviewSlot(concept.id);wireNewYear(list,concept);
   }).catch(function(){
    if(requestId!==reportViewerRequest)return;
    list.innerHTML='<p class="section-desc">편지를 가져오지 못했어요.</p><button type="button" class="share-btn" id="reader-retry">다시 불러오기</button>';
@@ -6218,7 +6233,7 @@ function openIanViewer(concept,justPaid){
    if(!data.ok||!data.free)throw new Error('READER_FAILED');
    REPORT_READER.data=data;
    if(data.access&&data.access.story){DEVICE.unlocked[reportStageKey(concept,'story')]=true;saveDevice();}
-   list.innerHTML=ianPageHtml(my,data);wireIan(list,concept,justPaid);
+   list.innerHTML=ianPageHtml(my,data)+reviewSlot(concept.id);wireIan(list,concept,justPaid);
   }).catch(function(){
    if(requestId!==reportViewerRequest)return;
    list.innerHTML='<p class="section-desc">불러오지 못했어요.</p><button type="button" class="share-btn" id="reader-retry">다시 불러오기</button>';
@@ -7320,10 +7335,70 @@ function storyFlowHtml(concept,data,result){
  return html;
 }
 
+/* ---- 구매자 후기 — 상품 화면 끝에 reviewSlot(상품id)를 넣으면 알아서 채운다.
+   실제로 결제한 기기만 쓸 수 있고(서버 api/reports/reviews.js가 확인), 후기가 없고 쓸 수도 없으면 칸을 지운다. ---- */
+function reviewSlot(productId){return '<section class="pr-reviews" data-review-product="'+esc(productId)+'" aria-label="구매자 후기"></section>';}
+function reviewStars(n){var s='';for(var i=1;i<=5;i++)s+=i<=n?'★':'☆';return s;}
+function reviewDay(s){var d=new Date(s);return isNaN(d)?'':d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();}
+function reviewItemHtml(r){
+ return '<li><p class="pr-head"><span class="pr-stars" aria-label="별점 '+r.rating+'점">'+reviewStars(r.rating)+'</span><span>'+esc(r.displayName)+' · '+esc(reviewDay(r.createdAt))+'</span></p>'+
+  '<p class="pr-text">'+esc(r.text)+'</p>'+(r.reply?'<p class="pr-reply"><b>별첩사주</b>'+esc(r.reply)+'</p>':'')+'</li>';
+}
+function reviewFormHtml(){
+ return '<form class="pr-form"><p class="pr-form-title">읽어 보니 어떠셨어요?</p>'+
+  '<div class="pr-pick" role="radiogroup" aria-label="별점">'+[1,2,3,4,5].map(function(n){return '<button type="button" role="radio" aria-checked="false" data-star="'+n+'" aria-label="'+n+'점">☆</button>';}).join('')+'</div>'+
+  '<textarea maxlength="500" placeholder="좋았던 점이나 아쉬운 점을 10자 이상 남겨 주세요." aria-label="후기"></textarea>'+
+  '<label class="pr-consent"><input type="checkbox"> 이 후기를 사이트에 공개하는 데 동의해요. 이름은 보이지 않아요.</label>'+
+  '<button type="submit" class="pr-submit">후기 남기기</button><p class="pr-status" role="status"></p></form>';
+}
+function fillReviewSlot(slot){
+ slot.setAttribute('data-filled','1');
+ var id=slot.getAttribute('data-review-product'),dev=(typeof DEVICE!=='undefined'&&DEVICE.shareCode)||'';
+ fetch('/api/reports/reviews?conceptId='+encodeURIComponent(id)+(dev?'&deviceId='+encodeURIComponent(dev):''))
+  .then(function(r){return r.json();}).then(function(d){
+   if(!slot.isConnected)return;
+   if(!d||!d.ok||(!d.count&&!d.canWrite)){slot.remove();return;}
+   var rows=d.rows||[];
+   slot.innerHTML='<h3 class="pr-title">구매자 후기'+(d.count?' <span class="pr-avg">★ '+d.average.toFixed(1)+'</span> <small>'+d.count+'개</small>':'')+'</h3>'+
+    (d.canWrite?reviewFormHtml():'')+
+    (rows.length?'<ul class="pr-list">'+rows.slice(0,3).map(reviewItemHtml).join('')+'</ul>'+
+     (rows.length>3?'<details class="pr-more"><summary>후기 더 보기</summary><ul class="pr-list">'+rows.slice(3).map(reviewItemHtml).join('')+'</ul></details>':''):'')+
+    '<p class="pr-note">실제로 결제한 분만 남길 수 있는 후기예요.</p>';
+   if(d.canWrite)wireReviewForm(slot,id,dev);
+  }).catch(function(){if(slot.isConnected)slot.remove();});
+}
+function wireReviewForm(slot,id,dev){
+ var form=slot.querySelector('.pr-form');if(!form)return;
+ var rating=0,stars=form.querySelectorAll('[data-star]'),status=form.querySelector('.pr-status');
+ stars.forEach(function(b){b.addEventListener('click',function(){
+  rating=+b.getAttribute('data-star');
+  stars.forEach(function(x){var on=+x.getAttribute('data-star')<=rating;x.textContent=on?'★':'☆';x.classList.toggle('on',on);x.setAttribute('aria-checked',String(+x.getAttribute('data-star')===rating));});
+ });});
+ form.addEventListener('submit',function(e){
+  e.preventDefault();
+  var text=form.querySelector('textarea').value.trim(),agree=form.querySelector('input[type=checkbox]').checked;
+  if(!rating){status.textContent='별점을 골라 주세요.';return;}
+  if(text.length<10){status.textContent='후기를 10자 이상 써 주세요.';return;}
+  if(!agree){status.textContent='공개 동의에 체크해 주세요.';return;}
+  var btn=form.querySelector('.pr-submit');btn.disabled=true;status.textContent='저장하고 있어요.';
+  fetch('/api/reports/reviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({conceptId:id,deviceId:dev,rating:rating,text:text,publishConsent:true})})
+   .then(function(r){return r.json().then(function(v){if(!r.ok||!v.ok)throw new Error(v.message||'저장하지 못했어요.');});})
+   .then(function(){form.outerHTML='<p class="pr-thanks">후기를 남겨 주셔서 고마워요.</p>';})
+   .catch(function(err){btn.disabled=false;status.textContent=err.message||'저장하지 못했어요. 잠시 뒤 다시 해 주세요.';});
+ });
+}
+(function(){
+ var queued=false;
+ function scan(){queued=false;document.querySelectorAll('[data-review-product]:not([data-filled])').forEach(fillReviewSlot);}
+ function later(){if(!queued){queued=true;(typeof requestAnimationFrame==='function'?requestAnimationFrame:setTimeout)(scan);}}
+ if(typeof document==='undefined'||!document.documentElement||typeof document.querySelectorAll!=='function')return;
+ if(typeof MutationObserver==='function')new MutationObserver(later).observe(document.documentElement,{childList:true,subtree:true});
+ later();
+})();
 function renderReportPanels(concept,data,stage){
  var list=$('#report-panel-list');if(!list)return;
  REPORT_READER.stage=stage;$('#reader-steps').innerHTML='';
- list.innerHTML=storyFlowHtml(concept,data,STATE.mySaju);
+ list.innerHTML=storyFlowHtml(concept,data,STATE.mySaju)+reviewSlot(concept.id);
  $all('.report-stage-buy',list).forEach(function(btn){btn.addEventListener('click',function(){startReportUnlock(concept,btn.dataset.stage);});});
  var share=$('#btn-share-report');if(share)share.addEventListener('click',function(){doShareReport(concept,data.rows,STATE.mySaju);});
  $all('.report-toc a',list).forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var target=$(a.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});});
@@ -8204,7 +8279,7 @@ function compatLongReportHtml(a,b,compat,previewOnly){
  secs.push(crSec(secs.length+1,'서로에게 힘이 되는 말','<div class="cr-words"><p><b>'+esc(A)+' → '+esc(B)+'</b>'+wa.map(esc).join('<br>')+'</p><p><b>'+esc(B)+' → '+esc(A)+'</b>'+wb.map(esc).join('<br>')+'</p></div>'));
  // 오늘의 우리
  try{var ti=coupleTodayInfo(a.dayGanWx,b.dayGanWx,a.day.gan,b.day.gan);if(ti&&ti.tier)secs.push(crSec(secs.length+1,'오늘의 우리 · '+esc(ti.tier.label),autoParas(ti.tier.text)));}catch(e){}
- return '<div class="cr-report"><p class="cr-kicker">우리 사이 리포트</p><h3>'+esc(crJo(A,'과','와'))+' '+esc(B)+'</h3>'+secs.join('')+'<p class="disclaimer">두 사람의 사주 여덟 글자로 계산한 참고용 리포트예요.</p></div>';
+ return '<div class="cr-report"><p class="cr-kicker">우리 사이 리포트</p><h3>'+esc(crJo(A,'과','와'))+' '+esc(B)+'</h3>'+secs.join('')+'<p class="disclaimer">두 사람의 사주 여덟 글자로 계산한 참고용 리포트예요.</p>'+reviewSlot('compat')+'</div>';
 }
 function compatDetailHtml(resA, resB, compat){ return compatLongReportHtml(resA, resB, compat, false); }
 function compatDetailHtmlOld(resA, resB, compat){

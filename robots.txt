@@ -3,4 +3,5 @@ Allow: /
 Disallow: /api/
 Disallow: /success.html
 Disallow: /fail.html
+Disallow: /admin
 Sitemap: https://www.byeolcheop.com/sitemap.xml

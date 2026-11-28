@@ -476,6 +476,7 @@ async function openPaid(P,D,prev){
   ch.forEach(function(c){
     panels.push({html:'<div class="ys-chap"><div class="ys-chap-art" style="background-image:'+artUrl(c.img)+'"><span>'+(c.no?c.no+'장':'덤')+'</span><h2>'+esc(c.title)+'</h2></div>'+c.blocks.map(blockHtml).join('')+'</div>', frameless:true});
   });
+  if (typeof G.reviewSlot === 'function') panels.push({html: G.reviewSlot('20271201-7a3e-4f1b-9c62-5d8e0b4a1f73'), frameless: true});
   comic(panels); return true;
 }
 

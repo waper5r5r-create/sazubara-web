@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>별첩사주 관리</title>
+<style>
+:root{--bg:#111a29;--raised:#1c283a;--line:#26324a;--text:#eef0f5;--muted:#a7abb8;--gold:#e8b96d;--red:#e87b6d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:1.25rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.8125rem;margin:0 0 20px}
+input,select,textarea,button{font:inherit;color:inherit}
+input,select,textarea{background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{width:100%;min-height:72px;resize:vertical}
+button{background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:8px 14px;cursor:pointer;min-height:40px}
+button.primary{background:var(--gold);border-color:var(--gold);color:#20180e;font-weight:600}
+button.danger{color:var(--red);border-color:#5a3434}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.stats{color:var(--muted);font-size:.8125rem;margin-left:auto}
+.card{background:var(--raised);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.card.hidden{opacity:.6;border-style:dashed}
+.meta{display:flex;flex-wrap:wrap;gap:8px;font-size:.8125rem;color:var(--muted);margin-bottom:8px}
+.stars{color:var(--gold);letter-spacing:1px}
+.tag{border:1px solid var(--line);border-radius:999px;padding:0 8px}
+.tag.warn{color:var(--red);border-color:#5a3434}
+.text{white-space:pre-wrap;word-break:keep-all;margin:0 0 10px}
+.reply{border-left:3px solid var(--gold);padding:6px 12px;margin:0 0 10px;color:#d8dbe4;font-size:.875rem;white-space:pre-wrap}
+.actions{display:flex;flex-wrap:wrap;gap:6px}
+.panel{margin-top:10px;display:grid;gap:8px}
+.note{font-size:.75rem;color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+#login{max-width:340px;margin:80px auto;display:grid;gap:10px}
+#msg{min-height:1.4em;color:var(--red);font-size:.8125rem}
+</style>
+</head>
+<body>
+<main>
+  <form id="login">
+    <h1>별첩사주 관리</h1>
+    <input id="pw" type="password" placeholder="관리자 비밀번호" autocomplete="current-password" required>
+    <button class="primary">들어가기</button>
+    <div id="msg"></div>
+  </form>
+
+  <section id="app" hidden>
+    <h1>후기 관리</h1>
+    <p class="sub">실제로 결제한 분만 후기를 남길 수 있어요. 후기 내용은 고칠 수 없고, 숨기기·답글·삭제만 할 수 있어요.<br>별점이 낮다는 이유만으로 숨기면 안 돼요. 숨기거나 지울 때는 사유를 골라야 하고, 기록이 남아요.</p>
+    <div class="bar">
+      <select id="fProduct"><option value="">모든 상품</option></select>
+      <select id="fStatus"><option value="">공개 + 숨김</option><option value="visible">공개</option><option value="hidden">숨김</option></select>
+      <button id="reload">새로고침</button>
+      <button id="logout">나가기</button>
+      <span class="stats" id="stats"></span>
+    </div>
+    <div id="list"></div>
+  </section>
+</main>
+<script>
+(function(){
+  var KEY='byeolcheop-admin';
+  var secret=sessionStorage.getItem(KEY)||'';
+  var products={}, reasons=[];
+  var $=function(id){return document.getElementById(id);};
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function stars(n){return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n);}
+  function day(s){var d=new Date(s);return d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+
+  async function call(body){
+    var r=await fetch('/api/admin/reviews',{method:'POST',headers:{'Content-Type':'application/json','x-admin-secret':secret},body:JSON.stringify(body)});
+    var j=await r.json().catch(function(){return {ok:false};});
+    if(r.status===401){logout('비밀번호가 맞지 않아요.');throw new Error('401');}
+    if(!j.ok){alert('처리하지 못했어요. ('+(j.error||r.status)+')');throw new Error('fail');}
+    return j;
+  }
+
+  function logout(m){secret='';sessionStorage.removeItem(KEY);$('app').hidden=true;$('login').hidden=false;$('msg').textContent=m||'';}
+
+  async function load(){
+    var j=await call({action:'list',conceptId:$('fProduct').value||undefined,status:$('fStatus').value||undefined});
+    if(!reasons.length){
+      reasons=j.reasons;
+      j.products.forEach(function(p){products[p.id]=p.title;var o=document.createElement('option');o.value=p.id;o.textContent=p.title;$('fProduct').appendChild(o);});
+    }
+    render(j.rows);
+  }
+
+  function render(rows){
+    var shown=rows.filter(function(r){return r.status==='visible';});
+    var avg=shown.length?(shown.reduce(function(s,r){return s+r.rating;},0)/shown.length).toFixed(1):'-';
+    $('stats').textContent='전체 '+rows.length+'개 · 공개 '+shown.length+'개 · 공개 평균 '+avg;
+    if(!rows.length){$('list').innerHTML='<p class="empty">아직 후기가 없어요.</p>';return;}
+    $('list').innerHTML=rows.map(function(r){
+      var hidden=r.status==='hidden';
+      return '<article class="card'+(hidden?' hidden':'')+'" data-id="'+esc(r.id)+'">'+
+        '<div class="meta"><span class="stars">'+stars(r.rating)+'</span><span class="tag">'+esc(products[r.concept_id]||r.concept_id)+'</span><span>'+day(r.created_at)+'</span>'+
+        (hidden?'<span class="tag warn">숨김 · '+esc(r.hidden_reason)+'</span>':'')+'</div>'+
+        '<p class="text">'+esc(r.text)+'</p>'+
+        (r.reply?'<div class="reply"><b>사장님 답글</b>\n'+esc(r.reply)+'</div>':'')+
+        '<div class="actions">'+
+          '<button data-act="reply">'+(r.reply?'답글 고치기':'답글 달기')+'</button>'+
+          (hidden?'<button data-act="unhide">다시 공개</button>':'<button data-act="hide">숨기기</button>')+
+          '<button class="danger" data-act="delete">삭제</button>'+
+        '</div><div class="panel" hidden></div></article>';
+    }).join('');
+    rows.forEach(function(r){$('list').querySelector('[data-id="'+r.id+'"]')._row=r;});
+  }
+
+  function reasonPanel(card,act){
+    var p=card.querySelector('.panel');
+    p.innerHTML='<select><option value="">사유를 골라 주세요</option>'+reasons.map(function(x){return '<option>'+esc(x)+'</option>';}).join('')+'</select>'+
+      (act==='delete'?'<p class="note">삭제하면 되돌릴 수 없어요. 숨기기로 충분하면 숨기기를 써 주세요.</p>':'')+
+      '<div class="actions"><button class="'+(act==='delete'?'danger':'primary')+'" data-go="'+act+'">'+(act==='delete'?'삭제하기':'숨기기')+'</button><button data-go="cancel">취소</button></div>';
+    p.hidden=false;
+  }
+
+  function replyPanel(card){
+    var p=card.querySelector('.panel');
+    p.innerHTML='<textarea maxlength="500" placeholder="고객에게 보일 답글 (비우고 저장하면 답글이 지워져요)">'+esc(card._row.reply||'')+'</textarea>'+
+      '<div class="actions"><button class="primary" data-go="reply">답글 저장</button><button data-go="cancel">취소</button></div>';
+    p.hidden=false;p.querySelector('textarea').focus();
+  }
+
+  $('list').addEventListener('click',async function(e){
+    var b=e.target.closest('button');if(!b)return;
+    var card=b.closest('.card'),id=card.dataset.id,act=b.dataset.act,go=b.dataset.go;
+    if(act==='reply')return replyPanel(card);
+    if(act==='hide'||act==='delete')return reasonPanel(card,act);
+    if(go==='cancel'){card.querySelector('.panel').hidden=true;return;}
+    b.disabled=true;
+    try{
+      if(act==='unhide')await call({action:'unhide',id:id});
+      else if(go==='reply')await call({action:'reply',id:id,reply:card.querySelector('textarea').value});
+      else if(go==='hide'||go==='delete'){
+        var reason=card.querySelector('select').value;
+        if(!reason){alert('사유를 골라 주세요.');b.disabled=false;return;}
+        if(go==='delete'&&!confirm('이 후기를 삭제할까요? 되돌릴 수 없어요.')){b.disabled=false;return;}
+        await call({action:go,id:id,reason:reason});
+      }
+      await load();
+    }catch(err){b.disabled=false;}
+  });
+
+  $('login').addEventListener('submit',async function(e){
+    e.preventDefault();secret=$('pw').value;$('msg').textContent='';
+    try{await load();sessionStorage.setItem(KEY,secret);$('login').hidden=true;$('app').hidden=false;$('pw').value='';}catch(err){}
+  });
+  $('reload').onclick=load;$('fProduct').onchange=load;$('fStatus').onchange=load;
+  $('logout').onclick=function(){logout();};
+  if(secret){load().then(function(){$('login').hidden=true;$('app').hidden=false;}).catch(function(){});}
+})();
+</script>
+</body>
+</html>
