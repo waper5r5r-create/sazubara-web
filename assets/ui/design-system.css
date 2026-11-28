@@ -713,3 +713,47 @@ html body .sky-actions .album-invite-btn{margin:0}
 html[data-theme="dark"] .share-btn svg{color:currentColor}
 /* 생년월일 아래 날짜 확인 줄 자리를 두므로, 그 칸 아래 여백은 줄인다 */
 #compat-form #c-b-manual-pane>.field:has(.birth-live),#compat-form #person-a-wrap>.field:has(.birth-live){margin-bottom:4px}
+
+/* 궁합 결과 첫머리: 남색 장면 — 두 사람 카드 + 점수 + 붉은 실 */
+html body #compat-result{margin-top:0}
+#view-compat.has-result #compat-hero{display:none}
+.compat-sheetlike.has-pair{padding-top:12px}
+.cp-hero{position:relative;isolation:isolate;overflow:hidden;margin:0 0 18px;padding:22px 14px 24px;border-radius:18px;text-align:center;color:#f4efe6;background:radial-gradient(120% 90% at 50% 0%,#2b3568 0%,#151c3d 55%,#0b1024 100%);box-shadow:0 10px 26px #0b102433}
+.cp-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url('/assets/compat/hero-fate.webp') center 70%/cover no-repeat;opacity:.22}
+.cp-kicker{margin:0 0 16px;font-size:.75rem;font-weight:700;letter-spacing:.14em;color:#e0ad55}
+.cp-pair{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:4px}
+.cp-thread{position:absolute;left:0;top:0;width:100%;height:80px;z-index:0;overflow:visible;pointer-events:none}
+.cp-thread path{fill:none;stroke:#ff6b81;stroke-width:1.6;stroke-linecap:round;opacity:.85;filter:drop-shadow(0 0 3px #ff6b81aa);stroke-dasharray:240;stroke-dashoffset:240;animation:cpThread 1.4s .3s ease-out forwards}
+@keyframes cpThread{to{stroke-dashoffset:0}}
+.cp-p{position:relative;z-index:1;min-width:0}
+.cp-p img,.cp-p i{display:block;width:80px;height:80px;margin:0 auto;border-radius:50%;object-fit:cover;object-position:50% 18%;background:#141b38;box-shadow:0 0 0 2px #e0ad55,0 6px 18px #0009}
+.cp-p b{display:block;margin-top:10px;font-size:.95rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cp-p span{display:block;margin-top:2px;font-size:.72rem;color:#e7c27a}
+.cp-score{position:relative;z-index:1;margin:14px 0 0;padding:0 4px}
+.cp-score b{font-family:"Noto Serif KR",serif;font-size:3.1rem;font-weight:700;line-height:1;color:#f0d38c;text-shadow:0 0 22px #e0ad5577}
+.cp-score span{margin-left:2px;font-size:.85rem;color:#e7c27a}
+.cp-rel{display:inline-block;margin:20px 0 8px;padding:5px 12px;border-radius:999px;background:#e0ad5524;box-shadow:inset 0 0 0 1px #e0ad5555;font-size:.8rem;font-weight:700;color:#f0d38c}
+.cp-head{margin:0;font-family:"Noto Serif KR",serif;font-size:1.35rem;font-weight:700;color:#fff}
+/* 아래 설명 상자는 인용만 남긴다(꼬리표·제목은 위 장면에 있음) */
+.compat-sheetlike.has-pair .card-meaning .reader-kicker,.compat-sheetlike.has-pair .card-meaning .card-relation-tag,.compat-sheetlike.has-pair .card-meaning h3{display:none}
+@media (prefers-reduced-motion:reduce){.cp-thread path{animation:none;stroke-dashoffset:0}}
+
+/* 궁합 잠금 카드: 남색 + 장 아이콘 목록 */
+html body #compat-detail-card .locked-card{background:radial-gradient(120% 80% at 50% 0%,#2b3568 0%,#151c3d 60%,#0b1024 100%);border:1px solid #e0ad5544;color:#f4efe6;box-shadow:0 10px 26px #0b102433}
+html body #compat-detail-card .locked-card :is(h3,h4,.locked-title,p,strong){color:#f4efe6}
+html body #compat-detail-card .locked-card svg{color:#e0ad55}
+html body #compat-detail-card .locked-card small,html body #compat-detail-card .locked-card .pay-note,html body #compat-detail-card .locked-card [class*="note"]{color:#b9b3c9}
+html body #compat-detail-card .cr-more.in-lock{background:#ffffff0f;box-shadow:inset 0 0 0 1px #ffffff14}
+html body #compat-detail-card .cr-more.in-lock li{display:grid;grid-template-columns:34px 1fr;column-gap:10px;align-items:center}
+html body #compat-detail-card .cr-more.in-lock li>.cr-more-ic{grid-row:span 2;width:34px;height:34px;border-radius:50%;box-shadow:0 0 0 1px #e0ad5566}
+html body #compat-detail-card .cr-more.in-lock li b{color:#f0d38c}
+html body #compat-detail-card .cr-more.in-lock li span{color:#d9d3e6}
+
+/* 나의 별자리: 친구가 적을 때 하늘 칸을 줄이고, 빈자리는 눌러서 초대 */
+html body .sky-stage.is-few:not(.is-focus){height:400px}
+.sky-empty{cursor:pointer}
+.sky-empty .sky-empty-hit{fill:transparent;stroke:none}
+html body .sky-empty circle:not(.sky-empty-hit){stroke:#e0ad55;stroke-dasharray:3 3;opacity:.8;fill:#e0ad5514}
+html body .sky-empty .sky-empty-plus{fill:#f0d38c;font-size:13px;font-weight:700;opacity:1;stroke:none}
+html body .sky-empty text{fill:#e7d6ac;opacity:.85}
+html body #compat-detail-card .locked-card :is(.cost-badge,.cost-term,.cost-note){color:#c9c3d8;opacity:1}
