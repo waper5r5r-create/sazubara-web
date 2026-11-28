@@ -1,7 +1,7 @@
 // "여우의 인연 장부". 여우 연서가 재회를 읽어 주는 웹툰형 콘텐츠.
 // 사주 계산(두 사람 연인 자리, 90일 여우불 날짜)은 화면이 하고, 서버는 그 결과(facts)로 문장 표에서 골라 일곱 장을 엮는다.
 // 결제 전에는 유료 문장이 응답에 실리지 않는다. facts를 바꿔 보내도 다른 사주의 글이 나올 뿐, 결제 없이 열리지는 않는다.
-const T = require('./_yeonseo-text');
+const T = Object.assign({}, require('./_yeonseo-text'), require('./_yeonseo-text-2'), require('./_yeonseo-text-3'), require('./_yeonseo-text-4'));
 
 const concept = {
   id: '20271201-7a3e-4f1b-9c62-5d8e0b4a1f73',
@@ -68,6 +68,24 @@ function parseFacts(raw) {
   };
 }
 
+// 앞으로 12달: 첫 달(90일 달력의 첫 구간)부터 절기 달의 땅 글자가 두 연인 자리와 어떻게 만나는지 본다.
+const LIUHE = {子:'丑',丑:'子',寅:'亥',亥:'寅',卯:'戌',戌:'卯',辰:'酉',酉:'辰',巳:'申',申:'巳',午:'未',未:'午'};
+const SANHE = ['申子辰', '亥卯未', '寅午戌', '巳酉丑'];
+const meets = (a, b) => LIUHE[a] === b || (a !== b && SANHE.some(g => g.includes(a) && g.includes(b)));
+const clashes = (a, b) => Math.abs(ZHI.indexOf(a) - ZHI.indexOf(b)) === 6;
+function yearFlow(f, C) {
+  const m0 = Number(/^(\d+)월/.exec(f.months[0].range)[1]), me = f.me.zhi, th = f.them ? f.them.zhi : null, seen = {};
+  const items = [];
+  for (let i = 0; i < 12; i++) {
+    const m = (m0 - 1 + i) % 12 + 1, z = ZHI[m % 12];
+    const a = meets(z, me), b = th ? meets(z, th) : false, x = clashes(z, me) || (th ? clashes(z, th) : false);
+    const k = x ? 'clash' : (a && b ? 'both' : (a ? 'me' : (b ? 'them' : 'plain')));
+    seen[k] = (seen[k] || 0) + 1;
+    items.push({label: m + '월', text: nth(C.yearFlow[k], seen[k] - 1)});
+  }
+  return items;
+}
+
 const band = s => s >= 4 ? 'up' : (s <= -3 ? 'down' : 'flat');
 const plus = (a, b) => b ? a + '\n\n' + b : a;
 const nth = (v, n) => Array.isArray(v) ? v[n % v.length] : v;
@@ -92,6 +110,7 @@ function compose(f) {
     them ? sec(C.yearThemHead, C.yearNow[tg]) : null,
     them ? sec(C.spouseThemHead, C.spouseOf[them.zhi]) : null,
     them ? say(plus(C.stemBond[stemBond(me.gan, tg)], C.stemBondMore[stemBond(me.gan, tg)])) : null,
+    sec(C.firstPullHead, them ? C.firstPull[stemBond(me.gan, tg)] : C.firstPullNone),
     them && f.meForThem ? sec(C.roleHead, C.roleDeep[f.meForThem]) : null,
     them ? sec(C.fillHead, them.fills ? C.fill[me.weak] : C.fillNone) : null,
     them && f.themForMe ? say(plus(C.roleOfThem[f.themForMe], C.roleOfThemMore[f.themForMe])) : null].filter(Boolean)});
@@ -99,7 +118,10 @@ function compose(f) {
     say(C.ch2Intro), say(plus(C.whyPick[why], C.whyPickMore[why])),
     box(them ? plus(C.whyRel[rel], C.whyRelMore[rel]) : plus(C.whyRel.unknown, C.whyRelMore.unknown)),
     sec(C.whyDeepHead, C.whyDeep[why]),
+    sec(C.repeatHead, C.repeatWhy[me.gan]),
     sec(C.whoHead, C.whoDeep[wk] || C.whoDeep['자연스럽게']),
+    sec(C.myPartHead, C.myPart[why]),
+    sec(C.themSideHead, them ? C.themSide[tg] : C.themSideNone),
     ans.kind && C.kindDeep[ans.kind] ? sec(C.kindHead, C.kindDeep[ans.kind]) : null,
     ans.kind && C.kindNote[ans.kind] ? say(C.kindNote[ans.kind]) : null].filter(Boolean)});
   ch.push({no: 3, img: 'P3', title: '그 사람의 지금 마음', blocks: [
@@ -108,15 +130,21 @@ function compose(f) {
     them ? say(plus(C.recall[tg], C.recallMore[tg])) : {t: 'note', text: '그 사람 생일 없이 본 풀이라 정확도가 낮아. 생일을 알게 되면 다시 펼쳐 봐.'},
     sec(C.innerHead, them ? C.innerVoice[tg] : C.innerNone),
     them ? {t: 'note', text: C.innerNote} : null,
+    sec(C.aloneHead, them ? C.alone[tg] : C.aloneNone),
     sec(C.charmHead, C.charmOf[me.gan]),
+    sec(C.reachHead, them ? C.reachOut[them.zhi] : C.reachNone),
+    sec(C.themNeedHead, them ? C.themNeed[tg] : C.themNeedNone),
+    {t: 'list', head: C.replyReadHead, items: C.replyRead},
     {t: 'list', head: C.themSignHead, items: them ? C.themSign[tg] : C.themSignNone}].filter(Boolean)});
   const seen = {};
-  const lights = f.lights.map((l, i) => ({md: l.md, gz: l.gz, text: nth(C.lightDay[l.k], (seen[l.k] = (seen[l.k] || 0) + 1) - 1) + '\n\n' + C.dayPlanHead + ' — ' + C.dayPlan[i]}));
+  const lights = f.lights.map((l, i) => ({md: l.md, gz: l.gz, text: (n => nth(C.lightDay[l.k], n) + '\n\n' + C.dayPlanHead + ' — ' + C.dayPlan[i] + '\n\n' + nth(C.dayFirst[l.k], n))((seen[l.k] = (seen[l.k] || 0) + 1) - 1)}));
+  const year = yearFlow(f, C);
   const months = f.months.map((m, i) => ({range: m.range, text: C.month[i][m.band] + '\n\n' + C.missionHead + ' — ' + C.mission[i][m.band]}));
   ch.push({no: 4, img: 'P4', title: '여우불이 켜지는 날', blocks: [say(C.ch4Intro), {t: 'months', head: C.monthHead, items: months},
     sec(C.chanceHead, (C.chance[f.line] || C.chance.unknown)[g]),
     {t: 'days', lights, darks: f.darks.map(md => ({md})), dark: C.darkDay},
     contact === '차단됐어' && C.blockedDayNote ? {t: 'note', text: C.blockedDayNote} : null,
+    {t: 'flow', head: C.flowHead, intro: C.flowIntro, items: year, text: C.flowIntro + '\n\n' + year.map(y => y.label + ' — ' + y.text).join('\n\n')},
     say(C.ch4Outro)].filter(Boolean)});
   const mv = C.move[contact] || C.move['연락 안 해'];
   const when = contact === '차단됐어' ? (lights[1] ? ' 두 번째 여우불 날은 ' + lights[1].md + '이야.' : '') : (lights[0] ? ' 가장 가까운 여우불 날은 ' + lights[0].md + '이야.' : '');
@@ -129,17 +157,25 @@ function compose(f) {
     {t: 'steps', head: C.weekHead, items: C.weekPlan[ck]},
     {t: 'list', head: C.checkHead, items: C.checklist[why]},
     sec(C.comeHead, C.ifTheyCome[wk] || C.ifTheyCome['자연스럽게']),
+    sec(C.afterTalkHead, C.afterTalk[ck]),
+    {t: 'list', head: C.sayPairHead, items: C.sayPair[why]},
     {t: 'qa', head: C.faqHead, items: C.faq[ck]}]});
   ch.push({no: 6, img: 'P6', title: '다시 엮는다면', blocks: [say(C.ch6Intro), box(them ? C.again[rel] : C.again.unknown), say(C.change[me.gan]),
     sec(C.afterBackHead, C.afterBack[why]),
     sec(C.dateHead, them ? C.dateFor[tg] : C.dateNone),
     sec(C.rivalHead, C.rival[f.line] || C.rival.unknown),
     {t: 'note', text: C.rivalNote},
+    sec(C.threeHead, C.firstThree[why].join('\n\n')),
+    {t: 'list', head: C.promiseHead, items: them ? (C.promise[rel] || C.promiseNone) : C.promiseNone},
+    sec(C.againTalkHead, them ? C.againTalk[stemBond(me.gan, tg)] : C.againTalkNone),
+    sec(C.oneYearHead, C.oneYear[f.line] || C.oneYear.unknown),
     them ? sec(C.fightHead, C.fightRule[stemBond(me.gan, tg)]) : null].filter(Boolean)});
   ch.push({no: 7, img: 'P7', title: '먹을 씻어낼 때, 그리고 다음 이름', blocks: [say(C.ch7Intro), box(plus(C.letGo[g], C.letGoMore[g])), {t: 'list', head: C.signsHead, items: C.signs}, say(C.washNote),
     sec(C.selfCareHead, C.selfCare[me.weak]),
+    {t: 'steps', head: C.healHead, items: C.heal[g]},
     sec(C.letterHead, ans.letter ? C.letterReply[why] : C.letterNone),
     box(plus(C.nextOne[me.zhi], C.nextOneMore[me.zhi])),
+    sec(C.nextMatchHead, C.nextMatch[me.gan]),
     sec(C.finalHead, C.finalLetter[f.line] || C.finalLetter.unknown),
     say(C.outro)]});
   ch.push({no: 0, img: 'P8', title: '여우의 부적', blocks: [{t: 'charm', text: C.charm[me.weak]}]});

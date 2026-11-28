@@ -9554,8 +9554,8 @@ function ysMine(){var o=STATE&&STATE._mySajuOpts;if(!o||!o.year)return null;var 
 function ysThem(){try{var r=sessionStorage.getItem('ys-them');if(!r)return null;sessionStorage.removeItem('ys-them');var t=JSON.parse(r);return t&&/^\d{8}$/.test(t.ymd)?t:null;}catch(e){return null;}}
 globalThis.YS_ENGINE={mine:ysMine,them:ysThem,home:function(){try{history.replaceState({},'','/');}catch(e){}switchTab('reports');},computeSaju:computeSaju,zhiRelation:zhiRelation,todayGanZhi:todayGanZhi,SS_KR:SS_KR,device:function(){return DEVICE.shareCode||'';},buy:function(){startReportUnlock(YS_CONCEPT,'story');}};
 if (typeof location!=='undefined' && /[?&]yeonseo=1(&|$)/.test(location.search)){
-  var ysCss=document.createElement('link');ysCss.rel='stylesheet';ysCss.href='/assets/yeonseo/yeonseo.css?v=2';document.head.appendChild(ysCss);
-  var ysJs=document.createElement('script');ysJs.src='/assets/yeonseo/yeonseo.js?v=3';ysJs.defer=true;document.head.appendChild(ysJs);
+  var ysCss=document.createElement('link');ysCss.rel='stylesheet';ysCss.href='/assets/yeonseo/yeonseo.css?v=3';document.head.appendChild(ysCss);
+  var ysJs=document.createElement('script');ysJs.src='/assets/yeonseo/yeonseo.js?v=4';ysJs.defer=true;document.head.appendChild(ysJs);
 }
 
 if (document.readyState==='loading'){

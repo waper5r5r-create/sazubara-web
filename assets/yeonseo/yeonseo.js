@@ -412,7 +412,7 @@ function showResult(P, D){
     calendarHtml(D)+'<p class="ys-legend"><span class="fire">●</span> 켜지는 날 <span class="dark">●</span> 연락을 아낄 날</p></div>';
   var pay='<div class="ys-paywall"><div class="ys-pn-art" data-img="T2" style="background-image:'+artUrl('T2')+'">'+sparks(10)+'</div>'+
     '<div class="ys-bb round tr">나머지 일곱 장은 봉인해 뒀어. 풀어 볼래?</div>'+
-    '<div class="ys-locked"><p>장부의 나머지 일곱 장</p><ul><li>그 사람의 지금 마음</li><li>연락해도 되는 날 3개와 그날의 첫 문장</li><li>줄이 끊긴 진짜 이유</li><li>같은 이유로 끝나지 않으려면</li><li>먹을 씻어낼 때, 그리고 다음 이름</li></ul></div>'+
+    '<div class="ys-locked"><p>장부의 나머지 일곱 장</p><ul><li>그 사람의 지금 마음</li><li>연락해도 되는 날 3개와 그날의 첫 문장</li><li>줄이 끊긴 진짜 이유</li><li>같은 이유로 끝나지 않으려면 · 다시 만나면 첫 3달</li><li>앞으로 12달, 둘 사이의 흐름</li><li>먹을 씻어낼 때, 그리고 다음 이름</li></ul></div>'+
     '<div class="ys-pay"><button type="button" class="ys-open-paid">장부 전체 보기 · 9,900원</button><p>결제 즉시 제공 · 결제일로부터 1년간 다시 보기</p><p class="ys-refund">결제가 끝나면 환불이 제한돼요(오류·중복 결제 제외).</p><p class="ys-proto" role="status"></p></div></div>';
   comic([
     {ratio:'2/3', img:'T3', crop:'face', label:'T3', bubbles:[{type:'round',text:'자, 네 장부 한 페이지.',pos:'tl'},{type:'sfx',text:'펄럭',pos:'br'}]},
@@ -449,6 +449,7 @@ function blockHtml(b){
   var paras=function(t){ return String(t).split('\n\n').map(function(p){ return '<p>'+esc(p)+'</p>'; }).join(''); };
   if (b.t==='sec') return '<section class="ys-sec"><h3>'+esc(b.head)+'</h3>'+paras(b.text)+'</section>';
   if (b.t==='months') return '<section class="ys-sec ys-months"><h3>'+esc(b.head)+'</h3>'+b.items.map(function(x,i){ return '<div class="ys-month-row"><b>'+(i+1)+'번째 달 · '+esc(x.range)+'</b>'+paras(x.text)+'</div>'; }).join('')+'</section>';
+  if (b.t==='flow') return '<section class="ys-sec ys-flow"><h3>'+esc(b.head)+'</h3>'+(b.intro?'<p>'+esc(b.intro)+'</p>':'')+'<dl>'+b.items.map(function(x){ return '<dt>'+esc(x.label)+'</dt><dd>'+esc(x.text)+'</dd>'; }).join('')+'</dl></section>';
   if (b.t==='steps') return '<section class="ys-sec"><h3>'+esc(b.head)+'</h3><ol class="ys-steps">'+b.items.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ol></section>';
   if (b.t==='qa') return '<section class="ys-sec ys-qa"><h3>'+esc(b.head)+'</h3>'+b.items.map(function(x){ return '<details><summary>'+esc(x.q)+'</summary><p>'+esc(x.a)+'</p></details>'; }).join('')+'</section>';
   if (b.t==='note') return '<p class="ys-note">'+esc(b.text)+'</p>';

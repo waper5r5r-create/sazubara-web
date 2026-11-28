@@ -477,3 +477,6 @@
 /* 위 띠: 사이트로 돌아가는 버튼 */
 .ys-x.ys-back{width:auto;height:34px;padding:0 14px 0 10px;border-radius:17px;font-size:.82rem;letter-spacing:.02em;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;background:#0b0f2299;backdrop-filter:blur(6px);border:1px solid #ffffff1f}
 .ys-x.ys-back span{font-size:1.15rem;line-height:1;margin-top:-2px}
+.ys-flow dl{margin:10px 0 0;display:grid;grid-template-columns:auto 1fr;gap:10px 12px}
+.ys-flow dt{font-weight:700;color:var(--gold);font-size:.875rem;white-space:nowrap}
+.ys-flow dd{margin:0;font-size:.875rem;line-height:1.7}

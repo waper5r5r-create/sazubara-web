@@ -116,9 +116,10 @@ test('every pair and every answer set builds seven chapters plus a charm, with n
   assert.equal(ch.map(c=>c.no).join(','),'1,2,3,4,5,6,7,0');
   for(const t of texts(ch)){assert.equal(typeof t,'string');assert.ok(t.trim().length>0);assert.ok(!/undefined|null|NaN/.test(t),t);}
   if(!them)assert.ok(ch[2].blocks.some(b=>b.t==='note'));
+  const flow=ch[3].blocks.find(b=>b.t==='flow');assert.equal(flow.items.length,12);assert.ok(flow.items.every(x=>/^(1[0-2]|[1-9])월$/.test(x.label)&&x.text));
  }
  console.log('chars per reading: min',Math.min(...lens),'max',Math.max(...lens),'withThem',Math.min(...lens.filter((x,i)=>i%5)),'noThem',Math.max(...lens.filter((x,i)=>i%5===0)));
- assert.ok(Math.min(...lens)>=9000);
+ assert.ok(Math.min(...lens)>=13000);
 });
 
 test('paid text lives only on the server: no table in public assets, tampered facts are refused',()=>{
@@ -164,4 +165,9 @@ test('checkout for the ledger is 9,900 won and goes through the existing report 
   unlock(req,res);});
  global.fetch=realFetch;
  assert.equal(out.status,200,JSON.stringify(out.body));assert.equal(out.body.amount,9900);assert.ok(out.body.quote);
+});
+
+test('the added text tables never overwrite a key of the original table',()=>{
+ const seen=new Set(Object.keys(require('../api/_yeonseo-text')));
+ for(const n of ['2','3','4'])for(const k of Object.keys(require('../api/_yeonseo-text-'+n))){assert.ok(!seen.has(k),n+':'+k);seen.add(k);}
 });
