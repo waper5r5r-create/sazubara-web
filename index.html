@@ -1881,7 +1881,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=38">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=40">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -5453,7 +5453,7 @@ function openMyroomDetail(entry){
           '<p class="section-title" style="font-size:1rem;">'+esc(entry.nameB||'상대방')+'님과의 궁합</p>'+
           '<button type="button" class="sheet-close" id="myroom-detail-close">'+uiIcon('close')+'</button>'+
         '</div>'+
-        cardMeaningHtml(entry)+collectibleCardHtml(entry,true)+
+        '<div class="has-pair">'+compatPairHeroHtml(STATE.mySaju||{name:'나'}, entry._sajuB||{name:entry.nameB,day:{ganKr:entry.dayGanB}}, entry)+cardMeaningHtml(entry)+'</div>'+collectibleCardHtml(entry,true)+
         ((STATE.mySaju && entry._sajuB) ? '<div class="compat-share-row"><button type="button" class="share-btn" id="btn-share-sheet">'+uiIcon('share')+' 우리 궁합 공유하기</button><button type="button" class="compat-copy-link" id="btn-copy-sheet">링크 복사</button></div>' : '')+
         '<section class="sky-premium" data-myroom-premium></section>'+
         (chemi ?
