@@ -1881,7 +1881,7 @@ main h1,main h1.section-title{font-family:var(--font-serif-heading);font-weight:
 <link rel="stylesheet" href="/assets/ui/ian.css?v=3">
 <link rel="stylesheet" href="/assets/ui/reading-ux-v1.css?v=2">
 <link rel="stylesheet" href="/assets/ui/album-detail-v1.css?v=2">
-<link rel="stylesheet" href="/assets/ui/design-system.css?v=32">
+<link rel="stylesheet" href="/assets/ui/design-system.css?v=33">
 <!-- 방문 통계: Vercel Web Analytics. 쿠키 없이 방문 수와 들어온 경로만 세요. -->
 <script>try{if(localStorage.getItem('byeolcheop_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -4598,6 +4598,7 @@ function wireSky(scope,list){
  function camNear(anim){size();apply(1,pan.x,(H-480*k)/2+pan.y,anim);}
  function camFocus(i){size();var S=2.3,p=pos[i];apply(S,W/2-p.x*k*S,H*.30-p.y*k*S,true);}
  if(stage.classList.contains('is-far'))camFar(false);else camNear(false);
+ if(typeof ResizeObserver!=='undefined'){var skyRO=new ResizeObserver(function(){if(!stage.isConnected){skyRO.disconnect();return;}if(cur>=0||!stage.clientWidth||stage.clientWidth===W&&stage.clientHeight===H)return;if(stage.classList.contains('is-far'))camFar(false);else camNear(false);});skyRO.observe(stage);}
  function enter(){if(!stage.classList.contains('is-far'))return;stage.classList.remove('is-far');stage.classList.add('is-open');camNear(true);try{soundReveal();}catch(e){}}
  function markCur(i){$all('.sky-star',stage).forEach(function(g){g.classList.toggle('is-cur',Number(g.dataset.skyStar)===i);});}
  function detailKeys(e){

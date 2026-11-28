@@ -706,3 +706,6 @@ html[data-theme="dark"] .sky-list.is-cards .sky-score{color:#e7c27a}
 html body .sky-actions .album-invite-btn{margin:0}
 .sky-direct-btn{min-height:48px;border:1px solid #e0ad5588;border-radius:14px;background:transparent;color:var(--ds-ink);font-weight:700;font-size:.9375rem}
 #view-compat:has(.sky-actions) #album-add{display:none}
+/* 궁합 입력 칸: 칸과 다음 제목이 붙지 않게, 시간 칸과 확인 버튼 사이도 띄움 */
+#compat-form #person-a-wrap>*:not([hidden]),#compat-form #c-b-manual-pane>*:not([hidden]){margin-bottom:16px}
+#compat-form #c-b-manual-pane>.btn-primary{margin:8px 0 0}
