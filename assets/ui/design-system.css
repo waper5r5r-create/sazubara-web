@@ -711,3 +711,5 @@ html body .sky-actions .album-invite-btn{margin:0}
 #compat-form #c-b-manual-pane>.btn-primary{margin:8px 0 0}
 /* 어두운 화면: 금색 공유 버튼 위 아이콘이 금색이라 안 보이던 것 → 글자색으로 */
 html[data-theme="dark"] .share-btn svg{color:currentColor}
+/* 생년월일 아래 날짜 확인 줄 자리를 두므로, 그 칸 아래 여백은 줄인다 */
+#compat-form #c-b-manual-pane>.field:has(.birth-live),#compat-form #person-a-wrap>.field:has(.birth-live){margin-bottom:4px}
